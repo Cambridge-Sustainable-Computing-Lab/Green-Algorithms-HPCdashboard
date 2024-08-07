@@ -41,12 +41,12 @@ Example running it with the default **postgres** user:
 
 ```$ sudo -u postgres psql -c 'CREATE DATABASE ga_db;'```
 
-2.	Download the SQL dump: [compressed database dump](/databases/ga_db_aggregate_2024-08-06.sql.gz)
+2.	Download the SQL dump: [compressed database dump](/databases/ga_db_aggregate.sql.gz)
 
 3.	Install the database (e.g. with the user **postgres**):
 ```
-$ gunzip ga_db_aggregate_2024-08-06.sql.gz
-$ psql -h localhost -p 5432 -U postgres -d ga_db < ga_db_aggregate_2024-08-06.sql
+$ gunzip ga_db_aggregate.sql.gz
+$ psql -h localhost -p 5432 -U postgres -d ga_db < ga_db_aggregate.sql
 ````
 
 ## Dashboards
