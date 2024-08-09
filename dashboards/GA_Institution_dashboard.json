@@ -103,7 +103,7 @@
           "textMode": "value",
           "wideLayout": true
         },
-        "pluginVersion": "11.1.0",
+        "pluginVersion": "11.1.3",
         "targets": [
           {
             "datasource": {
@@ -133,7 +133,7 @@
             "table": "ga_data_aggregate"
           }
         ],
-        "title": "CPU time",
+        "title": "💻  CPU time",
         "type": "stat"
       }
     },
@@ -199,7 +199,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.1.0",
+        "pluginVersion": "11.1.3",
         "targets": [
           {
             "datasource": {
@@ -236,7 +236,7 @@
             "table": "ga_data_aggregate"
           }
         ],
-        "title": "Carbon footprint",
+        "title": "👣  Carbon footprint",
         "type": "stat"
       }
     },
@@ -292,7 +292,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.1.0",
+        "pluginVersion": "11.1.3",
         "targets": [
           {
             "datasource": {
@@ -329,7 +329,7 @@
             "table": "ga_data_aggregate"
           }
         ],
-        "title": "New York - San Francisco",
+        "title": "✈️  New York - San Francisco",
         "type": "stat"
       }
     },
@@ -382,7 +382,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.1.0",
+        "pluginVersion": "11.1.3",
         "targets": [
           {
             "datasource": {
@@ -419,7 +419,7 @@
             "table": "ga_data"
           }
         ],
-        "title": "Carbon sequestration",
+        "title": "🌳  Carbon sequestration",
         "type": "stat"
       }
     },
@@ -997,7 +997,56 @@
             },
             "mappings": []
           },
-          "overrides": []
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "CPUS"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "kwatth"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "GPUS"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "kwatth"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Memory"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "kwatth"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Other"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "kwatth"
+                }
+              ]
+            }
+          ]
         },
         "options": {
           "displayLabels": [
@@ -1080,7 +1129,7 @@
             "table": "ga_data_aggregate"
           }
         ],
-        "title": "Energy distribution",
+        "title": "⚡ Energy distribution",
         "type": "piechart"
       }
     },
@@ -1103,7 +1152,7 @@
               "axisBorderShow": false,
               "axisCenteredZero": false,
               "axisColorMode": "text",
-              "axisLabel": "Carbon footprint (gCO2e)",
+              "axisLabel": "Carbon footprint (kgCO2e)",
               "axisPlacement": "auto",
               "fillOpacity": 80,
               "gradientMode": "none",
@@ -1131,7 +1180,20 @@
               ]
             }
           },
-          "overrides": []
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "sum"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "massg"
+                }
+              ]
+            }
+          ]
         },
         "options": {
           "barRadius": 0,
@@ -1233,7 +1295,7 @@
               "axisBorderShow": false,
               "axisCenteredZero": false,
               "axisColorMode": "text",
-              "axisLabel": "Carbon footprint (gCO2e)",
+              "axisLabel": "Carbon footprint (kgCO2e)",
               "axisPlacement": "auto",
               "axisSoftMin": 0,
               "barAlignment": 0,
@@ -1277,7 +1339,20 @@
               ]
             }
           },
-          "overrides": []
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "CFP"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "massg"
+                }
+              ]
+            }
+          ]
         },
         "options": {
           "legend": {
@@ -2567,7 +2642,7 @@
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "Carbon footprint (gCO2e)",
+            "axisLabel": "Carbon footprint (kgCO2e)",
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
@@ -2601,7 +2676,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2610,7 +2686,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CFP"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "massg"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -2767,7 +2856,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2822,7 +2912,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "11.1.3",
       "targets": [
         {
           "datasource": {
@@ -2957,6 +3047,6 @@
   "timezone": "browser",
   "title": "Institution",
   "uid": "bdsq0sjqovyagg",
-  "version": 5,
+  "version": 7,
   "weekStart": ""
 }

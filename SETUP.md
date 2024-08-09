@@ -32,8 +32,9 @@ In Grafana go to $\color{green}{\textsf{Home > Connections > Data sources > Add 
 - Database name: **ga_db** (for instance)
 - TLS/SSL Mode: **disable** (for local installation)
 
-#### DB installation:
-1.	Create database “ga_db”:
+#### DB installation
+
+1. Create database “ga_db”
 
 ```$ CREATE DATABASE ga_db;```
 
@@ -41,9 +42,10 @@ Example running it with the default **postgres** user:
 
 ```$ sudo -u postgres psql -c 'CREATE DATABASE ga_db;'```
 
-2.	Download the SQL dump: [compressed database dump](/databases/ga_db_aggregate.sql.gz)
+2. Download the SQL dump: [compressed database dump](/databases/ga_db_aggregate.sql.gz)
 
-3.	Install the database (e.g. with the user **postgres**):
+3. Install the database (e.g. with the user **postgres**)
+
 ```
 $ gunzip ga_db_aggregate.sql.gz
 $ psql -h localhost -p 5432 -U postgres -d ga_db < ga_db_aggregate.sql
@@ -63,10 +65,12 @@ Some of the dashboards need to have a matching username to properly see all the 
 For the example, I created a user $\color{orange}{\textsf{ll582}}$ which I included in a team $\color{darkred}{\textsf{Test}}$.
 
 ### User
+
 Go to $\color{green}{\textsf{Home > Administration > Users and access > Users > New User}}$
 Then use the Username $\color{orange}{\textsf{ll582}}$.
 
 ## Team
+
 Go to $\color{green}{\textsf{Home > Administration > Users and access > Teams > New Team}}$.  
 Then use the name $\color{darkred}{\textsf{Test}}$.
 After that, click on the $\color{darkred}{\textsf{Test}}$ team and add $\color{orange}{\textsf{ll582}}$ as a new member.
