@@ -20,4 +20,4 @@ class GrafanaGABase:
             if res["database"] != "ok":
                 raise Exception("Grafana is not UP")
         except:
-            raise
+            raise Exception("Grafana is not ON")
