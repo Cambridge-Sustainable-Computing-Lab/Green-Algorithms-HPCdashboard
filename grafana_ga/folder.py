@@ -44,12 +44,17 @@ class GrafanaGAFolder(GrafanaGABase):
 
 
     def get_folder(self) -> None:
-        if not self.find_ga_folder():
-            self.grafana.folder.create_folder(title=self.ga_folder_name)
-            self.find_ga_folder()
-            print(f"Folder '{self.ga_folder_name}' created")
+        folder_name = self.ga_folder_name
+        if self.find_ga_folder():
+            logger.info(f"Folder '{folder_name}' already exists")
         else:
-            print(f"Folder '{self.ga_folder_name}' already exists")
+            try:
+                self.grafana.folder.create_folder(title=folder_name)
+                self.find_ga_folder()
+                logger.info(f"Folder '{folder_name}' created")
+            except GrafanaClientError as ex:
+                logger.error(f"ERROR while creating the folder '{folder_name}': {ex}")
+                exit(1)
 
 
     def get_current_teams_permissions(self) -> None:
@@ -60,15 +65,18 @@ class GrafanaGAFolder(GrafanaGABase):
                 if team_id != 0:
                     permission_level = permission['permission']
                     self.teams[team_id] = {'teamId': team_id, 'permission': permission_level}
-                    if permission_level not in self.levels.keys():
-                        self.levels[permission_level] = self.permission_levels[permission_level]
+                    self.add_permission_level(permission_level)
             elif 'userId' in permission.keys():
                 user_id =  permission['userId']
                 if user_id != 0:
                     permission_level = permission['permission']
                     self.users.append({'userId': user_id, 'permission': permission_level})
-                    if permission_level not in self.levels.keys():
-                        self.levels[permission_level] = self.permission_levels[permission_level]
+                    self.add_permission_level(permission_level)
+
+
+    def add_permission_level(self,permission_level:str) -> None:
+        if permission_level not in self.levels.keys():
+            self.levels[permission_level] = self.permission_levels[permission_level]
 
 
     def get_new_teams_permissions(self, teams:list) -> None:
@@ -101,3 +109,4 @@ class GrafanaGAFolder(GrafanaGABase):
                     logger.info(f"Folder: {response['message']}")
         except GrafanaClientError as ex:
             logger.error(f"Can't update folder permissions: {ex}")
+            exit(1)

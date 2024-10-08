@@ -52,6 +52,39 @@ $ psql -h localhost -p 5432 -U postgres -d ga_db < ga_db_aggregate.sql
 
 ## Grafana setup
 
+### Data source
+
+In the GA Project, the data source is a PostgreSQL database
+
+#### Script version
+
+Run the script `create_data_source.py`
+For instance:
+```
+python create_data_source.py --admin_login admin --admin_password <adm_password> --db_user <db_user_name> --db_password <db_user_password> --pg_version 15
+```
+
+Options are:
+```
+  --name DS_NAME: Data source name | default: grafana-postgresql-ga_db
+  --url URL: Grafana URL | default: localhost:3000
+  --admin_login ADMIN_NAME: Grafana admin name | default: admin
+  --admin_password ADMIN_PASS: Grafana admin password
+  --db_name DB_NAME: Database name
+  --db_user DB_USER: Database user name
+  --db_password DB_PASSWORD: Database user password
+  --db_host DB_HOST: Database host | default: localhost
+  --db_port DB_PORT: Database port | default: 5432
+  --pg_version PG_VERSION: PostgreSQL version | default: 13
+```
+
+#### GUI version
+
+You can create a data source via the web interface.
+
+Go to $\color{green}{\textsf{Home > Connections > Datasources > + Add new data source (on the right hand-side) > PostgreSQL}}$.
+Then you can create a data source by filling the form (we use the value 'disable' for the TLS/SSL Mode).
+
 ### Dashboards
 
 #### Script version
@@ -59,25 +92,25 @@ $ psql -h localhost -p 5432 -U postgres -d ga_db < ga_db_aggregate.sql
 The following script requires the installation of the packages listed in `requirements.txt`.
 
 Run the script `import_dashboards.py`
-For instance
+For instance:
 ```
 python import_dashboards.py --admin_login admin --admin_password <adm_password>
 ```
 
 Options are:
 ```
-  --input_dir INPUT_DIR: Dashboard files directory
-  --url URL: Grafana URL
-  --admin_login ADMIN_NAME: Grafana admin name
+  --input_dir INPUT_DIR: Dashboard files directory | default: ./dashboards/prod/
+  --url URL: Grafana URL | default: localhost:3000
+  --admin_login ADMIN_NAME: Grafana admin name | default: admin
   --admin_password ADMIN_PASS: Grafana admin password
-  --dashboard_folder_name DASHBOARD_FOLDER_NAME: Name of the dashboard folder
+  --dashboard_folder_name DASHBOARD_FOLDER_NAME: Name of the dashboard folder | default: Green Algorithms
 ```
 
 #### GUI version
 
 You can import the Dashboards [here](/dashboards/prod) on the repository.
 
-Go to $\color{green}{\textsf{Home > Dashboards > New (on the right hand-side) > Import}}$ then import the JSON file (seems to work one by one).  
+Go to $\color{green}{\textsf{Home > Dashboards > New (on the right hand-side) > Import}}$ then import the JSON file (seems to work one by one).
 Then you can create a directory (e.g. $\color{purple}{\textsf{Green Algorithms}}$) and move the newly imported dashboards there: it might be it easier to manage access at the folder level.
 
 ### Users/Groups
@@ -91,14 +124,16 @@ For instance
 ```
 python import_users.py --admin_login admin --admin_password <adm_password> --input_file <path_to_users_csv_file>
 ```
+
 Options are:
 ```
   --input_file INPUT_FILE: User list in CSV format
-  --url URL: Grafana URL
-  --admin_login ADMIN_NAME: Grafana admin name
+  --url URL: Grafana URL | default: localhost:3000
+  --admin_login ADMIN_NAME: Grafana admin name | default: admin
   --admin_password ADMIN_PASS: Grafana admin password
-  --dashboard_folder DASHBOARD_FOLDER: Name of the dashboard folder
+  --dashboard_folder DASHBOARD_FOLDER: Name of the dashboard folder | default: Green Algorithms
 ```
+
 Example of input file format (CSV format):
 ```
 Name,User name,Email,Password,Team name

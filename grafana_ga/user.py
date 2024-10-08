@@ -44,7 +44,7 @@ class GrafanaGAUser(GrafanaGABase):
                 uid = teams_list[0]['uid']
                 self.teams[uid] = teams_list[0]
         except GrafanaClientError as ex:
-            logger.error(f"ERROR during team fetching: {ex}")
+            logger.error(f"ERROR during fetching of team '{team_name}': {ex}")
 
 
     def create_user(self, user_data:dict) -> None:
@@ -86,6 +86,7 @@ class GrafanaGAUser(GrafanaGABase):
             })
         except GrafanaClientError as ex:
             logger.error(f"ERROR during user creation: {ex}")
+            exit(1)
 
         # Add user to a team
         if user:
@@ -99,4 +100,5 @@ class GrafanaGAUser(GrafanaGABase):
                     logger.info(f"User '{user_data['User name']}' (user ID: {user['id']}): added to team '{team_name}'")
             except GrafanaClientError as ex:
                 logger.error(f"Can't find team '{team_name}' and/or can't add the user '{user_data['username']}' to the team: {ex}")
+                exit(1)
 
