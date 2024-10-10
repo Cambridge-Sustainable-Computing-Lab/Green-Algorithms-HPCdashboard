@@ -1,5 +1,7 @@
 # GA Grafana setup
 
+[Prerequisites](#prerequisites) - [Main installation](#main-installation) - [Database connection](#database-connection) - [Grafana setup](#grafana-setup)
+
 ## Prerequisites
 
 - Install PostgreSQL locally or have access to a PostgreSQL server
@@ -20,7 +22,7 @@ Go to the Grafana directory and run the command:
 Then log as admin on the web browser (admin:admin): [http://localhost:3000/](http://localhost:3000/).
 
 
-## Database Connection
+## Database connection
 
 ### PostgreSQL
 
@@ -52,7 +54,52 @@ $ psql -h localhost -p 5432 -U postgres -d ga_db < ga_db_aggregate.sql
 
 ## Grafana setup
 
-### Data source
+### Run all setup in one command
+
+The script `ga_dashboard.py` runs sequentially the code to:
+
+* Create the data source
+* Create the dashboards folder
+* Import the dashboards
+* Create users and teams
+
+For instance
+```
+python ga_dashboard.py \
+  --admin_login admin --admin_password <adm_password> \
+  --db_name ga_db --db_user <db_user_name> --db_password <db_user_password> --pg_version 15 \
+  --input_file <path_to_users_csv_file>
+```
+
+Example of input file format (CSV format):
+```
+Name,User name,Email,Password,Team name
+Thomas Greene,tg1,tg1@ga-test.com,<user_1_password>,Team 1
+Adam Mackay,am1,am1@ga-test.com,<user_2_password>,Team 2
+...
+```
+
+Options are:
+```
+  --name DS_NAME: Data source name | default: grafana-postgresql-ga_db
+  --url URL: Grafana URL | default: localhost:3000
+  --admin_login ADMIN_NAME: Grafana admin name | default: admin
+  --admin_password ADMIN_PASS: Grafana admin password
+  --db_name DB_NAME: Database name
+  --db_user DB_USER: Database user name
+  --db_password DB_PASSWORD: Database user password
+  --db_host DB_HOST: Database host | default: localhost
+  --db_port DB_PORT: Database port | default: 5432
+  --pg_version PG_VERSION: PostgreSQL version | default: 13
+  --dashboard_folder_name DASHBOARD_FOLDER_NAME: Name of the dashboard folder | default: Green Algorithms
+  --input_dir INPUT_DIR: Dashboard files directory
+  --input_file INPUT_FILE: User list in CSV format
+```
+
+> [!NOTE]
+> You can run the different steps individually via python scripts or manually via the Grafana web interface (see below).
+
+### Setup data source
 
 In the GA Project, the data source is a PostgreSQL database
 
@@ -61,7 +108,9 @@ In the GA Project, the data source is a PostgreSQL database
 Run the script `create_data_source.py`
 For instance:
 ```
-python create_data_source.py --admin_login admin --admin_password <adm_password> --db_user <db_user_name> --db_password <db_user_password> --pg_version 15
+python create_data_source.py \
+  --admin_login admin --admin_password <adm_password> \
+  --db_name ga_db --db_user <db_user_name> --db_password <db_user_password> --pg_version 15
 ```
 
 Options are:
@@ -85,7 +134,7 @@ You can create a data source via the web interface.
 Go to $\color{green}{\textsf{Home > Connections > Datasources > + Add new data source (on the right hand-side) > PostgreSQL}}$.
 Then you can create a data source by filling the form (we use the value 'disable' for the TLS/SSL Mode).
 
-### Dashboards
+### Setup dashboards
 
 #### Script version
 
@@ -113,7 +162,7 @@ You can import the Dashboards [here](/dashboards/prod) on the repository.
 Go to $\color{green}{\textsf{Home > Dashboards > New (on the right hand-side) > Import}}$ then import the JSON file (seems to work one by one).
 Then you can create a directory (e.g. $\color{purple}{\textsf{Green Algorithms}}$) and move the newly imported dashboards there: it might be it easier to manage access at the folder level.
 
-### Users/Groups
+### Setup users and teams
 
 #### Script version
 
@@ -122,7 +171,8 @@ The following script requires the installation of the packages listed in `requir
 Run the script `import_users.py`
 For instance
 ```
-python import_users.py --admin_login admin --admin_password <adm_password> --input_file <path_to_users_csv_file>
+python import_users.py \
+  --admin_login admin --admin_password <adm_password> --input_file <path_to_users_csv_file>
 ```
 
 Options are:

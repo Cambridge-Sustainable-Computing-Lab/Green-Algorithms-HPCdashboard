@@ -50,7 +50,7 @@ class GrafanaGADataSource(GrafanaGABase):
         datasource = None
         try:
             datasource = self.grafana.datasource.create_datasource(self.ds_content)
-            logger.info(f"Created data source: {datasource}")
+            logger.info(f"> Created data source: {datasource}")
         except GrafanaClientError as ex:
             # Data source already exist
             if ex.status_code == 409:
@@ -65,7 +65,7 @@ class GrafanaGADataSource(GrafanaGABase):
             if datasource_obj:
                 ds_health = self.grafana.datasource.health(datasource_obj['uid'])
                 if ds_health['status'] == 'OK':
-                    logger.info(f"Data source healthcheck: {ds_health['message']}")
+                    logger.info(f"> Data source healthcheck: {ds_health['message']}")
                 else:
                     logger.error(f"ERROR about the Data source health: {ds_health['message']}")
         else:

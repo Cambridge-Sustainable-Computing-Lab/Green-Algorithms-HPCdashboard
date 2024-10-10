@@ -51,7 +51,7 @@ class GrafanaGAFolder(GrafanaGABase):
             try:
                 self.grafana.folder.create_folder(title=folder_name)
                 self.find_ga_folder()
-                logger.info(f"Folder '{folder_name}' created")
+                logger.info(f"> Folder '{folder_name}' successfully created")
             except GrafanaClientError as ex:
                 logger.error(f"ERROR while creating the folder '{folder_name}': {ex}")
                 exit(1)
