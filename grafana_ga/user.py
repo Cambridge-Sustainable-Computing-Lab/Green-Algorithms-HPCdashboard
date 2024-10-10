@@ -22,7 +22,7 @@ class GrafanaGAUser(GrafanaGABase):
             team = self.grafana.teams.get_team(grafana_team['teamId'])
             self.teams[team['uid']] = grafana_team
             if grafana_team and 'teamId' in grafana_team.keys():
-                logger.info(f"Team '{team_name}' (team ID: {grafana_team['teamId']}): created successfully")
+                logger.info(f"> Team '{team_name}' (team ID: {grafana_team['teamId']}): created successfully")
             else:
                 logger.error(f"Team '{team_name}' creation doesn't seem to have been successful")
                 exit(1)
@@ -90,14 +90,14 @@ class GrafanaGAUser(GrafanaGABase):
 
         # Add user to a team
         if user:
-            logger.info(f"User '{user_data['User name']}' (user ID: {user['id']}): created successfully")
+            logger.info(f"> User '{user_data['User name']}' (user ID: {user['id']}): created successfully")
             try:
                 for team_item in user_data['Team name'].split(','):
                     team_name = team_item.strip()
                     team = self.grafana.teams.get_team_by_name(team_name)
                     team_id = team[0]['id']
                     self.grafana.teams.add_team_member(team_id, user['id'])
-                    logger.info(f"User '{user_data['User name']}' (user ID: {user['id']}): added to team '{team_name}'")
+                    logger.info(f"+ User '{user_data['User name']}' (user ID: {user['id']}): added to team '{team_name}'")
             except GrafanaClientError as ex:
                 logger.error(f"Can't find team '{team_name}' and/or can't add the user '{user_data['username']}' to the team: {ex}")
                 exit(1)

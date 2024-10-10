@@ -1,24 +1,10 @@
-import os,argparse,json
+import os,argparse
 import logging
 from grafana_ga.folder import GrafanaGAFolder
+from grafana_ga.dashboard import GrafanaGADashboard
 
 
 logger = logging.getLogger(__name__)
-
-
-def parse_json(json_file_path:str) -> json:
-    try:
-        with open(json_file_path, "r") as f:
-            json_content = f.read()
-    except OSError as ex:
-        logger.error(f"Reading file failed: {json_file_path}. Reason: {ex.strerror}")
-        exit(1)
-
-    try:
-        return json.loads(json_content)
-    except json.JSONDecodeError as ex:
-        logger.error(f"Decoding JSON output from file failed: {json_content}. Reason: {ex}")
-        exit(1)
 
 
 ###############################################
@@ -60,49 +46,8 @@ def main():
 
     # Loop over dashboard files
     for dashboard_filename in os.listdir(input_dir):
-        print(f"File '{dashboard_filename}'")
         if dashboard_filename.endswith('.json'):
-            print(f"Dashboard file '{dashboard_filename}' is JSON")
-            dashboard_file = f"{input_dir}/{dashboard_filename}"
-            if os.path.isfile(dashboard_file):
-                try:
-                    # Parse JSON file (dashboard content)
-                    dash_content = parse_json(dashboard_file)
-
-                    # Fetch data source
-                    datasource_label = dash_content['__inputs'][0]['label']
-                    datasource = ga_folder_import.grafana.datasource.find_datasource(datasource_label)
-                    if not 'id' in datasource.keys():
-                        logger.error(f"Can't find the data source '{datasource_label}'")
-                        exit(1)
-                    datasource_uid = datasource['uid']
-                    # Update dashboard content with the data source uid
-                    for panel in dash_content['panels']:
-                        if 'datasource' in panel.keys():
-                            panel['datasource']['uid'] = datasource_uid
-                    
-                    new_dash = {
-                        "dashboard": dash_content,
-                        "overwrite": True
-                    }
-                    
-                    # Add folder uid to the dashboard content
-                    new_dash["folderUid"] = ga_folder_import.folder_uid if ga_folder_import.folder_uid else 0
-                    
-                    # Dashboard
-                    new_dash["dashboard"]["id"] = None
-                    res = ga_folder_import.grafana.dashboard.update_dashboard(new_dash)
-                    if res["status"]: # TODO - check the status
-                        logger.info(f"Dashboard '{new_dash['dashboard']['title']}' has been created successfully")
-                    else:
-                        logger.error(f"Dashboard '{new_dash['dashboard']['title']}' creation failed!")
-                except Exception as ex:
-                    msg = f"Failed to load dashboard from: {dashboard_filename}. Reason: {ex}"
-                    logger.exception(msg)
-                    exit(1)
-            else:
-                logger.error("Can't find the file '{dashboard_file}'")
-                exit(1)
-
+            ga_dashboard = GrafanaGADashboard(login, password, grafana_url,input_dir,dashboard_filename,ga_folder_import.folder_uid)
+            ga_dashboard.import_dashboard()
 if __name__ == "__main__":
      main()
