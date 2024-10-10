@@ -1,6 +1,6 @@
 # GA Grafana setup
 
-[Prerequisites](#prerequisites) - [Main installation](#main-installation) - [Database Connection](#database-connection) - [Grafana setup](#grafana-setup)
+[Prerequisites](#prerequisites) - [Main installation](#main-installation) - [Database connection](#database-connection) - [Grafana setup](#grafana-setup)
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ Go to the Grafana directory and run the command:
 Then log as admin on the web browser (admin:admin): [http://localhost:3000/](http://localhost:3000/).
 
 
-## Database Connection
+## Database connection
 
 ### PostgreSQL
 
@@ -71,6 +71,14 @@ python ga_dashboard.py \
   --input_file <path_to_users_csv_file>
 ```
 
+Example of input file format (CSV format):
+```
+Name,User name,Email,Password,Team name
+Thomas Greene,tg1,tg1@ga-test.com,<user_1_password>,Team 1
+Adam Mackay,am1,am1@ga-test.com,<user_2_password>,Team 2
+...
+```
+
 Options are:
 ```
   --name DS_NAME: Data source name | default: grafana-postgresql-ga_db
@@ -87,6 +95,9 @@ Options are:
   --input_dir INPUT_DIR: Dashboard files directory
   --input_file INPUT_FILE: User list in CSV format
 ```
+
+> [!NOTE]
+> You can run the different steps individually via python scripts or manually via the Grafana web interface (see below).
 
 ### Setup data source
 
