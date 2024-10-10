@@ -61,7 +61,7 @@ In the GA Project, the data source is a PostgreSQL database
 Run the script `create_data_source.py`
 For instance:
 ```
-python create_data_source.py --admin_login admin --admin_password <adm_password> --db_user <db_user_name> --db_password <db_user_password> --pg_version 15
+python create_data_source.py --admin_login admin --admin_password <adm_password> --db_name ga_db --db_user <db_user_name> --db_password <db_user_password> --pg_version 15
 ```
 
 Options are:
@@ -160,3 +160,37 @@ After that, click on the $\color{darkred}{\textsf{Test}}$ team and add $\color{o
 
 Then go to the Dashboard directory $\color{purple}{\textsf{Green Algorithms > Folder actions (right hand-side) > Manage permissions}}$.  
 Add permission for the team $\color{darkred}{\textsf{Test}}$ and remove roles Editor and Viewer (although not sure about removing those roles).
+
+### Run all in one command
+
+The script `ga_dashboard.py` runs sequentially the code to:
+
+* Create the data source
+* Create the dashboards folder
+* Import the dashboards
+* Create users and teams
+
+For instance
+```
+python ga_dashboard.py \
+  --admin_login admin --admin_password <adm_password> \
+  --db_name ga_db --db_user <db_user_name> --db_password <db_user_password> --pg_version 15 \
+  --input_file <path_to_users_csv_file>
+```
+
+Options are:
+```
+  --name DS_NAME: Data source name | default: grafana-postgresql-ga_db
+  --url URL: Grafana URL | default: localhost:3000
+  --admin_login ADMIN_NAME: Grafana admin name | default: admin
+  --admin_password ADMIN_PASS: Grafana admin password
+  --db_name DB_NAME: Database name
+  --db_user DB_USER: Database user name
+  --db_password DB_PASSWORD: Database user password
+  --db_host DB_HOST: Database host | default: localhost
+  --db_port DB_PORT: Database port | default: 5432
+  --pg_version PG_VERSION: PostgreSQL version | default: 13
+  --dashboard_folder_name DASHBOARD_FOLDER_NAME: Name of the dashboard folder | default: Green Algorithms
+  --input_dir INPUT_DIR: Dashboard files directory
+  --input_file INPUT_FILE: User list in CSV format
+```
