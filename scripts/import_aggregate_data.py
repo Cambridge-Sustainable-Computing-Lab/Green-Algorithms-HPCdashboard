@@ -1,6 +1,6 @@
 import os
 import csv
-import psycopg2
+import psycopg
 import argparse
 
 
@@ -98,7 +98,7 @@ def main():
 
     print('> DB import - start')
     # Connect to an existing database
-    conn = psycopg2.connect(
+    conn = psycopg.connect(
         dbname=db_name,
         user=db_user,
         password=db_password,

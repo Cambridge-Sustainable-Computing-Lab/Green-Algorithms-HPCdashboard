@@ -91,14 +91,18 @@ class GrafanaGAUser(GrafanaGABase):
         # Add user to a team
         if user:
             logger.info(f"> User '{user_data['User name']}' (user ID: {user['id']}): created successfully")
-            try:
-                for team_item in user_data['Team name'].split(','):
-                    team_name = team_item.strip()
-                    team = self.grafana.teams.get_team_by_name(team_name)
-                    team_id = team[0]['id']
-                    self.grafana.teams.add_team_member(team_id, user['id'])
-                    logger.info(f"+ User '{user_data['User name']}' (user ID: {user['id']}): added to team '{team_name}'")
-            except GrafanaClientError as ex:
-                logger.error(f"Can't find team '{team_name}' and/or can't add the user '{user_data['username']}' to the team: {ex}")
-                exit(1)
+            self.add_to_team(user_data,user)
+
+
+    def add_to_team(self,user_data:dict,user:User) -> None:
+        try:
+            for team_item in user_data['Team name'].split(','):
+                team_name = team_item.strip()
+                team = self.grafana.teams.get_team_by_name(team_name)
+                team_id = team[0]['id']
+                self.grafana.teams.add_team_member(team_id, user['id'])
+                logger.info(f"+ User '{user_data['User name']}' (user ID: {user['id']}): added to team '{team_name}'")
+        except GrafanaClientError as ex:
+            logger.error(f"Can't find team '{team_name}' and/or can't add the user '{user_data['username']}' to the team: {ex}")
+            exit(1)
 
