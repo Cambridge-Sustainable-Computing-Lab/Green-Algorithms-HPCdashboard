@@ -47,11 +47,14 @@ class GrafanaGADashboard(GrafanaGABase):
                     logger.error(f"Can't find the data source '{datasource_label}'")
                     exit(1)
                 datasource_uid = datasource['uid']
-                # Update dashboard content with the data source uid
+                # Update dashboard content & variables with the data source uid
                 for panel in self.dash_content['panels']:
                     if 'datasource' in panel.keys():
                         panel['datasource']['uid'] = datasource_uid
-                
+                for variable in self.dash_content['templating']['list']:
+                    if 'datasource' in variable.keys():
+                        variable['datasource']['uid'] = datasource_uid
+
                 new_dash = {
                     "dashboard": self.dash_content,
                     "overwrite": True
