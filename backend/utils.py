@@ -1,0 +1,135 @@
+import datetime
+import sys
+import random
+import pandas as pd
+import numpy as np
+
+class validate_args():
+    """
+    Class used to validate all the arguments provided.
+    """
+    # TODO add validation
+    # TODO test these
+
+    def _validate_dates(self, args):
+        """
+        Validates that `startDay` and `endDay` are in the right format and in the right order.
+        """
+        for x in [args.startDay, args.endDay]:
+            try:
+                datetime.datetime.strptime(x, '%Y-%m-%d')
+            except ValueError:
+                raise ValueError(f"Incorrect date format, should be YYYY-MM-DD but is: {x}")
+
+        foo = datetime.datetime.strptime(args.startDay, '%Y-%m-%d')
+        bar = datetime.datetime.strptime(args.endDay, '%Y-%m-%d')
+        if foo > bar:
+            raise ValueError(f"Start date ({args.startDay}) is after the end date ({args.endDay}).")
+
+    def _validate_output(self, args):
+        """
+        Validates that --output is one of the accepted options.
+        """
+        list_options = ['terminal', 'html']
+        if args.output not in list_options:
+            raise ValueError(f"output argument invalid. Is {args.output} but should be one of {list_options}")
+
+    def _validate_granularity(self, args):
+        """
+        Validates that --granularity is specified when --slurmAdmin is used.
+        Validates that --granularity is one of the accepted options.
+        """
+        if (args.granularity is None)&(args.slurmAdmin):
+            raise ValueError("--granularity argument is needed when --slurmAdmin flag is present.")
+
+        if args.slurmAdmin:
+            list_options = ['user', 'group', 'department', 'institution']
+            if args.granularity not in list_options:
+                raise ValueError(f"--granularity {args.granularity} invalid. Should be one of {list_options}.")
+
+    def _validate_user(self, args):
+        """
+        Validates that --user is used if both --slurmAdmin is used and --granularity is not 'institution'.
+        """
+        if (args.slurmAdmin) & (args.granularity != 'institution') & (args.user is None):
+            raise ValueError(f"--user argument missing. Needed with --slurmAdmin and --granularity {args.granularity}.")
+
+
+    def _validate_db_conn(self, args):
+        """
+        Validates that the database exists and is accessible, using the provided "db" parameters'.
+        """
+        import psycopg
+        try:
+            # Connect to an existing database
+            conn = psycopg.connect(
+                dbname=args.db_name,
+                user=args.db_user,
+                password=args.db_password,
+                host=args.db_host,
+                port=args.db_port
+            )
+            conn.close()
+        except psycopg.OperationalError as err:
+            raise(f'/!\ Error: Issue to connect to the database: {err}')
+
+
+    def all_to_export(self, args):
+        self._validate_dates(args)
+        self._validate_output(args)
+        self._validate_granularity(args)
+        self._validate_user(args)
+
+
+    def all_to_db(self, args):
+        self._validate_dates(args)
+        self._validate_db_conn(args)
+
+def check_empty_results(df, args):
+    """
+    This is to check whether any jobs have been run on the period, and stop the script if not.
+    :param df: [pd.DataFrame] Usage logs
+    :param args:
+    """
+    if len(df) == 0:
+        if args.filterWD is not None:
+            addThat = f' from this directory ({args.filterWD})'
+        else:
+            addThat = ''
+        if args.filterJobIDs != 'all':
+            addThat += ' and with these jobIDs'
+        if args.filterAccount is not None:
+            addThat += ' charged under this account'
+
+        print(f'''
+
+    You haven't run any jobs on that period (from {args.startDay} to {args.endDay}){addThat}.
+
+        ''')
+        sys.exit()
+
+def simulate_mock_jobs(): # DEBUGONLY
+    df_list = []
+    for user in ['ll582','sr827','sl925', 'jd111', 'jd222']:
+        n_jobs = random.randint(500,800)
+        foo = {
+            'WallclockTimeX':[datetime.timedelta(minutes=random.randint(50,700)) for _ in range(n_jobs)],
+            'ReqMemX':np.random.randint(4,130, size=n_jobs)*1.,
+            'PartitionX':['icelake']*n_jobs,
+            'SubmitDatetimeX':[datetime.datetime(day=1,month=5,year=2023) + datetime.timedelta(days=random.randint(1,60)) for _ in range(n_jobs)],
+            'StateX':np.random.choice([1,0], p=[.8,.2], size=n_jobs),
+            'UIDX':['11111']*n_jobs,
+            'UserX':[user]*n_jobs,
+            'PartitionTypeX':['CPU']*n_jobs,
+            'TotalCPUtime2useX':[datetime.timedelta(minutes=random.randint(50,5000)) for _ in range(n_jobs)],
+            'TotalGPUtime2useX':[datetime.timedelta(seconds=0)]*n_jobs,
+        }
+
+        foo_df = pd.DataFrame(foo)
+        foo_df['CPUhoursChargedX'] = foo_df.TotalCPUtime2useX / np.timedelta64(1, 'h')
+        foo_df['GPUhoursChargedX'] = 0.
+        foo_df['NeededMemX'] = foo_df.ReqMemX * np.random.random(n_jobs)
+        foo_df['memOverallocationFactorX'] = foo_df.ReqMemX / foo_df.NeededMemX
+
+        df_list.append(foo_df)
+    return pd.concat(df_list)

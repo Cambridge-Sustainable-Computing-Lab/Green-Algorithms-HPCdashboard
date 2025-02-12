@@ -1,6 +1,6 @@
 
 import subprocess
-
+import argparse
 import pandas as pd
 from io import BytesIO
 import datetime
@@ -225,7 +225,7 @@ class Helpers_WM():
 
 class WorkloadManager(Helpers_WM):
 
-    def __init__(self, args, cluster_info):
+    def __init__(self, args:argparse.Namespace, cluster_info):
         """
         Methods related to the Workload manager
         :param args: [Namespace] input from the user
@@ -233,11 +233,24 @@ class WorkloadManager(Helpers_WM):
         """
         super().__init__(cluster_info=cluster_info)
         self.args = args
+        self.args_dict = self.args.__dict__
 
         self.logs_df = None
         self.df_agg_0 = None
         self.df_agg = None
         self.df_agg_X = None
+
+
+    def use_as_admin(self, args:argparse.Namespace) -> bool:
+        args_dict = args.__dict__
+        has_slurmAdmin = False
+        if 'db_name' in args_dict.keys():
+            has_slurmAdmin = True
+        elif 'slurmAdmin' in args_dict.keys():
+            if args.slurmAdmin:
+                has_slurmAdmin = True
+        return has_slurmAdmin
+
 
     def pull_logs(self):
         """
@@ -256,7 +269,7 @@ class WorkloadManager(Helpers_WM):
                 "-P"
             ]
 
-            if self.args.slurmAdmin: # TODO test this with admin access
+            if self.use_as_admin(self.args):
                 bash_com.append('--allusers')
 
             logs = subprocess.run(bash_com, capture_output=True)
@@ -352,7 +365,7 @@ class WorkloadManager(Helpers_WM):
         self.logs_df['UserX'] = self.logs_df.User
 
         ### State
-        customSuccessStates_list = self.args.customSuccessStates.split(',')
+        customSuccessStates_list = self.args.customSuccessStates.split(',') if 'customSuccessStates' in self.args_dict else []
         self.logs_df['StateX'] = self.logs_df.State.apply(self.clean_State,
                                                           customSuccessStates_list=customSuccessStates_list)
 
@@ -433,21 +446,24 @@ class WorkloadManager(Helpers_WM):
         #                    'CoreHoursChargedGPUX', 'TotalCPUtime2useX', 'TotalGPUtime2useX']] # DEBUGONLY
 
         ### Filter on working directory
-        if self.args.filterWD is not None:
-            # FIXME: Doesn't work with symbolic links
-            self.df_agg = self.df_agg.loc[self.df_agg.WorkingDir_ == self.args.filterWD]
-            # print(f'Filtered out {len(self.df_agg)-len(self.df_agg):,} rows (filterCWD={self.args.filterWD})') # DEBUGONLY
+        if 'filterWD' in self.args_dict:
+            if self.args.filterWD is not None:
+                # FIXME: Doesn't work with symbolic links
+                self.df_agg = self.df_agg.loc[self.df_agg.WorkingDir_ == self.args.filterWD]
+                # print(f'Filtered out {len(self.df_agg)-len(self.df_agg):,} rows (filterCWD={self.args.filterWD})') # DEBUGONLY
 
         ### Filter on Job ID
         self.df_agg.reset_index(inplace=True)
         self.df_agg['parentJobID'] = self.df_agg.single_jobID.apply(self.get_parent_jobID)
 
-        if self.args.filterJobIDs != 'all':
-            list_jobs2keep = self.args.filterJobIDs.split(',')
-            self.df_agg = self.df_agg.loc[self.df_agg.parentJobID.isin(list_jobs2keep)]
+        if 'filterJobIDs' in self.args_dict:
+            if self.args.filterJobIDs != 'all':
+                list_jobs2keep = self.args.filterJobIDs.split(',')
+                self.df_agg = self.df_agg.loc[self.df_agg.parentJobID.isin(list_jobs2keep)]
 
         ### Filter on Account
-        if self.args.filterAccount is not None:
-            self.df_agg = self.df_agg.loc[self.df_agg.Account_ == self.args.filterAccount]
+        if 'filterJfilterAccountobIDs' in self.args_dict:
+            if self.args.filterAccount is not None:
+                self.df_agg = self.df_agg.loc[self.df_agg.Account_ == self.args.filterAccount]
 
         self.df_agg_X = self.df_agg[[x for x in self.df_agg.columns if x[-1] == 'X']]

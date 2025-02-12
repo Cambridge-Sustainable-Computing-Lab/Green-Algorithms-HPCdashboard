@@ -2,13 +2,48 @@
 import os
 import yaml
 import datetime
+import argparse
 import pandas as pd
 import numpy as np
 
-from backend.helpers import check_empty_results, simulate_mock_jobs
-from backend.slurm_extract import WorkloadManager
+from backend.utils import check_empty_results #, simulate_mock_jobs
+from backend.extract.slurm import WorkloadManager
+from backend.data_sql_import import DataSQLImport
 
-print("Working dir1: ", os.getcwd())
+# print("Working dir1: ", os.getcwd())
+
+
+agg_functions_from_raw = {
+        'n_jobs': ('UserX', 'count'),
+        'first_job_period': ('SubmitDatetimeX', 'min'),
+        'last_job_period': ('SubmitDatetimeX', 'max'),
+        'energy': ('energy', 'sum'),
+        'energy_CPUs': ('energy_CPUs', 'sum'),
+        'energy_GPUs': ('energy_GPUs', 'sum'),
+        'energy_memory': ('energy_memory', 'sum'),
+        'carbonFootprint': ('carbonFootprint', 'sum'),
+        'carbonFootprint_memoryNeededOnly': ('carbonFootprint_memoryNeededOnly', 'sum'),
+        'carbonFootprint_failedJobs': ('carbonFootprint_failedJobs', 'sum'),
+        'cpuTime': ('TotalCPUtime2useX', 'sum'),
+        'gpuTime': ('TotalGPUtime2useX', 'sum'),
+        'wallclockTime': ('WallclockTimeX', 'sum'),
+        'CPUhoursCharged': ('CPUhoursChargedX', 'sum'),
+        'GPUhoursCharged': ('GPUhoursChargedX', 'sum'),
+        'memoryRequested': ('ReqMemX', 'sum'),
+        'memoryOverallocationFactor': ('memOverallocationFactorX', 'mean'),
+        'n_success': ('StateX', 'sum'),
+        'treeMonths': ('treeMonths', 'sum'),
+        'treeMonths_memoryNeededOnly': ('treeMonths_memoryNeededOnly', 'sum'),
+        'treeMonths_failedJobs': ('treeMonths_failedJobs', 'sum'),
+        'driving': ('driving', 'sum'),
+        'flying_NY_SF': ('flying_NY_SF', 'sum'),
+        'flying_PAR_LON': ('flying_PAR_LON', 'sum'),
+        'flying_NYC_MEL': ('flying_NYC_MEL', 'sum'),
+        'cost': ('cost', 'sum'),
+        'cost_failedJobs': ('cost_failedJobs', 'sum'),
+        'cost_memoryNeededOnly': ('cost_memoryNeededOnly', 'sum'),
+    }
+
 
 class GA_tools():
 
@@ -46,7 +81,19 @@ class GA_tools():
         return df[col_energy] * self.cluster_info['CI']
 
 
-def extract_data(args, cluster_info):
+def get_slurmAdmin(args:argparse.Namespace) -> bool:
+    print(type(args))
+    args_dict = args.__dict__
+    has_slurmAdmin = False
+    if 'db_name' in args_dict.keys():
+        has_slurmAdmin = True
+    elif 'slurmAdmin' in args_dict.keys():
+        if args.slurmAdmin:
+            has_slurmAdmin = True
+    return has_slurmAdmin
+
+
+def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> pd.DataFrame:
 
     if args.use_mock_agg_data: # DEBUGONLY Create some mock jobs with different users
 
@@ -55,7 +102,9 @@ def extract_data(args, cluster_info):
 
         # foo = 'testData/df_agg_test_3.pkl'
         # foo = 'testData/df_agg_X_1.pkl'
-        if args.slurmAdmin:
+
+        
+        if has_slurmAdmin:
             foo = 'testData/df_agg_X_mockMultiUsers_1.pkl'
         else:
             foo = 'testData/df_agg_X_1.pkl'
@@ -94,7 +143,7 @@ def extract_data(args, cluster_info):
     check_empty_results(WM.df_agg, args)
 
     # Check that there is only one user's data if no admin right
-    if not args.slurmAdmin: # TODO test that
+    if not has_slurmAdmin:
         if len(set(WM.df_agg_X.UserX)) > 1:
             raise ValueError(f"More than one user's logs was included, despite --slurmAdmin not used: {set(WM.df_agg_X.UserX)}")
 
@@ -102,7 +151,7 @@ def extract_data(args, cluster_info):
 
     return WM.df_agg_X
 
-def enrich_data(df, fParams, users_df, GA):
+def enrich_data(df:pd.DataFrame, fParams:dict, users_df:pd.DataFrame, GA:GA_tools) -> pd.DataFrame:
 
     ### energy
     df = df.apply(GA.calculate_energies, axis=1)
@@ -131,54 +180,28 @@ def enrich_data(df, fParams, users_df, GA):
         if len(df2) != len(df):
             raise ValueError("Not all users could be matched!")
 
-
     return df2
 
-def summarise_data(df, args):
-    agg_functions_from_raw = {
-        'n_jobs': ('UserX', 'count'),
-        'first_job_period': ('SubmitDatetimeX', 'min'),
-        'last_job_period': ('SubmitDatetimeX', 'max'),
-        'energy': ('energy', 'sum'),
-        'energy_CPUs': ('energy_CPUs', 'sum'),
-        'energy_GPUs': ('energy_GPUs', 'sum'),
-        'energy_memory': ('energy_memory', 'sum'),
-        'carbonFootprint': ('carbonFootprint', 'sum'),
-        'carbonFootprint_memoryNeededOnly': ('carbonFootprint_memoryNeededOnly', 'sum'),
-        'carbonFootprint_failedJobs': ('carbonFootprint_failedJobs', 'sum'),
-        'cpuTime': ('TotalCPUtime2useX', 'sum'),
-        'gpuTime': ('TotalGPUtime2useX', 'sum'),
-        'wallclockTime': ('WallclockTimeX', 'sum'),
-        'CPUhoursCharged': ('CPUhoursChargedX', 'sum'),
-        'GPUhoursCharged': ('GPUhoursChargedX', 'sum'),
-        'memoryRequested': ('ReqMemX', 'sum'),
-        'memoryOverallocationFactor': ('memOverallocationFactorX', 'mean'),
-        'n_success': ('StateX', 'sum'),
-        'treeMonths': ('treeMonths', 'sum'),
-        'treeMonths_memoryNeededOnly': ('treeMonths_memoryNeededOnly', 'sum'),
-        'treeMonths_failedJobs': ('treeMonths_failedJobs', 'sum'),
-        'driving': ('driving', 'sum'),
-        'flying_NY_SF': ('flying_NY_SF', 'sum'),
-        'flying_PAR_LON': ('flying_PAR_LON', 'sum'),
-        'flying_NYC_MEL': ('flying_NYC_MEL', 'sum'),
-        'cost': ('cost', 'sum'),
-        'cost_failedJobs': ('cost_failedJobs', 'sum'),
-        'cost_memoryNeededOnly': ('cost_memoryNeededOnly', 'sum'),
-    }
+
+def summarise_data(df:pd.DataFrame, args:argparse.Namespace) -> dict:
 
     # This is to aggregate already aggregated dataset (so names are a bit different)
     agg_functions_further = agg_functions_from_raw.copy()
-    agg_functions_further['n_jobs'] = ('n_jobs', 'sum')
-    agg_functions_further['first_job_period'] = ('first_job_period', 'min')
-    agg_functions_further['last_job_period'] = ('last_job_period', 'max')
-    agg_functions_further['cpuTime'] = ('cpuTime', 'sum')
-    agg_functions_further['gpuTime'] = ('gpuTime', 'sum')
-    agg_functions_further['wallclockTime'] = ('wallclockTime', 'sum')
-    agg_functions_further['CPUhoursCharged'] = ('CPUhoursCharged', 'sum')
-    agg_functions_further['GPUhoursCharged'] = ('GPUhoursCharged', 'sum')
-    agg_functions_further['memoryRequested'] = ('memoryRequested', 'sum')
-    agg_functions_further['memoryOverallocationFactor'] = ('memoryOverallocationFactor', 'mean') # NB: not strictly correct to do a mean of mean, but ok
-    agg_functions_further['n_success'] = ('n_success', 'sum')
+    data2aggregate = {
+        'n_jobs':'sum',
+        'first_job_period':'min',
+        'last_job_period': 'max',
+        'cpuTime': 'sum',
+        'gpuTime': 'sum',
+        'wallclockTime': 'sum',
+        'CPUhoursCharged': 'sum',
+        'GPUhoursCharged': 'sum',
+        'memoryRequested': 'sum',
+        'memoryOverallocationFactor': 'mean', # NB: not strictly correct to do a mean of mean, but ok
+        'n_success': 'sum'
+    }
+    for agg_col, agg_method in data2aggregate.items():
+        agg_functions_further[agg_col] = (agg_col, agg_method)
 
     def agg_jobs(data, agg_names=None):
         """
@@ -202,7 +225,9 @@ def summarise_data(df, args):
 
     df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit day
 
-    if args.slurmAdmin:
+    has_slurmAdmin = get_slurmAdmin(args)
+
+    if has_slurmAdmin:
         ## We aggregate hierarchically to avoid duplicating efforts
         # With daily figures
         df_userdaily = agg_jobs(df, ['User', 'UID', 'Name', 'Group', 'Department', 'SubmitDate'])
@@ -276,21 +301,42 @@ def main_backend(args):
         except yaml.YAMLError as exc:
             print(exc)
 
+    # Get slurmAdmin data 
+    has_slurmAdmin = get_slurmAdmin(args)
+
     ### Load users specific data (if available)
     try:
         users_df = pd.read_csv(os.path.join(args.path_infrastucture_info, 'users_list.csv'))
     except FileNotFoundError:
-        if args.slurmAdmin:
+        if has_slurmAdmin:
             raise ValueError("No user data available.")
         users_df = None
 
     GA = GA_tools(cluster_info, fParams)
 
-    df = extract_data(args, cluster_info=cluster_info)
+    df = extract_data(args, has_slurmAdmin, cluster_info=cluster_info)
     df2 = enrich_data(df, fParams=fParams, users_df=users_df, GA=GA)
     summary_stats = summarise_data(df2, args=args) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
+    ## Store data into a databaseå
+    if 'db_name' in args.__dict__.keys():
+        import_data_in_db(summary_stats, args)
+
     return summary_stats
+
+
+def import_data_in_db(summary_stats:dict,args) -> None:
+    # Import aggregated data into a database
+    data2db = DataSQLImport(
+                summary_stats,
+                db_name=args.db_name,
+                db_user=args.db_user,
+                db_password=args.db_password,
+                db_host=args.db_host,
+                db_port=args.db_port
+            )
+    data2db.import_data()
+
 
 if __name__ == "__main__":
 
