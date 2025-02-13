@@ -4,7 +4,7 @@ clustersData/
 **/__pycache__/
 .idea
 .vscode
-/database/data/*
+/database/db/*
 data/ourInfrastructure
 
 # Byte-compiled / optimized / DLL files
