@@ -4,7 +4,7 @@ import random
 import pandas as pd
 import numpy as np
 
-class validate_args():
+class validate_args: # validate_args():
     """
     Class used to validate all the arguments provided.
     """
@@ -15,11 +15,17 @@ class validate_args():
         """
         Validates that `startDay` and `endDay` are in the right format and in the right order.
         """
+        if args is None:
+            raise Exception("null args!")
+        index = 0
         for x in [args.startDay, args.endDay]:
+            if x is None:
+                raise Exception(f"x is None: index {index}")
             try:
                 datetime.datetime.strptime(x, '%Y-%m-%d')
             except ValueError:
                 raise ValueError(f"Incorrect date format, should be YYYY-MM-DD but is: {x}")
+            index += 1
 
         foo = datetime.datetime.strptime(args.startDay, '%Y-%m-%d')
         bar = datetime.datetime.strptime(args.endDay, '%Y-%m-%d')
@@ -71,7 +77,8 @@ class validate_args():
             )
             conn.close()
         except psycopg.OperationalError as err:
-            raise(f'/!\ Error: Issue to connect to the database: {err}')
+            raise(f'Error: Issue to connect to the database: {err}')
+            #raise(f'/!\ Error: Issue to connect to the database: {err}')
 
 
     def all_to_export(self, args):
