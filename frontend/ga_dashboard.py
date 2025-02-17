@@ -1,14 +1,22 @@
 import os, argparse, json
 import csv, json
 import logging
-from frontend.grafana_ga import GrafanaGADataSource
-from frontend.grafana_ga.folder import GrafanaGAFolder
-from frontend.grafana_ga import GrafanaGADashboard
-from frontend.grafana_ga.user import GrafanaGAUser
 
+# from frontend.grafana_ga.datasource import GrafanaGADataSource
+from grafana_ga.datasource import GrafanaGADataSource
+# from frontend.grafana_ga.folder import GrafanaGAFolder
+from grafana_ga.folder import GrafanaGAFolder
+# from frontend.grafana_ga.dashboard import GrafanaGADashboard
+from grafana_ga.dashboard import GrafanaGADashboard
+# from frontend.grafana_ga.user import GrafanaGAUser
+from grafana_ga.user import GrafanaGAUser
 
 logger = logging.getLogger(__name__)
 
+# Example usage: (py313) mg2216@C02FC12VQ6L8 frontend % python ga_dashboard.py --admin_password admin --db_name ga_db --db_user postgres --db_password paisley --input_file /Users/mg2216/repos/GA4HPCdashboard/data/users_list.csv
+
+# Example setting grafana admin user password to "admin" (bad): ./grafana cli admin reset-admin-password admin admin reset-admin-password admin
+# (In grafana/bin directory)
 
 def main():
 
@@ -74,7 +82,7 @@ def main():
     logger.info('########################')
     for dashboard_filename in os.listdir(ga_dashboard_input_dir):
         if dashboard_filename.endswith('.json'):
-            ga_dashboard = GrafanaGADashboard(login, password, grafana_url,ga_dashboard_input_dir,dashboard_filename,ga_folder_import.folder_uid)
+            ga_dashboard = GrafanaGADashboard(login, password, grafana_url, ga_dashboard_input_dir, dashboard_filename, ga_folder_import.folder_uid)
             ga_dashboard.import_dashboard()
     
 

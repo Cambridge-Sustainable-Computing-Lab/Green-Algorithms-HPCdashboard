@@ -1,4 +1,30 @@
 import logging
+
+# On my machine (TM) grafana_client is in /opt/miniconda3/envs/py313/lib/python3.13/site-packages
+# import sys
+# sys.path.append("/opt/miniconda3/envs/py313/lib/python3.13/site-packages")
+
+# in interpreter: 
+# ['', 
+# '/opt/miniconda3/envs/py313/lib/python313.zip', both
+# '/opt/miniconda3/envs/py313/lib/python3.13',   both
+# '/opt/miniconda3/envs/py313/lib/python3.13/lib-dynload', both
+# '/opt/miniconda3/envs/py313/lib/python3.13/site-packages']  both
+
+#  in code: 
+# ['/Users/mg2216/repos/GA4HPCdashboard/frontend/grafana_ga', 
+# '/opt/miniconda3/envs/py313/lib/python313.zip', both
+# '/opt/miniconda3/envs/py313/lib/python3.13',   both
+# '/opt/miniconda3/envs/py313/lib/python3.13/lib-dynload', both
+# '/opt/miniconda3/envs/py313/lib/python3.13/site-packages']  both
+
+
+import sys
+# print(sys.path)
+# sys.path.append('')
+print(sys.path)
+# exit
+
 from grafana_client.client import GrafanaClientError
 from .base import GrafanaGABase
 
