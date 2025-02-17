@@ -6,6 +6,7 @@ clustersData/
 .vscode
 /database/db/*
 data/ourInfrastructure
+testdata
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -81,21 +81,21 @@ class GA_tools():
         return df[col_energy] * self.cluster_info['CI']
 
 
-def get_slurmAdmin(args:argparse.Namespace) -> bool:
-    print(type(args))
-    args_dict = args.__dict__
-    has_slurmAdmin = False
-    if 'db_name' in args_dict.keys():
-        has_slurmAdmin = True
-    elif 'slurmAdmin' in args_dict.keys():
-        if args.slurmAdmin:
-            has_slurmAdmin = True
-    return has_slurmAdmin
+# def get_slurmAdmin(args:argparse.Namespace) -> bool:
+#     print(type(args))
+#     args_dict = args.__dict__
+#     has_slurmAdmin = False
+#     if 'db_name' in args_dict.keys():
+#         has_slurmAdmin = True
+#     elif 'slurmAdmin' in args_dict.keys():
+#         if args.slurmAdmin:
+#             has_slurmAdmin = True
+#     return has_slurmAdmin
 
 
 def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> pd.DataFrame:
 
-    if args.use_mock_agg_data: # DEBUGONLY Create some mock jobs with different users
+    if args.use_mock_agg_data: # DEBUGONLY Create/use some mock jobs with different users
 
         # df2 = simulate_mock_jobs()
         # df2.to_pickle("testData/df_agg_X_mockMultiUsers_1.pkl")
@@ -104,8 +104,8 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
         # foo = 'testData/df_agg_X_1.pkl'
 
         
-        if has_slurmAdmin:
-            foo = 'testData/df_agg_X_mockMultiUsers_1.pkl'
+        if has_slurmAdmin: # TODO remove `has_slurmAdmin` as it's not needed in the dashboard anymore
+            foo = 'testdata/df_agg_X_mockMultiUsers_1.pkl'
         else:
             foo = 'testData/df_agg_X_1.pkl'
         print(f"Overriding df_agg with `{foo}`")
@@ -225,7 +225,7 @@ def summarise_data(df:pd.DataFrame, args:argparse.Namespace) -> dict:
 
     df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit day
 
-    has_slurmAdmin = get_slurmAdmin(args)
+    has_slurmAdmin = True # get_slurmAdmin(args) # We only assume we have admin access now
 
     if has_slurmAdmin:
         ## We aggregate hierarchically to avoid duplicating efforts
@@ -302,7 +302,7 @@ def main_backend(args):
             print(exc)
 
     # Get slurmAdmin data 
-    has_slurmAdmin = get_slurmAdmin(args)
+    has_slurmAdmin = True # get_slurmAdmin(args)
 
     ### Load users specific data (if available)
     try:
@@ -318,8 +318,12 @@ def main_backend(args):
     df2 = enrich_data(df, fParams=fParams, users_df=users_df, GA=GA)
     summary_stats = summarise_data(df2, args=args) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
-    ## Store data into a databaseå
-    if 'db_name' in args.__dict__.keys():
+    ## Store data into a database
+    try:
+        foo = args.__dict__.keys() # This is when using command line arguments (Namespace)
+    except:
+        foo = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
+    if 'db_name' in foo:
         import_data_in_db(summary_stats, args)
 
     return summary_stats
@@ -344,20 +348,15 @@ if __name__ == "__main__":
 
     from collections import namedtuple
     argStruct = namedtuple('argStruct',
-                           'startDay endDay slurmAdmin use_mock_agg_data useCustomLogs customSuccessStates filterWD filterJobIDs filterAccount reportBug reportBugHere path_infrastucture_info')
+                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastucture_info')
     args = argStruct(
         startDay='2022-01-01',
         endDay='2023-06-30',
-        slurmAdmin=True,
-        useCustomLogs=None,
+        useCustomLogs="", #"sacct_output_loic1.txt",
         use_mock_agg_data=True,
-        customSuccessStates='',
-        filterWD=None,
-        filterJobIDs='all',
-        filterAccount=None,
         reportBug=False,
         reportBugHere=False,
-        path_infrastucture_info="clustersData/CSD3",
+        path_infrastucture_info="data/ourInfrastructure/CSD3",
     )
 
     main_backend(args)
