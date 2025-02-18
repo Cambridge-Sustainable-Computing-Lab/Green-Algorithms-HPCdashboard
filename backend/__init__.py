@@ -6,9 +6,9 @@ import argparse
 import pandas as pd
 import numpy as np
 
-from backend.utils import check_empty_results #, simulate_mock_jobs
-from backend.extract.slurm import WorkloadManager
-from backend.data_sql_import import DataSQLImport
+from utils import check_empty_results #, simulate_mock_jobs
+from extract.slurm import WorkloadManager
+from data_sql_import import DataSQLImport
 
 # print("Working dir1: ", os.getcwd())
 
@@ -53,12 +53,17 @@ class GA_tools():
 
     def calculate_energies(self, row):
         '''
-        Calculate the energy usaged based on the job's paramaters
+        Calculate the energy usage based on the job's parameters
         :param row: [pd.Series] one row of usage statistics, corresponding to one job
         :return: [pd.Series] the same statistics with the energies added
         '''
         ### CPU and GPU
-        partition_info = self.cluster_info['partitions'][row.PartitionX]
+        try:
+            partition_info = self.cluster_info['partitions'][row.PartitionX]
+        except KeyError as ke:
+            print(f"calculate_energies(): KeyError: {ke}")
+            return None
+
         if row.PartitionTypeX == 'CPU':
             TDP2use4CPU = partition_info['TDP']
             TDP2use4GPU = 0
@@ -156,7 +161,11 @@ def enrich_data(df:pd.DataFrame, fParams:dict, users_df:pd.DataFrame, GA:GA_tool
     ### energy
     df = df.apply(GA.calculate_energies, axis=1)
 
-    df['energy_failedJobs'] = np.where(df.StateX == 0, df.energy, 0)
+    try:
+        df['energy_failedJobs'] = np.where(df.StateX == 0, df.energy, 0)
+    except AttributeError as err:
+        print(f"enrich_data(): AttributeError: {err}")
+        return None
 
     ### carbon footprint
     for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
@@ -222,6 +231,10 @@ def summarise_data(df:pd.DataFrame, args:argparse.Namespace) -> dict:
         timeseries['share_carbonFootprint'] = timeseries.carbonFootprint / timeseries.carbonFootprint.sum()
 
         return timeseries
+
+    if ( df is None ):
+        print("summarise_data(): df is None")
+        return None
 
     df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit day
 
