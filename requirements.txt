@@ -1,2 +1,5 @@
-psycopg[binary]==3.2.3
-grafana_client==4.2.0
+numpy==2.2.3
+pandas==2.2.3
+psycopg-binary==3.2.4
+PyYAML==6.0.2
+

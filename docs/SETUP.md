@@ -6,7 +6,7 @@
 
 - Install PostgreSQL locally or have access to a PostgreSQL server
 - Install the database locally or on a PostgreSQL server (from the dump SQL)
-- Download the Dashboard exports in JSON format: [dashboards/prod/](/dashboards/prod/)
+- Download the Dashboard exports in JSON format: [dashboards/prod/](/frontend/dashboards/prod/)
 
 ## Main installation
 
@@ -43,7 +43,7 @@ Example running it with the default **postgres** user:
 
 ```$ sudo -u postgres psql -c 'CREATE DATABASE ga_db;'```
 
-2. Download the SQL dump: [compressed database dump](/databases/ga_db_aggregate.sql.gz)
+2. Download the SQL dump: [compressed database dump](/database/data/ga_db_aggregate.sql.gz)
 
 3. Install the database (e.g. with the user **postgres**)
 
@@ -157,7 +157,7 @@ Options are:
 
 #### GUI version
 
-You can import the Dashboards [here](/dashboards/prod) on the repository.
+You can import the Dashboards [here](/frontend/dashboards/prod) on the repository.
 
 Go to $\color{green}{\textsf{Home > Dashboards > New (on the right hand-side) > Import}}$ then import the JSON file (seems to work one by one).
 Then you can create a directory (e.g. $\color{purple}{\textsf{Green Algorithms}}$) and move the newly imported dashboards there: it might be it easier to manage access at the folder level.
