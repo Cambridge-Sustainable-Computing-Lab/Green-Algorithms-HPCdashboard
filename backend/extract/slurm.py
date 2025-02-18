@@ -233,7 +233,11 @@ class WorkloadManager(Helpers_WM):
         """
         super().__init__(cluster_info=cluster_info)
         self.args = args
-        self.args_dict = self.args.__dict__
+
+        try:
+            self.args_dict = self.args.__dict__  # This is when using command line arguments (Namespace)
+        except:
+            self.args_dict = self.args._asdict()  # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
 
         self.logs_df = None
         self.df_agg_0 = None
@@ -242,11 +246,10 @@ class WorkloadManager(Helpers_WM):
 
 
     def use_as_admin(self, args:argparse.Namespace) -> bool:
-        args_dict = args.__dict__
         has_slurmAdmin = False
-        if 'db_name' in args_dict.keys():
+        if 'db_name' in self.args_dict.keys():
             has_slurmAdmin = True
-        elif 'slurmAdmin' in args_dict.keys():
+        elif 'slurmAdmin' in self.args_dict.keys():
             if args.slurmAdmin:
                 has_slurmAdmin = True
         return has_slurmAdmin
@@ -277,7 +280,7 @@ class WorkloadManager(Helpers_WM):
         else:
             foo = "Overriding logs_raw with: "
             foundIt = False
-            for sacctFileLocation in ['', 'testData', 'error_logs']:
+            for sacctFileLocation in ['', 'testdata', 'error_logs']:
                 if not foundIt:
                     try:
                         with open(os.path.join(sacctFileLocation, self.args.useCustomLogs), 'rb') as f:
