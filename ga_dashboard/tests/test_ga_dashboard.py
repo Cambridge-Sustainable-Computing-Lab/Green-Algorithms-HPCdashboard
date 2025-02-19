@@ -25,7 +25,7 @@ def test_parse_string_to_number():
 def test_main_backend():
     from collections import namedtuple
     argStruct = namedtuple('argStruct',
-                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastucture_info')
+                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastructure_info')
     args = argStruct(
         startDay='2022-01-01',
         endDay='2023-06-30',
@@ -33,7 +33,7 @@ def test_main_backend():
         use_mock_agg_data=True,
         reportBug=False,
         reportBugHere=False,
-        path_infrastucture_info="data/ourInfrastructure/CSD3",
+        path_infrastructure_info="data/ourInfrastructure/CSD3",
     )
 
     main_backend(args)

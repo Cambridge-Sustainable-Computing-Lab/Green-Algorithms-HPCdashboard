@@ -303,7 +303,7 @@ def main_backend(args):
     :return:
     '''
     ### Load cluster specific info
-    with open(os.path.join(args.path_infrastucture_info, 'cluster_info.yaml'), "r") as stream:
+    with open(os.path.join(args.path_infrastructure_info, 'cluster_info.yaml'), "r") as stream:
         try:
             cluster_info = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -321,7 +321,7 @@ def main_backend(args):
 
     ### Load users specific data (if available)
     try:
-        users_df = pd.read_csv(os.path.join(args.path_infrastucture_info, 'users_list.csv'))
+        users_df = pd.read_csv(os.path.join(args.path_infrastructure_info, 'users_list.csv'))
     except FileNotFoundError:
         if has_slurmAdmin:
             raise ValueError("No user data available.")
@@ -363,7 +363,7 @@ if __name__ == "__main__":
 
     from collections import namedtuple
     argStruct = namedtuple('argStruct',
-                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastucture_info')
+                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastructure_info')
     args = argStruct(
         startDay='2022-01-01',
         endDay='2023-06-30',
@@ -371,7 +371,7 @@ if __name__ == "__main__":
         use_mock_agg_data=True,
         reportBug=False,
         reportBugHere=False,
-        path_infrastucture_info="../../../data/ourInfrastructure/CSD3",
+        path_infrastructure_info="../../../data/ourInfrastructure/CSD3",
     )
 
     main_backend(args)

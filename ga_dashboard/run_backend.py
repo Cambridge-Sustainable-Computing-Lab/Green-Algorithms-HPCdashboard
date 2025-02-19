@@ -1,8 +1,11 @@
 import argparse
 import datetime
 
-from backend.utils import validate_args
-from backend import main_backend
+import sys
+sys.path.append('src')
+
+from ga_dashboard.backend.utils import validate_args
+from ga_dashboard.backend.ga_tools import main_backend
 
 
 def create_arguments():
@@ -77,7 +80,7 @@ def create_arguments():
                              'An example of the expected file can be found at `example_files/example_sacctOutput_raw.txt`.')
     # Arguments for debugging only (not visible to users)
     # To ue arbitrary folder for the infrastructure information
-    parser.add_argument('--useOtherInfrastuctureInfo', type=str, default='', help=argparse.SUPPRESS)
+    parser.add_argument('--useOtherInfrastructureInfo', type=str, default='', help=argparse.SUPPRESS)
     # Uses mock aggregated usage data, for offline debugging
     group2.add_argument('--use_mock_agg_data', action='store_true', help=argparse.SUPPRESS)
 
@@ -88,11 +91,11 @@ def create_arguments():
 if __name__ == "__main__":
     args = create_arguments()
 
-    if args.useOtherInfrastuctureInfo != '':
-        args.path_infrastucture_info = args.useOtherInfrastuctureInfo
-        print(f"Overriding infrastructure info with: {args.path_infrastucture_info}")
+    if args.useOtherInfrastructureInfo != '':
+        args.path_infrastructure_info = args.useOtherInfrastructureInfo
+        print(f"Overriding infrastructure info with: {args.path_infrastructure_info}")
     else:
-        args.path_infrastucture_info = 'data'
+        args.path_infrastructure_info = 'data'
 
 
     ### Set the WD to filter on, if needed
