@@ -112,9 +112,9 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
 
         
         if has_slurmAdmin: # TODO remove `has_slurmAdmin` as it's not needed in the dashboard anymore
-            foo = 'testdata/df_agg_X_mockMultiUsers_1.pkl'
+            foo = 'tests/testdata/df_agg_X_mockMultiUsers_1.pkl'
         else:
-            foo = 'testData/df_agg_X_1.pkl'
+            foo = 'tests/testData/df_agg_X_1.pkl'
         print(f"Overriding df_agg with `{foo}`")
         return pd.read_pickle(foo)
 
@@ -310,7 +310,7 @@ def main_backend(args):
             print(exc)
 
     ### Load fixed parameters
-    with open("../../../data/fixed_parameters.yaml", "r") as stream:
+    with open("data/fixed_parameters.yaml", "r") as stream:
         try:
             fParams = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
