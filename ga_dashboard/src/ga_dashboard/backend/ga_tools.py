@@ -6,9 +6,11 @@ import argparse
 import pandas as pd
 import numpy as np
 
-from utils import check_empty_results #, simulate_mock_jobs
-from extract.slurm import WorkloadManager
-from data_sql_import import DataSQLImport
+# The online book (chapter 4) suggests this should work: from ga_dashboard.backend.utils import check_empty_results
+# but it doesn't seem to. (see https://py-pkgs.org/04-package-structure)
+from ga_dashboard.backend.utils import check_empty_results #, simulate_mock_jobs
+from ga_dashboard.backend.extract.slurm import WorkloadManager
+from ga_dashboard.backend.data_sql_import import DataSQLImport
 
 # print("Working dir1: ", os.getcwd())
 
@@ -308,7 +310,7 @@ def main_backend(args):
             print(exc)
 
     ### Load fixed parameters
-    with open("data/fixed_parameters.yaml", "r") as stream:
+    with open("../../../data/fixed_parameters.yaml", "r") as stream:
         try:
             fParams = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -369,7 +371,7 @@ if __name__ == "__main__":
         use_mock_agg_data=True,
         reportBug=False,
         reportBugHere=False,
-        path_infrastucture_info="data/ourInfrastructure/CSD3",
+        path_infrastucture_info="../../../data/ourInfrastructure/CSD3",
     )
 
     main_backend(args)
