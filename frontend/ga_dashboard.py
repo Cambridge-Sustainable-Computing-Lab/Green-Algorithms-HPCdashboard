@@ -13,7 +13,8 @@ from grafana_ga.user import GrafanaGAUser
 
 logger = logging.getLogger(__name__)
 
-# Example usage: (py313) mg2216@C02FC12VQ6L8 frontend % python ga_dashboard.py --admin_password admin --db_name ga_db --db_user postgres --db_password paisley --input_file /Users/mg2216/repos/GA4HPCdashboard/data/users_list.csv
+# Example usage: (py313) mg2216@C02FC12VQ6L8 frontend % python ga_dashboard.py --admin_password admin --db_name ga_db --db_user postgres 
+#     --db_password mypasword --input_file /path/to/csv/file
 
 # Example setting grafana admin user password to "admin" (bad): ./grafana cli admin reset-admin-password admin admin reset-admin-password admin
 # (In grafana/bin directory)

@@ -87,7 +87,7 @@ class Helpers_WM():
     def clean_partition(self, x):
         """
         Cleans the partition field, by replacing NaNs with empty string and selecting just one partition per job.
-        :param x: [str] partition or comma-seperated list of partitions
+        :param x: [str] partition or comma-separated list of partitions
         :return: [str] one partition or empty string
         """
         if pd.isnull(x.Partition):

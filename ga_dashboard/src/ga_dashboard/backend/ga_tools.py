@@ -105,16 +105,16 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
     if args.use_mock_agg_data: # DEBUGONLY Create/use some mock jobs with different users
 
         # df2 = simulate_mock_jobs()
-        # df2.to_pickle("testData/df_agg_X_mockMultiUsers_1.pkl")
+        # df2.to_pickle("testdata/df_agg_X_mockMultiUsers_1.pkl")
 
-        # foo = 'testData/df_agg_test_3.pkl'
-        # foo = 'testData/df_agg_X_1.pkl'
+        # foo = 'testdata/df_agg_test_3.pkl'
+        # foo = 'testdata/df_agg_X_1.pkl'
 
         
         if has_slurmAdmin: # TODO remove `has_slurmAdmin` as it's not needed in the dashboard anymore
             foo = 'tests/testdata/df_agg_X_mockMultiUsers_1.pkl'
         else:
-            foo = 'tests/testData/df_agg_X_1.pkl'
+            foo = 'tests/testdata/df_agg_X_1.pkl'
         print(f"Overriding df_agg with `{foo}`")
         return pd.read_pickle(foo)
 
@@ -154,7 +154,7 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
         if len(set(WM.df_agg_X.UserX)) > 1:
             raise ValueError(f"More than one user's logs was included, despite --slurmAdmin not used: {set(WM.df_agg_X.UserX)}")
 
-    # WM.df_agg_X.to_pickle("testData/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
+    # WM.df_agg_X.to_pickle("testdata/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
 
     return WM.df_agg_X
 
@@ -371,7 +371,7 @@ if __name__ == "__main__":
         use_mock_agg_data=True,
         reportBug=False,
         reportBugHere=False,
-        path_infrastructure_info="../../../data/ourInfrastructure/CSD3",
+        path_infrastructure_info="../../../data/ourInfrastructure/CSD3", # change?
     )
 
     main_backend(args)

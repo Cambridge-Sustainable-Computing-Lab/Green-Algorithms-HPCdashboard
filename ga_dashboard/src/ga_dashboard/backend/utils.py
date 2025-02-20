@@ -117,12 +117,12 @@ def check_empty_results(df, args):
 
 def simulate_mock_jobs(): # DEBUGONLY
     df_list = []
-    for user in ['ll582','sr827','sl925', 'jd111', 'jd222']:
+    for user in ['uid_1', 'uid_2', 'uid_3', 'uid_4', 'uid_5']:
         n_jobs = random.randint(500,800)
         foo = {
             'WallclockTimeX':[datetime.timedelta(minutes=random.randint(50,700)) for _ in range(n_jobs)],
             'ReqMemX':np.random.randint(4,130, size=n_jobs)*1.,
-            'PartitionX':['icelake']*n_jobs,
+            'PartitionX':['gollum']*n_jobs,
             'SubmitDatetimeX':[datetime.datetime(day=1,month=5,year=2023) + datetime.timedelta(days=random.randint(1,60)) for _ in range(n_jobs)],
             'StateX':np.random.choice([1,0], p=[.8,.2], size=n_jobs),
             'UIDX':['11111']*n_jobs,
