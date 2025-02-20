@@ -2,6 +2,9 @@
 
 # TODO update to new code. I think maybe best to have two script, one for the first install (creates virtual env, etc), and then a regular one
 
+# Example: 
+# zsh ./run_backend.sh --db_name ga_db --db_user postgres --db_password mypassword -S 2025-02-14 -E 2025-02-18 --useOtherInfrastructureInfo data/ourInfrastructure/CSD3
+
 ## ~~~ TO BE EDITED TO BE TAILORED TO THE CLUSTER ~~~
 ##
 ## You only need to edit the module loading line (l.13), make sure you are loading python 3.11 or greater.
