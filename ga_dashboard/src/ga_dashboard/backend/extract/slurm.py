@@ -8,7 +8,7 @@ import os
 import numpy as np
 
 
-class Helpers_WM():
+class Helpers_WM:
 
     def __init__(self, cluster_info):
         self.cluster_info = cluster_info
@@ -152,8 +152,8 @@ class Helpers_WM():
         :param  granularity_memory_request: [float or int] level of granularity available when requesting memory on this cluster
         :return: [float] minimum memory needed, in GB.
         """
-        foo = (int(x.UsedMem2_ / granularity_memory_request) + 1) * granularity_memory_request
-        return foo if x.ReqMemX < x.UsedMem2_ else min(x.ReqMemX, foo)
+        minimum_mem = (int(x.UsedMem2_ / granularity_memory_request) + 1) * granularity_memory_request
+        return minimum_mem if x.ReqMemX < x.UsedMem2_ else min(x.ReqMemX, minimum_mem)
 
     def calc_memory_overallocation(self, x):
         # This is in case ReqMem is wrong or too low
@@ -218,9 +218,9 @@ class Helpers_WM():
         :param x: [str] JobID of the form 123456789_0 (with or without '_0')
         :return: [str] Parent ID 123456789
         """
-        foo = x.split('_')
-        assert len(foo) <= 2, f"Can't parse the job ID: {x}"
-        return foo[0]
+        job_id_parts = x.split('_')
+        assert len(job_id_parts) <= 2, f"Can't parse the job ID: {x}"
+        return job_id_parts[0]
 
 
 class WorkloadManager(Helpers_WM):
@@ -278,21 +278,21 @@ class WorkloadManager(Helpers_WM):
             logs = subprocess.run(bash_com, capture_output=True)
             self.logs_raw = logs.stdout
         else:
-            foo = "Overriding logs_raw with: "
+            message = "Overriding logs_raw with: "
             foundIt = False
             for sacctFileLocation in ['', 'testdata', 'error_logs']:
                 if not foundIt:
                     try:
                         with open(os.path.join(sacctFileLocation, self.args.useCustomLogs), 'rb') as f:
                             self.logs_raw = f.read()
-                        foo += f"{sacctFileLocation}/{self.args.useCustomLogs}"
+                        message += f"{sacctFileLocation}/{self.args.useCustomLogs}"
                         foundIt = True
                     except:
                         pass
             if not foundIt:
                 raise FileNotFoundError(f"Couldn't find {self.args.useCustomLogs} \n "
                                         f"It should be either be in the testData/ or error_logs/ subdirectories, or the full path should be provided by --useCustomLogs.")
-            print(foo)
+            print(message)
 
     def convert2dataframe(self):
         """
@@ -330,14 +330,14 @@ class WorkloadManager(Helpers_WM):
         if 'CPUTime' in self.logs_df.columns:
             self.logs_df['CPUwallclocktime_'] = self.logs_df['CPUTime'].apply(self.parse_timedelta)
         else:
-            print('Using old logs, "CPUTime" information not available.')  # TODO: remove this after a while
+            print('Using old logs; "CPUTime" information not available.')  # TODO: remove this after a while
             self.logs_df['CPUwallclocktime_'] = self.logs_df.WallclockTimeX * self.logs_df.NCPUS
 
         ### Number of GPUs
         # TODO double check that it includes multiple GPUs correctly
         if 'AllocTRES' in self.logs_df.columns:
-            self.logs_df['NGPUS_'] = self.logs_df.AllocTRES.str.extract(r'((?<=gres\/gpu=)\d+)', expand=False).fillna(
-                0).astype('int64')
+            self.logs_df['NGPUS_'] = \
+                self.logs_df.AllocTRES.str.extract(r'((?<=gres\/gpu=)\d+)', expand=False).fillna(0).astype('int64')
         else:
             print('Using old logs, "AllocTRES" information not available.')  # TODO: remove this after a while
             self.logs_df['NGPUS_'] = 0

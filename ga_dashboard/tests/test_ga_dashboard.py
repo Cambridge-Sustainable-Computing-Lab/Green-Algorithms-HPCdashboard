@@ -5,7 +5,6 @@ import sys
 sys.path.append('src')
 # sys.path.append('testdata')
 # This works if run as `pytest` from the `GA4HPCdashboard/ga_dashboard` directory.
-# There is probably a better way than this.
 
 from ga_dashboard.backend.utils import validate_args
 from ga_dashboard.backend.data_sql_import import DataSQLImport, parse_string_to_number
@@ -37,6 +36,3 @@ def test_main_backend():
     )
 
     main_backend(args)
-
-
-

@@ -1,4 +1,3 @@
-
 import os
 import yaml
 import datetime
@@ -6,8 +5,8 @@ import argparse
 import pandas as pd
 import numpy as np
 
-# The online book (chapter 4) suggests this should work: from ga_dashboard.backend.utils import check_empty_results
-# but it doesn't seem to. (see https://py-pkgs.org/04-package-structure)
+# The online book (especially chapter 4) was used to help produce the
+# structure of this package. (see https://py-pkgs.org/04-package-structure)
 from ga_dashboard.backend.utils import check_empty_results #, simulate_mock_jobs
 from ga_dashboard.backend.extract.slurm import WorkloadManager
 from ga_dashboard.backend.data_sql_import import DataSQLImport
@@ -47,11 +46,11 @@ agg_functions_from_raw = {
     }
 
 
-class GA_tools():
+class GA_tools:
 
-    def __init__(self, cluster_info, fParams):
+    def __init__(self, cluster_info, fixed_params):
         self.cluster_info = cluster_info
-        self.fParams = fParams
+        self.fixed_params = fixed_params
 
     def calculate_energies(self, row):
         '''
@@ -79,7 +78,7 @@ class GA_tools():
 
         ### memory
         for suffix, memory2use in zip(['','_memoryNeededOnly'], [row.ReqMemX,row.NeededMemX]):
-            row[f'energy_memory{suffix}'] = row.WallclockTimeX.total_seconds()/3600 * memory2use * self.fParams['power_memory_perGB'] /1000 # in kWh
+            row[f'energy_memory{suffix}'] = row.WallclockTimeX.total_seconds()/3600 * memory2use * self.fixed_params['power_memory_perGB'] /1000 # in kWh
             row[f'energy{suffix}'] = (row.energy_CPUs +  row.energy_GPUs + row[f'energy_memory{suffix}']) * self.cluster_info['PUE'] # in kWh
 
         return row
@@ -104,19 +103,19 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
 
     if args.use_mock_agg_data: # DEBUGONLY Create/use some mock jobs with different users
 
+        # Steps done in pickle_it.py script:
         # df2 = simulate_mock_jobs()
         # df2.to_pickle("testdata/df_agg_X_mockMultiUsers_1.pkl")
 
         # foo = 'testdata/df_agg_test_3.pkl'
         # foo = 'testdata/df_agg_X_1.pkl'
-
         
         if has_slurmAdmin: # TODO remove `has_slurmAdmin` as it's not needed in the dashboard anymore
-            foo = 'tests/testdata/df_agg_X_mockMultiUsers_1.pkl'
+            pickled_test_data = 'tests/testdata/df_agg_X_mockMultiUsers_1.pkl'
         else:
-            foo = 'tests/testdata/df_agg_X_1.pkl'
-        print(f"Overriding df_agg with `{foo}`")
-        return pd.read_pickle(foo)
+            pickled_test_data = 'tests/testdata/df_agg_X_1.pkl'
+        print(f"Overriding df_agg with `{pickled_test_data}`")
+        return pd.read_pickle(pickled_test_data)
 
 
     ### Pull usage statistics from the workload manager
@@ -158,7 +157,8 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
 
     return WM.df_agg_X
 
-def enrich_data(df:pd.DataFrame, fParams:dict, users_df:pd.DataFrame, GA:GA_tools) -> pd.DataFrame:
+
+def enrich_data(df:pd.DataFrame, fixed_params:dict, users_df:pd.DataFrame, GA:GA_tools) -> pd.DataFrame:
 
     ### energy
     df = df.apply(GA.calculate_energies, axis=1)
@@ -173,14 +173,14 @@ def enrich_data(df:pd.DataFrame, fParams:dict, users_df:pd.DataFrame, GA:GA_tool
     for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
         df[f'carbonFootprint{suffix}'] = GA.calculate_carbonFootprint(df, f'energy{suffix}')
         # Context metrics (part 1)
-        df[f'treeMonths{suffix}'] = df[f'carbonFootprint{suffix}'] / fParams['tree_month']
-        df[f'cost{suffix}'] = df[f'energy{suffix}'] * fParams['electricity_cost'] # TODO use realtime electricity costs
+        df[f'treeMonths{suffix}'] = df[f'carbonFootprint{suffix}'] / fixed_params['tree_month']
+        df[f'cost{suffix}'] = df[f'energy{suffix}'] * fixed_params['electricity_cost'] # TODO use realtime electricity costs
 
     ### Context metrics (part 2)
-    df['driving'] = df.carbonFootprint / fParams['passengerCar_EU_perkm']
-    df['flying_NY_SF'] = df.carbonFootprint / fParams['flight_NY_SF']
-    df['flying_PAR_LON'] = df.carbonFootprint / fParams['flight_PAR_LON']
-    df['flying_NYC_MEL'] = df.carbonFootprint / fParams['flight_NYC_MEL']
+    df['driving'] = df.carbonFootprint / fixed_params['passengerCar_EU_perkm']
+    df['flying_NY_SF'] = df.carbonFootprint / fixed_params['flight_NY_SF']
+    df['flying_PAR_LON'] = df.carbonFootprint / fixed_params['flight_PAR_LON']
+    df['flying_NYC_MEL'] = df.carbonFootprint / fixed_params['flight_NYC_MEL']
 
     ### Add user details to jobs
     if users_df is None:
@@ -302,7 +302,7 @@ def main_backend(args):
     :param args:
     :return:
     '''
-    ### Load cluster specific info
+    ### Load cluster-specific info
     with open(os.path.join(args.path_infrastructure_info, 'cluster_info.yaml'), "r") as stream:
         try:
             cluster_info = yaml.safe_load(stream)
@@ -312,14 +312,14 @@ def main_backend(args):
     ### Load fixed parameters
     with open("data/fixed_parameters.yaml", "r") as stream:
         try:
-            fParams = yaml.safe_load(stream)
+            fixed_params = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
 
     # Get slurmAdmin data 
     has_slurmAdmin = True # get_slurmAdmin(args)
 
-    ### Load users specific data (if available)
+    ### Load user-specific data (if available)
     try:
         users_df = pd.read_csv(os.path.join(args.path_infrastructure_info, 'users_list.csv'))
     except FileNotFoundError:
@@ -327,18 +327,18 @@ def main_backend(args):
             raise ValueError("No user data available.")
         users_df = None
 
-    GA = GA_tools(cluster_info, fParams)
+    GA = GA_tools(cluster_info, fixed_params)
 
     df = extract_data(args, has_slurmAdmin, cluster_info=cluster_info)
-    df2 = enrich_data(df, fParams=fParams, users_df=users_df, GA=GA)
+    df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA)
     summary_stats = summarise_data(df2, args=args) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
     ## Store data into a database
     try:
-        foo = args.__dict__.keys() # This is when using command line arguments (Namespace)
+        dict_keys = args.__dict__.keys() # This is when using command line arguments (Namespace)
     except:
-        foo = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
-    if 'db_name' in foo:
+        dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
+    if 'db_name' in dict_keys:
         import_data_in_db(summary_stats, args)
 
     return summary_stats
@@ -375,6 +375,4 @@ if __name__ == "__main__":
     )
 
     main_backend(args)
-
-
 

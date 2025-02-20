@@ -4,7 +4,7 @@ import random
 import pandas as pd
 import numpy as np
 
-class validate_args: # validate_args():
+class validate_args:
     """
     Class used to validate all the arguments provided.
     """
@@ -27,9 +27,9 @@ class validate_args: # validate_args():
                 raise ValueError(f"Incorrect date format, should be YYYY-MM-DD but is: {x}")
             index += 1
 
-        foo = datetime.datetime.strptime(args.startDay, '%Y-%m-%d')
-        bar = datetime.datetime.strptime(args.endDay, '%Y-%m-%d')
-        if foo > bar:
+        start = datetime.datetime.strptime(args.startDay, '%Y-%m-%d')
+        end = datetime.datetime.strptime(args.endDay, '%Y-%m-%d')
+        if start > end:
             raise ValueError(f"Start date ({args.startDay}) is after the end date ({args.endDay}).")
 
     def _validate_output(self, args):
@@ -63,7 +63,7 @@ class validate_args: # validate_args():
 
     def _validate_db_conn(self, args):
         """
-        Validates that the database exists and is accessible, using the provided "db" parameters'.
+        Validates that the database exists and is accessible, using the provided "db" parameters.
         """
         import psycopg
         try:
@@ -92,11 +92,12 @@ class validate_args: # validate_args():
         self._validate_dates(args)
         self._validate_db_conn(args)
 
+
 def check_empty_results(df, args):
     """
-    This is to check whether any jobs have been run on the period, and stop the script if not.
+    This is to check whether any jobs have been run in the period, and stop the script if not.
     :param df: [pd.DataFrame] Usage logs
-    :param args:
+    :param args: [argStruct] Named tuple of arguments used.
     """
     if len(df) == 0:
         if args.filterWD is not None:
@@ -110,7 +111,7 @@ def check_empty_results(df, args):
 
         print(f'''
 
-    You haven't run any jobs on that period (from {args.startDay} to {args.endDay}){addThat}.
+    You haven't run any jobs in that period (from {args.startDay} to {args.endDay}){addThat}.
 
         ''')
         sys.exit()
@@ -119,7 +120,7 @@ def simulate_mock_jobs(): # DEBUGONLY
     df_list = []
     for user in ['uid_1', 'uid_2', 'uid_3', 'uid_4', 'uid_5']:
         n_jobs = random.randint(500,800)
-        foo = {
+        data_dict = {
             'WallclockTimeX':[datetime.timedelta(minutes=random.randint(50,700)) for _ in range(n_jobs)],
             'ReqMemX':np.random.randint(4,130, size=n_jobs)*1.,
             'PartitionX':['gollum']*n_jobs,
@@ -132,11 +133,12 @@ def simulate_mock_jobs(): # DEBUGONLY
             'TotalGPUtime2useX':[datetime.timedelta(seconds=0)]*n_jobs,
         }
 
-        foo_df = pd.DataFrame(foo)
-        foo_df['CPUhoursChargedX'] = foo_df.TotalCPUtime2useX / np.timedelta64(1, 'h')
-        foo_df['GPUhoursChargedX'] = 0.
-        foo_df['NeededMemX'] = foo_df.ReqMemX * np.random.random(n_jobs)
-        foo_df['memOverallocationFactorX'] = foo_df.ReqMemX / foo_df.NeededMemX
+        data_frame = pd.DataFrame(data_dict)
+        data_frame['CPUhoursChargedX'] = data_frame.TotalCPUtime2useX / np.timedelta64(1, 'h')
+        data_frame['GPUhoursChargedX'] = 0.
+        data_frame['NeededMemX'] = data_frame.ReqMemX * np.random.random(n_jobs)
+        data_frame['memOverallocationFactorX'] = data_frame.ReqMemX / data_frame.NeededMemX
 
-        df_list.append(foo_df)
+        df_list.append(data_frame)
+
     return pd.concat(df_list)
