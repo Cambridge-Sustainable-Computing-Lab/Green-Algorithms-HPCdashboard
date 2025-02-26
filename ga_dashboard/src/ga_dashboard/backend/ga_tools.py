@@ -106,6 +106,7 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
         # Steps done in pickle_it.py script:
         # df2 = simulate_mock_jobs()
         # df2.to_pickle("testdata/df_agg_X_mockMultiUsers_1.pkl")
+        # NB the data generated is different each time.
 
         # foo = 'testdata/df_agg_test_3.pkl'
         # foo = 'testdata/df_agg_X_1.pkl'
@@ -129,7 +130,7 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
 
         if args.reportBug:
             log_path = os.path.join(scripts_dir, '../error_logs', f'sacctOutput_{log_name}.csv')
-            # Logging into a seperate dir to write-protect the main one (not in place for now)
+            # Logging into a separate dir to write-protect the main one (not in place for now)
             # log_path = os.path.join(pathlib.Path(scripts_dir).parent.absolute(), 'GreenAlgorithms4HPC_errorLogs', f'sacctOutput_{log_name}.csv')
         else:
             # i.e. args.reportBugHere is True
@@ -138,7 +139,7 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
         os.makedirs(os.path.dirname(log_path), exist_ok=True) # Create error_logs dir if needed
         with open(log_path, 'wb') as f:
             f.write(WM.logs_raw)
-        print(f"\nSLURM statistics logged for debuging: {log_path}\n")
+        print(f"\nSLURM statistics logged for debugging: {log_path}\n")
 
     ### Turn usage logs into DataFrame
     WM.convert2dataframe()
@@ -196,6 +197,10 @@ def enrich_data(df:pd.DataFrame, fixed_params:dict, users_df:pd.DataFrame, GA:GA
 
 def summarise_data(df:pd.DataFrame, args:argparse.Namespace) -> dict:
 
+    if ( df is None ):
+        print("summarise_data(): df is None")
+        return None
+
     # This is to aggregate already aggregated dataset (so names are a bit different)
     agg_functions_further = agg_functions_from_raw.copy()
     data2aggregate = {
@@ -234,9 +239,7 @@ def summarise_data(df:pd.DataFrame, args:argparse.Namespace) -> dict:
 
         return timeseries
 
-    if ( df is None ):
-        print("summarise_data(): df is None")
-        return None
+
 
     df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit day
 

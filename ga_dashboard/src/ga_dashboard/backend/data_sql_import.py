@@ -37,7 +37,7 @@ class DataSQLImport:
                 port=self.db_port
             )
         except psycopg.OperationalError as err:
-            print(f'/!\ Error: Issue to connect to the database: {err}')
+            print(f'/!\ Error: Issue connecting to the database: {err}')
             conn = None
         return conn
 
@@ -107,7 +107,7 @@ class DataSQLImport:
             except psycopg.DataError as e:
                 print(f'/!\ Error: Issue with the data format to be imported: {e}')
             except Exception as e:
-                print(f'/!\ Error: Issue to insert new data: {e}')
+                print(f'/!\ Error: Issue while attempting to insert new data: {e}')
 
             # Close connection with the database
             cur.close()

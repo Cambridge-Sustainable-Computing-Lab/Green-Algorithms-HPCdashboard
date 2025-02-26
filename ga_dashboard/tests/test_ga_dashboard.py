@@ -36,3 +36,22 @@ def test_main_backend():
     )
 
     main_backend(args)
+
+
+# Debugging and testing
+#
+## For the backend
+# 
+# `sacct` can only be called from CSD3, and `sacct --allusers` can only be called with admin rights (which we don’t have on CSD3).
+# So for now, the backend can be tested two different ways:
+#
+# - By using a single users’ `sacct` output, e.g. Loïc’s: `testdata/sacct_output_loic1.txt` which only bypasses the `sacct` call.
+# This is the equivalent of `WorkloadManager.logs_raw` .
+#
+# - By using a simulated aggregated output (equivalent to `df_agg_X` ) containing multiple users’ data. For example,
+# `testdata/df_agg_X_mockMultiUsers_1` can be used for this.
+#
+#
+## For the frontend
+#
+# The frontend can use data aggregated further (1 row per user per day), e.g. `testdata/userDaily_mockMultiUsers_1.csv`
