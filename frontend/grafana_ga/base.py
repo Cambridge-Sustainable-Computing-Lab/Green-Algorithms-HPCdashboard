@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class GrafanaGABase:
-    ''' Base class holding thea grafana_client GrafanaApi instance, the Grafana URL and the admin login/password'''
+    ''' Base class holding the grafana_client GrafanaApi instance, the Grafana URL and the admin login/password'''
 
     def __init__(self, login:str, password:str, grafana_url:str) -> None:
         base_url = "http://{}:{}@{}".format(login, password, grafana_url)
