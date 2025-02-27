@@ -62,8 +62,9 @@ class GA_tools:
         try:
             partition_info = self.cluster_info['partitions'][row.PartitionX]
         except KeyError as ke:
-            print(f"calculate_energies(): KeyError: {ke}")
-            return None
+            print(f"calculate_energies(): KeyError: {ke}. Exiting...")
+            #return None
+            exit
 
         if row.PartitionTypeX == 'CPU':
             TDP2use4CPU = partition_info['TDP']

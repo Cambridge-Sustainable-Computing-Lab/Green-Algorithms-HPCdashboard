@@ -1,8 +1,9 @@
 import os, argparse, csv
 import logging
-from frontend.grafana_ga.user import GrafanaGAUser
-from frontend.grafana_ga.folder import GrafanaGAFolder
-
+# from frontend.grafana_ga.user import GrafanaGAUser
+from grafana_ga.user import GrafanaGAUser
+# from frontend.grafana_ga.folder import GrafanaGAFolder
+from grafana_ga.folder import GrafanaGAFolder
 
 logger = logging.getLogger(__name__)
       
@@ -29,7 +30,7 @@ def main():
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging_level)
 
     if not os.path.isfile(input_file):
-        logger.error("File '"+input_file+"' can't be found")
+        logger.error("File '" + input_file + "' can't be found")
         exit(1)
 
     grafana_user = GrafanaGAUser(login, password, grafana_url, ga_dashboard_folder_name)

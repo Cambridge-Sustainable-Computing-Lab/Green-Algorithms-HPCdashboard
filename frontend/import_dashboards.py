@@ -39,7 +39,7 @@ def main():
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging_level)
 
     if not os.path.isdir(input_dir):
-        logger.error("Directory '"+input_dir+"' can't be found")
+        logger.error("Directory '" + input_dir + "' can't be found")
         exit(1)
 
     ga_folder_import = GrafanaGAFolder(login, password, grafana_url, ga_dashboard_folder_name)

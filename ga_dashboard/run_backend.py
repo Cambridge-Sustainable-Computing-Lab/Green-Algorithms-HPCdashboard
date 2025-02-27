@@ -79,7 +79,7 @@ def create_arguments():
                                  This is mostly meant for debugging, but can be useful in some situations. '
                              'An example of the expected file can be found at `example_files/example_sacctOutput_raw.txt`.')
     # Arguments for debugging only (not visible to users)
-    # To ue arbitrary folder for the infrastructure information
+    # To use arbitrary folder for the infrastructure information
     parser.add_argument('--useOtherInfrastructureInfo', type=str, default='', help=argparse.SUPPRESS)
     # Uses mock aggregated usage data, for offline debugging
     group2.add_argument('--use_mock_agg_data', action='store_true', help=argparse.SUPPRESS)
