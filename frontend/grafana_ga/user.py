@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class GrafanaGAUser(GrafanaGABase):
+    ''' Class used to create Grafana teams, Grafana user and assign the user to the team(s) '''
 
     def __init__(self, login:str, password:str, grafana_url:str, ga_dashboard_folder_name:str) -> None:
         super().__init__(login, password, grafana_url)
@@ -16,6 +17,8 @@ class GrafanaGAUser(GrafanaGABase):
 
 
     def create_team(self, team_name:str) -> None:
+        ''' Create a new Grafana team if it doesn't exist '''
+
         team = {"name": team_name } #, "email": "email@example.org"}
         try:
             grafana_team = self.grafana.teams.add_team(team)
@@ -37,17 +40,18 @@ class GrafanaGAUser(GrafanaGABase):
                 logger.error(f"ERROR during team creation: {ex}")
                 exit(1)
 
-        # Add team ID
-        try:
-            teams_list = self.grafana.teams.get_team_by_name(team_name)
-            if teams_list and len(teams_list) > 0:
-                uid = teams_list[0]['uid']
-                self.teams[uid] = teams_list[0]
-        except GrafanaClientError as ex:
-            logger.error(f"ERROR during fetching of team '{team_name}': {ex}")
+        # # Add team ID <-- looks like redundant code with the "if ex.status_code == 409:" code block
+        # try:
+        #     teams_list = self.grafana.teams.get_team_by_name(team_name)
+        #     if teams_list and len(teams_list) > 0:
+        #         uid = teams_list[0]['uid']
+        #         self.teams[uid] = teams_list[0]
+        # except GrafanaClientError as ex:
+        #     logger.error(f"ERROR during fetching of team '{team_name}': {ex}")
 
 
     def create_user(self, user_data:dict) -> None:
+        ''' Create a new Grafana user if it doesn't exist '''
         user_login_or_email = user_data['User name'] if user_data['User name'] else user_data['Email']
 
         # Check existing user
@@ -66,6 +70,10 @@ class GrafanaGAUser(GrafanaGABase):
 
 
     def check_existing_user(self,user_login_or_email:str) -> User:
+        '''
+            Check if a Grafana user already exists or not
+            @return: A grafana_client User (if found)
+        '''
         try:
             existing_user = self.grafana.users.find_user(user_login_or_email)
             return existing_user
@@ -76,6 +84,7 @@ class GrafanaGAUser(GrafanaGABase):
 
 
     def set_new_user(self, user_data:dict) -> None:
+        ''' Create a new Grafana user '''
         try:
             user = self.grafana.admin.create_user({
                 "name": user_data['Name'], 
@@ -95,6 +104,7 @@ class GrafanaGAUser(GrafanaGABase):
 
 
     def add_to_team(self,user_data:dict,user:User) -> None:
+        ''' Add Grafana user to team(s) '''
         try:
             for team_item in user_data['Team name'].split(','):
                 team_name = team_item.strip()
