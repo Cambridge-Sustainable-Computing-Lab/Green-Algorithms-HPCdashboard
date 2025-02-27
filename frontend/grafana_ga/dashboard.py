@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class GrafanaGADashboard(GrafanaGABase):
+    ''' Class used to parse and import a Grafana dashboard (from a JSON file) '''
 
     def __init__(self, login:str, password:str, grafana_url:str, ga_dashboard_input_dir:str, ga_dashboard_filename:str, folder_uid:str) -> None:
         super().__init__(login, password, grafana_url)
@@ -19,6 +20,7 @@ class GrafanaGADashboard(GrafanaGABase):
 
 
     def parse_json_to_content(self) -> None:
+        ''' Parse the Dashboard JSON file into a Python dictionary. '''
         try:
             with open(self.ga_dashboard_filepath, "r") as f:
                 json_content = f.read()
@@ -34,6 +36,7 @@ class GrafanaGADashboard(GrafanaGABase):
 
 
     def import_dashboard(self) -> None:
+        ''' Import a Dashboard from a JSON file to Grafana. '''
         if os.path.isfile(self.ga_dashboard_filepath):
             logger.info(f"Start to import dashboard from '{self.ga_dashboard_filepath}'")
             try:
