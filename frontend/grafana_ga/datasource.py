@@ -1,5 +1,5 @@
 import logging
-from grafana_client.client import GrafanaClientError
+from grafana_client.client import GrafanaClientError, GrafanaBadInputError
 from .base import GrafanaGABase
 
 
@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class GrafanaGADataSource(GrafanaGABase):
+    ''' Class used to setup a Grafana data source (i.e. a database) '''
 
     def __init__(self, login:str, password:str, grafana_url:str, db_name:str, db_user:str, db_password:str, db_host:str, db_port:int = 5432, pg_version:int = 13, datasource_name:str = 'grafana-postgresql-ga_db', sslmode:str = 'disable') -> None:
         super().__init__(login, password, grafana_url)
@@ -27,7 +28,7 @@ class GrafanaGADataSource(GrafanaGABase):
 
 
     def build_datasource_content(self) -> None:
-        """ Build the JSON content used to create the data source """
+        ''' Build the JSON content used to create the data source '''
         self.ds_content =  {
             "name": self.datasource_name,
             "type": "postgres",
@@ -46,27 +47,35 @@ class GrafanaGADataSource(GrafanaGABase):
 
     
     def create_datasource(self) -> None:
-        """ Create the data source entry in Grafana"""
+        ''' Create the data source entry in Grafana '''
         datasource = None
         try:
             datasource = self.grafana.datasource.create_datasource(self.ds_content)
-            logger.info(f"> Created data source: {datasource}")
+            logger.info(f"Created data source:\n{datasource}")
         except GrafanaClientError as ex:
             # Data source already exist
             if ex.status_code == 409:
-                logger.warning(f"Data source '{self.datasource_name}': {ex.response['message']}")
+                logger.warning(f"Data source '{self.datasource_name}' -> {ex.response['message']}!")
                 datasource = self.grafana.datasource.get_datasource_by_name(self.datasource_name)
             # Other issue
             else:
                 logger.error(f"ERROR during the data source creation: {ex}")
+                exit(0)
         
         if datasource:
             datasource_obj = self.grafana.datasource.get_datasource_by_name(self.datasource_name)
             if datasource_obj:
-                ds_health = self.grafana.datasource.health(datasource_obj['uid'])
-                if ds_health['status'] == 'OK':
-                    logger.info(f"> Data source healthcheck: {ds_health['message']}")
-                else:
-                    logger.error(f"ERROR about the Data source health: {ds_health['message']}")
+                # Check datasource is correctly set up (i.e. can be accessed)
+                try:
+                    ds_health = self.grafana.datasource.health(datasource_obj['uid'])
+                    if ds_health['status'] == 'OK':
+                        logger.info(f"Data source healthcheck => {ds_health['message']}")
+                    else:
+                        logger.error(f"ERROR about the Data source => {ds_health['message']}")
+                        exit(0)
+                except (GrafanaClientError, GrafanaBadInputError) as ex:
+                    logger.error(f"ERROR about the Data source => {ex.response['message']}")
+                    exit(0)
         else:
             logger.warning("The data source doesn't seem to have been created")
+            exit(0)

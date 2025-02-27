@@ -1,11 +1,7 @@
 import os,argparse
 import logging
-# from frontend.grafana_ga.folder import GrafanaGAFolder
-# from frontend.grafana_ga import GrafanaGADashboard
 from grafana_ga.folder import GrafanaGAFolder
-# from frontend.grafana_ga.dashboard import GrafanaGADashboard
 from grafana_ga.dashboard import GrafanaGADashboard
-
 
 logger = logging.getLogger(__name__)
 

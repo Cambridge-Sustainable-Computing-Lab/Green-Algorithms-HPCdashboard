@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 class GrafanaGAFolder(GrafanaGABase):
+    ''' Class used to create Grafana dashboard folder and setup the teams'/users' permissions on it '''
 
     permission_levels = {
         1: {
@@ -61,6 +62,10 @@ class GrafanaGAFolder(GrafanaGABase):
 
 
     def find_ga_folder(self) -> bool:
+        '''
+            Check if the Grafana folder already exist or not.
+            @return: True or False (boolean)
+        '''
         folders = self.grafana.folder.get_all_folders()
         for folder in folders:
             if folder['title'] == self.ga_folder_name:
@@ -70,6 +75,7 @@ class GrafanaGAFolder(GrafanaGABase):
 
 
     def get_folder(self) -> None:
+        ''' Get Grafana folder and create it if it doesn't exist. '''
         folder_name = self.ga_folder_name
         if self.find_ga_folder():
             logger.info(f"Folder '{folder_name}' already exists")
@@ -84,6 +90,7 @@ class GrafanaGAFolder(GrafanaGABase):
 
 
     def get_current_teams_permissions(self) -> None:
+        ''' Get the current folder permissions of teams and users, and add them to the new permissions '''
         folder_permissions = self.grafana.folder.get_folder_permissions(self.folder_uid)
         for permission in folder_permissions:
             if 'teamId' in permission.keys():
@@ -101,11 +108,13 @@ class GrafanaGAFolder(GrafanaGABase):
 
 
     def add_permission_level(self,permission_level:str) -> None:
+        ''' Add new permissions levels on the folder if found '''
         if permission_level not in self.levels.keys():
             self.levels[permission_level] = self.permission_levels[permission_level]
 
 
-    def get_new_teams_permissions(self, teams:list) -> None:
+    def set_new_teams_permissions(self, teams:list) -> None:
+        ''' Add new team permissions on the folder '''
         for team in teams:
             team_id = team['id']
             if not team_id in self.teams.keys():
@@ -113,9 +122,9 @@ class GrafanaGAFolder(GrafanaGABase):
 
 
     def add_ga_folder_permissions(self, teams: dict) -> None:
-        # Fetch the list of users/teams/roles to add/update
+        ''' Fetch the list of users/teams/roles to add/update permissions on the folder '''
         self.get_current_teams_permissions()
-        self.get_new_teams_permissions(list(teams.values()))
+        self.set_new_teams_permissions(list(teams.values()))
 
         items = { 
             "items": []
