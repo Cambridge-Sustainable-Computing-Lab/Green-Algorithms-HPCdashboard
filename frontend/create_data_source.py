@@ -1,6 +1,6 @@
 import argparse
 import logging
-from grafana_ga import GrafanaGADataSource
+from grafana_ga.datasource import GrafanaGADataSource
 
 
 def main():
