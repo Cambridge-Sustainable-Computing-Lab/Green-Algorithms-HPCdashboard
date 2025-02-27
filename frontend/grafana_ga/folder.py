@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class GrafanaGAFolder(GrafanaGABase):
-    ''' Class used to create Grafana dashboard folder an setup the teams/users permissions on it '''
+    ''' Class used to create Grafana dashboard folder and setup the teams'/users' permissions on it '''
 
     permission_levels = {
         1: {
