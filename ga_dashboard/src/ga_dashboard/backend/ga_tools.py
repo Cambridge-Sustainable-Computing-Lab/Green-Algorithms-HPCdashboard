@@ -198,7 +198,7 @@ def enrich_data(df:pd.DataFrame, fixed_params:dict, users_df:pd.DataFrame, GA:GA
 
 def summarise_data(df:pd.DataFrame, args:argparse.Namespace) -> dict:
 
-    if ( df is None ):
+    if df is None:
         print("summarise_data(): df is None")
         return None
 

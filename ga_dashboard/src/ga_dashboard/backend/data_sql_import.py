@@ -2,6 +2,7 @@ import psycopg
 import datetime
 import pandas
 
+# TODO: From Laurent's PR code review: "It's good for now, but in the future it might make more sense to use the logging package, like in the grafana_ga modules."
 
 class DataSQLImport:
 

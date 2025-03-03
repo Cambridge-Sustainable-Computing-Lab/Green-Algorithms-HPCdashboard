@@ -78,7 +78,6 @@ class validate_args:
             conn.close()
         except psycopg.OperationalError as err:
             raise(f'Error: Issue to connect to the database: {err}')
-            #raise(f'/!\ Error: Issue to connect to the database: {err}')
 
 
     def all_to_export(self, args):
