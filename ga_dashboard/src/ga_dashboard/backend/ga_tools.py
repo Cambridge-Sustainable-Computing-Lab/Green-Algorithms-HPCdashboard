@@ -11,8 +11,6 @@ from ga_dashboard.backend.utils import check_empty_results #, simulate_mock_jobs
 from ga_dashboard.backend.extract.slurm import WorkloadManager
 from ga_dashboard.backend.data_sql_import import DataSQLImport
 
-# print("Working dir1: ", os.getcwd())
-
 
 agg_functions_from_raw = {
         'n_jobs': ('UserX', 'count'),
@@ -62,8 +60,9 @@ class GA_tools:
         try:
             partition_info = self.cluster_info['partitions'][row.PartitionX]
         except KeyError as ke:
+            # Raise error if key not found.
+            # TODO Make checking of all keys more robust, and explain what to do when a key is missing.
             print(f"calculate_energies(): KeyError: {ke}. Exiting...")
-            #return None
             exit
 
         if row.PartitionTypeX == 'CPU':
@@ -169,7 +168,8 @@ def enrich_data(df:pd.DataFrame, fixed_params:dict, users_df:pd.DataFrame, GA:GA
         df['energy_failedJobs'] = np.where(df.StateX == 0, df.energy, 0)
     except AttributeError as err:
         print(f"enrich_data(): AttributeError: {err}")
-        return None
+        # TODO Explain this error, and what to do about it.
+        return None  # or should we exit?
 
     ### carbon footprint
     for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
@@ -371,11 +371,11 @@ if __name__ == "__main__":
     args = argStruct(
         startDay='2022-01-01',
         endDay='2023-06-30',
-        useCustomLogs="", #"sacct_output_loic1.txt",
+        useCustomLogs="",
         use_mock_agg_data=True,
         reportBug=False,
         reportBugHere=False,
-        path_infrastructure_info="../../../data/ourInfrastructure/CSD3", # change?
+        path_infrastructure_info="",
     )
 
     main_backend(args)

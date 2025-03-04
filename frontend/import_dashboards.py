@@ -41,12 +41,12 @@ def main():
     ga_folder_import = GrafanaGAFolder(login, password, grafana_url, ga_dashboard_folder_name)
     ga_folder_import.get_folder()
 
-
-
     # Loop over dashboard files
     for dashboard_filename in os.listdir(input_dir):
         if dashboard_filename.endswith('.json'):
             ga_dashboard = GrafanaGADashboard(login, password, grafana_url,input_dir,dashboard_filename,ga_folder_import.folder_uid)
             ga_dashboard.import_dashboard()
+
+
 if __name__ == "__main__":
      main()

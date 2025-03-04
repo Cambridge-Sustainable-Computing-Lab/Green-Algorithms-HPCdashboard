@@ -1,4 +1,3 @@
-
 import subprocess
 import argparse
 import pandas as pd
@@ -327,11 +326,7 @@ class WorkloadManager(Helpers_WM):
 
         ### Parse core-wallclock time
         # This is the maximum time cores could use, if used at 100% (Elapsed time * CPU count)
-        if 'CPUTime' in self.logs_df.columns:
-            self.logs_df['CPUwallclocktime_'] = self.logs_df['CPUTime'].apply(self.parse_timedelta)
-        else:
-            print('Using old logs; "CPUTime" information not available.')  # TODO: remove this after a while
-            self.logs_df['CPUwallclocktime_'] = self.logs_df.WallclockTimeX * self.logs_df.NCPUS
+        self.logs_df['CPUwallclocktime_'] = self.logs_df['CPUTime'].apply(self.parse_timedelta)
 
         ### Number of GPUs
         # TODO double check that it includes multiple GPUs correctly
