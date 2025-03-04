@@ -1,4 +1,3 @@
-
 import os
 import yaml
 import datetime
@@ -6,11 +5,11 @@ import argparse
 import pandas as pd
 import numpy as np
 
-from backend.utils import check_empty_results #, simulate_mock_jobs
-from backend.extract.slurm import WorkloadManager
-from backend.data_sql_import import DataSQLImport
-
-# print("Working dir1: ", os.getcwd())
+# The online book (especially chapter 4) was used to help produce the
+# structure of this package. (see https://py-pkgs.org/04-package-structure)
+from ga_dashboard.backend.utils import check_empty_results #, simulate_mock_jobs
+from ga_dashboard.backend.extract.slurm import WorkloadManager
+from ga_dashboard.backend.data_sql_import import DataSQLImport
 
 
 agg_functions_from_raw = {
@@ -45,20 +44,27 @@ agg_functions_from_raw = {
     }
 
 
-class GA_tools():
+class GA_tools:
 
-    def __init__(self, cluster_info, fParams):
+    def __init__(self, cluster_info, fixed_params):
         self.cluster_info = cluster_info
-        self.fParams = fParams
+        self.fixed_params = fixed_params
 
     def calculate_energies(self, row):
         '''
-        Calculate the energy usaged based on the job's paramaters
+        Calculate the energy usage based on the job's parameters
         :param row: [pd.Series] one row of usage statistics, corresponding to one job
         :return: [pd.Series] the same statistics with the energies added
         '''
         ### CPU and GPU
-        partition_info = self.cluster_info['partitions'][row.PartitionX]
+        try:
+            partition_info = self.cluster_info['partitions'][row.PartitionX]
+        except KeyError as ke:
+            # Raise error if key not found.
+            # TODO Make checking of all keys more robust, and explain what to do when a key is missing.
+            print(f"calculate_energies(): KeyError: {ke}. Exiting...")
+            exit
+
         if row.PartitionTypeX == 'CPU':
             TDP2use4CPU = partition_info['TDP']
             TDP2use4GPU = 0
@@ -72,7 +78,7 @@ class GA_tools():
 
         ### memory
         for suffix, memory2use in zip(['','_memoryNeededOnly'], [row.ReqMemX,row.NeededMemX]):
-            row[f'energy_memory{suffix}'] = row.WallclockTimeX.total_seconds()/3600 * memory2use * self.fParams['power_memory_perGB'] /1000 # in kWh
+            row[f'energy_memory{suffix}'] = row.WallclockTimeX.total_seconds()/3600 * memory2use * self.fixed_params['power_memory_perGB'] /1000 # in kWh
             row[f'energy{suffix}'] = (row.energy_CPUs +  row.energy_GPUs + row[f'energy_memory{suffix}']) * self.cluster_info['PUE'] # in kWh
 
         return row
@@ -97,19 +103,20 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
 
     if args.use_mock_agg_data: # DEBUGONLY Create/use some mock jobs with different users
 
+        # Steps done in pickle_it.py script:
         # df2 = simulate_mock_jobs()
-        # df2.to_pickle("testData/df_agg_X_mockMultiUsers_1.pkl")
+        # df2.to_pickle("testdata/df_agg_X_mockMultiUsers_1.pkl")
+        # NB the data generated is different each time.
 
-        # foo = 'testData/df_agg_test_3.pkl'
-        # foo = 'testData/df_agg_X_1.pkl'
-
+        # foo = 'testdata/df_agg_test_3.pkl'
+        # foo = 'testdata/df_agg_X_1.pkl'
         
         if has_slurmAdmin: # TODO remove `has_slurmAdmin` as it's not needed in the dashboard anymore
-            foo = 'testdata/df_agg_X_mockMultiUsers_1.pkl'
+            pickled_test_data = 'tests/testdata/df_agg_X_mockMultiUsers_1.pkl'
         else:
-            foo = 'testData/df_agg_X_1.pkl'
-        print(f"Overriding df_agg with `{foo}`")
-        return pd.read_pickle(foo)
+            pickled_test_data = 'tests/testdata/df_agg_X_1.pkl'
+        print(f"Overriding df_agg with `{pickled_test_data}`")
+        return pd.read_pickle(pickled_test_data)
 
 
     ### Pull usage statistics from the workload manager
@@ -123,7 +130,7 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
 
         if args.reportBug:
             log_path = os.path.join(scripts_dir, '../error_logs', f'sacctOutput_{log_name}.csv')
-            # Logging into a seperate dir to write-protect the main one (not in place for now)
+            # Logging into a separate dir to write-protect the main one (not in place for now)
             # log_path = os.path.join(pathlib.Path(scripts_dir).parent.absolute(), 'GreenAlgorithms4HPC_errorLogs', f'sacctOutput_{log_name}.csv')
         else:
             # i.e. args.reportBugHere is True
@@ -132,7 +139,7 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
         os.makedirs(os.path.dirname(log_path), exist_ok=True) # Create error_logs dir if needed
         with open(log_path, 'wb') as f:
             f.write(WM.logs_raw)
-        print(f"\nSLURM statistics logged for debuging: {log_path}\n")
+        print(f"\nSLURM statistics logged for debugging: {log_path}\n")
 
     ### Turn usage logs into DataFrame
     WM.convert2dataframe()
@@ -147,29 +154,35 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
         if len(set(WM.df_agg_X.UserX)) > 1:
             raise ValueError(f"More than one user's logs was included, despite --slurmAdmin not used: {set(WM.df_agg_X.UserX)}")
 
-    # WM.df_agg_X.to_pickle("testData/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
+    # WM.df_agg_X.to_pickle("testdata/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
 
     return WM.df_agg_X
 
-def enrich_data(df:pd.DataFrame, fParams:dict, users_df:pd.DataFrame, GA:GA_tools) -> pd.DataFrame:
+
+def enrich_data(df:pd.DataFrame, fixed_params:dict, users_df:pd.DataFrame, GA:GA_tools) -> pd.DataFrame:
 
     ### energy
     df = df.apply(GA.calculate_energies, axis=1)
 
-    df['energy_failedJobs'] = np.where(df.StateX == 0, df.energy, 0)
+    try:
+        df['energy_failedJobs'] = np.where(df.StateX == 0, df.energy, 0)
+    except AttributeError as err:
+        print(f"enrich_data(): AttributeError: {err}")
+        # TODO Explain this error, and what to do about it.
+        return None  # or should we exit?
 
     ### carbon footprint
     for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
         df[f'carbonFootprint{suffix}'] = GA.calculate_carbonFootprint(df, f'energy{suffix}')
         # Context metrics (part 1)
-        df[f'treeMonths{suffix}'] = df[f'carbonFootprint{suffix}'] / fParams['tree_month']
-        df[f'cost{suffix}'] = df[f'energy{suffix}'] * fParams['electricity_cost'] # TODO use realtime electricity costs
+        df[f'treeMonths{suffix}'] = df[f'carbonFootprint{suffix}'] / fixed_params['tree_month']
+        df[f'cost{suffix}'] = df[f'energy{suffix}'] * fixed_params['electricity_cost'] # TODO use realtime electricity costs
 
     ### Context metrics (part 2)
-    df['driving'] = df.carbonFootprint / fParams['passengerCar_EU_perkm']
-    df['flying_NY_SF'] = df.carbonFootprint / fParams['flight_NY_SF']
-    df['flying_PAR_LON'] = df.carbonFootprint / fParams['flight_PAR_LON']
-    df['flying_NYC_MEL'] = df.carbonFootprint / fParams['flight_NYC_MEL']
+    df['driving'] = df.carbonFootprint / fixed_params['passengerCar_EU_perkm']
+    df['flying_NY_SF'] = df.carbonFootprint / fixed_params['flight_NY_SF']
+    df['flying_PAR_LON'] = df.carbonFootprint / fixed_params['flight_PAR_LON']
+    df['flying_NYC_MEL'] = df.carbonFootprint / fixed_params['flight_NYC_MEL']
 
     ### Add user details to jobs
     if users_df is None:
@@ -184,6 +197,10 @@ def enrich_data(df:pd.DataFrame, fParams:dict, users_df:pd.DataFrame, GA:GA_tool
 
 
 def summarise_data(df:pd.DataFrame, args:argparse.Namespace) -> dict:
+
+    if df is None:
+        print("summarise_data(): df is None")
+        return None
 
     # This is to aggregate already aggregated dataset (so names are a bit different)
     agg_functions_further = agg_functions_from_raw.copy()
@@ -222,6 +239,8 @@ def summarise_data(df:pd.DataFrame, args:argparse.Namespace) -> dict:
         timeseries['share_carbonFootprint'] = timeseries.carbonFootprint / timeseries.carbonFootprint.sum()
 
         return timeseries
+
+
 
     df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit day
 
@@ -287,8 +306,8 @@ def main_backend(args):
     :param args:
     :return:
     '''
-    ### Load cluster specific info
-    with open(os.path.join(args.path_infrastucture_info, 'cluster_info.yaml'), "r") as stream:
+    ### Load cluster-specific info
+    with open(os.path.join(args.path_infrastructure_info, 'cluster_info.yaml'), "r") as stream:
         try:
             cluster_info = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -297,33 +316,33 @@ def main_backend(args):
     ### Load fixed parameters
     with open("data/fixed_parameters.yaml", "r") as stream:
         try:
-            fParams = yaml.safe_load(stream)
+            fixed_params = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
 
     # Get slurmAdmin data 
     has_slurmAdmin = True # get_slurmAdmin(args)
 
-    ### Load users specific data (if available)
+    ### Load user-specific data (if available)
     try:
-        users_df = pd.read_csv(os.path.join(args.path_infrastucture_info, 'users_list.csv'))
+        users_df = pd.read_csv(os.path.join(args.path_infrastructure_info, 'users_list.csv'))
     except FileNotFoundError:
         if has_slurmAdmin:
             raise ValueError("No user data available.")
         users_df = None
 
-    GA = GA_tools(cluster_info, fParams)
+    GA = GA_tools(cluster_info, fixed_params)
 
     df = extract_data(args, has_slurmAdmin, cluster_info=cluster_info)
-    df2 = enrich_data(df, fParams=fParams, users_df=users_df, GA=GA)
+    df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA)
     summary_stats = summarise_data(df2, args=args) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
     ## Store data into a database
     try:
-        foo = args.__dict__.keys() # This is when using command line arguments (Namespace)
+        dict_keys = args.__dict__.keys() # This is when using command line arguments (Namespace)
     except:
-        foo = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
-    if 'db_name' in foo:
+        dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
+    if 'db_name' in dict_keys:
         import_data_in_db(summary_stats, args)
 
     return summary_stats
@@ -348,18 +367,16 @@ if __name__ == "__main__":
 
     from collections import namedtuple
     argStruct = namedtuple('argStruct',
-                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastucture_info')
+                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastructure_info')
     args = argStruct(
         startDay='2022-01-01',
         endDay='2023-06-30',
-        useCustomLogs="", #"sacct_output_loic1.txt",
+        useCustomLogs="",
         use_mock_agg_data=True,
         reportBug=False,
         reportBugHere=False,
-        path_infrastucture_info="data/ourInfrastructure/CSD3",
+        path_infrastructure_info="",
     )
 
     main_backend(args)
-
-
 

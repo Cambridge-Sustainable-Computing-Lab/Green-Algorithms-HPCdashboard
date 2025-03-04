@@ -2,9 +2,12 @@
 
 # TODO update to new code. I think maybe best to have two script, one for the first install (creates virtual env, etc), and then a regular one
 
+# Example: 
+# zsh ./run_backend.sh --db_name ga_db --db_user postgres --db_password mypassword -S 2025-02-14 -E 2025-02-18 --useOtherInfrastructureInfo data/ourInfrastructure/CSD3
+
 ## ~~~ TO BE EDITED TO BE TAILORED TO THE CLUSTER ~~~
 ##
-## You only need to edit the module loading line (l.13), make sure you are loading python 3.11 or greater.
+## You only need to edit the module loading line (module load ...), make sure you are loading python 3.11 or greater.
 ##
 
 # store the cwd in case we need to filter on it
@@ -14,7 +17,7 @@ userCWD="$(pwd)"
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
-# The only requirement for the module is to start python 3.11 or later
+# Module loading line. The only requirement for the module is to start python 3.11 or later
 #module load miniconda/3
 
 ## Test if the virtualenv GA_env already exists, and if not, creates it.

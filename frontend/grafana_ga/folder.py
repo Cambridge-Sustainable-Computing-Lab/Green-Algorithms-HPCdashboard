@@ -1,4 +1,5 @@
 import logging
+
 from grafana_client.client import GrafanaClientError
 from .base import GrafanaGABase
 

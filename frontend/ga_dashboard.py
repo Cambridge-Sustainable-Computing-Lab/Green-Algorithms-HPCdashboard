@@ -9,6 +9,11 @@ from grafana_ga.user import GrafanaGAUser
 
 logger = logging.getLogger(__name__)
 
+# Example usage: (py313) mg2216@C02FC12VQ6L8 frontend % python ga_dashboard.py --admin_password admin --db_name ga_db --db_user postgres 
+#     --db_password mypasword --input_file /path/to/csv/file
+
+# Example setting grafana admin user password to "admin" (bad): ./grafana cli admin reset-admin-password admin admin reset-admin-password admin
+# (In grafana/bin directory)
 
 def main():
 
@@ -74,7 +79,7 @@ def main():
     logger.info('########################')
     for dashboard_filename in os.listdir(ga_dashboard_input_dir):
         if dashboard_filename.endswith('.json'):
-            ga_dashboard = GrafanaGADashboard(login, password, grafana_url,ga_dashboard_input_dir,dashboard_filename,ga_folder_import.folder_uid)
+            ga_dashboard = GrafanaGADashboard(login, password, grafana_url, ga_dashboard_input_dir, dashboard_filename, ga_folder_import.folder_uid)
             ga_dashboard.import_dashboard()
     
 
