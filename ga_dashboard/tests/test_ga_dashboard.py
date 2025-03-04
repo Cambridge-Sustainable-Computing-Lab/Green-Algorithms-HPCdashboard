@@ -11,6 +11,16 @@ from ga_dashboard.backend.data_sql_import import DataSQLImport, parse_string_to_
 from ga_dashboard.backend.ga_tools import GA_tools, agg_functions_from_raw, extract_data, main_backend
 
 
+# Laurent: "This could an additional thing to build: a check that the cluster_info file contains all the required field (check format ?)
+# And we could also do the same for the Slurm data file(s)."
+def test_check_cluster_info_file(): # To test check_cluster_info_file()
+    pass
+
+def test_check_slurm_data_file(): # To test check_slurm_data_file()
+    pass
+# Just placeholders for now
+
+
 # Check that we can call our functions ok:
 # Use decorators to run these.
 
