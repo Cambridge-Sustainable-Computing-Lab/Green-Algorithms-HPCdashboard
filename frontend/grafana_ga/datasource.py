@@ -9,7 +9,10 @@ logger = logging.getLogger(__name__)
 class GrafanaGADataSource(GrafanaGABase):
     ''' Class used to setup a Grafana data source (i.e. a database) '''
 
-    def __init__(self, login:str, password:str, grafana_url:str, db_name:str, db_user:str, db_password:str, db_host:str, db_port:int = 5432, pg_version:int = 13, datasource_name:str = 'grafana-postgresql-ga_db', sslmode:str = 'disable') -> None:
+    def __init__(self, login:str, password:str, grafana_url:str, db_name:str, db_user:str, db_password:str, \
+                 db_host:str, db_port:int = 5432, pg_version:int = 13, datasource_name:str = 'grafana-postgresql-ga_db', \
+                 sslmode:str = 'disable') -> None:
+        
         super().__init__(login, password, grafana_url)
         self.datasource_name = datasource_name
         self.db_name = db_name

@@ -1,6 +1,6 @@
 import logging
 from niquests.exceptions import ConnectionError
-from grafana_client import GrafanaApi
+from grafana_client import GrafanaApi  # From https://github.com/grafana-toolbox/grafana-client repo.
 
 
 logger = logging.getLogger(__name__)
