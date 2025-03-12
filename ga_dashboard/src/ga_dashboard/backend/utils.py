@@ -122,7 +122,7 @@ def simulate_mock_jobs(): # DEBUGONLY
         data_dict = {
             'WallclockTimeX':[datetime.timedelta(minutes=random.randint(50,700)) for _ in range(n_jobs)],
             'ReqMemX':np.random.randint(4,130, size=n_jobs)*1.,
-            'PartitionX':['gollum']*n_jobs,
+            'PartitionX':['yew']*n_jobs,
             'SubmitDatetimeX':[datetime.datetime(day=1,month=5,year=2023) + datetime.timedelta(days=random.randint(1,60)) for _ in range(n_jobs)],
             'StateX':np.random.choice([1,0], p=[.8,.2], size=n_jobs),
             'UIDX':['11111']*n_jobs,

@@ -42,7 +42,7 @@ def test_main_backend():
         use_mock_agg_data=True,
         reportBug=False,
         reportBugHere=False,
-        path_infrastructure_info="", # FIXME add path to infrastructure here.
+        path_infrastructure_info="./samples", # This assumes pytest is called from the ga_dashboard directory.
     )
 
     main_backend(args)
