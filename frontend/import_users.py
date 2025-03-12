@@ -5,7 +5,28 @@ from grafana_ga.folder import GrafanaGAFolder
 
 
 logger = logging.getLogger(__name__)
-      
+
+"""
+This script allows multiple users to be imported into Grafana, without using the web interface to add them.
+
+'Password' is their Grafana user password (not their HPC password!).
+
+Example user list for Grafana users. In CSV format. Currently in GA4HPCdashboard/data/users_list.csv
+
+Name,User name,Email,Password,Team name
+Thomas Greene,tg1,tg1@ga-test.com,password_1,Team 1
+Adam Mackay,am1,am1@ga-test.com,password_2,Team 2
+
+Laurent says 'Team name' is mapped to "Group' in the sample BACKEND csv file (anonymised).
+
+Need to get the two sets of users and their data to be consistent.
+
+The 'User name' and 'Password' are needed to log in to Grafana 
+
+Example (using Grafana admin defaults):
+python import_users.py --input_file ../data/users_list.csv --admin_login admin --admin_password admin 
+""" 
+
 
 def main():
     argparser = argparse.ArgumentParser()
