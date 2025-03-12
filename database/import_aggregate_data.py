@@ -3,6 +3,10 @@ import csv
 import psycopg
 import argparse
 
+"""
+Import data from a CSV file into PostgreSQL.
+From Laurent.
+"""
 
 def get_columns(input_file):
     with open(input_file, newline='') as csvfile:
