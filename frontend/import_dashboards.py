@@ -6,6 +6,9 @@ from grafana_ga.dashboard import GrafanaGADashboard
 logger = logging.getLogger(__name__)
 
 
+''' Import the dashboard JSON files (/frontend/dashboards) into Grafana (i.e. Grafana internal SQLite DB) '''
+
+
 ###############################################
 
 

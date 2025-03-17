@@ -9,10 +9,20 @@ from grafana_ga.user import GrafanaGAUser
 
 logger = logging.getLogger(__name__)
 
+'''
+Combines the usage of several of the scripts:
+
+- Create data source
+- Create Grafana folder to host the dashboards
+- Import the dashboard JSON files into Grafana (and locate them in the Grafana folder created above)
+- Create Grafana users and teams
+- Add teams permission on the Grafana folder
+'''
+
 # Example usage: (py313) mg2216@C02FC12VQ6L8 frontend % python ga_dashboard.py --admin_password admin --db_name ga_db --db_user postgres 
 #     --db_password mypasword --input_file /path/to/csv/file
 
-# Example setting grafana admin user password to "admin" (bad): ./grafana cli admin reset-admin-password admin admin reset-admin-password admin
+# Example setting grafana admin user password to "admin" (bad): ./grafana cli admin reset-admin-password admin
 # (In grafana/bin directory)
 
 def main():
