@@ -11,11 +11,12 @@ This script allows multiple users to be imported into Grafana, without using the
 
 'Password' is their Grafana user password (not their HPC password!).
 
-Example user list for Grafana users. In CSV format. Currently in GA4HPCdashboard/data/users_list.csv
+Example user list for Grafana users. In CSV format.
 
 Name,User name,Email,Password,Team name
-Thomas Greene,tg1,tg1@ga-test.com,password_1,Team 1
-Adam Mackay,am1,am1@ga-test.com,password_2,Team 2
+User_1,uid_1,user1@example.com,mypassword,Team 1
+User_2,uid_2,user2@example.com,yourpassword,Team 1
+etc.
 
 Laurent says 'Team name' is mapped to "Group' in the sample BACKEND csv file (anonymised).
 
@@ -23,8 +24,18 @@ Need to get the two sets of users and their data to be consistent.
 
 The 'User name' and 'Password' are needed to log in to Grafana 
 
-Example (using Grafana admin defaults):
-python import_users.py --input_file ../data/users_list.csv --admin_login admin --admin_password admin 
+Example (using Grafana admin defaults) from `GA4HPCdashboard/frontend` directory:
+python import_users.py --input_file ../data/../ga_dashboard/samples/grafana_users_list.csv --admin_login admin --admin_password admin 
+
+But, the backend expects users in this format:
+
+User,UID,Name,Group,Department
+uid_1,11111,User_1,group_1,Dept_3
+uid_2,22222,User_2,group_1,Dept_3
+uid_3,33333,User_3,group_2,Dept_3
+uid_4,44444,User_4,group_3,Dept_2
+uid_5,55555,User_5,group_4,Dept_1
+
 """ 
 
 
@@ -60,6 +71,7 @@ def main():
         for row in reader:
             # Create team (if needed)
             grafana_user.create_team(row['Team name'])
+            #grafana_user.create_team(row['Group'])
 
             # Create user (if needed)
             row['org_id'] = 1 # Default organisation

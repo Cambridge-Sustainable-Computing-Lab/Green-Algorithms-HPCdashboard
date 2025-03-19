@@ -16,6 +16,7 @@ class GrafanaGAUser(GrafanaGABase):
         self.teams = {}
 
 
+    # NB Laurent's teams map to Loïc's groups
     def create_team(self, team_name:str) -> None:
         ''' Create a new Grafana team if it doesn't exist '''
 
