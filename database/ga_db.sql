@@ -12,7 +12,8 @@
 -- % psql -U postgres
 -- # drop database ga_db;
 -- # create database ga_db;
--- # \i ga_db.sql;
+-- # \q
+-- % psql -U postgres -d ga_db < ga_db.sql
 --
 
 SET statement_timeout = 0;
