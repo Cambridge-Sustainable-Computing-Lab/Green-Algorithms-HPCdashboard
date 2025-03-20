@@ -3,7 +3,10 @@
 # TODO update to new code. I think maybe best to have two script, one for the first install (creates virtual env, etc), and then a regular one
 
 # Example: 
-# zsh ./run_backend.sh --db_name ga_db --db_user postgres --db_password mypassword -S 2025-02-14 -E 2025-02-18 --useOtherInfrastructureInfo data/ourInfrastructure/CSD3
+# zsh ./run_backend.sh --db_name ga_db --db_user postgres --db_password mypassword -S 2025-02-14 -E 2025-02-18 --useOtherInfrastructureInfo samples (or data/ourInfrastructure/CSD3)
+# --useCustomLogs samples/sacct_output_single_user.txt
+
+# NB seems to require -S and -E options even if using a custom log file with dates not in this range (which gets added to postgres database).
 
 ## ~~~ TO BE EDITED TO BE TAILORED TO THE CLUSTER ~~~
 ##

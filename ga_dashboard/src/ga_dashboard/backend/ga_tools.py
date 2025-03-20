@@ -57,12 +57,18 @@ class GA_tools:
         :return: [pd.Series] the same statistics with the energies added
         '''
         ### CPU and GPU
+        partition_info = None
+
         try:
             partition_info = self.cluster_info['partitions'][row.PartitionX]
         except KeyError as ke:
             # Raise error if key not found.
             # TODO Make checking of all keys more robust, and explain what to do when a key is missing.
             print(f"calculate_energies(): KeyError: {ke}. Exiting...")
+            exit
+
+        if not partition_info:  #is None:
+            print(f"calculate_energies(): partition_info is None. Exiting...")
             exit
 
         if row.PartitionTypeX == 'CPU':

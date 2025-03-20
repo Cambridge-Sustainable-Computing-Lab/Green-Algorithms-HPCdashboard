@@ -2,6 +2,10 @@ import argparse
 import logging
 from grafana_ga.datasource import GrafanaGADataSource
 
+'''
+Setup the PostgreSQL database connection ("data source") on Grafana.
+'''
+
 
 def main():
     argparser = argparse.ArgumentParser()
