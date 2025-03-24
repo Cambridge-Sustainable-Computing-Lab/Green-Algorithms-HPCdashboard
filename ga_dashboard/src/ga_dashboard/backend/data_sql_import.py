@@ -38,7 +38,7 @@ class DataSQLImport:
                 port=self.db_port
             )
         except psycopg.OperationalError as err:
-            print(f'/!\ Error: Issue connecting to the database: {err}')
+            print(f'Error: Issue connecting to the database: {err}')
             conn = None
         return conn
 
@@ -87,8 +87,9 @@ class DataSQLImport:
                 db_col_name = db_column_names_mapping[col]
                 value = self.convert_data_type(row[col],db_col_name)
                 data_row[db_col_name] = value
-            values = self.get_sql_command(data_row,db_column_names)
-            data.append(values)
+                data.append(data_row)
+            #values = self.get_sql_command(data_row,db_column_names)
+            #data.append(values)
         print(f'> Parsing - end')
 
         print(f'> DB import - start')
@@ -100,15 +101,42 @@ class DataSQLImport:
 
             try:
                 # Prepare SQL command
-                sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)});"
-                # print(sql)
-                cur.execute(sql)
+                # sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)});"
+                print(db_column_names)
+
+                # data is a list of dictionaries; item is one such dictionary
+                # NB there are multiple, identical instances of each data item. We only want the first in each. 
+                for item in data:
+
+                    # As we no longer want all columns in the data, we need to specify each one we want.
+                    # See https://discuss.python.org/t/how-to-do-multi-line-f-strings/46634/6 - avoiding SQL injection attacks.
+                    # and https://www.psycopg.org/psycopg3/docs/basic/params.html
+                 
+                    # The ON CONFLICT DO NOTHING is a temporary hack to stop the duplicate values being (attempted to be) added 
+                    sql = "INSERT INTO ga_data_aggregate (user_name, submitdate, n_jobs, first_job_period, last_job_period, energy," \
+                        " energy_cpus, energy_gpus, energy_memory, carbonfootprint, carbonfootprint_memoryneededonly, carbonfootprint_failedjobs," \
+                        " cputime, gputime, wallclocktime, cpuhourscharged, gpuhourscharged, memoryrequested, memoryoverallocationfactor," \
+                        " n_success, treemonths, treemonths_memoryneededonly, treemonths_failedjobs, driving, flying_ny_sf, flying_par_lon, flying_nyc_mel, "\
+                        " cost, cost_failedjobs, cost_memoryneededonly, success_rate, failure_rate, share_carbonfootprint) " \
+                        " VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING"
+
+                    # Pass the parameters as a tuple
+                    params = (item['user_name'], item['submitdate'], item['n_jobs'], item['first_job_period'], item['last_job_period'], item['energy'], \
+                        item['energy_cpus'], item['energy_gpus'], item['energy_memory'], item['carbonfootprint'], item['carbonfootprint_memoryneededonly'], \
+                        item['carbonfootprint_failedjobs'], item['cputime'], item['gputime'], item['wallclocktime'], item['cpuhourscharged'], \
+                        item['gpuhourscharged'], item['memoryrequested'], item['memoryoverallocationfactor'], item['n_success'], \
+                        item['treemonths'], item['treemonths_memoryneededonly'], item['treemonths_failedjobs'], item['driving'], \
+                        item['flying_ny_sf'], item['flying_par_lon'], item['flying_nyc_mel'], item['cost'], item['cost_failedjobs'], \
+                        item['cost_memoryneededonly'], item['success_rate'], item['failure_rate'], item['share_carbonfootprint'])
+                    
+                    cur.execute(sql, params)
+
                 # Make the changes to the database persistent
                 conn.commit()
             except psycopg.DataError as e:
-                print(f'/!\ Error: Issue with the data format to be imported: {e}')
+                print(f'Error: Issue with the data format to be imported: {e}')
             except Exception as e:
-                print(f'/!\ Error: Issue while attempting to insert new data: {e}')
+                print(f'Error: Issue while attempting to insert new data: {e}')
 
             # Close connection with the database
             cur.close()
