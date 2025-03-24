@@ -19,6 +19,13 @@ I attached the script I used to simply import the CSV into PostgreSQL
 Example:
 python import_mockup_aggregate.py --input_file ../ga_dashboard/samples/userDaily_mockMultiUsers_1.csv --db_name ga_db 
        --db_user postgres --db_password mypassword --db_host localhost --db_port 5432
+
+
+
+ user_name | submitdate | n_jobs | first_job_period | last_job_period |       energy        |     energy_cpus      | energy_gpus |    energy_memory     |
+   carbonfootprint | carbonfootprint_memoryneededonly | carbonfootprint_failedjobs |     cputime     |     gputime     |  wallclocktime  |  cpuhourscharged  | gpuhourscharged |
+     memoryrequested | memoryoverallocationfactor | n_success |     treemonths      | treemonths_memoryneededonly | treemonths_failedjobs |       driving       |   
+        flying_ny_sf      |   flying_par_lon   |    flying_nyc_mel     |         cost         |   cost_failedjobs    | cost_memoryneededonly | success_rate | failure_rate | share_carbonfootprint 
 """
 
 
@@ -33,11 +40,29 @@ def get_columns(input_file):
  
 
 def map_column_names(file_col_names):
+    """
+    file_col_names is the list of header names in the input file.
+
+    
+    """
+    print("file_col_names: ")
+    print(file_col_names)
+
     db_col_names = {}
     for file_col in file_col_names:
+
+        # Out of User, UID, Name, Group and Department we now only store User in the ga_data_aggrgate table
+        if file_col in ['UID', 'Name', 'Group', 'Department']:
+            continue
+
         db_col = file_col
+
         db_col = db_col.lower()
-        if db_col in ['user','group']:
+
+        # Remove trailing 'x' character
+        #db_col = db_col[:-1]
+        
+        if db_col in ['user']:
             db_col += '_name'
         db_col_names[file_col] = db_col
     return db_col_names
@@ -101,6 +126,10 @@ def main():
         for row in reader:
             data_row = {}
             for col in raw_column_names:
+
+                if col in ['UID', 'Name', 'Group', 'Department']:
+                    continue
+
                 db_col = db_column_names_mapping[col]
                 value = row[col]
                 new_value = parse_string_to_number(value)
@@ -111,6 +140,8 @@ def main():
                 data_row[db_col] = value
             values = get_sql_command(data_row,db_column_names)
             data.append(values)
+
+        print(values)
    
     # Connect to an existing database
     conn = psycopg.connect(
@@ -124,7 +155,7 @@ def main():
     cur = conn.cursor()
  
     # Prepare SQL command
-    sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)});"
+    sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)}) ON CONFLICT DO NOTHING;"
     # print(sql)
     cur.execute(sql)
  
