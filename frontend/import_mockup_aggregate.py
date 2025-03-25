@@ -198,6 +198,7 @@ def main():
     #print(sql)
     cur.execute(sql)
 
+    # Insert the user into the database if he/she isn't in there already.
     sql = f"INSERT INTO ga_user ({','.join(user_db_column_names)}) VALUES ({'),('.join(user_data)}) ON CONFLICT DO NOTHING;"
     #print(sql)
     cur.execute(sql)

@@ -53,7 +53,17 @@ class GrafanaGAUser(GrafanaGABase):
 
     def create_user(self, user_data:dict) -> None:
         ''' Create a new Grafana user if it doesn't exist '''
-        user_login_or_email = user_data['User name'] if user_data['User name'] else user_data['Email']
+        user_login_or_email = None
+
+        if "User name" in user_data: # Backwards compatibility
+            user_login_or_email = user_data['User name']
+        elif "User" in user_data:
+            user_login_or_email = user_data["User"]
+        elif "Email" in user_data:
+            user_login_or_email = user_data["Email"]
+        else:
+            logger.error(f"Missing data for user. Data: {user_data}")
+            exit(1)
 
         # Check existing user
         existing_user = self.check_existing_user(user_login_or_email)
@@ -63,9 +73,9 @@ class GrafanaGAUser(GrafanaGABase):
             teams = self.grafana.users.get_user_teams(existing_user['id'])
             user_teams = [x['name'] for x in teams]
             if user_teams:
-                logger.warning(f"User '{user_data['User name']}' is already in Grafana (and in team(s) '{', '.join(user_teams)}')")
+                logger.warning(f"User '{user_login_or_email}' is already in Grafana (and in team(s) '{', '.join(user_teams)}')")
             else:
-                logger.warning(f"User '{user_data['User name']}' is already in Grafana but is not member of a team")
+                logger.warning(f"User '{user_login_or_email}' is already in Grafana but is not member of a team")
         else:
             self.set_new_user(user_data)
 
@@ -91,7 +101,7 @@ class GrafanaGAUser(GrafanaGABase):
                 "name": user_data['Name'], 
                 "email": user_data['Email'], 
                 "login": user_data['User name'], 
-                "password": user_data['Password'], 
+                "password": user_data['GrafanaPassword'], 
                 "OrgId": user_data['org_id']    
             })
         except GrafanaClientError as ex:
