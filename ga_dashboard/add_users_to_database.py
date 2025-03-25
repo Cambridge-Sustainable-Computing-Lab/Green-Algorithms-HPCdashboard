@@ -62,49 +62,13 @@ class User:
             logger.error("User constructor: error in data. Dict: " + str(data))
             exit(1)  
 
+
     def to_tuple(self) -> tuple:
         """
         Return the object's member values as a tuple.
+        IMPORTANT: in same order as the INSERT command used!
         """
         return self.user, self.uid, self.name, self.group, self.dept
-
-
-def build_command_string(user_objects: list) -> str:
-    """
-    Generate the SQL command string to send to the database.
-
-    Args:
-        user_objects (list): List of User objects.
-
-    Returns:
-        str: The command.
-    """
-    command = "INSERT INTO ga_user (user_name, uid, name, group_name, department) VALUES "
-    more_than_one = False; # Handle commas if more than one row to add to database.
-    for uobj in user_objects:
-        if more_than_one:
-            command += ','
-        uobj_str = f"({uobj.user}, {uobj.uid}, {uobj.name}, {uobj.group}, {uobj.dept})"
-        command += uobj_str
-        more_than_one = True 
-    return command
-
-
-def build_data_to_execute(user_objects: list) ->list:
-    """
-    Generate list of data to send to the SQL execute command.
-    Doing it this way, rather than building a string, to avoid SQL injection
-
-    Args:
-        user_objects (list): List of User objects.
-
-    Returns:
-        list: The list of value sets to send to the execute command.
-    """
-    mylist = []
-    for uobj in user_objects:
-        mylist.append(uobj.to_tuple)
-    return mylist
 
 
 def create_arguments():
@@ -177,10 +141,12 @@ if __name__ == "__main__":
     
     cur = conn.cursor()
 
-   # sql = build_command_string(user_objects)
-
-    # data_to_execute = build_data_to_execute(user_objects)
-    sql = "INSERT INTO ga_user (user_name, uid, name, group_name, department) VALUES (%s, %s, %s, %s, %s)"
+    # ON CONFLICT (did) DO UPDATE SET dname = EXCLUDED.dname;
+    # We assume the information we send is what we want, so we will overwrite existing data if
+    # there's a conflict.
+    sql = "INSERT INTO ga_user (user_name, uid, name, group_name, department) VALUES (%s, %s, %s, %s, %s) "
+    sql += "ON CONFLICT (user_name) DO UPDATE SET uid = EXCLUDED.uid, name = EXCLUDED.name, "
+    sql += "group_name = EXCLUDED.group_name, department = EXCLUDED.department"
 
     for uobj in user_objects:
         data = uobj.to_tuple()
