@@ -93,7 +93,8 @@ CREATE TABLE public.ga_user (
     uid integer,
     name character varying(255),
     group_name character varying(255),
-    department character varying(255)
+    department character varying(255),
+    updated TIMESTAMP
 );
 
 

@@ -141,12 +141,11 @@ if __name__ == "__main__":
     
     cur = conn.cursor()
 
-    # ON CONFLICT (did) DO UPDATE SET dname = EXCLUDED.dname;
     # We assume the information we send is what we want, so we will overwrite existing data if
     # there's a conflict.
-    sql = "INSERT INTO ga_user (user_name, uid, name, group_name, department) VALUES (%s, %s, %s, %s, %s) "
+    sql = "INSERT INTO ga_user (user_name, uid, name, group_name, department, updated) VALUES (%s, %s, %s, %s, %s, now()) "
     sql += "ON CONFLICT (user_name) DO UPDATE SET uid = EXCLUDED.uid, name = EXCLUDED.name, "
-    sql += "group_name = EXCLUDED.group_name, department = EXCLUDED.department"
+    sql += "group_name = EXCLUDED.group_name, department = EXCLUDED.department, updated = EXCLUDED.updated"
 
     for uobj in user_objects:
         data = uobj.to_tuple()
