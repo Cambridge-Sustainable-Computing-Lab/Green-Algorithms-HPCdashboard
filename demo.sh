@@ -18,7 +18,7 @@ echo "current dir is $userCWD" # Probably ..../GA4HPCdashboard
 
 common_users_file="$userCWD/ga_dashboard/samples/common_users_list.csv"
 
-echo "\n*** Importing users to Grafana: ***\n" # NB check Grafana is running first
+echo "\n*** Importing users to Grafana: ***\n" # This step will fail if Grafana is not running.
 
 python frontend/import_users.py --input_file $userCWD/ga_dashboard/samples/grafana_users_list.csv --admin_login admin --admin_password admin
 echo "\n* Done! *\n"
@@ -33,5 +33,8 @@ sh $userCWD/ga_dashboard/run_backend.sh --db_name ga_db --db_user postgres --db_
     --useOtherInfrastructureInfo samples --useCustomLogs samples/sacct_output_single_user.txt
 echo "\n* Done! *\n"
 
+echo "\n*** Adding the data source (backend database) into Grafana: ***\n"
+python frontend/create_data_source.py --name demo_datasource --admin_password admin --db_name ga_db --db_user postgres --db_password "$mypassword"
+echo "\n* Done! *\n"
 
-echo "\n\n ******* Demo script completed. *******\n\n" 
+echo "\n ******* Demo script completed. *******\n\n" 
