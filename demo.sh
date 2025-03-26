@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mypassword=dillon # Replace this with command-line option for user's backend database password
+mypassword=your_password_here # Replace this with command-line option for user's backend database password
 
 #set -x #echo on
 
