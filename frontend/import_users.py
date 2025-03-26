@@ -12,7 +12,7 @@ This script allows multiple users to be imported into Grafana, without using the
 'Password' is their Grafana user password (not their HPC password!).
 
 Users of this repository should change the passwords in the files supplied and not push the
-amended files to GitHub. This is to ensure security.
+amended files to GitHub, or use a different file. This is to ensure security. 
 
 Example user list for Grafana users. In CSV format.
 
@@ -59,7 +59,6 @@ def main():
     argparser.add_argument("--admin_password", "-p", help='Grafana admin password', required=True, metavar='ADMIN_PASS', dest='password')
     argparser.add_argument("--debug", "-d", help='Debug mode', required=False, dest='debug', action='store_true')
     argparser.add_argument("--dashboard_folder", "-f", help='Name of the dashboard folder', required=False, dest='dashboard_folder', default='Green Algorithms')
-    #argparser.add_argument("--add_to_postgres", "-a", required=False, dest='add_to_postgres', action='store_true')
 
     args = argparser.parse_args()
 
@@ -69,7 +68,6 @@ def main():
     password = args.password
     debug = args.debug
     ga_dashboard_folder_name = args.dashboard_folder
-    #add_to_postgres = args.add_to_postgres
 
     logging_level = logging.DEBUG if debug else logging.INFO
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging_level)
@@ -97,9 +95,6 @@ def main():
             # Create Grafana user (if needed)
             row['org_id'] = 1 # Default organisation
             current_grafana_user.create_user(row)
-
-            #if add_to_postgres:
-                #pass # Move this to a different script.
 
     # Folder
     grafana_folder = GrafanaGAFolder(login, password, grafana_url, ga_dashboard_folder_name)

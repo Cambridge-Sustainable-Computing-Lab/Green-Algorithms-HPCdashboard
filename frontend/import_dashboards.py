@@ -47,7 +47,7 @@ def main():
     # Loop over dashboard files
     for dashboard_filename in os.listdir(input_dir):
         if dashboard_filename.endswith('.json'):
-            ga_dashboard = GrafanaGADashboard(login, password, grafana_url,input_dir,dashboard_filename,ga_folder_import.folder_uid)
+            ga_dashboard = GrafanaGADashboard(login, password, grafana_url, input_dir, dashboard_filename, ga_folder_import.folder_uid)
             ga_dashboard.import_dashboard()
 
 
