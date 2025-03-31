@@ -25,8 +25,8 @@ echo "current dir is $repo_root_dir" # Probably ..../GA4HPCdashboard
 ###############################################################
 DEFAULT_GRAFANA_USER="admin"
 DEFAULT_GRAFANA_ADMIN_PASSWORD="admin" 
-DEFAULT_GRAFANA_DASHBOARD_FOLDER_NAME="Green Algorithms"
-DEFAULT_GRAFANA_DASHBOARDS_DIR="$repo_root_dir/frontend/dashboards/prod"
+DEFAULT_GRAFANA_DASHBOARD_FOLDER_NAME="Green Algorithms Demo"
+DEFAULT_GRAFANA_DASHBOARDS_DIR=$repo_root_dir ### $repo_root_dir/frontend/dashboards/prod" 
 DEFAULT_GRAFANA_URL="localhost:3000"
 DEFAULT_DB_NAME="ga_db"
 DEFAULT_DB_HOST="localhost"
