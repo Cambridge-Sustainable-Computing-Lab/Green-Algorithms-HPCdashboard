@@ -25,8 +25,7 @@ e.g., in rows like this:
 "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
 ```
 
-Laurent managed to save the JSON with a second existing datasource (just editing 1 chart).
-I saved it by switching on the Export dashboard to use in another instance:
+Laurent managed to save the JSON with a second existing datasource (just editing 1 chart). He saved it by switching on the Export dashboard to use in another instance:
 
 ![Image showing how to export a dashboard](exporting_dashboard.png?raw=true "Exporting dashboard")
 
