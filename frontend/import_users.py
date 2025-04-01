@@ -84,12 +84,10 @@ def main():
         for row in reader:
 
             # Create team (if needed)
-            if "Team name" in row: # For backwards compatibility
-                current_grafana_user.create_team(row['Team name'])
-            elif "Group" in row:
+            if "Group" in row:
                 current_grafana_user.create_team(row['Group'])
             else:
-                logger.error("No Team name or Group in users file!")
+                logger.error("No Group in users file!")
                 exit(1)
             
             # Create Grafana user (if needed)
@@ -104,4 +102,4 @@ def main():
 
 
 if __name__ == "__main__":
-     main()
+    main()
