@@ -44,7 +44,7 @@ class GrafanaGADashboard(GrafanaGABase):
                 self.parse_json_to_content()
                 logger.info("Parsed.")
                 
-                # Fetch data source
+                # Fetch data source - NB This gets only the first one in the list (which may, or may not, have more). FIXME
                 datasource_label = self.dash_content['__inputs'][0]['label']  # e.g., 'grafana-postgresql-ga_db'
                 datasource = self.grafana.datasource.find_datasource(datasource_label)
                 #logger.info(f"datasource: {datasource}")

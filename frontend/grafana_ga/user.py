@@ -34,7 +34,7 @@ class GrafanaGAUser(GrafanaGABase):
         except GrafanaClientError as ex:
             if ex.status_code == 409:
                 grafana_teams = self.grafana.teams.get_team_by_name(team_name)
-                if len(grafana_teams) > 0:
+                if grafana_teams and len(grafana_teams) > 0:
                     uid = grafana_teams[0]['uid']
                     self.teams[uid] = grafana_teams[0]
                 logger.warning(f"Team '{team_name}' already exists: {ex.response['message']}")
