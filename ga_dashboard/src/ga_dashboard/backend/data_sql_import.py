@@ -102,7 +102,7 @@ class DataSQLImport:
             try:
                 # Prepare SQL command
                 # sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)});"
-                print(db_column_names)
+                #print(db_column_names)
 
                 # data is a list of dictionaries; item is one such dictionary
                 # NB there are multiple, identical instances of each data item. We only want the first in each. 

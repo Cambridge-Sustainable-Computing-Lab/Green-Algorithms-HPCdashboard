@@ -4,7 +4,7 @@
 # sh ./demo.sh your_password
 # assuming your password for the backend database user (postgres) is "your_password" 
 
-set -x # Uncomment this to echo commands to screen (for debugging)
+# set -x # Uncomment this to echo commands to screen (for debugging)
 
 # Abort script if we encounter any errors:
 set -e  # Although, see https://stackoverflow.com/questions/39773637/in-a-bash-script-test-error-code-from-a-called-script
@@ -35,7 +35,7 @@ DEFAULT_DB_USER="postgres"
 DEFAULT_START_DATE="2025-02-14"
 DEFAULT_END_DATE="2025-02-18"
 DEFAULT_INFRASTRUCTURE_DIR="$repo_root_dir/ga_dashboard/samples"
-DEFAULT_DATASOURCE_NAME="grafana-postgresql-ga_db" # "demo_datasource"
+DEFAULT_DATASOURCE_NAME="demo_datasource"  # "grafana-postgresql-ga_db" 
 DEFAULT_POSTGRES_VERSION=13
 DEFAULT_USERS_FILE="$repo_root_dir/ga_dashboard/samples/common_users_list.csv"
 DEFAULT_SACCT_FILE="$repo_root_dir/ga_dashboard/samples/sacct_output_single_user.txt"
