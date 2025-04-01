@@ -2,7 +2,7 @@ from importlib import resources
 
 # Add the module's path:
 import sys
-sys.path.append('src')
+sys.path.append('.')
 # sys.path.append('testdata')
 # This works if run as `pytest` from the `GA4HPCdashboard/ga_dashboard` directory.
 
