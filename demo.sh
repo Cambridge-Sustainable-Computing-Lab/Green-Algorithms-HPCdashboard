@@ -11,9 +11,14 @@ set -e  # Although, see https://stackoverflow.com/questions/39773637/in-a-bash-s
 
 echo "\n\n ******* Demo script started. *******\n" 
 
-db_password="$@" # Gets your password from the command line.
+db_password="$@" # Gets your Postgres database user password from the command line.
 
 # Change the values in "Your values" section (further down) as required.
+#
+# If you get an error like this:
+#     ERROR:  database "ga_db" is being accessed by other users
+#     DETAIL:  There is 1 other session using the database.
+# you may need to restart the Grafana server, as it connects to Postgres.
 
 repo_root_dir="$(pwd)"
 echo "current dir is $repo_root_dir" # Probably ..../GA4HPCdashboard
@@ -65,6 +70,13 @@ grafana_url=$DEFAULT_GRAFANA_URL
 common_users_file=$DEFAULT_USERS_FILE
 sacct_file=$DEFAULT_SACCT_FILE
 
+echo "\n*** Setting up Postgres database: ***\n"
+export PGPASSWORD="$db_password"
+psql -c 'drop database if exists ga_db; ' -U postgres
+psql -c 'create database ga_db; ' -U postgres
+psql -U $db_user -d ga_db < $repo_root_dir/database/ga_db.sql ; export PGPASSWORD=
+echo "\n* Done! *\n"
+
 echo "\n*** Importing users to Grafana: ***\n" # This step will fail if Grafana is not running.
 python $repo_root_dir/frontend/import_users.py --input_file $common_users_file \
     --admin_login $grafana_admin_user --admin_password $grafana_admin_password \
@@ -98,6 +110,6 @@ echo "\n*** Importing the demo dashboard into Grafana: ***\n"
 python $repo_root_dir/frontend/import_dashboards.py --input_dir $grafana_dashboard_directory --url $grafana_url  \
     --admin_login $grafana_admin_user --admin_password $grafana_admin_password \
     --dashboard_folder_name "$grafana_dashboard_folder_name"  --debug
-exit
+echo "\n* Done! *\n"
 
 echo "\n ******* Demo script completed. *******\n\n" 
