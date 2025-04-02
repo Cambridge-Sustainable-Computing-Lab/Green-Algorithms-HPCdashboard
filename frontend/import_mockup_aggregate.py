@@ -57,8 +57,7 @@ def map_column_names(file_col_names, user_data=False):
         if user_data:
             if file_col not in ['User', 'UID', 'Name', 'Group', 'Department']:
                 continue
-
-        if not user_data:
+        else:
             if file_col in ['UID', 'Name', 'Group', 'Department']:
                 continue
 
