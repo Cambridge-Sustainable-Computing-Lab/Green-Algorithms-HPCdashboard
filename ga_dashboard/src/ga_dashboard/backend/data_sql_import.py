@@ -1,6 +1,7 @@
-import psycopg
 import datetime
 import pandas
+import psycopg
+# import re
 
 # TODO: From Laurent's PR code review: "It's good for now, but in the future it might make more sense to use the logging package, like in the grafana_ga modules."
 
@@ -75,7 +76,7 @@ class DataSQLImport:
         # Prepare DB column names from the ones in the input file
         raw_column_names = self.dict_users_data.columns # Pandas columns
         db_column_names_mapping = self.map_column_names(raw_column_names)
-        db_column_names = db_column_names_mapping.values()
+        #db_column_names = db_column_names_mapping.values()
 
         data = []
         print(f'> Parsing - start')
@@ -111,25 +112,41 @@ class DataSQLImport:
                     # As we no longer want all columns in the data, we need to specify each one we want.
                     # See https://discuss.python.org/t/how-to-do-multi-line-f-strings/46634/6 - avoiding SQL injection attacks.
                     # and https://www.psycopg.org/psycopg3/docs/basic/params.html
-                 
-                    # The ON CONFLICT DO NOTHING is a temporary hack to stop the duplicate values being (attempted to be) added 
-                    sql = "INSERT INTO ga_data_aggregate (user_name, submitdate, n_jobs, first_job_period, last_job_period, energy," \
-                        " energy_cpus, energy_gpus, energy_memory, carbonfootprint, carbonfootprint_memoryneededonly, carbonfootprint_failedjobs," \
-                        " cputime, gputime, wallclocktime, cpuhourscharged, gpuhourscharged, memoryrequested, memoryoverallocationfactor," \
-                        " n_success, treemonths, treemonths_memoryneededonly, treemonths_failedjobs, driving, flying_ny_sf, flying_par_lon, flying_nyc_mel, "\
-                        " cost, cost_failedjobs, cost_memoryneededonly, success_rate, failure_rate, share_carbonfootprint) " \
-                        " VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING"
 
-                    # Pass the parameters as a tuple
-                    params = (item['user_name'], item['submitdate'], item['n_jobs'], item['first_job_period'], item['last_job_period'], item['energy'], \
-                        item['energy_cpus'], item['energy_gpus'], item['energy_memory'], item['carbonfootprint'], item['carbonfootprint_memoryneededonly'], \
-                        item['carbonfootprint_failedjobs'], item['cputime'], item['gputime'], item['wallclocktime'], item['cpuhourscharged'], \
-                        item['gpuhourscharged'], item['memoryrequested'], item['memoryoverallocationfactor'], item['n_success'], \
-                        item['treemonths'], item['treemonths_memoryneededonly'], item['treemonths_failedjobs'], item['driving'], \
-                        item['flying_ny_sf'], item['flying_par_lon'], item['flying_nyc_mel'], item['cost'], item['cost_failedjobs'], \
-                        item['cost_memoryneededonly'], item['success_rate'], item['failure_rate'], item['share_carbonfootprint'])
-                    
-                    cur.execute(sql, params)
+                    # The correct way to pass variables in a SQL command is using the second argument of the Cursor.execute() method:
+                    # SQL = "INSERT INTO authors (name) VALUES (%s)"  # Note: no quotes
+                    # data = ("O'Reilly", )
+                    # cur.execute(SQL, data)  # Note: no % operator
+                     
+                    columns = ['user_name', 'submitdate', 'n_jobs', 'first_job_period', 'last_job_period', 'energy', 'energy_cpus', 'energy_gpus', 'energy_memory', \
+                               'carbonfootprint', 'carbonfootprint_memoryneededonly', 'carbonfootprint_failedjobs', 'cputime', 'gputime', 'wallclocktime', \
+                               'cpuhourscharged', 'gpuhourscharged', 'memoryrequested', 'memoryoverallocationfactor', 'n_success', \
+                               'treemonths', 'treemonths_memoryneededonly', 'treemonths_failedjobs', 'driving', 'flying_ny_sf', 'flying_par_lon', 'flying_nyc_mel',\
+                               'cost', 'cost_failedjobs', 'cost_memoryneededonly', 'success_rate', 'failure_rate', 'share_carbonfootprint']
+
+                    data = []
+                    for col in columns:
+                        if col in item.keys():
+                            val = item[col]
+                            # Check if numeric 
+                            # if re.match(r'^\d+\.?\d+$', str(val)):
+                            #     data.append(val)
+                            # else:
+                            #     data.append(f"'{val}'")
+                            data.append(val)
+
+                    num_columns = len(columns)
+
+                    # The ON CONFLICT DO NOTHING is a temporary hack to stop the duplicate values being (attempted to be) added 
+                    #sql = f"INSERT INTO ga_data_aggregate ('{"','".join(columns)}') VALUES({','.join(data)}) ON CONFLICT DO NOTHING"
+                    sql = f"INSERT INTO ga_data_aggregate ({", ".join(columns)}) VALUES("
+                    sql += "%s"
+                    for i in range(1, num_columns):
+                        sql += ", %s"
+                    sql += ") ON CONFLICT DO NOTHING"
+                    #print(sql)
+                    #print(data)
+                    cur.execute(sql, data)
 
                 # Make the changes to the database persistent
                 conn.commit()
