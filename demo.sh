@@ -68,6 +68,7 @@ sacct_file=$DEFAULT_SACCT_FILE
 echo "\n*** Importing users to Grafana: ***\n" # This step will fail if Grafana is not running.
 python $repo_root_dir/frontend/import_users.py --input_file $common_users_file \
     --admin_login $grafana_admin_user --admin_password $grafana_admin_password \
+    --url $grafana_url \
     --dashboard_folder "$grafana_dashboard_folder_name"   # --debug
 echo "\n* Done! *\n"
 
@@ -79,6 +80,7 @@ echo "\n* Done! *\n"
 
 echo "\n*** Transforming user data (from sacct command output) and inserting to backend database: ***\n"
 sh $repo_root_dir/ga_dashboard/run_backend.sh --db_name $db_name --db_user $db_user --db_password $db_password  \
+    --db_port $db_port --db_host $db_host \
     -S $start_date -E $end_date --useOtherInfrastructureInfo $infrastructure_dir --useCustomLogs $sacct_file
     # Optional: --reportBug --reportBugHere --useCustomLogs
 echo "\n* Done! *\n"
