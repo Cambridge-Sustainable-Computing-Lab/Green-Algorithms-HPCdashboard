@@ -4,7 +4,7 @@
 
 # Example: 
 # zsh ./run_backend.sh --db_name ga_db --db_user postgres --db_password mypassword -S 2025-02-14 -E 2025-02-18 --useOtherInfrastructureInfo samples (or data/ourInfrastructure/CSD3)
-# --useCustomLogs samples/sacct_output_single_user.txt
+# --useCustomLogs samples/sacct_output_single_user.txt --fixed_params_file ga_dashboard/data/fixed_parameters.yaml
 
 # NB seems to require -S and -E options even if using a custom log file with dates not in this range (which gets added to postgres database).
 

@@ -319,7 +319,7 @@ def main_backend(args):
             print(exc)
 
     ### Load fixed parameters
-    with open("ga_dashboard/data/fixed_parameters.yaml", "r") as stream:
+    with open(args.fixed_params_file, "r") as stream:
         
         try:
             fixed_params = yaml.safe_load(stream)

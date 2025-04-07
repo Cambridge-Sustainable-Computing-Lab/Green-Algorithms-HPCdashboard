@@ -39,6 +39,7 @@ DEFAULT_DATASOURCE_NAME="demo_datasource"  # "grafana-postgresql-ga_db"
 DEFAULT_POSTGRES_VERSION=13
 DEFAULT_USERS_FILE="$repo_root_dir/ga_dashboard/samples/common_users_list.csv"
 DEFAULT_SACCT_FILE="$repo_root_dir/ga_dashboard/samples/sacct_output_single_user.txt"
+DEFAULT_FIXED_PARAMETERS_FILE="$repo_root_dir/ga_dashboard/data/fixed_parameters.yaml"
 
 ###############################################################
 #
@@ -64,6 +65,7 @@ datasource_name=$DEFAULT_DATASOURCE_NAME
 grafana_url=$DEFAULT_GRAFANA_URL
 common_users_file=$DEFAULT_USERS_FILE
 sacct_file=$DEFAULT_SACCT_FILE
+fixed_params_file=$DEFAULT_FIXED_PARAMETERS_FILE
 
 echo "\n*** Importing users to Grafana: ***\n" # This step will fail if Grafana is not running.
 python $repo_root_dir/scripts/frontend/import_users.py --input_file $common_users_file \
@@ -79,7 +81,8 @@ echo "\n* Done! *\n"
 
 echo "\n*** Transforming user data (from sacct command output) and inserting to backend database: ***\n"
 sh $repo_root_dir/scripts/backend/run_backend.sh --db_name $db_name --db_user $db_user --db_password $db_password  \
-    -S $start_date -E $end_date --useOtherInfrastructureInfo $infrastructure_dir --useCustomLogs $sacct_file
+    -S $start_date -E $end_date --useOtherInfrastructureInfo $infrastructure_dir --useCustomLogs $sacct_file \
+    --fixed_params_file $fixed_params_file
     # Optional: --reportBug --reportBugHere --useCustomLogs
 echo "\n* Done! *\n"
 

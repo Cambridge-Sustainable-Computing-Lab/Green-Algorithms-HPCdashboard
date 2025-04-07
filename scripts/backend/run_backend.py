@@ -13,13 +13,13 @@ def create_arguments():
     Command line arguments for the tool.
     :return: argparse object
     """
-    parser = argparse.ArgumentParser(description=f'Calculate your carbon footprint on the server.')
+    parser = argparse.ArgumentParser(description='Calculate your carbon footprint on the server.')
 
     default_endDay = datetime.date.today().strftime("%Y-%m-%d")  # today
 
     ## Timeframe
     parser.add_argument('-S', '--startDay', type=str,
-                        help=f'The first day to take into account, as YYYY-MM-DD')
+                        help='The first day to take into account, as YYYY-MM-DD')
     parser.add_argument('-E', '--endDay', type=str,
                         help='The last day to take into account, as YYYY-MM-DD (default: today)',
                         default=default_endDay)
@@ -62,6 +62,8 @@ def create_arguments():
     parser.add_argument('--db_port', type=int, help='Database port', default=5432)
     parser.add_argument('--db_host', type=str, help='Database server host', default='localhost')
 
+    parser.add_argument('--fixed_params_file', type=str, help='The fixed parameters file to use')
+
     ## Reporting bugs
     group1 = parser.add_mutually_exclusive_group()
     group1.add_argument('--reportBug', action='store_true',
@@ -77,7 +79,7 @@ def create_arguments():
     group2.add_argument('--useCustomLogs', type=str, default='',
                         help='This bypasses the workload manager, and enables you to input a custom log file of your jobs. \
                                  This is mostly meant for debugging, but can be useful in some situations. '
-                             'An example of the expected file can be found at `example_files/example_sacctOutput_raw.txt`.')
+                             'An example of the expected file can be found at `backend/example_files/example_sacctOutput_raw.txt`.')
     # Arguments for debugging only (not visible to users)
     # To use arbitrary folder for the infrastructure information
     parser.add_argument('--useOtherInfrastructureInfo', type=str, default='', help=argparse.SUPPRESS)
