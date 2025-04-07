@@ -11,7 +11,6 @@ from ga_dashboard.backend.utils import check_empty_results #, simulate_mock_jobs
 from ga_dashboard.backend.extract.slurm import WorkloadManager
 from ga_dashboard.backend.data_sql_import import DataSQLImport
 
-
 agg_functions_from_raw = {
         'n_jobs': ('UserX', 'count'),
         'first_job_period': ('SubmitDatetimeX', 'min'),
@@ -320,7 +319,8 @@ def main_backend(args):
             print(exc)
 
     ### Load fixed parameters
-    with open("data/fixed_parameters.yaml", "r") as stream:
+    with open("ga_dashboard/data/fixed_parameters.yaml", "r") as stream:
+        
         try:
             fixed_params = yaml.safe_load(stream)
         except yaml.YAMLError as exc:

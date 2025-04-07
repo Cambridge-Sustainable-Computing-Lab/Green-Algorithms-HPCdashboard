@@ -1,7 +1,11 @@
 import os, argparse, csv
 import logging
-from grafana_ga.user import GrafanaGAUser
-from grafana_ga.folder import GrafanaGAFolder
+
+import sys
+sys.path.append('..')
+
+from ga_dashboard.grafana_ga.user import GrafanaGAUser
+from ga_dashboard.grafana_ga.folder import GrafanaGAFolder
 
 
 logger = logging.getLogger(__name__)

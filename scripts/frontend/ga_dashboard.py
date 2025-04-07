@@ -1,10 +1,14 @@
 import os, argparse, json
 import csv, json
 import logging
-from grafana_ga.datasource import GrafanaGADataSource
-from grafana_ga.folder import GrafanaGAFolder
-from grafana_ga.dashboard import GrafanaGADashboard
-from grafana_ga.user import GrafanaGAUser
+
+#import sys
+#sys.path.append('../../ga_dashboard')
+
+from ga_dashboard.grafana_ga.datasource import GrafanaGADataSource
+from ga_dashboard.grafana_ga.folder import GrafanaGAFolder
+from ga_dashboard.grafana_ga.dashboard import GrafanaGADashboard
+from ga_dashboard.grafana_ga.user import GrafanaGAUser
 
 
 logger = logging.getLogger(__name__)
