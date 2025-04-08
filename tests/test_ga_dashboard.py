@@ -29,20 +29,20 @@ def test_parse_string_to_number():
     assert parse_string_to_number("xyz") == "xyz"
 
 
-# This isn't really a proper test. And, the main_backend() function calls extract_data(), which uses files not
-# currently under version control (need to anonymise them before adding to git.)
+# This isn't really a proper test.
 def test_main_backend():
     from collections import namedtuple
     argStruct = namedtuple('argStruct',
-                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastructure_info')
+                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastructure_info fixed_params_file')
     args = argStruct(
         startDay='2022-01-01',
         endDay='2023-06-30',
-        useCustomLogs="", #"sacct_output_loic1.txt",
-        use_mock_agg_data=True,
+        useCustomLogs="ga_dashboard/samples/sacct_output_single_user.txt",  #useCustomLogs="", #"sacct_output_loic1.txt",
+        use_mock_agg_data=False,
         reportBug=False,
         reportBugHere=False,
-        path_infrastructure_info="./samples", # This assumes pytest is called from the ga_dashboard directory.
+        path_infrastructure_info="ga_dashboard/samples",
+        fixed_params_file="ga_dashboard/data/fixed_parameters.yaml"
     )
 
     main_backend(args)
