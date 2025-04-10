@@ -1,9 +1,7 @@
-import os, argparse, json
-import csv, json
+import argparse
+import csv
 import logging
-
-#import sys
-#sys.path.append('../../ga_dashboard')
+import os
 
 from ga_dashboard.grafana_ga.datasource import GrafanaGADataSource
 from ga_dashboard.grafana_ga.folder import GrafanaGAFolder

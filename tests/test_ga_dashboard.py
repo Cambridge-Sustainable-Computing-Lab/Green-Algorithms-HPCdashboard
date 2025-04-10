@@ -1,10 +1,11 @@
 from importlib import resources
 
 # Add the module's path:
-import sys
-sys.path.append('.')
+# import sys
+# sys.path.append('.')
 # sys.path.append('testdata')
-# This works if run as `pytest` from the `GA4HPCdashboard/ga_dashboard` directory.
+
+# This works if run as `pytest` from the `GA4HPCdashboard` directory.
 
 from ga_dashboard.backend.utils import validate_args
 from ga_dashboard.backend.data_sql_import import DataSQLImport, parse_string_to_number

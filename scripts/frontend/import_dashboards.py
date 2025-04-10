@@ -1,11 +1,10 @@
-import os,argparse
+import argparse
 import logging
+import os
 
-import sys
-sys.path.append('../..')
-
-from ga_dashboard.grafana_ga.folder import GrafanaGAFolder
 from ga_dashboard.grafana_ga.dashboard import GrafanaGADashboard
+from ga_dashboard.grafana_ga.folder import GrafanaGAFolder
+
 
 logger = logging.getLogger(__name__)
 
