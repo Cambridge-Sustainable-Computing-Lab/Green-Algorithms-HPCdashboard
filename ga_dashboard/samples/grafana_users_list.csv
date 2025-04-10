@@ -1,7 +1,7 @@
-Name,User name,Email,Password,Team name
+Name,User name,Email,Password,Group
 User_1,uid_1,user1@example.com,password1,Team 1
 User_2,uid_2,user2@example.com,password2,Team 1
 User_3,uid_3,user3@example.com,password3,Team 1
 User_4,uid_4,user4@example.com,password4,Team 1
-User_5,uid_5,user5@example.com,password5,Team 1
+Fred Smith,uid_5,user5@example.com,password5,Team 1
 

@@ -11,9 +11,14 @@
 
 echo "\n\n ******* Demo script started. *******\n" 
 
-db_password="$@" # Gets your password from the command line.
+db_password="$@" # Gets your Postgres database user password from the command line.
 
 # Change the values in "Your values" section (further down) as required.
+#
+# If you get an error like this:
+#     ERROR:  database "ga_db" is being accessed by other users
+#     DETAIL:  There is 1 other session using the database.
+# you may need to restart the Grafana server, as it connects to Postgres.
 
 repo_root_dir="$(pwd)"
 echo "current dir is $repo_root_dir" # Probably ..../GA4HPCdashboard
@@ -67,9 +72,18 @@ common_users_file=$DEFAULT_USERS_FILE
 sacct_file=$DEFAULT_SACCT_FILE
 fixed_params_file=$DEFAULT_FIXED_PARAMETERS_FILE
 
+echo "\n*** Setting up Postgres database: ***\n"
+export PGPASSWORD="$db_password"
+psql -c 'drop database if exists ga_db; ' -U postgres -h $db_host -p $db_port
+psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
+psql -U $db_user -h $db_host -p $db_port -d ga_db < $repo_root_dir/database/ga_db.sql
+export PGPASSWORD=
+echo "\n* Done! *\n"
+
 echo "\n*** Importing users to Grafana: ***\n" # This step will fail if Grafana is not running.
 python $repo_root_dir/scripts/frontend/import_users.py --input_file $common_users_file \
     --admin_login $grafana_admin_user --admin_password $grafana_admin_password \
+    --url $grafana_url \
     --dashboard_folder "$grafana_dashboard_folder_name"   # --debug
 echo "\n* Done! *\n"
 
@@ -83,6 +97,7 @@ echo "\n*** Transforming user data (from sacct command output) and inserting to 
 sh $repo_root_dir/scripts/backend/run_backend.sh --db_name $db_name --db_user $db_user --db_password $db_password  \
     -S $start_date -E $end_date --useOtherInfrastructureInfo $infrastructure_dir --useCustomLogs $sacct_file \
     --fixed_params_file $fixed_params_file
+
     # Optional: --reportBug --reportBugHere --useCustomLogs
 echo "\n* Done! *\n"
 
@@ -99,6 +114,6 @@ echo "\n*** Importing the demo dashboard into Grafana: ***\n"
 python $repo_root_dir/scripts/frontend/import_dashboards.py --input_dir $grafana_dashboard_directory --url $grafana_url  \
     --admin_login $grafana_admin_user --admin_password $grafana_admin_password \
     --dashboard_folder_name "$grafana_dashboard_folder_name"  --debug
-exit
+echo "\n* Done! *\n"
 
 echo "\n ******* Demo script completed. *******\n\n" 
