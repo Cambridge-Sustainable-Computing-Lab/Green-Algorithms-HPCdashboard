@@ -18,37 +18,15 @@ amended files to GitHub, or use a different file. This is to ensure security.
 
 Example user list for Grafana users. In CSV format.
 
-Name,User name,Email,Password,Team name
+Name,User,Email,GrafanaPassword,Team name
 User_1,uid_1,user1@example.com,mypassword,Team 1
 User_2,uid_2,user2@example.com,yourpassword,Team 1
 etc.
 
 Laurent says 'Team name' is mapped to "Group' in the sample BACKEND csv file (anonymised).
 
-Need to get the two sets of users and their data to be consistent.
-
-The 'User name' and 'Password' are needed to log in to Grafana 
-
 Example (using Grafana admin defaults) from `GA4HPCdashboard/frontend` directory:
-python import_users.py --input_file ../ga_dashboard/samples/grafana_users_list.csv --admin_login admin --admin_password admin 
-
-But, the backend/Postgres expects users in this format:
-
-User,UID,Name,Group,Department
-uid_1,11111,User_1,group_1,Dept_3
-uid_2,22222,User_2,group_1,Dept_3
-uid_3,33333,User_3,group_2,Dept_3
-uid_4,44444,User_4,group_3,Dept_2
-uid_5,55555,User_5,group_4,Dept_1
-
-Postgres ga_user table columns: 
-user_name | uid | name | group_name | department
-
-New file format to handle both. Name is something like "John Smith"
-We assume a User like uid_1 is both Postgres ga_user table user_name and Grafana User name.
-
-User,UID,Name,GrafanaPassword,Email,Group,Department
-uid_1,11111,User_1,password_1,user1@example.com,group_1,Dept_3
+python scripts/frontend/import_users.py --input_file ga_dashboard/samples/common_users_list.csv --admin_login admin --admin_password admin
 
 """ 
     

@@ -21,17 +21,45 @@ Combines the usage of several of the scripts:
 - Add teams permission on the Grafana folder
 '''
 
-# Example usage: (py313) mg2216@C02FC12VQ6L8 frontend % python ga_dashboard.py --admin_password admin --db_name ga_db --db_user postgres 
-#     --db_password mypasword --input_file /path/to/csv/file
+# Example usage (run from top-level directory of repo):
+#
+# % python scripts/frontend/run_dashboard.py --admin_password <grafana_admin_password> \
+#        --input_file ga_dashboard/samples/common_users_list.csv \
+#        --db_name ga_db --db_user postgres --db_password <db_password> \
+#        --input_dir ga_dashboard/dashboards    <-- If not set, uses default dashboard .json directory.
+#        --name grafana-postgresql-datasource   <-- If not set, uses "grafana-postgresql-ga_db" 
 
-# Example setting grafana admin user password to "admin" (bad): ./grafana cli admin reset-admin-password admin
-# (In grafana/bin directory)
+#
+# Note: the data source name must match the pluginId of the __inputs dictionary in the JSON file(s) used for the dashboards(s).
+# 
+# For example, if we had the JSON below, we would need "--name grafana-postgresql-datasource" in the script invocation
+#  
+# "__inputs": [
+#   {
+#     "name": "DS_GRAFANA-DEMO_DB",
+#     "label": "demo_datasource",
+#     "description": "",
+#     "type": "datasource",
+#     "pluginId": "grafana-postgresql-datasource",
+#     "pluginName": "PostgreSQL"
+#   }
+#  ],
+
+# Example setting grafana admin user password to whatever you want: 
+# 
+# ./grafana cli admin reset-admin-password <the admin password you want goes here>
+# 
+# (Called in grafana/bin directory)
+
 
 def main():
 
     script_path = os.path.dirname(os.path.realpath(__file__))
-    default_dashboards_dir = f'{script_path}/dashboards/prod/'
-    
+
+    # Choose 
+    #default_dashboards_dir = f'{script_path}/../end-to-end' # for demo.json
+    default_dashboards_dir = f'{script_path}/../../ga_dashboard/dashboards'
+
     argparser = argparse.ArgumentParser()
     argparser.add_argument("--name", "-n", help='Data source name', required=False, metavar='DS_NAME', default='grafana-postgresql-ga_db', dest='name')
     argparser.add_argument("--url", help='Grafana URL', required=False, metavar='URL', default='localhost:3000')
@@ -104,7 +132,7 @@ def main():
         reader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
         for row in reader:
             # Create team (if needed)
-            grafana_user.create_team(row['Team name'])
+            grafana_user.create_team(row['Group'])   #grafana_user.create_team(row['Team name'])
 
             # Create user (if needed)
             row['org_id'] = 1 # Default organisation
