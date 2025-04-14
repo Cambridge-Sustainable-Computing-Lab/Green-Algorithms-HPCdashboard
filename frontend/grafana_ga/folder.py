@@ -57,8 +57,11 @@ class GrafanaGAFolder(GrafanaGABase):
         else:
             try:
                 self.grafana.folder.create_folder(title=folder_name)
-                self.find_ga_folder()
-                logger.info(f"> Folder '{folder_name}' successfully created")
+                if self.find_ga_folder():
+                    logger.info(f"> Folder '{folder_name}' successfully created")
+                else:
+                    logger.error(f"ERROR while creating the folder '{folder_name}'")
+                    exit(1)
             except GrafanaClientError as ex:
                 logger.error(f"ERROR while creating the folder '{folder_name}': {ex}")
                 exit(1)
@@ -107,9 +110,9 @@ class GrafanaGAFolder(GrafanaGABase):
         for level in self.levels.values():
             items['items'].append(level)
         for team in self.teams.values():
-           items['items'].append(team)
+            items['items'].append(team)
         for user in self.users:
-           items['items'].append(user)
+            items['items'].append(user)
         try:
             if self.teams:
                 response = self.grafana.folder.update_folder_permissions(self.folder_uid,items)

@@ -19,6 +19,13 @@ I attached the script I used to simply import the CSV into PostgreSQL
 Example:
 python import_mockup_aggregate.py --input_file ../ga_dashboard/samples/userDaily_mockMultiUsers_1.csv --db_name ga_db 
        --db_user postgres --db_password mypassword --db_host localhost --db_port 5432
+
+
+
+ user_name | submitdate | n_jobs | first_job_period | last_job_period |       energy        |     energy_cpus      | energy_gpus |    energy_memory     |
+   carbonfootprint | carbonfootprint_memoryneededonly | carbonfootprint_failedjobs |     cputime     |     gputime     |  wallclocktime  |  cpuhourscharged  | gpuhourscharged |
+     memoryrequested | memoryoverallocationfactor | n_success |     treemonths      | treemonths_memoryneededonly | treemonths_failedjobs |       driving       |   
+        flying_ny_sf      |   flying_par_lon   |    flying_nyc_mel     |         cost         |   cost_failedjobs    | cost_memoryneededonly | success_rate | failure_rate | share_carbonfootprint 
 """
 
 
@@ -32,18 +39,40 @@ def get_columns(input_file):
         return list(dict_from_csv.keys())
  
 
-def map_column_names(file_col_names):
+def map_column_names(file_col_names, user_data=False):
+    """
+    file_col_names is the list of header names in the input file.
+
+    user_data = True if you want to use this function for 'UID', 'Name', 'Group', 'Department' and not the others
+    except user_name/User   
+    """
+     #print(user_data)
+     #print("file_col_names: " + str(file_col_names))
+
     db_col_names = {}
     for file_col in file_col_names:
+
+    # Out of User, UID, Name, Group and Department we now only store User in the ga_data_aggregate table
+
+        if user_data:
+            if file_col not in ['User', 'UID', 'Name', 'Group', 'Department']:
+                continue
+        else:
+            if file_col in ['UID', 'Name', 'Group', 'Department']:
+                continue
+
         db_col = file_col
+
         db_col = db_col.lower()
-        if db_col in ['user','group']:
+        
+        if db_col in ['user', 'group']:
             db_col += '_name'
         db_col_names[file_col] = db_col
+
     return db_col_names
  
 
-def get_sql_command(data,columns):
+def get_sql_command(data, columns):
     values = []
     for col in columns:
         value = data[col]
@@ -84,23 +113,39 @@ def main():
     db_port = args.db_port
  
     if not os.path.isfile(input_file):
-        print("File '"+input_file+"' can't be found")
+        print("File '" + input_file + "' can't be found")
         exit(1)
  
-    # Prepare DB column names from the ones in the input file
+    # Prepare DB column names from the ones in the input file:
     raw_column_names = get_columns(input_file)
     db_column_names_mapping = map_column_names(raw_column_names)
+    #print("db col names mapping is: " + str(db_column_names_mapping))
     db_column_names = db_column_names_mapping.values()
+
+    # Now do the same for the user's institutional information:
+    #raw_column_names = get_columns(input_file)
+    user_db_column_names_mapping = map_column_names(raw_column_names, user_data=True)
+    #print("user db col names mapping is: " + str(user_db_column_names_mapping))
+    user_db_column_names = user_db_column_names_mapping.values()
+    #print("user db column names: " + str(user_db_column_names)) # user db column names: dict_values(['user_name', 'uid', 'name', 'group', 'department'])
  
+    #exit()
+
     data = []
+    user_data = []
  
     with open(input_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile, delimiter='\t', quotechar='"')
  
         # count = 0
         for row in reader:
+
             data_row = {}
             for col in raw_column_names:
+
+                if col in ['UID', 'Name', 'Group', 'Department']:
+                    continue
+
                 db_col = db_column_names_mapping[col]
                 value = row[col]
                 new_value = parse_string_to_number(value)
@@ -109,8 +154,31 @@ def main():
                 if db_col in ['state_x']:
                     value = True if value == 1 else False
                 data_row[db_col] = value
-            values = get_sql_command(data_row,db_column_names)
+            values = get_sql_command(data_row, db_column_names)
             data.append(values)
+
+            # Now extract the user data
+            # user db col names mapping is: 
+            # {'User': 'user_name', 'UID': 'uid', 'Name': 'name', 'Group': 'group', 'Department': 'department'}
+            user_data_row = {}
+            for col in raw_column_names:
+
+                if col not in ['User', 'UID', 'Name', 'Group', 'Department']:
+                    continue
+
+                db_col = user_db_column_names_mapping[col]
+                #print("db_col: " + db_col)
+                value = row[col]
+                new_value = parse_string_to_number(value)
+                if new_value != None:
+                    value = new_value
+                user_data_row[db_col] = value
+            values = get_sql_command(user_data_row, user_db_column_names)
+            user_data.append(values)
+
+        #print(values)
+
+        #exit()
    
     # Connect to an existing database
     conn = psycopg.connect(
@@ -123,17 +191,25 @@ def main():
     # Open a cursor to perform database operations
     cur = conn.cursor()
  
-    # Prepare SQL command
-    sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)});"
-    # print(sql)
+    # Prepare SQL command with multiple sets of values
+    # INSERT INTO ga_data_aggregate (user_name, submitdate, n_jobs,...) VALUES (a,b,c,...),(d,e,f,...),(g,h,i,...),...,(x,y,z,...)
+    sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)}) ON CONFLICT DO NOTHING;"
+    #print(sql)
     cur.execute(sql)
- 
+
+    # Insert the user into the database if he/she isn't in there already.
+    sql = f"INSERT INTO ga_user ({','.join(user_db_column_names)}) VALUES ({'),('.join(user_data)}) ON CONFLICT DO NOTHING;"
+    #print(sql)
+    cur.execute(sql)
+
     # Make the changes to the database persistent
     conn.commit()
  
     # Close communication with the database
     cur.close()
     conn.close()
+
+    print ("Script completed successfully.")
  
 if __name__ == '__main__':
     main()

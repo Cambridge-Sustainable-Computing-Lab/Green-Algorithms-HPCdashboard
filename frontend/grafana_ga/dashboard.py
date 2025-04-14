@@ -42,10 +42,12 @@ class GrafanaGADashboard(GrafanaGABase):
             try:
                 # Parse JSON file (dashboard content)
                 self.parse_json_to_content()
-
-                # Fetch data source
+                logger.info("Parsed.")
+                
+                # Fetch data source - NB This gets only the first one in the list (which may, or may not, have more). FIXME
                 datasource_label = self.dash_content['__inputs'][0]['label']  # e.g., 'grafana-postgresql-ga_db'
                 datasource = self.grafana.datasource.find_datasource(datasource_label)
+                #logger.info(f"datasource: {datasource}")
                 if not 'id' in datasource.keys():
                     logger.error(f"Can't find the data source '{datasource_label}'")
                     exit(1)

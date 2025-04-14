@@ -1,6 +1,7 @@
-import psycopg
 import datetime
 import pandas
+import psycopg
+# import re
 
 # TODO: From Laurent's PR code review: "It's good for now, but in the future it might make more sense to use the logging package, like in the grafana_ga modules."
 
@@ -38,7 +39,7 @@ class DataSQLImport:
                 port=self.db_port
             )
         except psycopg.OperationalError as err:
-            print(f'/!\ Error: Issue connecting to the database: {err}')
+            print(f'Error: Issue connecting to the database: {err}')
             conn = None
         return conn
 
@@ -75,7 +76,7 @@ class DataSQLImport:
         # Prepare DB column names from the ones in the input file
         raw_column_names = self.dict_users_data.columns # Pandas columns
         db_column_names_mapping = self.map_column_names(raw_column_names)
-        db_column_names = db_column_names_mapping.values()
+        #db_column_names = db_column_names_mapping.values()
 
         data = []
         print(f'> Parsing - start')
@@ -87,8 +88,9 @@ class DataSQLImport:
                 db_col_name = db_column_names_mapping[col]
                 value = self.convert_data_type(row[col],db_col_name)
                 data_row[db_col_name] = value
-            values = self.get_sql_command(data_row,db_column_names)
-            data.append(values)
+                data.append(data_row)
+            #values = self.get_sql_command(data_row,db_column_names)
+            #data.append(values)
         print(f'> Parsing - end')
 
         print(f'> DB import - start')
@@ -100,15 +102,58 @@ class DataSQLImport:
 
             try:
                 # Prepare SQL command
-                sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)});"
-                # print(sql)
-                cur.execute(sql)
+                # sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)});"
+                #print(db_column_names)
+
+                # data is a list of dictionaries; item is one such dictionary
+                # NB there are multiple, identical instances of each data item. We only want the first in each. 
+                for item in data:
+
+                    # As we no longer want all columns in the data, we need to specify each one we want.
+                    # See https://discuss.python.org/t/how-to-do-multi-line-f-strings/46634/6 - avoiding SQL injection attacks.
+                    # and https://www.psycopg.org/psycopg3/docs/basic/params.html
+
+                    # The correct way to pass variables in a SQL command is using the second argument of the Cursor.execute() method:
+                    # SQL = "INSERT INTO authors (name) VALUES (%s)"  # Note: no quotes
+                    # data = ("O'Reilly", )
+                    # cur.execute(SQL, data)  # Note: no % operator
+                     
+                    columns = ['user_name', 'submitdate', 'n_jobs', 'first_job_period', 'last_job_period', 'energy', 'energy_cpus', 'energy_gpus', 'energy_memory', \
+                               'carbonfootprint', 'carbonfootprint_memoryneededonly', 'carbonfootprint_failedjobs', 'cputime', 'gputime', 'wallclocktime', \
+                               'cpuhourscharged', 'gpuhourscharged', 'memoryrequested', 'memoryoverallocationfactor', 'n_success', \
+                               'treemonths', 'treemonths_memoryneededonly', 'treemonths_failedjobs', 'driving', 'flying_ny_sf', 'flying_par_lon', 'flying_nyc_mel',\
+                               'cost', 'cost_failedjobs', 'cost_memoryneededonly', 'success_rate', 'failure_rate', 'share_carbonfootprint']
+
+                    data = []
+                    for col in columns:
+                        if col in item.keys():
+                            val = item[col]
+                            # Check if numeric 
+                            # if re.match(r'^\d+\.?\d+$', str(val)):
+                            #     data.append(val)
+                            # else:
+                            #     data.append(f"'{val}'")
+                            data.append(val)
+
+                    num_columns = len(columns)
+
+                    # The ON CONFLICT DO NOTHING is a temporary hack to stop the duplicate values being (attempted to be) added 
+                    #sql = f"INSERT INTO ga_data_aggregate ('{"','".join(columns)}') VALUES({','.join(data)}) ON CONFLICT DO NOTHING"
+                    sql = f"INSERT INTO ga_data_aggregate ({", ".join(columns)}) VALUES("
+                    sql += "%s"
+                    for i in range(1, num_columns):
+                        sql += ", %s"
+                    sql += ") ON CONFLICT DO NOTHING"
+                    #print(sql)
+                    #print(data)
+                    cur.execute(sql, data)
+
                 # Make the changes to the database persistent
                 conn.commit()
             except psycopg.DataError as e:
-                print(f'/!\ Error: Issue with the data format to be imported: {e}')
+                print(f'Error: Issue with the data format to be imported: {e}')
             except Exception as e:
-                print(f'/!\ Error: Issue while attempting to insert new data: {e}')
+                print(f'Error: Issue while attempting to insert new data: {e}')
 
             # Close connection with the database
             cur.close()

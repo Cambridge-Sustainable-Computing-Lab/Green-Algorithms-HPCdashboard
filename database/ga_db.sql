@@ -38,12 +38,7 @@ SET default_table_access_method = heap;
 DROP TABLE IF EXISTS public.ga_data_aggregate; -- Needed due to postgres caching
 
 CREATE TABLE public.ga_data_aggregate (
-    id integer NOT NULL,
     user_name character varying(255),
-    uid integer,
-    name character varying(255),
-    group_name character varying(255),
-    department character varying(255),
     submitdate date,
     n_jobs integer,
     first_job_period date,
@@ -80,23 +75,11 @@ CREATE TABLE public.ga_data_aggregate (
 
 
 --
--- Name: ga_data_aggregate_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: ga_data_aggregate ga_data_aggregate_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.ga_data_aggregate_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: ga_data_aggregate_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.ga_data_aggregate_id_seq OWNED BY public.ga_data_aggregate.id;
+ALTER TABLE ONLY public.ga_data_aggregate
+    ADD CONSTRAINT ga_data_aggregate_pkey PRIMARY KEY (user_name, submitdate);
 
 
 --
@@ -106,75 +89,13 @@ ALTER SEQUENCE public.ga_data_aggregate_id_seq OWNED BY public.ga_data_aggregate
 DROP TABLE IF EXISTS public.ga_user;
 
 CREATE TABLE public.ga_user (
-    id integer NOT NULL,
     user_name character varying(255),
     uid integer,
     name character varying(255),
     group_name character varying(255),
-    department character varying(255)
+    department character varying(255),
+    updated TIMESTAMP
 );
-
-
---
--- Name: ga_user_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.ga_user_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: ga_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.ga_user_id_seq OWNED BY public.ga_user.id;
-
-
---
--- Name: ga_data_aggregate id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.ga_data_aggregate ALTER COLUMN id SET DEFAULT nextval('public.ga_data_aggregate_id_seq'::regclass);
-
-
---
--- Name: ga_user id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.ga_user ALTER COLUMN id SET DEFAULT nextval('public.ga_user_id_seq'::regclass);
-
-
---
--- Data for Name: ga_user; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Name: ga_data_aggregate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.ga_data_aggregate_id_seq', 900, true);
-
-
---
--- Name: ga_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.ga_user_id_seq', 5, true);
-
-
---
--- Name: ga_data_aggregate ga_data_aggregate_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.ga_data_aggregate
-    ADD CONSTRAINT ga_data_aggregate_pkey PRIMARY KEY (id);
 
 
 --
@@ -182,7 +103,7 @@ ALTER TABLE ONLY public.ga_data_aggregate
 --
 
 ALTER TABLE ONLY public.ga_user
-    ADD CONSTRAINT ga_user_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT ga_user_pkey PRIMARY KEY (user_name);
 
 
 --
