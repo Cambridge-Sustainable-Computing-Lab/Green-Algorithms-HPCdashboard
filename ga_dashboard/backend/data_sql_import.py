@@ -102,8 +102,6 @@ class DataSQLImport:
 
             try:
                 # Prepare SQL command
-                # sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)});"
-                #print(db_column_names)
 
                 # data is a list of dictionaries; item is one such dictionary
                 # NB there are multiple, identical instances of each data item. We only want the first in each. 
@@ -138,7 +136,6 @@ class DataSQLImport:
                     num_columns = len(columns)
 
                     # The ON CONFLICT DO NOTHING is a temporary hack to stop the duplicate values being (attempted to be) added 
-                    #sql = f"INSERT INTO ga_data_aggregate ('{"','".join(columns)}') VALUES({','.join(data)}) ON CONFLICT DO NOTHING"
                     sql = f"INSERT INTO ga_data_aggregate ({", ".join(columns)}) VALUES("
                     sql += "%s"
                     for i in range(1, num_columns):
