@@ -12,6 +12,12 @@ The instructions for running the end-to-end demo are a little different. See bot
 - Install PostgreSQL locally or have access to a PostgreSQL server
 - Install the database locally or on a PostgreSQL server (from the dump SQL)
 
+For Macs, we have used the relevant [Enterprise DB installer](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) to start with. 
+
+Later, it may be necessary to get a version of Postgres for your platform which supports ssh. This
+may require compiling Postgres yourself with the appropriate options. However, this is not
+needed for the simple demo. 
+
 ### Dashboard platform - Grafana
 
 Install the self-manage installation (Enterprise, just in case we want to host it on the cloud): [https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1](https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1)
