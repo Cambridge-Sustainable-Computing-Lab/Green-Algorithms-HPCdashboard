@@ -268,7 +268,8 @@ class WorkloadManager(Helpers_WM):
                 self.args.endDay,  # format YYYY-MM-DD
                 "--format",
                 "UID,User,JobID,JobName,Submit,Elapsed,Partition,NNodes,NCPUS,TotalCPU,CPUTime,ReqMem,MaxRSS,WorkDir,State,Account,AllocTres",
-                "-P"
+                "-P",
+                "-L"  # All clusters
             ]
 
             if self.use_as_admin(self.args):
