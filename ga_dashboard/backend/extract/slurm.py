@@ -1,11 +1,11 @@
-import subprocess
 import argparse
-import pandas as pd
-from io import BytesIO
 import datetime
-import os
 import numpy as np
+import os
+import pandas as pd
+import subprocess
 
+from io import BytesIO
 
 class Helpers_WM:
 
@@ -287,12 +287,13 @@ class WorkloadManager(Helpers_WM):
                             self.logs_raw = f.read()
                         message += f"{sacctFileLocation}/{self.args.useCustomLogs}"
                         foundIt = True
-                    except:
+                    except Exception:
                         pass
             if not foundIt:
                 raise FileNotFoundError(f"Couldn't find {self.args.useCustomLogs} \n "
                                         f"It should be either be in the testData/ or error_logs/ subdirectories, or the full path should be provided by --useCustomLogs.")
             print(message)
+
 
     def convert2dataframe(self):
         """
@@ -303,6 +304,7 @@ class WorkloadManager(Helpers_WM):
             logs_df[x] = logs_df[x].astype('int64')
 
         self.logs_df = logs_df
+
 
     def clean_logs_df(self):
         """

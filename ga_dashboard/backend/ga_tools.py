@@ -245,8 +245,6 @@ def summarise_data(df:pd.DataFrame, args:argparse.Namespace) -> dict:
 
         return timeseries
 
-
-
     df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit day
 
     has_slurmAdmin = True # get_slurmAdmin(args) # We only assume we have admin access now
@@ -319,8 +317,7 @@ def main_backend(args):
             print(exc)
 
     ### Load fixed parameters
-    with open(args.fixed_params_file, "r") as stream:
-        
+    with open(args.fixed_params_file, "r") as stream:        
         try:
             fixed_params = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -331,7 +328,7 @@ def main_backend(args):
 
     ### Load user-specific data (if available)
     try:
-        users_df = pd.read_csv(os.path.join(args.path_infrastructure_info, 'users_list.csv'))
+        users_df = pd.read_csv(os.path.join(args.path_infrastructure_info, 'common_users_list.csv'))
     except FileNotFoundError:
         if has_slurmAdmin:
             raise ValueError("No user data available.")
@@ -344,10 +341,10 @@ def main_backend(args):
     summary_stats = summarise_data(df2, args=args) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
     ## Store data into a database
-    try:
-        dict_keys = args.__dict__.keys() # This is when using command line arguments (Namespace)
-    except:
-        dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
+    if args.use_mock_agg_data:
+        dict_keys = args._asdict().keys() # This is when using the debugging namedtuples
+    else:
+        dict_keys = args.__dict__.keys()  # This is when using command line arguments (Namespace)
     if 'db_name' in dict_keys:
         import_data_in_db(summary_stats, args)
 
