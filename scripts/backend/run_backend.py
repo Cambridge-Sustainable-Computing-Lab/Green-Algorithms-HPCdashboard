@@ -18,6 +18,7 @@ def create_arguments():
     default_endDay = datetime.date.today().strftime("%Y-%m-%d")  # today
 
     ## Timeframe
+    # NB These two arguments aren't needed if --useCustomLogs is used.
     parser.add_argument('-S', '--startDay', type=str,
                         help='The first day to take into account, as YYYY-MM-DD')
     parser.add_argument('-E', '--endDay', type=str,

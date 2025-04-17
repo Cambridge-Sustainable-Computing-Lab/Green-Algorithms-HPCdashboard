@@ -17,6 +17,11 @@ class validate_args:
         """
         if args is None:
             raise Exception("null args!")
+        
+        # If we are using an existing file of sacct data, we don't need to specify dates.
+        if args.useCustomLogs:
+            return
+
         index = 0
         for x in [args.startDay, args.endDay]:
             if x is None:
