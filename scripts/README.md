@@ -15,7 +15,7 @@ Example:
 ```
 sh scripts/backend/init_db.sh <password>
 ```
-where <password> in this case corresponds to the back-end `postgres` user password.
+where `<password>` in this case corresponds to the back-end `postgres` user password.
 
 **WARNING!!** This script will delete any existing instance of the database, including all its data, so only run this if you are sure that's what you want.
 
@@ -42,4 +42,38 @@ sh scripts/backend/run_backend.sh --db_name ga_db --db_user postgres --db_passwo
 ```
 
 Obviously, you will need to change the values passed as the script arguments to your own set-up.
+
+## Grafana set-up
+A number of things need to be done, assuming you have downloaded Grafana and are able to run its server. These are:
+* import the dashboard(s) you want to use into the server
+* add users (and their information) to the server
+
+For example:
+
+```
+% python scripts/frontend/run_dashboard.py --admin_password <grafana_admin_password> \
+       --input_file ga_dashboard/samples/grafana_users_list.csv \
+       --db_name ga_db --db_user postgres --db_password <db_password> \
+       --input_dir ga_dashboard/dashboards    <-- If not set, uses default dashboard .json directory.
+       --name grafana-postgresql-datasource   <-- If not set, uses "grafana-postgresql-ga_db" 
+```
+
+**NOTE:** The `--name` argument refers to the name of the datasource you want to use, i.e, it will create a data source (Postgres database) and give it the name you specify. This name must be the same name used in your dashboard JSON file(s). This name must correspond to the `pluginId` field in the JSON files; it will probably be at or near the top of each JSON file. For example:
+
+```
+{
+  "__inputs": [
+    {
+      "name": "DS_GRAFANA-POSTGRESQL-GA_DB",
+      "label": "grafana-postgresql-ga_db",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "grafana-postgresql-datasource",
+      "pluginName": "PostgreSQL"
+    }
+  ],
+  ...
+  ```
+
+To use this dashboard, you would need to use the option `--name grafana-postgresql-datasource` with `run_dashboard.py` (as in the example above).
 
