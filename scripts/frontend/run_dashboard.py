@@ -31,6 +31,10 @@ Combines the usage of several of the scripts:
 #        --input_dir ga_dashboard/dashboards    <-- If not set, uses default dashboard .json directory.
 #        --name grafana-postgresql-datasource   <-- If not set, uses "grafana-postgresql-ga_db" 
 
+# Or: as above but:
+#    --input_dir scripts/end-to-end --name demo_datasource
+# if you want to use that one instead.
+
 #
 # Note: the data source name must match the pluginId of the __inputs dictionary in the JSON file(s) used for the dashboards(s).
 # 
