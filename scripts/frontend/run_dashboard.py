@@ -21,6 +21,8 @@ Combines the usage of several of the scripts:
 - Add teams permission on the Grafana folder
 '''
 
+# NB The Grafana server must be running before you invoke this script. (e.g. % bin/grafana server)
+
 # Example usage (run from top-level directory of repo):
 #
 # % python scripts/frontend/run_dashboard.py --admin_password <grafana_admin_password> \

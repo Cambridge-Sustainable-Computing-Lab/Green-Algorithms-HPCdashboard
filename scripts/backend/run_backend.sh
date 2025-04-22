@@ -3,8 +3,13 @@
 # TODO update to new code. I think maybe best to have two script, one for the first install (creates virtual env, etc), and then a regular one
 
 # Example: 
-# zsh ./run_backend.sh --db_name ga_db --db_user postgres --db_password mypassword -S 2025-02-14 -E 2025-02-18 --useOtherInfrastructureInfo samples (or data/ourInfrastructure/CSD3)
-# --useCustomLogs samples/sacct_output_single_user.txt --fixed_params_file ga_dashboard/data/fixed_parameters.yaml
+# NB The file/directory arguments need the absolute paths.
+#
+# sh scripts/backend/run_backend.sh --db_name ga_db --db_user postgres --db_password <password>
+#      # -S 2025-02-14 -E 2025-02-18   <--- NB dates are not needed if you are using a custom log file
+#      --useOtherInfrastructureInfo ~/repos/GA4HPCdashboard/ga_dashboard/samples
+#      --useCustomLogs ~/repos/GA4HPCdashboard/ga_dashboard/samples/sacct_output_single_user.txt
+#      --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml
 
 # NB seems to require -S and -E options even if using a custom log file with dates not in this range (which gets added to postgres database).
 
