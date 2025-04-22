@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 Script to add users in a file to the ga_user table in Postgres.
 
 Example: 
-python add_users_to_database.py --db_name ga_db --db_user postgres --db_password mypassword --db_port 5432 --db_host localhost
-        --input_file samples/common_users_list.csv
+python scripts/backendadd_users_to_database.py --db_name ga_db --db_user postgres --db_password mypassword 
+        --db_port 5432 --db_host localhost --input_file ga_dashboard/samples/users_list.csv
 
 TODO I want to move this into a proper database wrapper class, which is used for all interaction with Postgres. It would be
 database-agnostic:

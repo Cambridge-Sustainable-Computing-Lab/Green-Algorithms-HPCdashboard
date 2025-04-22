@@ -26,7 +26,7 @@ Combines the usage of several of the scripts:
 # Example usage (run from top-level directory of repo):
 #
 # % python scripts/frontend/run_dashboard.py --admin_password <grafana_admin_password> \
-#        --input_file ga_dashboard/samples/common_users_list.csv \
+#        --input_file ga_dashboard/samples/grafana_users_list.csv \
 #        --db_name ga_db --db_user postgres --db_password <db_password> \
 #        --input_dir ga_dashboard/dashboards    <-- If not set, uses default dashboard .json directory.
 #        --name grafana-postgresql-datasource   <-- If not set, uses "grafana-postgresql-ga_db" 

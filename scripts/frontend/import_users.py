@@ -26,7 +26,7 @@ etc.
 Laurent says 'Team name' is mapped to "Group' in the sample BACKEND csv file (anonymised).
 
 Example (using Grafana admin defaults) from `GA4HPCdashboard/frontend` directory:
-python scripts/frontend/import_users.py --input_file ga_dashboard/samples/common_users_list.csv --admin_login admin --admin_password admin
+python scripts/frontend/import_users.py --input_file ga_dashboard/samples/grafana_users_list.csv --admin_login admin --admin_password admin
 
 """ 
     
