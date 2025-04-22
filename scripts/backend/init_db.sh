@@ -52,17 +52,19 @@ db_port=$DEFAULT_DB_PORT
 db_user=$DEFAULT_DB_USER
 pg_version=$DEFAULT_POSTGRES_VERSION
 common_users_file=$DEFAULT_USERS_FILE
+db_setup_script="$repo_root_dir/ga_dashboard/database/ga_db.sql"
+add_users_script="$repo_root_dir/scripts/backend/add_users_to_database.py"
 
 echo "\n*** Setting up Postgres database: ***\n"
 export PGPASSWORD="$db_password"  # Saves it briefly as an environment variable.
-psql -c 'drop database if exists ga_db; ' -U postgres -h $db_host -p $db_port
-psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
-psql -U $db_user -h $db_host -p $db_port -d ga_db < $repo_root_dir/ga_dashboard/database/ga_db.sql
+psql -c 'drop database if exists '$db_name'; ' -U postgres -h $db_host -p $db_port
+psql -c 'create database '$db_name'; ' -U postgres -h $db_host -p $db_port
+psql -U $db_user -h $db_host -p $db_port -d $db_name < $db_setup_script
 export PGPASSWORD=  # Resets the environment variable.
 echo "\n* Done! *\n"
 
 echo "\n*** Importing users to backend database: ***\n"
-python $repo_root_dir/scripts/backend/add_users_to_database.py --db_name $db_name \
+python $add_users_script --db_name $db_name \
     --db_user $db_user --db_password $db_password --db_port $db_port --db_host $db_host \
     --input_file $common_users_file
 echo "\n* Done! *\n"
