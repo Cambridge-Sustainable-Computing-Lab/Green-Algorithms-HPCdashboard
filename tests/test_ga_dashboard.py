@@ -17,6 +17,9 @@ from ga_dashboard.backend.ga_tools import GA_tools, agg_functions_from_raw, extr
 # set up and tear down:
 # https://pytest-with-eric.com/pytest-best-practices/pytest-setup-teardown/
 
+# A database test should use a different instance of the database, so we don't ruin real data!
+
+# Depending on the number of tests, we might want multiple test files, e.g. one per module.
 
 # Laurent: "This could an additional thing to build: a check that the cluster_info file contains all the required field (check format ?)
 # And we could also do the same for the Slurm data file(s)."
@@ -26,6 +29,9 @@ def test_check_cluster_info_file(): # To test check_cluster_info_file()
 def test_check_slurm_data_file(): # To test check_slurm_data_file()
     pass
 # Just placeholders for now
+
+FIXED_PARAMS_FILE = "ga_dashboard/data/fixed_parameters.yaml"
+CLUSTER_INFO_FILE = "ga_dashboard/samples/cluster_info.yaml"
 
 
 # parse_string_to_number()
@@ -56,7 +62,7 @@ def test_main_backend():
         fixed_params_file="ga_dashboard/data/fixed_parameters.yaml"
     )
 
-    #main_backend(args) Not tested at the moment
+    main_backend(args) 
 
 
 # Debugging and testing

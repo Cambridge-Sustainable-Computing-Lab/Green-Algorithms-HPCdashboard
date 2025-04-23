@@ -31,6 +31,8 @@ class Helpers_WM:
         Calculates the total memory required when submitting the job.
         :param x: [pd.Series] one row of sacct output.
         :return: [float] total required memory, in GB.
+
+        ReqMem Amount of memory requested; suffixed with 'c' if per CPU, 'n' if per node
         """
         mem_raw, n_nodes, n_cores = x['ReqMem'], x['NNodes'], x['NCPUS']
 
@@ -74,7 +76,7 @@ class Helpers_WM:
 
         return memory
 
-    def cleam_UsedMem(self, x):
+    def clean_UsedMem(self, x):
         """
         Cleans the UsedMemory column
         :param x:
@@ -235,7 +237,7 @@ class WorkloadManager(Helpers_WM):
 
         try:
             self.args_dict = self.args.__dict__  # This is when using command line arguments (Namespace)
-        except:
+        except Exception:
             self.args_dict = self.args._asdict()  # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
 
         self.logs_df = None
@@ -407,7 +409,7 @@ class WorkloadManager(Helpers_WM):
         self.df_agg.loc[self.df_agg.StateX == -1, 'StateX'] = 1
 
         ### Replace UsedMem_=-1 with memory requested (for when MaxRSS=NaN)
-        self.df_agg['UsedMem2_'] = self.df_agg.apply(self.cleam_UsedMem, axis=1)
+        self.df_agg['UsedMem2_'] = self.df_agg.apply(self.clean_UsedMem, axis=1)
 
         ### Label as CPU or GPU partition
         self.df_agg['PartitionTypeX'] = self.df_agg.PartitionX.apply(self.set_partitionType)
