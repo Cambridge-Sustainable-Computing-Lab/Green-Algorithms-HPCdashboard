@@ -66,7 +66,7 @@ class Helpers_WM:
         elif x.MaxRSS == '0':
             memory = 0
         else:
-            assert type(x.MaxRSS) == str
+            assert isinstance(x.MaxRSS, str)
             # Special case for the situation where MaxRSS is of the form '154264' without a unit.
             if x.MaxRSS[-1].isalpha():
                 memory = self.convert_to_GB(float(x.MaxRSS[:-1]), x.MaxRSS[-1])
@@ -88,10 +88,12 @@ class Helpers_WM:
     def clean_partition(self, x):
         """
         Cleans the partition field, by replacing NaNs with empty string and selecting just one partition per job.
-        :param x: [str] partition or comma-separated list of partitions
+        :param x: data frame
         :return: [str] one partition or empty string
+
+        x.Partition is [str] partition or comma-separated list of partitions
         """
-        if pd.isnull(x.Partition):
+        if pd.isnull(x.Partition):  # e.g. if it's NaN
             return ''
 
         L_partitions = x.Partition.split(',')

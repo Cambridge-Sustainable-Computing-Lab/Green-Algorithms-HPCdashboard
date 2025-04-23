@@ -1,4 +1,5 @@
 import argparse
+import datetime
 from io import BytesIO
 from ga_dashboard.backend.extract.slurm import Helpers_WM, WorkloadManager
 import pandas as pd
@@ -76,3 +77,18 @@ def test_calc_ReqMem(reqmem, nnodes, ncpus, expected):
     except AssertionError:
         assert HWM.calc_ReqMem(myseries) == pytest.approx(expected)
     
+
+# We might not need to test all of these. They are here simply as an aide memoire for now.
+def test_clean_RSS():
+    pass
+
+def test_clean_UsedMem():
+    pass
+
+def test_clean_partition():
+    pass
+
+def test_set_partitionType():
+    pass
+
+# etc ...
