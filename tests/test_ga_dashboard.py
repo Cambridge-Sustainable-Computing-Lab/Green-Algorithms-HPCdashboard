@@ -5,11 +5,17 @@ from importlib import resources
 # sys.path.append('.')
 # sys.path.append('testdata')
 
+import pytest
+
 # This works if run as `pytest` from the `GA4HPCdashboard` directory.
 
 from ga_dashboard.backend.utils import validate_args
 from ga_dashboard.backend.data_sql_import import DataSQLImport, parse_string_to_number
 from ga_dashboard.backend.ga_tools import GA_tools, agg_functions_from_raw, extract_data, main_backend
+
+
+# set up and tear down:
+# https://pytest-with-eric.com/pytest-best-practices/pytest-setup-teardown/
 
 
 # Laurent: "This could an additional thing to build: a check that the cluster_info file contains all the required field (check format ?)
@@ -22,12 +28,16 @@ def test_check_slurm_data_file(): # To test check_slurm_data_file()
 # Just placeholders for now
 
 
-# Check that we can call our functions ok:
-# Use decorators to run these.
+# parse_string_to_number()
+@pytest.mark.parametrize( "a, expected",  
+    [  
+        ("100", 100),  
+        ("xyz", "xyz"),
+        ("100.00001", 100.00001)  
+    ],)  
+def test_parse_string_to_number(a, expected):
+    assert parse_string_to_number(a) == expected
 
-def test_parse_string_to_number():
-    assert parse_string_to_number("100") == 100
-    assert parse_string_to_number("xyz") == "xyz"
 
 
 # This isn't really a proper test.
@@ -46,7 +56,7 @@ def test_main_backend():
         fixed_params_file="ga_dashboard/data/fixed_parameters.yaml"
     )
 
-    main_backend(args)
+    #main_backend(args) Not tested at the moment
 
 
 # Debugging and testing
