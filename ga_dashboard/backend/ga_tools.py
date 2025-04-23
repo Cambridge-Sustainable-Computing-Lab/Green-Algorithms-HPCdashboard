@@ -104,7 +104,7 @@ class GA_tools:
 #     return has_slurmAdmin
 
 
-def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> pd.DataFrame:
+def extract_data(args: argparse.Namespace, has_slurmAdmin: bool, cluster_info) -> pd.DataFrame:
 
     if args.use_mock_agg_data: # DEBUGONLY Create/use some mock jobs with different users
 
@@ -164,7 +164,9 @@ def extract_data(args:argparse.Namespace, has_slurmAdmin:bool, cluster_info) -> 
     return WM.df_agg_X
 
 
-def enrich_data(df:pd.DataFrame, fixed_params:dict, users_df:pd.DataFrame, GA:GA_tools) -> pd.DataFrame:
+def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA: GA_tools) -> pd.DataFrame:
+
+    ## FIXME? Calling this will fail if not all users are in the users_df
 
     ### energy
     df = df.apply(GA.calculate_energies, axis=1)
@@ -201,7 +203,7 @@ def enrich_data(df:pd.DataFrame, fixed_params:dict, users_df:pd.DataFrame, GA:GA
     return df2
 
 
-def summarise_data(df:pd.DataFrame, args:argparse.Namespace) -> dict:
+def summarise_data(df: pd.DataFrame, args: argparse.Namespace) -> dict:
 
     if df is None:
         print("summarise_data(): df is None")
@@ -341,12 +343,23 @@ def main_backend(args):
     summary_stats = summarise_data(df2, args=args) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
     ## Store data into a database
-    if args.use_mock_agg_data:
-        dict_keys = args._asdict().keys() # This is when using the debugging namedtuples
-    else:
-        dict_keys = args.__dict__.keys()  # This is when using command line arguments (Namespace)
+    #if args.use_mock_agg_data:
+    #    dict_keys = args._asdict().keys() # This is when using the debugging namedtuples OK. named tuple _asdict() method
+    #else:
+    #    dict_keys = vars(args).keys() #args.__dict__.keys()  # This is when using command line arguments (Namespace)
+    
+    dict_keys = args._asdict().keys()  # FIXME I don't know if we need the two different types. args__dict__ throws an error anyway.
+
     if 'db_name' in dict_keys:
         import_data_in_db(summary_stats, args)
+
+    # This is how it was done before
+    #try:
+    #    dict_keys = args.__dict__.keys() # This is when using command line arguments (Namespace)
+    #except:
+    #    dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
+    #if 'db_name' in dict_keys:
+    #    import_data_in_db(summary_stats, args)
 
     return summary_stats
 
