@@ -1,15 +1,14 @@
-import os
-import yaml
-import datetime
 import argparse
-import pandas as pd
-import numpy as np
+import datetime
+import os
 
-# The online book (especially chapter 4) was used to help produce the
-# structure of this package. (see https://py-pkgs.org/04-package-structure)
-from ga_dashboard.backend.utils import check_empty_results #, simulate_mock_jobs
-from ga_dashboard.backend.extract.slurm import WorkloadManager
+import numpy as np
+import pandas as pd
+import yaml
+
 from ga_dashboard.backend.data_sql_import import DataSQLImport
+from ga_dashboard.backend.extract.slurm import WorkloadManager
+from ga_dashboard.backend.utils import check_empty_results  # , simulate_mock_jobs
 
 agg_functions_from_raw = {
         'n_jobs': ('UserX', 'count'),
@@ -343,23 +342,12 @@ def main_backend(args):
     summary_stats = summarise_data(df2, args=args) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
     ## Store data into a database
-    #if args.use_mock_agg_data:
-    #    dict_keys = args._asdict().keys() # This is when using the debugging namedtuples OK. named tuple _asdict() method
-    #else:
-    #    dict_keys = vars(args).keys() #args.__dict__.keys()  # This is when using command line arguments (Namespace)
-    
-    dict_keys = args._asdict().keys()  # FIXME I don't know if we need the two different types. args__dict__ throws an error anyway.
-
+    try:
+        dict_keys = args.__dict__.keys() # This is when using command line arguments (Namespace)
+    except Exception:
+        dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
     if 'db_name' in dict_keys:
         import_data_in_db(summary_stats, args)
-
-    # This is how it was done before
-    #try:
-    #    dict_keys = args.__dict__.keys() # This is when using command line arguments (Namespace)
-    #except:
-    #    dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
-    #if 'db_name' in dict_keys:
-    #    import_data_in_db(summary_stats, args)
 
     return summary_stats
 
