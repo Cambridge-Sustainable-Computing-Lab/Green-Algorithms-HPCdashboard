@@ -11,7 +11,8 @@
 #      --useCustomLogs ~/repos/GA4HPCdashboard/ga_dashboard/samples/sacct_output_single_user.txt
 #      --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml
 
-# NB seems to require -S and -E options even if using a custom log file with dates not in this range (which gets added to postgres database).
+# NB The --useOtherInfrastructureInfo argument is the path to the directory
+# containing both the cluster_info.yaml and 
 
 ## ~~~ TO BE EDITED TO BE TAILORED TO THE CLUSTER ~~~
 ##

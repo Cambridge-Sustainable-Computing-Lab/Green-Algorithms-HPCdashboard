@@ -329,7 +329,7 @@ def main_backend(args):
 
     ### Load user-specific data (if available)
     try:
-        users_df = pd.read_csv(os.path.join(args.path_infrastructure_info, 'common_users_list.csv'))
+        users_df = pd.read_csv(os.path.join(args.path_infrastructure_info, 'users_list.csv'))
     except FileNotFoundError:
         if has_slurmAdmin:
             raise ValueError("No user data available.")
