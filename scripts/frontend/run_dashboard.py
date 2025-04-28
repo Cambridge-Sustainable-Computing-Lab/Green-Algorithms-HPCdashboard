@@ -104,7 +104,7 @@ def main():
 
     # Dashboard files directory
     if not os.path.isdir(ga_dashboard_input_dir):
-        logger.error("Directory '"+ga_dashboard_input_dir+"' can't be found")
+        logger.error("Directory '" + ga_dashboard_input_dir + "' can't be found")
         exit(1)
 
     logger.info('###############')

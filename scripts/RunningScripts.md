@@ -30,7 +30,19 @@ Example:
 ```
 python run_sacct_only.py -S 2025-04-14 -E 2025-04-15 -a -o sacct_20250414.txt
 ```
-In this case, the script will save the output of the command into a file (on the HPC machine) called `sacct_20250414.txt`; you would then download that file, and add the data into the database, e.g., by using the `add_data_to_db.sh` script, in which case you would need to update the `sacct_file` variable in that script to your path to `sacct_20250414.txt`. Or, you can run the `run_backend.sh` script directly if you prefer (`add_data_to_db.sh` calls this anyway) with the `--useCustomLogs` option set. 
+In this case, the script will save the output of the command into a file (on the HPC machine) called `sacct_20250414.txt`; you would then download that file, and add the data into the database, e.g., by using the `add_data_to_db.sh` script, in which case you would need to update the `sacct_file` variable in that script to your path to `sacct_20250414.txt`. Or, you can run the `run_backend.sh` script directly if you prefer (`add_data_to_db.sh` calls this anyway) with the `--useCustomLogs` option set. For example:
+
+```
+sh scripts/backend/run_backend.sh \
+   --db_name ga_db --db_user postgres --db_password <password> \
+   --useOtherInfrastructureInfo ~/repos/GA4HPCdashboard/ga_dashboard/samples \
+   --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml \
+   --useCustomLogs path/to/downloaded/file/sacct_20250414.txt 
+```
+Note that:
+* The options for the start and end dates, `-S` and `-E`, are not needed, as the date range will be determined by the contents of the `sacct` output file.
+* The directory given with the `--useOtherInfrastructureInfo` option must contain **both** the cluster information file (`cluster_info.yaml`) and the file listing the HPC users (`users_list.csv`); here, the `samples` subdirectory, which is part of the repo, is used.
+* In this example, we use the file `sacct_20250414.txt`, which you just generated. Sample `sacct`-output files are also in the `samples` subdirectory. 
 
 Alternatively, if you are able to run everything on the HPC machine, invoke the `run_backend.sh` script WITHOUT the `--useCustomLogs` option. For example:
 
@@ -41,7 +53,7 @@ sh scripts/backend/run_backend.sh --db_name ga_db --db_user postgres --db_passwo
     --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml
 ```
 
-Obviously, you will need to change the values passed as the script arguments to your own set-up.
+Obviously, you will need to change the values passed as the script arguments to your own set-up. You will also need the `-S` and `-E` options, as shown above.
 
 ## Grafana set-up
 A number of things need to be done, assuming you have downloaded Grafana and are able to run its server. These are:
@@ -58,7 +70,7 @@ For example:
        --name grafana-postgresql-datasource   <-- If not set, uses "grafana-postgresql-ga_db" 
 ```
 
-**NOTE:** The `--name` argument refers to the name of the datasource you want to use, i.e, it will create a data source (Postgres database) and give it the name you specify. This name must be the same name used in your dashboard JSON file(s). This name must correspond to the `pluginId` field in the JSON files; it will probably be at or near the top of each JSON file. For example:
+**NOTE:** The `--name` argument refers to the name of the datasource you want to use, i.e, it will create a data source (Postgres database) and give it the name you specify. This name must be the same name used in your dashboard JSON file(s). This name must correspond to the `label` field in the JSON files; it will probably be at or near the top of each JSON file. For example:
 
 ```
 {
@@ -75,5 +87,6 @@ For example:
   ...
   ```
 
-To use this dashboard, you would need to use the option `--name grafana-postgresql-datasource` with `run_dashboard.py` (as in the example above).
+To use this dashboard, you would need to use the option `--name grafana-postgresql-ga_db` with `run_dashboard.py` (as in the example above).
 
+[Back to Contents](../docs/Contents.md)

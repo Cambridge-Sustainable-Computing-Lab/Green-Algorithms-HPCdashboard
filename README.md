@@ -4,6 +4,9 @@ Repository used to setup the Green Algorithms dashboards, using [Grafana](https:
 
 The instructions for running the end-to-end demo are a little different. See bottom of page.
 
+[Documentation contents](./docs/Contents.md)
+
+[More info on scripts](./scripts/README.md)
 
 ## Prerequisites
 

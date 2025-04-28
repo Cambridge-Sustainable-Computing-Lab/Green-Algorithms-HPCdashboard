@@ -210,3 +210,5 @@ After that, click on the $\color{darkred}{\textsf{Test}}$ team and add $\color{o
 
 Then go to the Dashboard directory $\color{purple}{\textsf{Green Algorithms > Folder actions (right hand-side) > Manage permissions}}$.  
 Add permission for the team $\color{darkred}{\textsf{Test}}$ and remove roles Editor and Viewer (although not sure about removing those roles).
+
+[Back to Contents](./Contents.md)
