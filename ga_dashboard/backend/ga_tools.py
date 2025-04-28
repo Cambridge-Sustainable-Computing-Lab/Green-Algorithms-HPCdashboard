@@ -66,7 +66,7 @@ class GA_tools:
             exit
 
         if not partition_info:  #is None:
-            print(f"calculate_energies(): partition_info is None. Exiting...")
+            print("calculate_energies(): partition_info is None. Exiting...")
             exit
 
         if row.PartitionTypeX == 'CPU':
