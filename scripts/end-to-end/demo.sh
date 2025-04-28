@@ -72,6 +72,9 @@ common_users_file=$DEFAULT_USERS_FILE
 sacct_file=$DEFAULT_SACCT_FILE
 fixed_params_file=$DEFAULT_FIXED_PARAMETERS_FILE
 
+front_end_dir = "$repo_root_dir/scripts/frontend"
+back_end_dir = "$repo_root_dir/scripts/backend"
+
 echo "\n*** Setting up Postgres database: ***\n"
 export PGPASSWORD="$db_password"
 psql -c 'drop database if exists ga_db; ' -U postgres -h $db_host -p $db_port
@@ -81,20 +84,20 @@ export PGPASSWORD=
 echo "\n* Done! *\n"
 
 echo "\n*** Importing users to Grafana: ***\n" # This step will fail if Grafana is not running.
-python $repo_root_dir/scripts/frontend/import_users.py --input_file $common_users_file \
+python $front_end_dir/import_users.py --input_file $common_users_file \
     --admin_login $grafana_admin_user --admin_password $grafana_admin_password \
     --url $grafana_url \
     --dashboard_folder "$grafana_dashboard_folder_name"   # --debug
 echo "\n* Done! *\n"
 
 echo "\n*** Importing users to backend database: ***\n"
-python $repo_root_dir/scripts/backend/add_users_to_database.py --db_name $db_name \
+python $back_end_dir/add_users_to_database.py --db_name $db_name \
     --db_user $db_user --db_password $db_password --db_port $db_port --db_host $db_host \
     --input_file $common_users_file
 echo "\n* Done! *\n"
 
 echo "\n*** Transforming user data (from sacct command output) and inserting to backend database: ***\n"
-sh $repo_root_dir/scripts/backend/run_backend.sh --db_name $db_name --db_user $db_user --db_password $db_password  \
+sh $back_end_dir/run_backend.sh --db_name $db_name --db_user $db_user --db_password $db_password  \
     -S $start_date -E $end_date --useOtherInfrastructureInfo $infrastructure_dir --useCustomLogs $sacct_file \
     --fixed_params_file $fixed_params_file
 
@@ -102,7 +105,7 @@ sh $repo_root_dir/scripts/backend/run_backend.sh --db_name $db_name --db_user $d
 echo "\n* Done! *\n"
 
 echo "\n*** Adding the data source (backend database) into Grafana: ***\n"
-python $repo_root_dir/scripts/frontend/create_data_source.py --name $datasource_name \
+python $front_end_dir/create_data_source.py --name $datasource_name \
     --admin_login $grafana_admin_user --admin_password $grafana_admin_password \
     --db_name $db_name --db_user $db_user --db_password $db_password --db_host $db_host --db_port $db_port \
     --pg_version $pg_version --url $grafana_url      --debug
@@ -111,7 +114,7 @@ echo "\n* Done! *\n"
 echo "\n*** Importing the demo dashboard into Grafana: ***\n"
 # --input_dir is the directory where the dashboard JSON files you want to import are located (e.g. the default value I put script_path+'/dashboards/prod/')
 #  --dashboard_folder_name is the name you want to use for the Grafana folder (e.g. the default value I put: Green Algorithms)
-python $repo_root_dir/scripts/frontend/import_dashboards.py --input_dir $grafana_dashboard_directory --url $grafana_url  \
+python $front_end_dir/import_dashboards.py --input_dir $grafana_dashboard_directory --url $grafana_url  \
     --admin_login $grafana_admin_user --admin_password $grafana_admin_password \
     --dashboard_folder_name "$grafana_dashboard_folder_name"  --debug
 echo "\n* Done! *\n"
