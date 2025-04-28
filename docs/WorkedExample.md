@@ -48,9 +48,9 @@ The time, *t*, is the `wallclocktime`, `0 days 00:13:31`, which is 13.5166666666
 
 The number of cores, *n*<sub>c</sub>, is 5.
 
-We see that the `Partition` used was `yew-himem`. Referring to the file `cluster_info.yaml` in the `samples` subdorectory, we see that the type of CPU model used was a Xeon Gold 6142, with TDP (Thermal Design Power) of 9.4 Watts per core. This is *P*<sub>c</sub>.
+We see that the `Partition` used was `yew-himem`. Referring to the file `cluster_info.yaml` in the `samples` subdirectory, we see that the type of CPU model used was a Xeon Gold 6142, with TDP (Thermal Design Power) of 9.4 Watts per core. This is *P*<sub>c</sub>.
 
-The core usage factor, *u*<sub>c</sub>, is unknwon, and the paper suggests we set core usage to 100% of run time, i.e. *u*<sub>c</sub> = 1.
+The core usage factor, *u*<sub>c</sub>, is unknown, and the paper suggests we set core usage to 100% of run time, i.e. *u*<sub>c</sub> = 1.
 
 *PUE*, the efficiency coefficient of the data centre, is defined in the paper as *PUE* = *P*<sub>total</sub> / *P*<sub>compute</sub>. The ideal value is 1.0, meaning that all power supplied to the building is used by computing equipment. 
 
