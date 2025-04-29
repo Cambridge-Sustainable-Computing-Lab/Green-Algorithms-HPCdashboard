@@ -7,7 +7,7 @@ import pandas as pd
 import yaml
 
 from ga_dashboard.backend.data_sql_import import DataSQLImport
-from ga_dashboard.backend.extract.slurm import WorkloadManager
+from ga_dashboard.backend.workload_manager.slurm import WorkloadManager
 from ga_dashboard.backend.utils import check_empty_results  # , simulate_mock_jobs
 
 agg_functions_from_raw = {
