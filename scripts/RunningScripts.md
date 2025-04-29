@@ -78,14 +78,21 @@ A number of things need to be done, assuming you have downloaded Grafana and are
 * import the dashboard(s) you want to use into the Grafana server
 * add teams and users (and their information) to the Grafana server
 
-For example:
+By default, this will use the demo dashboard file `scripts/end-to-end/demo.json`. 
+
+For example, using the defaults for the demo:
 
 ```
-% python scripts/frontend/run_dashboard.py --admin_password <grafana_admin_password> \
-       --input_file ga_dashboard/samples/grafana_users_list.csv \
-       --db_name ga_db --db_user postgres --db_password <db_password> \
-       --input_dir ga_dashboard/dashboards \  # If not set, uses default dashboard .json directory.
-       --name grafana-postgresql-datasource   # If not set, uses "grafana-postgresql-ga_db" 
+% python scripts/frontend/run_dashboard.py \
+      --admin_password <grafana_admin_password> \
+      --db_password <db_password> \
+
+```
+
+You can specify many options for what you want, however; run the following to see your options:
+
+```
+% python scripts/frontend/run_dashboard.py -h
 ```
 Here, relative paths are sufficient.
 
