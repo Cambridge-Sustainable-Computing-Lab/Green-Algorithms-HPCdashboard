@@ -43,7 +43,7 @@ DEFAULT_DB_USER="postgres"
 #DEFAULT_END_DATE="2025-02-18"
 DEFAULT_INFRASTRUCTURE_DIR="$repo_root_dir/ga_dashboard/samples"
 DEFAULT_POSTGRES_VERSION=13
-DEFAULT_USERS_FILE="$repo_root_dir/ga_dashboard/samples/users_list.csv"
+DEFAULT_USERS_FILE="$repo_root_dir/ga_dashboard/samples/hpc_users_list.csv"
 DEFAULT_SACCT_FILE="$repo_root_dir/ga_dashboard/samples/sacct_output_single_user.txt"
 DEFAULT_FIXED_PARAMETERS_FILE="$repo_root_dir/ga_dashboard/data/fixed_parameters.yaml"
 

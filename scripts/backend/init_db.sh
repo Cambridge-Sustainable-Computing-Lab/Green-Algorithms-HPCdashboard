@@ -39,7 +39,7 @@ DEFAULT_DB_HOST="localhost"
 DEFAULT_DB_PORT=5432
 DEFAULT_DB_USER="postgres"
 DEFAULT_POSTGRES_VERSION=13
-DEFAULT_USERS_FILE="$repo_root_dir/ga_dashboard/samples/users_list.csv"
+DEFAULT_USERS_FILE="$repo_root_dir/ga_dashboard/samples/hpc_users_list.csv"
 
 ###############################################################
 #
