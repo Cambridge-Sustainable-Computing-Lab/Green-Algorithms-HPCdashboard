@@ -56,7 +56,16 @@ Example:
 python run_sacct_only.py -S 2025-04-14 -E 2025-04-15 -a -o sacct_20250414.txt
 ```
 
-In this case, the script will save the output of the command into a file (on the HPC machine) called `sacct_20250414.txt`; you would then download that file, and add the data into the database, using the `--useCustomLogs` option with the `run_backend.sh` script: 
+In this case, the script will save the output of the command into a file (on the HPC machine) called `sacct_20250414.txt`.
+
+Or, you could run `sacct` directly on the HPC. For example:
+```
+sacct --starttime 2025-04-14 --endtime 2025-04-15 \
+  --format UID,User,JobID,JobName,Submit,Elapsed,Partition,NNodes,NCPUS,TotalCPU,CPUTime,ReqMem,MaxRSS,WorkDir,State,Account,AllocTres \
+  -P -L --allusers > sacct_20250414.txt
+```
+
+Either way, you would download that file, and add the data into the database, using the `--useCustomLogs` option with the `run_backend.sh` script: 
 
 ```
 sh scripts/backend/run_backend.sh \
