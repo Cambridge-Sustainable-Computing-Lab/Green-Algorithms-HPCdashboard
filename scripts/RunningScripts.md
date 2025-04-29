@@ -8,6 +8,7 @@ The scripts in these directories can be used to run the entire cycle:
 
 It should then be possible to view the data in the dashboards running on the Grafana server.
 
+
 ## Backend database set-up
 Use `init_db.sh`.
 
@@ -23,38 +24,44 @@ As well as setting up the database and its tables, the script also adds HPC user
 
 
 ## Extract data with `sacct`, and enrich it
-Assuming you **cannot** run the code for the database, etc., on the HPC machine, you will need to run just the `sacct` command
-for the desired period.
+We assume that the usual case is that you are able to run the code/scripts for setting up the database, etc., on the same HPC system where you run the `sacct` command.
+If so, invoke the `run_backend.sh` script without the `--useCustomLogs` option. For example:
+
+```
+sh scripts/backend/run_backend.sh \
+    --db_name ga_db --db_user postgres --db_password <password> 
+    -S 2025-04-14 -E 2025-04-15 \
+    --useOtherInfrastructureInfo ~/repos/GA4HPCdashboard/ga_dashboard/samples \          # NB absolute file path
+    --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml  # NB absolute file path
+```
+
+This will extract usage information using `sacct`, enhance it (work out some additional quantities using it), then add it to the database. Obviously, you will need to change the values passed as the script arguments to your own set-up. You will also need the `-S` and `-E` options, as shown above.
+
+
+However, assuming you **cannot** run the code/scripts on the HPC system, you will need to run just the `sacct` command
+for the desired period, save its output into a file, then download the file and use it with the scripts.
 
 Example:
 ```
 python run_sacct_only.py -S 2025-04-14 -E 2025-04-15 -a -o sacct_20250414.txt
 ```
-In this case, the script will save the output of the command into a file (on the HPC machine) called `sacct_20250414.txt`; you would then download that file, and add the data into the database, e.g., by using the `add_data_to_db.sh` script, in which case you would need to update the `sacct_file` variable in that script to your path to `sacct_20250414.txt`. Or, you can run the `run_backend.sh` script directly if you prefer (`add_data_to_db.sh` calls this anyway) with the `--useCustomLogs` option set. For example:
+
+In this case, the script will save the output of the command into a file (on the HPC machine) called `sacct_20250414.txt`; you would then download that file, and add the data into the database, e.g., by using the `add_data_to_db.sh` script, in which case you would need to update the `sacct_file` variable in that script to your path to `sacct_20250414.txt`. 
+
+Or, you can run the `run_backend.sh` script directly if you prefer (`add_data_to_db.sh` calls this anyway) with the `--useCustomLogs` option set. For example:
 
 ```
 sh scripts/backend/run_backend.sh \
    --db_name ga_db --db_user postgres --db_password <password> \
-   --useOtherInfrastructureInfo ~/repos/GA4HPCdashboard/ga_dashboard/samples \
-   --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml \
-   --useCustomLogs path/to/downloaded/file/sacct_20250414.txt 
+   --useOtherInfrastructureInfo ~/repos/GA4HPCdashboard/ga_dashboard/samples \             # NB absolute directory path
+   --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml \   # NB absolute file path
+   --useCustomLogs path/to/downloaded/file/sacct_20250414.txt                              # NB absolute file path
 ```
 Note that:
 * The options for the start and end dates, `-S` and `-E`, are not needed, as the date range will be determined by the contents of the `sacct` output file.
 * The directory given with the `--useOtherInfrastructureInfo` option must contain **both** the cluster information file (`cluster_info.yaml`) and the file listing the HPC users (`hpc_users_list.csv`); here, the `samples` subdirectory, which is part of the repo, is used.
 * In this example, we use the file `sacct_20250414.txt`, which you just generated. Sample `sacct`-output files are also in the `samples` subdirectory. 
 
-**Alternatively, if you are able to run everything on the HPC machine**, invoke the `run_backend.sh` script WITHOUT the `--useCustomLogs` option. For example:
-
-```
-sh scripts/backend/run_backend.sh \
-    --db_name ga_db --db_user postgres --db_password <password> 
-    -S 2025-04-14 -E 2025-04-15 \
-    --useOtherInfrastructureInfo ~/repos/GA4HPCdashboard/ga_dashboard/samples \
-    --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml
-```
-
-This will extract usage information using `sacct`, enhance it (work out some additional quantities using it), then add it to the database. Obviously, you will need to change the values passed as the script arguments to your own set-up. You will also need the `-S` and `-E` options, as shown above.
 
 ## Grafana set-up
 A number of things need to be done, assuming you have downloaded Grafana and are able to run its server. These are:
@@ -70,6 +77,7 @@ For example:
        --input_dir ga_dashboard/dashboards \  # If not set, uses default dashboard .json directory.
        --name grafana-postgresql-datasource   # If not set, uses "grafana-postgresql-ga_db" 
 ```
+Here, relative paths are sufficient.
 
 **NOTE:** The `--name` argument refers to the name of the datasource you want to use, i.e, it will create a data source (Postgres database) and give it the name you specify. This name must be the same name used in your dashboard JSON file(s). This name must correspond to the `label` field in the JSON files; it will probably be at or near the top of each JSON file. For example:
 
