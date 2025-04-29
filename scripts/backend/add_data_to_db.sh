@@ -9,7 +9,7 @@
 # assuming your password for the backend database user (postgres) is "your_password" 
 #
 # This script assumes that the database has been created and the relevant users added;
-# this can be done by running the init_db.script (q.v.).
+# this can be done by running the create_or_overwrite_database.sh script (q.v.).
 
 # set -x # Uncomment this to echo commands to screen (for debugging)
 

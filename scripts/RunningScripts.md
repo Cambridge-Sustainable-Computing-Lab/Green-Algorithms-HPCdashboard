@@ -10,21 +10,31 @@ It should then be possible to view the data in the dashboards running on the Gra
 
 
 ## Backend database set-up
-Use `init_db.sh`.
+Use `create_or_overwrite_database.sh`.
 
 Example:
 ```
-sh scripts/backend/init_db.sh <password>
+sh scripts/backend/create_or_overwrite_database.sh
 ```
-where `<password>` in this case corresponds to the back-end `postgres` user password.
+This will create a new database with empty tables. If you run it and the database already exists, it will delete your data, as its name suggests.
+
+You will be prompted for your `postgres`-user password. This gives you the chance to CTRL-C out if you invoked it by mistake.
 
 <ins>**WARNING!! This script will delete any existing instance of the database, including all its data, so only run this if you are sure that's what you want.**</ins>
 
-As well as setting up the database and its tables, the script also adds HPC users to the database; alternatively, you can run the `add_users_to_database.py` script directly. Note that we want to add HPC users to the database before running `sacct`; the users we want should exists in the backend database regardless of whether there is any `sacct` data for them!
+To add HPC users to this database, use the `add_users_to_database.py` script with your `postgres`-user password. For example:
+```
+python scripts/backend/add_users_to_database.py \
+    --db_name ga_db --db_user postgres  --db_port 5432 --db_host localhost \
+    --input_file ga_dashboard/samples/hpc_users_list.csv --db_password <your_password>
+```
+
+Note that we want to add HPC users to the database before running `sacct`; the users we want should exists in the backend database regardless of whether there is any `sacct` data for them!
 
 
 ## Extract data with `sacct`, and enrich it
 We assume that the usual case is that you are able to run the code/scripts for setting up the database, etc., on the same HPC system where you run the `sacct` command.
+
 If so, invoke the `run_backend.sh` script without the `--useCustomLogs` option. For example:
 
 ```

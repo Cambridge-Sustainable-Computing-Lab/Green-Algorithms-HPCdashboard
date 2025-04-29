@@ -6,7 +6,7 @@
 #
 # Run from top-level directory. To use:
 #
-# sh scripts/backend/init_db.sh
+# sh scripts/backend/create_or_overwrite_database.sh
 #
 # It will prompt you for your postgres password.
 # This will give you a chance to cancel it if you invoked this script by mistake.    
