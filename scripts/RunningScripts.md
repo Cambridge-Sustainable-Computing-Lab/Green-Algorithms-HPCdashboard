@@ -3,7 +3,7 @@
 The scripts in these directories can be used to run the entire cycle:
 
 1. Initialise the backend database
-2. Run `sacct` command, enhance the data and load it into the databse
+2. Running the backend (run `sacct` command, enhance the data and load it into the database)
 3. Set up the dashboards, users, etc.
 
 It should then be possible to view the data in the dashboards running on the Grafana server.
