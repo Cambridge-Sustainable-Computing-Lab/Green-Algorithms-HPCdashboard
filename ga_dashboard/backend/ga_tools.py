@@ -128,9 +128,10 @@ def extract_data(args: argparse.Namespace, has_slurmAdmin: bool, cluster_info) -
     WM.pull_logs()
 
     ### Log the output for debugging
-    scripts_dir = os.path.dirname(os.path.realpath(__file__))
     if args.reportBug | args.reportBugHere:
         log_name = str(datetime.datetime.now().timestamp()).replace(".", "_")
+
+        scripts_dir = os.path.dirname(os.path.realpath(__file__))
 
         if args.reportBug:
             log_path = os.path.join(scripts_dir, '../error_logs', f'sacctOutput_{log_name}.csv')
@@ -170,7 +171,7 @@ def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA
     :param fixed_params: [dict] The fixed parameters used.
     :param GA [GA_tools] A GA_tools object. 
     :return: [pd.DataFrame] the enriched data.
-     """
+    """
     ## FIXME? Calling this will fail if not all users are in the users_df
 
     ### energy
