@@ -164,7 +164,13 @@ def extract_data(args: argparse.Namespace, has_slurmAdmin: bool, cluster_info) -
 
 
 def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA: GA_tools) -> pd.DataFrame:
-
+    """
+    Adds data about the carbon footprint, etc.
+    :param df: [pd.DataFrame] The existing data we've extracted.
+    :param fixed_params: [dict] The fixed parameters used.
+    :param GA [GA_tools] A GA_tools object. 
+    :return: [pd.DataFrame] the enriched data.
+     """
     ## FIXME? Calling this will fail if not all users are in the users_df
 
     ### energy
