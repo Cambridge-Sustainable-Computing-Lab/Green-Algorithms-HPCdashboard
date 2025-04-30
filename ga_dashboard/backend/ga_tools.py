@@ -170,10 +170,9 @@ def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA
     :param df: [pd.DataFrame] The existing data we've extracted.
     :param fixed_params: [dict] The fixed parameters used.
     :param GA [GA_tools] A GA_tools object. 
-    :return: [pd.DataFrame] the enriched data.
+    :return: [pd.DataFrame] The enriched data.
     """
-    ## FIXME? Calling this will fail if not all users are in the users_df
-
+    
     ### energy
     df = df.apply(GA.calculate_energies, axis=1)
 
@@ -204,6 +203,8 @@ def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA
     else:
         df2 = pd.merge(df, users_df, left_on='UserX', right_on='User', how='inner')
         if len(df2) != len(df):
+            # This basically raises an error if a user in the df isn't in the users_df,
+            # which is obtained from the file listing the HPC users.
             raise ValueError("Not all users could be matched!")
 
     return df2
@@ -272,6 +273,7 @@ def summarise_data(df: pd.DataFrame, args: argparse.Namespace) -> dict:
 
         df_groupActivity = agg_jobs(df_userActivity, ['Group', 'Department'])
         dict_groupActivity = df_groupActivity.groupby('Department').apply(lambda x: x.set_index('Group').to_dict(orient='index')).to_dict()
+        # dict_groupActivity = df_groupActivity.groupby('Department').apply(lambda x: x.set_index('Group').to_dict(orient='index'), include_groups=False).to_dict()
 
         df_deptActivity = agg_jobs(df_groupActivity, ['Department'])
         dict_deptActivity = df_deptActivity.set_index(["Department"]).to_dict('index')
