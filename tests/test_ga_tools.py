@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import os
 import pandas as pd
 import yaml
@@ -49,7 +50,17 @@ def test_extract_data():
 
     df = extract_data(ns, False, cluster_info)  #=cluster_info)
 
-    
+    assert len(df) == 1  # Only 1 job ran
+    myseries = df.squeeze(axis=0)
+
+    assert myseries.WallclockTimeX == datetime.timedelta(days=0, hours=0, minutes=13, seconds=31) # 0 days 00:13:31
+    assert myseries.ReqMemX == 60.15
+    assert myseries.PartitionX == "yew-himem"
+    assert myseries.SubmitDatetimeX == datetime.datetime(2022, 11, 11, 18, 54, 33) # 2022-11-11T18:54:33 
+    assert myseries.StateX == 1
+    assert myseries.UIDX == "11111"
+    assert myseries.UserX == "uid_1"
+
 
     ### Load fixed parameters
     #with open(ns.fixed_params_file, "r") as stream:        
