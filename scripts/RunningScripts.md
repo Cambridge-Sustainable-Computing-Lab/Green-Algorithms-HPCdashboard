@@ -8,6 +8,15 @@ The scripts in these directories can be used to run the entire cycle:
 
 It should then be possible to view the data in the dashboards running on the Grafana server.
 
+It is envisaged that the first time the backend is run, the data obtained by `sacct` will be that of all the jobs (that the system still has a record of)
+which occurred before the current time (perhaps upto the end of the previous day). These would then be loaded into the database, and viewable with the
+dashboard.
+
+It is also envisaged that, after this, the backend process will be run as a daily `cron` job, continually updating the database with details of HPC usage,
+perhaps over the previous 24 hours or 7 days, say.
+
+Users will need to be added to the HPC users file before running the backend, as the code currently raises an error if a job is encountered
+in the `sacct` output with a User which the backend hasn't been told about.
 
 ## Backend database set-up
 Use `create_or_overwrite_database.sh`.
