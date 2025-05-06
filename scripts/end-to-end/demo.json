@@ -22,123 +22,6 @@
   "links": [],
   "panels": [
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "bekhou1tse1ogb"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "Carbon footprint (gCO2e)",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 50,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.6.1",
-      "targets": [
-        {
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name)\nGROUP BY\nsubmitdate, department;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Daily carbon footprint",
-      "transformations": [
-        {
-          "id": "prepareTimeSeries",
-          "options": {
-            "format": "multi"
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
       "description": "dddd",
       "fieldConfig": {
         "defaults": {},
@@ -148,7 +31,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 0
       },
       "id": 3,
       "options": {
@@ -229,7 +112,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 13
+        "y": 5
       },
       "id": 1,
       "options": {
@@ -367,7 +250,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 13
+        "y": 5
       },
       "id": 2,
       "options": {
@@ -501,7 +384,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 21
+        "y": 13
       },
       "id": 4,
       "options": {
@@ -636,7 +519,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 21
+        "y": 13
       },
       "id": 5,
       "options": {
@@ -715,7 +598,7 @@
         "h": 3,
         "w": 12,
         "x": 0,
-        "y": 29
+        "y": 21
       },
       "id": 7,
       "options": {
@@ -730,6 +613,123 @@
       "pluginVersion": "11.6.1",
       "title": "",
       "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "bekhou1tse1ogb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Carbon footprint (gCO2e)",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.1",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name)\nGROUP BY\nsubmitdate, department;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Daily carbon footprint",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        }
+      ],
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -783,7 +783,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 32
+        "y": 24
       },
       "id": 6,
       "options": {
@@ -893,6 +893,6 @@
   "timezone": "browser",
   "title": "Green Algorithms Demo dashboard",
   "uid": "deg7om9pg3ny8d",
-  "version": 3
+  "version": 4
 }
 
