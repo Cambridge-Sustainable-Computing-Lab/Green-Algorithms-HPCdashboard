@@ -1,14 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_GRAFANA-DEMO_DB",
-      "label": "demo_datasource",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "grafana-postgresql-datasource",
-      "pluginName": "PostgreSQL"
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -32,6 +22,123 @@
   "links": [],
   "panels": [
     {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "bekhou1tse1ogb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Carbon footprint (gCO2e)",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 50,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.1",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name)\nGROUP BY\nsubmitdate, department;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Daily carbon footprint",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
       "description": "dddd",
       "fieldConfig": {
         "defaults": {},
@@ -41,7 +148,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 8
       },
       "id": 3,
       "options": {
@@ -53,14 +160,14 @@
         "content": "# Institution Activity\n\nOverall activity at <institution> between <start date> and <end date>.\n",
         "mode": "markdown"
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "11.6.1",
       "title": "",
       "type": "text"
     },
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-DEMO_DB}"
+        "uid": "bekhou1tse1ogb"
       },
       "fieldConfig": {
         "defaults": {
@@ -107,8 +214,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -123,7 +229,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 5
+        "y": 13
       },
       "id": 1,
       "options": {
@@ -139,7 +245,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -200,7 +306,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-DEMO_DB}"
+        "uid": "bekhou1tse1ogb"
       },
       "fieldConfig": {
         "defaults": {
@@ -246,8 +352,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -262,7 +367,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 5
+        "y": 13
       },
       "id": 2,
       "options": {
@@ -278,7 +383,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "editorMode": "builder",
@@ -335,7 +440,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-DEMO_DB}"
+        "uid": "bekhou1tse1ogb"
       },
       "fieldConfig": {
         "defaults": {
@@ -381,8 +486,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -397,7 +501,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 13
+        "y": 21
       },
       "id": 4,
       "options": {
@@ -413,7 +517,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "editorMode": "builder",
@@ -471,7 +575,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-DEMO_DB}"
+        "uid": "bekhou1tse1ogb"
       },
       "fieldConfig": {
         "defaults": {
@@ -517,8 +621,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -533,7 +636,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 13
+        "y": 21
       },
       "id": 5,
       "options": {
@@ -549,7 +652,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "editorMode": "builder",
@@ -612,7 +715,7 @@
         "h": 3,
         "w": 12,
         "x": 0,
-        "y": 21
+        "y": 29
       },
       "id": 7,
       "options": {
@@ -624,14 +727,14 @@
         "content": "# Departments\n\nCarbon footprint of all departments between <start date> and <end date>.\n",
         "mode": "markdown"
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "11.6.1",
       "title": "",
       "type": "text"
     },
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-DEMO_DB}"
+        "uid": "bekhou1tse1ogb"
       },
       "description": "Carbon footprint of all departments between <start date> and <end-date>",
       "fieldConfig": {
@@ -665,8 +768,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -681,7 +783,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 32
       },
       "id": 6,
       "options": {
@@ -707,7 +809,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -744,7 +846,7 @@
   ],
   "preload": true,
   "refresh": "",
-  "schemaVersion": 40,
+  "schemaVersion": 41,
   "tags": [],
   "templating": {
     "list": [
@@ -791,7 +893,6 @@
   "timezone": "browser",
   "title": "Green Algorithms Demo dashboard",
   "uid": "deg7om9pg3ny8d",
-  "version": 54,
-  "weekStart": ""
+  "version": 3
 }
 
