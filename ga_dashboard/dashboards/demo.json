@@ -307,6 +307,10 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
           "editorMode": "builder",
           "format": "table",
           "rawSql": "SELECT submitdate, SUM(n_jobs) FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ",
@@ -352,11 +356,7 @@
               "type": "property"
             }
           },
-          "table": "ga_data_aggregate",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          }
+          "table": "ga_data_aggregate"
         }
       ],
       "title": "Daily total number of jobs submitted (all departments)",
@@ -445,6 +445,10 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
           "editorMode": "builder",
           "format": "table",
           "rawSql": "SELECT submitdate, SUM(cpuhourscharged) FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC ",
@@ -491,11 +495,7 @@
             },
             "orderByDirection": "ASC"
           },
-          "table": "ga_data_aggregate",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          }
+          "table": "ga_data_aggregate"
         }
       ],
       "title": "CPU core-hours",
@@ -584,6 +584,10 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
           "editorMode": "builder",
           "format": "table",
           "rawSql": "SELECT submitdate, SUM(memoryrequested) FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ",
@@ -629,11 +633,7 @@
               "type": "property"
             }
           },
-          "table": "ga_data_aggregate",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          }
+          "table": "ga_data_aggregate"
         }
       ],
       "title": "Memory requested ",
@@ -741,6 +741,10 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
@@ -762,10 +766,6 @@
               }
             ],
             "limit": 50
-          },
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           }
         }
       ],
