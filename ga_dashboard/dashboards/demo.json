@@ -21,13 +21,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "12.0.0"
+      "version": "11.6.1"
     },
     {
       "type": "datasource",
       "id": "grafana-postgresql-datasource",
       "name": "PostgreSQL",
-      "version": "12.0.0"
+      "version": "11.6.1"
     },
     {
       "type": "panel",
@@ -82,7 +82,7 @@
         "content": "# Institution Activity\n\nOverall activity at <institution> between <start date> and <end date>.\n",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "11.6.1",
       "type": "text"
     },
     {
@@ -166,7 +166,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -304,7 +304,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -442,7 +442,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -581,7 +581,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -656,7 +656,7 @@
         "content": "# Departments\n\nCarbon footprint of all departments between <start date> and <end date>.\n",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "11.6.1",
       "type": "text"
     },
     {
@@ -738,7 +738,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -858,7 +858,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
