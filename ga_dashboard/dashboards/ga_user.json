@@ -21,13 +21,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.6.1"
+      "version": "12.0.0"
     },
     {
       "type": "datasource",
       "id": "grafana-postgresql-datasource",
       "name": "PostgreSQL",
-      "version": "11.6.1"
+      "version": "12.0.0"
     },
     {
       "type": "panel",
@@ -65,7 +65,7 @@
   "links": [],
   "panels": [
     {
-      "description": "dddd",
+      "description": "Introductory panel.",
       "gridPos": {
         "h": 5,
         "w": 24,
@@ -79,10 +79,10 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Institution Activity\n\nOverall activity at <institution> between <start date> and <end date>.\n",
+        "content": "# Institution Activity\n\nOverall activity at <institution> between <start date> and <end date>.\n\nComputing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess then reduce the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at <institution>.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org).\n",
         "mode": "markdown"
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "type": "text"
     },
     {
@@ -166,7 +166,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -208,6 +208,7 @@
                 "type": "groupBy"
               }
             ],
+            "limit": null,
             "orderBy": {
               "property": {
                 "name": [
@@ -221,7 +222,7 @@
           "table": "ga_data_aggregate"
         }
       ],
-      "title": "Daily total HPC carbon footprint (all departments)",
+      "title": "Daily total HPC carbon footprint (all departments combined)",
       "type": "timeseries"
     },
     {
@@ -304,7 +305,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -359,7 +360,7 @@
           "table": "ga_data_aggregate"
         }
       ],
-      "title": "Daily total number of jobs submitted (all departments)",
+      "title": "Daily total number of jobs submitted (all departments combined)",
       "type": "timeseries"
     },
     {
@@ -442,7 +443,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -498,7 +499,7 @@
           "table": "ga_data_aggregate"
         }
       ],
-      "title": "CPU core-hours",
+      "title": "CPU core-hours (all departments combined)",
       "type": "timeseries"
     },
     {
@@ -581,7 +582,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -636,7 +637,7 @@
           "table": "ga_data_aggregate"
         }
       ],
-      "title": "Memory requested ",
+      "title": "Memory requested (all departments combined)",
       "type": "timeseries"
     },
     {
@@ -656,7 +657,7 @@
         "content": "# Departments\n\nCarbon footprint of all departments between <start date> and <end date>.\n",
         "mode": "markdown"
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "type": "text"
     },
     {
@@ -738,7 +739,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -858,7 +859,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -891,6 +892,125 @@
       ],
       "title": "Main contributors to the total carbon footprint",
       "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "rawSql": "SELECT COUNT(uid) FROM ga_user LIMIT 50 ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "name": "COUNT",
+                "parameters": [
+                  {
+                    "name": "uid",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "ga_user"
+        }
+      ],
+      "title": "Panel Title",
+      "type": "timeseries"
     }
   ],
   "refresh": "",
@@ -941,7 +1061,7 @@
   "timezone": "browser",
   "title": "Green Algorithms Demo dashboard",
   "uid": "deg7om9pg3ny8d",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
 
