@@ -31,6 +31,12 @@
     },
     {
       "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
       "id": "text",
       "name": "Text",
       "version": ""
@@ -830,7 +836,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 10,
         "w": 12,
         "x": 0,
         "y": 24
@@ -901,40 +907,14 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
             },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -953,46 +933,36 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 12,
-        "x": 0,
-        "y": 32
+        "x": 12,
+        "y": 29
       },
-      "id": 9,
+      "id": 10,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
         },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
+        "showHeader": true
       },
       "pluginVersion": "12.0.0",
       "targets": [
         {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT COUNT(uid) FROM ga_user LIMIT 50 ",
+          "rawQuery": true,
+          "rawSql": "SELECT department AS \"Department\", to_char(SUM(carbonfootprint)/1000, '99999') AS \"Carbon footprint (kgCO2e)\", to_char(SUM(cost), '99999.99') as \"Cost(£)\" FROM (select u.user_name, u.department, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name) GROUP BY department ORDER BY department ASC;\n",
           "refId": "A",
           "sql": {
             "columns": [
               {
-                "name": "COUNT",
-                "parameters": [
-                  {
-                    "name": "uid",
-                    "type": "functionParameter"
-                  }
-                ],
+                "parameters": [],
                 "type": "function"
               }
             ],
@@ -1006,11 +976,13 @@
             ],
             "limit": 50
           },
-          "table": "ga_user"
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
         }
       ],
-      "title": "Panel Title",
-      "type": "timeseries"
+      "type": "table"
     }
   ],
   "refresh": "",
@@ -1061,7 +1033,7 @@
   "timezone": "browser",
   "title": "Green Algorithms Demo dashboard",
   "uid": "deg7om9pg3ny8d",
-  "version": 2,
+  "version": 7,
   "weekStart": ""
 }
 
