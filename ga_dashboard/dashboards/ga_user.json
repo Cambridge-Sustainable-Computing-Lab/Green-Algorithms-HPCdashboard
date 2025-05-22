@@ -91,7 +91,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Institution Activity\n\nOverall activity at <institution> between <start date> and <end date>.\n\nComputing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess then reduce the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at <institution>.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org).\n",
+        "content": "# Institution Activity\n\nOverall activity at <institution> between <start date> and <end date>.\n\nComputing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess then reduce the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at <institution>.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org) and the following assumptions:\n\n|Type|Value|\n|----|-----|\n|CPU |5.9 - 9.4 W/core|\n|GPU |NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)|\n|Memory power | 0.3725 W/GB|\n|Power usage effectiveness| 1.15|\n|Carbon intensity |231.12 gCO<sub>2</sub> e/kWh|\n|Energy cost| £0.34/kWh|\n\n\n\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -1551,7 +1551,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT MIN(submitdate) AS \"Start of submitdate period\", MAX(submitdate) AS \"End of submitdate period\", COUNT(*) AS \"Number of jobs\" from ga_data_aggregate ;",
+          "rawSql": "SELECT MIN(submitdate) AS \"Start of submitdate period\", MAX(submitdate) AS \"End of submitdate period\", SUM(n_jobs) AS \"Number of jobs\" from ga_data_aggregate ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1628,7 +1628,7 @@
   "timezone": "browser",
   "title": "Green Algorithms Demo dashboard",
   "uid": "deg7om9pg3ny8d",
-  "version": 25,
+  "version": 27,
   "weekStart": ""
 }
 
