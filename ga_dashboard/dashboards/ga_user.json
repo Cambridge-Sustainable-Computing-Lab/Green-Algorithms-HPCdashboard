@@ -1005,7 +1005,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Efficiency metrics\n## Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success rate of <numjobs> jobs that completed in the period. Failed jobs represent <failed jobs footprint> kgCO<sub>2</sub>e and a cost of £<failed jobs cost>. They are\nresponsible for <failed jobs percentage>% of the overall carbon footprint.\n\n",
+        "content": "# Efficiency metrics\n## Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the period.\n\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -1019,79 +1019,49 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
           "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
-          "mappings": []
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Failed jobs"
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
             },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-red",
-                  "mode": "fixed"
-                }
-              }
-            ]
+            "inspect": false
           },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Successful jobs"
-            },
-            "properties": [
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
               {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           }
-        ]
+        },
+        "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 4,
         "w": 11,
         "x": 0,
         "y": 41
       },
-      "id": 12,
+      "id": 17,
       "options": {
-        "displayLabels": [
-          "percent"
-        ],
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
           "fields": "",
-          "values": false
+          "reducer": [
+            "sum"
+          ],
+          "show": false
         },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
+        "showHeader": true
       },
       "pluginVersion": "12.0.0",
       "targets": [
@@ -1099,7 +1069,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT SUM(n_jobs-n_success) AS \"Failed jobs\", SUM(n_success) AS \"Successful jobs\" FROM ga_data_aggregate ORDER BY SUM(n_jobs-n_success) ASC ;",
+          "rawSql": "SELECT SUM(n_jobs) AS \"Number of jobs completed\", to_char(SUM(carbonfootprint_failedjobs),'99999999.99') AS \"Failed jobs' footprint (kgCO2e)\", to_char(SUM(cost_failedjobs), '9999999') AS \"Cost (£) of failed jobs\", to_char((SUM(n_jobs-n_success)::float/SUM(n_jobs))*100, '999.99') AS \"% of failed jobs\" FROM ga_data_aggregate;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1124,8 +1094,8 @@
           }
         }
       ],
-      "title": "Distribution of failed and successful jobs.",
-      "type": "piechart"
+      "title": "Cost of failed jobs",
+      "type": "table"
     },
     {
       "datasource": {
@@ -1205,7 +1175,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Successful jobs"
+              "options": "Proportion of successful jobs"
             },
             "properties": [
               {
@@ -1220,7 +1190,7 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 11,
         "w": 13,
         "x": 11,
         "y": 41
@@ -1245,7 +1215,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, (SUM(n_jobs-n_success)::float/SUM(n_jobs)) AS \"Proportion of failed jobs (0..1)\", (SUM(n_success)::float/SUM(n_jobs)) AS \"Proprortion of successful jobs\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate;",
+          "rawSql": "SELECT submitdate, (SUM(n_jobs-n_success)::float/SUM(n_jobs)) AS \"Proportion of failed jobs (0..1)\", (SUM(n_success)::float/SUM(n_jobs)) AS \"Proportion of successful jobs\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1272,6 +1242,342 @@
       ],
       "title": "Proportion of failed jobs vs successful jobs (entire institution) (0..1, stacked)",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failed jobs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Successful jobs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 11,
+        "x": 0,
+        "y": 45
+      },
+      "id": 12,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(n_jobs-n_success) AS \"Failed jobs\", SUM(n_success) AS \"Successful jobs\" FROM ga_data_aggregate ORDER BY SUM(n_jobs-n_success) ASC ;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "Distribution of failed and successful jobs.",
+      "type": "piechart"
+    },
+    {
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 52
+      },
+      "id": 14,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# Memory efficiency (all institution)\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency collected from all jobs in the period chosen (the closer to 100% the better).",
+        "mode": "markdown"
+      },
+      "pluginVersion": "12.0.0",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Number of jobs",
+            "axisPlacement": "left",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 15,
+        "x": 0,
+        "y": 55
+      },
+      "id": 15,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "colorByField": "Memory efficiency (%)",
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "never",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "Memory efficiency (%)",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT r.range as \"Memory efficiency (%)\", SUM(n_jobs) as \"Number of jobs\"\nfrom \n(\n    select '0-4' as range, 4 as endrange\n        union all select '5-9', 9\n        union all select '10-14', 14\n        union all select '15-19', 19\n        union all select '20-24', 24\n        union all select '25-29', 29\n        union all select '30-34', 34\n        union all select '35-39', 39\n        union all select '40-44', 44\n        union all select '45-49', 49\n        union all select '50-54', 54\n        union all select '55-59', 59\n        union all select '60-64', 64\n        union all select '65-69', 69\n        union all select '70-74', 74\n        union all select '75-79', 79\n        union all select '80-84', 84\n        union all select '85-89', 89\n        union all select '90-94', 94\n        union all select '95-99', 99\n        union all select '100', 100\n) as r\nleft join ga_data_aggregate on \nr.endrange = case \n    when ROUND((1/memoryoverallocationfactor)*100) = 100 then 100\n    when ROUND((1/memoryoverallocationfactor)*100) > 95 then 99\n    when ROUND((1/memoryoverallocationfactor)*100) > 90 then 94\n    when ROUND((1/memoryoverallocationfactor)*100) > 85 then 89\n    when ROUND((1/memoryoverallocationfactor)*100) > 80 then 84\n    when ROUND((1/memoryoverallocationfactor)*100) > 75 then 79\n    when ROUND((1/memoryoverallocationfactor)*100) > 70 then 74\n    when ROUND((1/memoryoverallocationfactor)*100) > 65 then 69\n    when ROUND((1/memoryoverallocationfactor)*100) > 60 then 64\n    when ROUND((1/memoryoverallocationfactor)*100) > 55 then 59\n    when ROUND((1/memoryoverallocationfactor)*100) > 50 then 54\n    when ROUND((1/memoryoverallocationfactor)*100) > 45 then 49\n    when ROUND((1/memoryoverallocationfactor)*100) > 40 then 44\n    when ROUND((1/memoryoverallocationfactor)*100) > 35 then 39\n    when ROUND((1/memoryoverallocationfactor)*100) > 30 then 34\n    when ROUND((1/memoryoverallocationfactor)*100) > 25 then 29\n    when ROUND((1/memoryoverallocationfactor)*100) > 20 then 24\n    when ROUND((1/memoryoverallocationfactor)*100) > 15 then 19\n    when ROUND((1/memoryoverallocationfactor)*100) > 10 then 14\n    when ROUND((1/memoryoverallocationfactor)*100) > 5 then 9\n    when ROUND((1/memoryoverallocationfactor)*100) >= 0 then 4\n    end\n    --WHERE user_name='${__user.login}'\n    group by r.range, r.endrange order by r.endrange;\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "Distribution of % memory efficiency (all institution)",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": false,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 9,
+        "x": 15,
+        "y": 55
+      },
+      "id": 16,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT MIN(submitdate) AS \"Start of submitdate period\", MAX(submitdate) AS \"End of submitdate period\", COUNT(*) AS \"Number of jobs\" from ga_data_aggregate ;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "Memory efficiency",
+      "type": "table"
     }
   ],
   "refresh": "",
@@ -1322,7 +1628,7 @@
   "timezone": "browser",
   "title": "Green Algorithms Demo dashboard",
   "uid": "deg7om9pg3ny8d",
-  "version": 15,
+  "version": 25,
   "weekStart": ""
 }
 
