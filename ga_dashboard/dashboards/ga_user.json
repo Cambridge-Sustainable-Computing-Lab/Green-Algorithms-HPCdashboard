@@ -220,7 +220,6 @@
                 "type": "groupBy"
               }
             ],
-            "limit": null,
             "orderBy": {
               "property": {
                 "name": [
@@ -1029,25 +1028,38 @@
               "viz": false
             }
           },
-          "mappings": [
-            {
-              "options": {
-                "\"Failed jobs\"": {
-                  "color": "dark-red",
-                  "index": 0
-                }
-              },
-              "type": "value"
-            }
-          ]
+          "mappings": []
         },
         "overrides": [
           {
             "matcher": {
-              "id": "byType",
-              "options": "number"
+              "id": "byName",
+              "options": "Failed jobs"
             },
-            "properties": []
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Successful jobs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -1136,7 +1148,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 12,
+            "fillOpacity": 26,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1154,7 +1166,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -1174,7 +1186,38 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Proportion of failed jobs (0..1)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Successful jobs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1202,7 +1245,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, (SUM(n_jobs-n_success)::float/SUM(n_jobs)) AS \"Proportion of failed jobs (0..1)\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate;",
+          "rawSql": "SELECT submitdate, (SUM(n_jobs-n_success)::float/SUM(n_jobs)) AS \"Proportion of failed jobs (0..1)\", (SUM(n_success)::float/SUM(n_jobs)) AS \"Proprortion of successful jobs\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1227,7 +1270,7 @@
           }
         }
       ],
-      "title": "Proportion of failed jobs (entire institution) (0..1)",
+      "title": "Proportion of failed jobs vs successful jobs (entire institution) (0..1, stacked)",
       "type": "timeseries"
     }
   ],
@@ -1279,7 +1322,7 @@
   "timezone": "browser",
   "title": "Green Algorithms Demo dashboard",
   "uid": "deg7om9pg3ny8d",
-  "version": 13,
+  "version": 15,
   "weekStart": ""
 }
 
