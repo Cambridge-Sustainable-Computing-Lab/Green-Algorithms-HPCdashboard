@@ -37,6 +37,12 @@
     },
     {
       "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
       "id": "table",
       "name": "Table",
       "version": ""
@@ -79,7 +85,7 @@
     {
       "description": "Introductory panel.",
       "gridPos": {
-        "h": 5,
+        "h": 13,
         "w": 24,
         "x": 0,
         "y": 0
@@ -91,11 +97,357 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Institution Activity\n\nOverall activity at <institution> between <start date> and <end date>.\n\nComputing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess then reduce the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at <institution>.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org) and the following assumptions:\n\n|Type|Value|\n|----|-----|\n|CPU |5.9 - 9.4 W/core|\n|GPU |NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)|\n|Memory power | 0.3725 W/GB|\n|Power usage effectiveness| 1.15|\n|Carbon intensity |231.12 gCO<sub>2</sub> e/kWh|\n|Energy cost| £0.34/kWh|\n\n\n\n",
+        "content": "# Institution Activity\n\nOverall activity at <institution> between <start date> and <end date>.\n\nComputing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess then reduce the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at <institution>.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org) and the following assumptions:\n\n|Type|Value|\n|----|-----|\n|CPU |5.9 - 9.4 W/core|\n|GPU |NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)|\n|Memory power | 0.3725 W/GB|\n|Power usage effectiveness| 1.15|\n|Carbon intensity |231.12 gCO<sub>2</sub> e/kWh|\n|Energy cost| £0.34/kWh|\n\n----\nWe built this tool in the hope to raise awareness of computing usage, highlight resources waste, and foster good computing practices. This\nis intended to be a lightweight carbon footprint calculator, not a cluster monitoring system.\n----",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
       "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 13
+      },
+      "id": 18,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Years$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT to_char(SUM(cpuhourscharged)/(24*365.25), '99999.9') AS \"Years\" FROM ga_data_aggregate;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "ga_data_aggregate",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "💻 CPU time in years",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 6,
+        "y": 13
+      },
+      "id": 19,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Carbon footprint \\(kg\\)$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select to_char(sum(carbonfootprint)/1000, '99999999') AS \"Carbon footprint (kg)\" from ga_data_aggregate;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "👣  Carbon footprint (kg)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 12,
+        "y": 13
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Carbon sequestration \\(tree\\-years\\)$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select to_char(sum(treemonths)/12, '999999.9') AS \"Carbon sequestration (tree-years)\" from ga_data_aggregate ;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "🌳 Carbon sequestration (tree-years)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 18,
+        "y": 13
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^to_char$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select to_char(sum(flying_ny_sf), '999.999') from ga_data_aggregate ;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "✈️  New York - San Francisco",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -162,7 +514,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 5
+        "y": 19
       },
       "id": 1,
       "options": {
@@ -300,7 +652,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 5
+        "y": 19
       },
       "id": 2,
       "options": {
@@ -438,7 +790,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 13
+        "y": 27
       },
       "id": 4,
       "options": {
@@ -577,7 +929,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 13
+        "y": 27
       },
       "id": 5,
       "options": {
@@ -656,7 +1008,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 35
       },
       "id": 7,
       "options": {
@@ -723,7 +1075,7 @@
         "h": 13,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 38
       },
       "id": 6,
       "options": {
@@ -846,7 +1198,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 38
       },
       "id": 8,
       "options": {
@@ -942,7 +1294,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 32
+        "y": 46
       },
       "id": 10,
       "options": {
@@ -996,7 +1348,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 37
+        "y": 51
       },
       "id": 11,
       "options": {
@@ -1042,13 +1394,26 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failed jobs' footprint (kgCO2e)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 235
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 4,
-        "w": 11,
+        "w": 12,
         "x": 0,
-        "y": 41
+        "y": 55
       },
       "id": 17,
       "options": {
@@ -1061,7 +1426,8 @@
           ],
           "show": false
         },
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "12.0.0",
       "targets": [
@@ -1069,7 +1435,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT SUM(n_jobs) AS \"Number of jobs completed\", to_char(SUM(carbonfootprint_failedjobs),'99999999.99') AS \"Failed jobs' footprint (kgCO2e)\", to_char(SUM(cost_failedjobs), '9999999') AS \"Cost (£) of failed jobs\", to_char((SUM(n_jobs-n_success)::float/SUM(n_jobs))*100, '999.99') AS \"% of failed jobs\" FROM ga_data_aggregate;",
+          "rawSql": "SELECT SUM(n_jobs) AS \"No. of jobs completed\", to_char(SUM(carbonfootprint_failedjobs),'99999999.99') AS \"Failed jobs' footprint (kgCO2e)\", to_char(SUM(cost_failedjobs), '9999999') AS \"Cost (£) of failed jobs\", to_char((SUM(n_jobs-n_success)::float/SUM(n_jobs))*100, '999.99') AS \"% of failed jobs\" FROM ga_data_aggregate;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1191,9 +1557,9 @@
       },
       "gridPos": {
         "h": 11,
-        "w": 13,
-        "x": 11,
-        "y": 41
+        "w": 12,
+        "x": 12,
+        "y": 55
       },
       "id": 13,
       "options": {
@@ -1297,9 +1663,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 11,
+        "w": 12,
         "x": 0,
-        "y": 45
+        "y": 59
       },
       "id": 12,
       "options": {
@@ -1364,7 +1730,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 52
+        "y": 66
       },
       "id": 14,
       "options": {
@@ -1430,7 +1796,7 @@
         "h": 8,
         "w": 15,
         "x": 0,
-        "y": 55
+        "y": 69
       },
       "id": 15,
       "options": {
@@ -1529,7 +1895,7 @@
         "h": 4,
         "w": 9,
         "x": 15,
-        "y": 55
+        "y": 69
       },
       "id": 16,
       "options": {
@@ -1621,14 +1987,14 @@
     ]
   },
   "time": {
-    "from": "2023-05-02T00:00:00.000Z",
-    "to": "2023-06-20T00:00:00.000Z"
+    "from": "2022-01-01T11:59:38.000Z",
+    "to": "2024-07-25T09:24:26.000Z"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Green Algorithms Demo dashboard",
   "uid": "deg7om9pg3ny8d",
-  "version": 27,
+  "version": 42,
   "weekStart": ""
 }
 
