@@ -58,12 +58,6 @@
       "id": "timeseries",
       "name": "Time series",
       "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "trend",
-      "name": "Trend",
-      "version": ""
     }
   ],
   "annotations": {
@@ -2279,172 +2273,6 @@
       "type": "barchart"
     },
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "Number of jobs",
-            "axisPlacement": "auto",
-            "axisSoftMin": 0,
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 50,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Memory efficiency (%)"
-            },
-            "properties": [
-              {
-                "id": "custom.axisLabel",
-                "value": "Memory efficiency (%)"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 74
-      },
-      "id": 24,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        },
-        "xField": "Memory efficiency (%)"
-      },
-      "pluginVersion": "12.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT ROUND((1/memoryoverallocationfactor)*100) AS \"Memory efficiency (%)\", SUM(n_jobs) as \"Number of jobs\" FROM ga_data_aggregate GROUP BY \"Memory efficiency (%)\" ORDER BY \"Memory efficiency (%)\" ;\n-- SELECT ROUND((reqmem_x-neededmem_x)/reqmem_x*100) AS \"Memory efficiency (%)\", COUNT(state_x) as \"Number of jobs\" FROM ga_data GROUP BY \"Memory efficiency (%)\" ORDER BY \"Memory efficiency (%)\" ;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [
-                  {
-                    "name": "submitdatetime_x",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "alias": "\"Successful jobs\"",
-                "name": "SUM",
-                "parameters": [
-                  {
-                    "name": "energy",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "alias": "\"Failed jobs\"",
-                "name": "SUM",
-                "parameters": [
-                  {
-                    "name": "energy_failedjobs",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "name": "submitdatetime_x",
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "orderBy": {
-              "property": {
-                "name": [
-                  "submitdatetime_x"
-                ],
-                "type": "string"
-              },
-              "type": "property"
-            }
-          },
-          "table": "ga_data"
-        }
-      ],
-      "title": "Memory efficiency",
-      "type": "trend"
-    },
-    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
@@ -2653,7 +2481,7 @@
           "table": "ga_data_aggregate"
         }
       ],
-      "title": "Groups in $department",
+      "title": "Groups in your department ($department)",
       "transformations": [
         {
           "id": "prepareTimeSeries",
@@ -2869,7 +2697,7 @@
   "timezone": "browser",
   "title": "Department",
   "uid": "bdsq0sjqovyaggdb",
-  "version": 4,
+  "version": 5,
   "weekStart": ""
 }
 
