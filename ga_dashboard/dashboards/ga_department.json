@@ -1479,7 +1479,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 50,
+            "fillOpacity": 0,
             "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
@@ -1631,6 +1631,7 @@
           }
         }
       ],
+      "transparent": true,
       "type": "timeseries"
     },
     {
@@ -2306,7 +2307,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 50,
+            "fillOpacity": 0,
             "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
@@ -2490,6 +2491,7 @@
           }
         }
       ],
+      "transparent": true,
       "type": "timeseries"
     },
     {
@@ -2697,7 +2699,7 @@
   "timezone": "browser",
   "title": "Department",
   "uid": "bdsq0sjqovyaggdb",
-  "version": 5,
+  "version": 7,
   "weekStart": ""
 }
 
