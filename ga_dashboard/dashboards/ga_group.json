@@ -105,7 +105,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Green Algorithms Dashboard \n\n## Department <span style=\"color:dodgerblue\">**${current_users_department}**</span> | Group <span style=\"color:gold\">**${current_users_group}**</span>",
+        "content": "# Green Algorithms Dashboard \n\n## Department: <span style=\"color:dodgerblue\">**${current_users_department}**</span> | Group: <span style=\"color:gold\">**${current_users_group}**</span>",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -2491,6 +2491,92 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 83
+      },
+      "id": 33,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT group_name AS \"Group\", to_char(SUM(carbonfootprint)/1000, '9999999') AS \"Carbon footprint (kgCO2e)\", SUM(cost) AS \"Cost (£)\"\nFROM \n(SELECT u.user_name, u.group_name, d.carbonfootprint, d.cost FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.department = '$current_users_department')\nGROUP BY group_name \nORDER BY group_name ASC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "Groups in your department ($current_users_department)",
+      "type": "table"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
@@ -2707,6 +2793,92 @@
         }
       ],
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 92
+      },
+      "id": 34,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT user_name AS \"User name\", name AS \"Name\", to_char(SUM(carbonfootprint)/1000, '9999999') AS \"Carbon footprint (kgCO2e)\", SUM(cost) AS \"Cost (£)\" \nFROM \n(SELECT u.user_name, u.name, d.carbonfootprint, d.cost FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$current_users_group')\nGROUP BY user_name, name \nORDER BY user_name;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "Users in your group ($current_users_group)",
+      "type": "table"
     }
   ],
   "refresh": "",
@@ -2754,7 +2926,7 @@
   "timezone": "browser",
   "title": "Group",
   "uid": "bdsq0sjqovyagggb",
-  "version": 20,
+  "version": 26,
   "weekStart": ""
 }
 
