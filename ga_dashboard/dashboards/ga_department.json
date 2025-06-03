@@ -2496,7 +2496,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -2749,9 +2749,10 @@
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT group_name AS \"Group\", SUM(carbonfootprint) AS \"Carbon footprint\", SUM(cost) AS \"Cost\" FROM ga_data_aggregate WHERE department = '$department' GROUP BY group_name ORDER BY group_name ASC ",
+          "rawQuery": true,
+          "rawSql": "SELECT group_name AS \"Group\", SUM(carbonfootprint) AS \"Carbon footprint\", SUM(cost) AS \"Cost\" FROM \n(select u.group_name, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE u.department = '$department' )\nGROUP BY group_name \nORDER BY group_name ASC ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2868,7 +2869,7 @@
   "timezone": "browser",
   "title": "Department",
   "uid": "bdsq0sjqovyaggdb",
-  "version": 9,
+  "version": 4,
   "weekStart": ""
 }
 
