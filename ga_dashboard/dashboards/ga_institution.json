@@ -21,13 +21,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.2.0"
+      "version": "12.0.0"
     },
     {
       "type": "datasource",
       "id": "grafana-postgresql-datasource",
       "name": "PostgreSQL",
-      "version": "1.0.0"
+      "version": "12.0.0"
     },
     {
       "type": "panel",
@@ -58,12 +58,6 @@
       "id": "timeseries",
       "name": "Time series",
       "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "trend",
-      "name": "Trend",
-      "version": ""
     }
   ],
   "annotations": {
@@ -90,10 +84,6 @@
   "links": [],
   "panels": [
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-      },
       "gridPos": {
         "h": 2,
         "w": 24,
@@ -110,15 +100,11 @@
         "content": "# Green Algorithms Dashboard - <span style=\"color:darkviolet\">Institution</span>",
         "mode": "markdown"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.0.0",
       "transparent": true,
       "type": "text"
     },
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-      },
       "description": "",
       "gridPos": {
         "h": 10,
@@ -136,16 +122,7 @@
         "content": "Computing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess then reduce the carbon footprint of their\nwork.\n\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at University of .... SLURM jobs\nsubmitted to the CSD3 High Performance Cluster are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by Green Algorithms and the following\nassumptions:\n\n| Type                      | Value                                             |\n| ------------------------- | ------------------------------------------------- | \n| CPU                       | 5.9 - 9.4 W/core (see here for models)            |\n| GPU                       | NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W) |\n| Memory power              | 0.3725 W/GB                                       |\n| Power usage effectiveness | 1.15                                              |\n| Carbon intensity          | 231.12 gCO<sub>2</sub>e/kWh                                  |\n| Energy cost               | £0.34/kWh                                         |\n\n",
         "mode": "markdown"
       },
-      "pluginVersion": "11.2.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
-          "refId": "A"
-        }
-      ],
+      "pluginVersion": "12.0.0",
       "type": "text"
     },
     {
@@ -162,10 +139,6 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-      },
       "gridPos": {
         "h": 2,
         "w": 24,
@@ -182,7 +155,7 @@
         "content": "Overall activity of the institution\n",
         "mode": "markdown"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.0.0",
       "type": "text"
     },
     {
@@ -201,8 +174,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "yellow",
-                "value": null
+                "color": "yellow"
               }
             ]
           }
@@ -249,7 +221,7 @@
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -298,8 +270,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "yellow",
-                "value": null
+                "color": "yellow"
               }
             ]
           },
@@ -347,7 +318,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -403,8 +374,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "yellow",
-                "value": null
+                "color": "yellow"
               },
               {
                 "color": "red",
@@ -442,7 +412,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -498,8 +468,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "yellow",
-                "value": null
+                "color": "yellow"
               }
             ]
           },
@@ -534,7 +503,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -624,8 +593,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -651,11 +619,13 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "hoverProximity": 2,
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -764,8 +734,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -791,11 +760,13 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "hoverProximity": 2,
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -930,10 +901,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -1069,10 +1042,12 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -1227,11 +1202,12 @@
           "values": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.3",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -1307,10 +1283,6 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-      },
       "gridPos": {
         "h": 2,
         "w": 24,
@@ -1327,7 +1299,7 @@
         "content": "Carbon footprint of all departments\n\n",
         "mode": "markdown"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.0.0",
       "type": "text"
     },
     {
@@ -1339,13 +1311,13 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "Carbon footprint (kgCO2e)",
+            "axisLabel": "Carbon footprint of department (kgCO2e)",
             "axisPlacement": "auto",
             "fillOpacity": 80,
             "gradientMode": "none",
@@ -1403,27 +1375,30 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
         "orientation": "auto",
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         },
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT department, SUM(carbonfootprint) FROM ga_data_aggregate GROUP BY department ORDER BY department ASC ",
+          "rawQuery": true,
+          "rawSql": "SELECT department, SUM(carbonfootprint)/1000 AS \"CFP\" \nFROM \n(select u.user_name, u.department, d.carbonfootprint from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name) \nGROUP BY department \nORDER BY department ASC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1494,7 +1469,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 50,
+            "fillOpacity": 1,
             "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
@@ -1512,7 +1487,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -1562,20 +1537,22 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", department FROM ga_data_aggregate GROUP BY submitdate, department ",
+          "rawQuery": true,
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", department\nFROM\n(SELECT d.submitdate, u.department, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name)\nGROUP BY submitdate, department\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1644,6 +1621,7 @@
           }
         }
       ],
+      "transparent": true,
       "type": "timeseries"
     },
     {
@@ -1730,16 +1708,17 @@
           }
         ]
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT department AS \"Department\", SUM(carbonfootprint) AS \"Carbon footprint\", SUM(cost) AS \"Cost\" FROM ga_data_aggregate GROUP BY department ORDER BY department ASC ",
+          "rawQuery": true,
+          "rawSql": "SELECT department AS \"Department\", SUM(carbonfootprint)/1000 AS \"Carbon footprint (kgCO2e)\", SUM(cost) as \"Cost(£)\" FROM\n(select u.user_name, u.department, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name) \nGROUP BY department ORDER BY department ASC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1889,10 +1868,12 @@
           "values": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -2044,10 +2025,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -2201,6 +2184,7 @@
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         },
@@ -2208,7 +2192,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 100
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -2280,171 +2264,6 @@
       "type": "barchart"
     },
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "Number of jobs",
-            "axisPlacement": "auto",
-            "axisSoftMin": 0,
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 50,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Memory efficiency (%)"
-            },
-            "properties": [
-              {
-                "id": "custom.axisLabel",
-                "value": "Memory efficiency (%)"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 72
-      },
-      "id": 57,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        },
-        "xField": "Memory efficiency (%)"
-      },
-      "pluginVersion": "11.1.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT ROUND((1/memoryoverallocationfactor)*100) AS \"Memory efficiency (%)\", SUM(n_jobs) as \"Number of jobs\" FROM ga_data_aggregate GROUP BY \"Memory efficiency (%)\" ORDER BY \"Memory efficiency (%)\" ;\n-- SELECT ROUND((reqmem_x-neededmem_x)/reqmem_x*100) AS \"Memory efficiency (%)\", COUNT(state_x) as \"Number of jobs\" FROM ga_data GROUP BY \"Memory efficiency (%)\" ORDER BY \"Memory efficiency (%)\" ;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [
-                  {
-                    "name": "submitdatetime_x",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "alias": "\"Successful jobs\"",
-                "name": "SUM",
-                "parameters": [
-                  {
-                    "name": "energy",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "alias": "\"Failed jobs\"",
-                "name": "SUM",
-                "parameters": [
-                  {
-                    "name": "energy_failedjobs",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "name": "submitdatetime_x",
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "orderBy": {
-              "property": {
-                "name": [
-                  "submitdatetime_x"
-                ],
-                "type": "string"
-              },
-              "type": "property"
-            }
-          },
-          "table": "ga_data"
-        }
-      ],
-      "title": "Memory efficiency",
-      "type": "trend"
-    },
-    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
@@ -2454,7 +2273,7 @@
       },
       "id": 22,
       "panels": [],
-      "title": "Groups in your department ($departments)",
+      "title": "Groups in your department ($department)",
       "type": "row"
     },
     {
@@ -2478,7 +2297,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 50,
+            "fillOpacity": 0,
             "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
@@ -2496,7 +2315,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -2546,21 +2365,22 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", group_name FROM ga_data_aggregate WHERE department = '$departments' GROUP BY submitdate, group_name ORDER BY group_name ASC LIMIT null ",
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", group_name \nFROM (select u.user_name, u.group_name, d.carbonfootprint, d.cost, d.submitdate from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE department = '$department') \nGROUP BY submitdate, group_name \nORDER BY group_name ASC \nLIMIT null ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2652,7 +2472,7 @@
           "table": "ga_data_aggregate"
         }
       ],
-      "title": "Groups in $departments",
+      "title": "Groups in your department ($department)",
       "transformations": [
         {
           "id": "prepareTimeSeries",
@@ -2661,6 +2481,7 @@
           }
         }
       ],
+      "transparent": true,
       "type": "timeseries"
     },
     {
@@ -2741,16 +2562,17 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT group_name AS \"Group\", SUM(carbonfootprint) AS \"Carbon footprint\", SUM(cost) AS \"Cost\" FROM ga_data_aggregate WHERE department = '$departments' GROUP BY group_name ORDER BY group_name ASC ",
+          "rawQuery": true,
+          "rawSql": "SELECT group_name AS \"Group\", SUM(carbonfootprint) AS \"Carbon footprint\", SUM(cost) AS \"Cost\" \nFROM\n(select u.group_name, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE u.department = '$department' )\nGROUP BY group_name \nORDER BY group_name ASC ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2838,12 +2660,12 @@
           "table": "ga_data_aggregate"
         }
       ],
-      "title": "Groups in $departments",
+      "title": "Groups in your department ($department)",
       "type": "table"
     }
   ],
   "refresh": "",
-  "schemaVersion": 39,
+  "schemaVersion": 41,
   "tags": [],
   "templating": {
     "list": [
@@ -2853,16 +2675,13 @@
           "type": "grafana-postgresql-datasource",
           "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
         },
-        "definition": "SELECT DISTINCT department FROM ga_data_aggregate;",
-        "hide": 0,
+        "definition": "SELECT distinct department from ga_user where user_name='${__user.login}' limit 1;",
         "includeAll": false,
-        "multi": false,
-        "name": "departments",
+        "name": "department",
         "options": [],
-        "query": "SELECT DISTINCT department FROM ga_data_aggregate;",
+        "query": "SELECT distinct department from ga_user where user_name='${__user.login}' limit 1;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       }
@@ -2876,6 +2695,7 @@
   "timezone": "browser",
   "title": "Institution",
   "uid": "bdsq0sjqovyaggb",
-  "version": 3,
+  "version": 12,
   "weekStart": ""
 }
+
