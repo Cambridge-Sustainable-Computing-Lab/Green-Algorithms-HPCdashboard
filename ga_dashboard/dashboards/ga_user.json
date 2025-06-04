@@ -3138,6 +3138,222 @@
       ],
       "title": "User's distribution of failed and successful jobs.",
       "type": "piechart"
+    },
+    {
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 120
+      },
+      "id": 67,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# Memory efficiency (user ${__user.login})\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency collected from all jobs in the period chosen (the closer to 100% the better).",
+        "mode": "markdown"
+      },
+      "pluginVersion": "12.0.0",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Number of jobs",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 124
+      },
+      "id": 68,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT r.range as \"Memory efficiency (%)\", SUM(n_jobs) as \"Number of jobs\"\nfrom \n(\n    select '0-4' as range, 4 as endrange\n        union all select '5-9', 9\n        union all select '10-14', 14\n        union all select '15-19', 19\n        union all select '20-24', 24\n        union all select '25-29', 29\n        union all select '30-34', 34\n        union all select '35-39', 39\n        union all select '40-44', 44\n        union all select '45-49', 49\n        union all select '50-54', 54\n        union all select '55-59', 59\n        union all select '60-64', 64\n        union all select '65-69', 69\n        union all select '70-74', 74\n        union all select '75-79', 79\n        union all select '80-84', 84\n        union all select '85-89', 89\n        union all select '90-94', 94\n        union all select '95-99', 99\n        union all select '100', 100\n) as r\nleft join ga_data_aggregate on \nr.endrange = case \n    when ROUND((1/memoryoverallocationfactor)*100) = 100 then 100\n    when ROUND((1/memoryoverallocationfactor)*100) > 95 then 99\n    when ROUND((1/memoryoverallocationfactor)*100) > 90 then 94\n    when ROUND((1/memoryoverallocationfactor)*100) > 85 then 89\n    when ROUND((1/memoryoverallocationfactor)*100) > 80 then 84\n    when ROUND((1/memoryoverallocationfactor)*100) > 75 then 79\n    when ROUND((1/memoryoverallocationfactor)*100) > 70 then 74\n    when ROUND((1/memoryoverallocationfactor)*100) > 65 then 69\n    when ROUND((1/memoryoverallocationfactor)*100) > 60 then 64\n    when ROUND((1/memoryoverallocationfactor)*100) > 55 then 59\n    when ROUND((1/memoryoverallocationfactor)*100) > 50 then 54\n    when ROUND((1/memoryoverallocationfactor)*100) > 45 then 49\n    when ROUND((1/memoryoverallocationfactor)*100) > 40 then 44\n    when ROUND((1/memoryoverallocationfactor)*100) > 35 then 39\n    when ROUND((1/memoryoverallocationfactor)*100) > 30 then 34\n    when ROUND((1/memoryoverallocationfactor)*100) > 25 then 29\n    when ROUND((1/memoryoverallocationfactor)*100) > 20 then 24\n    when ROUND((1/memoryoverallocationfactor)*100) > 15 then 19\n    when ROUND((1/memoryoverallocationfactor)*100) > 10 then 14\n    when ROUND((1/memoryoverallocationfactor)*100) > 5 then 9\n    when ROUND((1/memoryoverallocationfactor)*100) >= 0 then 4\n    end\n    WHERE user_name='${__user.login}'\n    group by r.range, r.endrange order by r.endrange;\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "User's % memory efficiency distribution",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 11,
+        "x": 12,
+        "y": 124
+      },
+      "id": 69,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT MIN(submitdate) AS \"Start of submitdate period\", MAX(submitdate) AS \"End of submitdate period\", SUM(n_jobs) AS \"Number of jobs\" \nFROM ga_data_aggregate\nWHERE user_name = '${__user.login}';",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "Memory efficiency for user ${__user.login}",
+      "type": "table"
     }
   ],
   "refresh": "",
@@ -3188,7 +3404,7 @@
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 39,
+  "version": 46,
   "weekStart": ""
 }
 
