@@ -1461,7 +1461,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT SUM(n_jobs) AS \"No. of jobs completed\", to_char(SUM(carbonfootprint_failedjobs),'99999999.99') AS \"Failed jobs' footprint (kgCO2e)\", to_char(SUM(cost_failedjobs), '9999999') AS \"Cost (£) of failed jobs\", to_char((SUM(n_jobs-n_success)::float/SUM(n_jobs))*100, '999.99') AS \"% of failed jobs\" FROM ga_data_aggregate;",
+          "rawSql": "SELECT SUM(n_jobs) AS \"No. of jobs completed\", to_char(SUM(carbonfootprint_failedjobs)/1000,'99999999.99') AS \"Failed jobs' footprint (kgCO2e)\", to_char(SUM(cost_failedjobs), '9999999') AS \"Cost (£) of failed jobs\", to_char((SUM(n_jobs-n_success)::float/SUM(n_jobs))*100, '999.99') AS \"% of failed jobs\" FROM ga_data_aggregate;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2823,6 +2823,321 @@
       ],
       "title": "Memory requested by user",
       "type": "timeseries"
+    },
+    {
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 104
+      },
+      "id": 63,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# Efficiency metrics for user ${__user.login}\n## Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the period.\n\n",
+        "mode": "markdown"
+      },
+      "pluginVersion": "12.0.0",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failed jobs' footprint (kgCO2e)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 239
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 108
+      },
+      "id": 64,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(n_jobs) AS \"No. of jobs completed\", to_char(SUM(carbonfootprint_failedjobs)/1000,'99999999.99') AS \"Failed jobs' footprint (kgCO2e)\", to_char(SUM(cost_failedjobs), '9999999') AS \"Cost (£) of failed jobs\", to_char((SUM(n_jobs-n_success)::float/SUM(n_jobs))*100, '999.99') AS \"% of failed jobs\" FROM ga_data_aggregate WHERE user_name = '${__user.login}' ;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "Cost of user's failed jobs.",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 108
+      },
+      "id": 66,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT submitdate, (SUM(n_jobs-n_success)::float/SUM(n_jobs))*100 AS \"Failed jobs\",  (SUM(n_success)::float/SUM(n_jobs))*100 AS \"Successful jobs\" FROM ga_data_aggregate WHERE user_name = '${__user.login}' GROUP BY submitdate ORDER BY submitdate ASC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "User's distribution of failed jobs.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 112
+      },
+      "id": 65,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(n_jobs-n_success) AS \"Failed jobs\", SUM(n_success) AS \"Successful jobs\" FROM ga_data_aggregate WHERE user_name = '${__user.login}' ORDER BY SUM(n_jobs-n_success) ASC ;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "User's distribution of failed and successful jobs.",
+      "type": "piechart"
     }
   ],
   "refresh": "",
@@ -2873,7 +3188,7 @@
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 30,
+  "version": 39,
   "weekStart": ""
 }
 
