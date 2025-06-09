@@ -90,18 +90,19 @@ Note that:
 
 
 ## Grafana set-up
-A number of things need to be done, assuming you have downloaded Grafana and are able to run its server. These are:
+A number of things need to be done, assuming you have downloaded Grafana and are running its server. These are:
 * import the dashboard(s) you want to use into the Grafana server
 * add teams and users (and their information) to the Grafana server
 
-By default, this will use the demo dashboard file `scripts/end-to-end/demo.json`. 
+You must set the `--input_dir` argument, which specifies the directory containing your JSON files for the dashboards.
 
-For example, using the defaults for the demo:
+For example, if you wanted to use the demo dashboard directory, and other parameters set to default:
 
 ```
 % python scripts/frontend/run_dashboard.py \
       --admin_password <grafana_admin_password> \
       --db_password <db_password> \
+      --input_dir ga_dashboard/dashboards
 
 ```
 

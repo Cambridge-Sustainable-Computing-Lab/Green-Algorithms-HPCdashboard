@@ -62,9 +62,7 @@ def main():
 
     script_path = os.path.dirname(os.path.realpath(__file__))
 
-    # Choose 
-    default_dashboards_dir = f'{script_path}/../end-to-end' # for demo.json
-    #default_dashboards_dir = f'{script_path}/../../ga_dashboard/dashboards' # Laurent's original dashboards.
+    # Choose as appropriate
     default_grafana_users_file = 'ga_dashboard/samples/grafana_users_list.csv'
 
     argparser = argparse.ArgumentParser()
@@ -79,7 +77,7 @@ def main():
     argparser.add_argument("--db_port", help='Database port', required=False, default=5432)
     argparser.add_argument("--pg_version", help='PostgreSQL version', required=False, default=13)
     argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder', required=False, dest='dashboard_folder_name', default='Green Algorithms Demo')
-    argparser.add_argument("--input_dir", "-r", help='Dashboard files directory', required=False, metavar='INPUT_DIR', default=default_dashboards_dir, dest='input_dir')
+    argparser.add_argument("--input_dir", "-r", help='Dashboard files directory', required=, metavar='INPUT_DIR', dest='input_dir')
     argparser.add_argument("--input_file", "-i", help='User list in CSV format', required=False, default=default_grafana_users_file, metavar='INPUT_FILE', dest='input_file')
     argparser.add_argument("--debug", help='Debug mode', required=False, action='store_true')
 
