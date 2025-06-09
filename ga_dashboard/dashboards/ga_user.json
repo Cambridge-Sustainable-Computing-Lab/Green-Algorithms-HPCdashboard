@@ -97,7 +97,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Institution Activity\n\nOverall activity at <institution> between <start date> and <end date>.\n\nComputing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess then reduce the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at <institution>.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org) and the following assumptions:\n\n|Type|Value|\n|----|-----|\n|CPU |5.9 - 9.4 W/core|\n|GPU |NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)|\n|Memory power | 0.3725 W/GB|\n|Power usage effectiveness| 1.15|\n|Carbon intensity |231.12 gCO<sub>2</sub> e/kWh|\n|Energy cost| £0.34/kWh|\n\n----\nWe built this tool in the hope to raise awareness of computing usage, highlight resources waste, and foster good computing practices. This\nis intended to be a lightweight carbon footprint calculator, not a cluster monitoring system.\n----",
+        "content": "# Institution Activity\n\nOverall activity at institution in the date range specified.\n\nComputing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess then reduce the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at the institution.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org) and the following assumptions:\n\n|Type|Value|\n|----|-----|\n|CPU |5.9 - 9.4 W/core|\n|GPU |NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)|\n|Memory power | 0.3725 W/GB|\n|Power usage effectiveness| 1.15|\n|Carbon intensity |231.12 gCO<sub>2</sub> e/kWh|\n|Energy cost| £0.34/kWh|\n\n\nWe built this tool in the hope to raise awareness of computing usage, highlight resources waste, and foster good computing practices. This\nis intended to be a lightweight carbon footprint calculator, not a cluster monitoring system.\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -112,7 +112,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "green",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -164,6 +165,9 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
         "textMode": "value",
         "wideLayout": true
       },
@@ -210,7 +214,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "green",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -262,6 +267,9 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
         "textMode": "auto",
         "wideLayout": true
       },
@@ -346,6 +354,9 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
         "textMode": "auto",
         "wideLayout": true
       },
@@ -431,6 +442,9 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
         "textMode": "auto",
         "wideLayout": true
       },
@@ -1379,7 +1393,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Efficiency metrics\n## Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the period.\n\n",
+        "content": "# Efficiency metrics: Failed jobs (all institution)\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the period.\n\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -2017,7 +2031,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "blue",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -2069,6 +2084,9 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
         "textMode": "auto",
         "wideLayout": true
       },
@@ -2114,7 +2132,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "blue",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -2166,6 +2185,9 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
         "textMode": "auto",
         "wideLayout": true
       },
@@ -2211,7 +2233,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "blue",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -2250,6 +2273,9 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
         "textMode": "auto",
         "wideLayout": true
       },
@@ -2295,7 +2321,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "blue",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -2335,6 +2362,9 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 50
+        },
         "textMode": "auto",
         "wideLayout": true
       },
@@ -2838,7 +2868,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Efficiency metrics for user ${__user.login}\n## Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the period.\n\n",
+        "content": "# Efficiency metrics for user ${__user.login}: Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the period.\n\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -3871,14 +3901,14 @@
     ]
   },
   "time": {
-    "from": "2023-05-12T00:01:47.418Z",
-    "to": "2023-07-05T14:46:31.598Z"
+    "from": "2022-01-01T11:59:38.000Z",
+    "to": "2024-07-25T09:24:26.000Z"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 69,
+  "version": 76,
   "weekStart": ""
 }
 
