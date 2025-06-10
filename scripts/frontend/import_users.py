@@ -23,16 +23,16 @@ User_1,uid_1,user1@example.com,mypassword,Team 1
 User_2,uid_2,user2@example.com,yourpassword,Team 1
 etc.
 
-Laurent says 'Team name' is mapped to "Group' in the sample BACKEND csv file (anonymised).
+Laurent says 'Team name' is mapped to 'Group' in the sample BACKEND csv file (anonymised).
 
-Example (using Grafana admin defaults) from `GA4HPCdashboard/frontend` directory:
+Example (using Grafana admin defaults) from `GA4HPCdashboard` top directory:
 python scripts/frontend/import_users.py --input_file ga_dashboard/samples/grafana_users_list.csv --admin_login admin --admin_password admin
 
 """ 
     
 
 def main():
-    argparser = argparse.ArgumentParser(description="Import users in user list file to Grafana, and (optionally) Postgres too.")
+    argparser = argparse.ArgumentParser(description="Import users in user list file to Grafana.")
     argparser.add_argument("--input_file", "-i", help='User list in CSV format', required=True, metavar='INPUT_FILE', dest='input_file')
     argparser.add_argument("--url", help='Grafana URL', required=False, metavar='URL', default='localhost:3000')
     argparser.add_argument("--admin_login", "-l", help='Grafana admin name', required=False, metavar='ADMIN_NAME', default='admin', dest='login')
