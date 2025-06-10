@@ -709,9 +709,10 @@
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT submitdate, SUM(n_jobs) FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC",
+          "rawQuery": true,
+          "rawSql": "SELECT submitdate, SUM(n_jobs) FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3942,7 +3943,7 @@
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 4,
+  "version": 3,
   "weekStart": ""
 }
 
