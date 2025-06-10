@@ -725,6 +725,18 @@ files = [
 ]
 
 [[package]]
+name = "random-password-generator"
+version = "2.2.0"
+description = "Simple and custom random password generator for python"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "random-password-generator-2.2.0.tar.gz", hash = "sha256:d8a8e2c0420fdd2c096bc7948f62701cb36761aea42e59c9a504d02f0e359d43"},
+    {file = "random_password_generator-2.2.0-py3-none-any.whl", hash = "sha256:da9ce21a9b6a99dfda940596fe417a55470a2e0343fae56dea785f431780d8a9"},
+]
+
+[[package]]
 name = "six"
 version = "1.17.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -895,4 +907,4 @@ certifi = {version = "*", markers = "python_full_version < \"3.7.10\" or platfor
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "296e13c3685e84f51d8a38a6147557f864fd7c3a7ebcb2b13465518d29c037fa"
+content-hash = "79ff391aa1c29cbb554e24b7de1b8dbf9310893be0425a40a1446ff73a2ab2ee"
