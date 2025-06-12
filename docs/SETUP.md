@@ -56,16 +56,16 @@ $ psql -h localhost -p 5432 -U postgres -d ga_db < ga_db_aggregate.sql
 
 ### Run all setup in one command
 
-The script `ga_dashboard.py` runs sequentially the code to:
+The script `run_dashboard.py` runs sequentially the code to:
 
 * Create the data source
 * Create the dashboards folder
 * Import the dashboards
-* Create users and teams
+* Create Grafana users and teams - note that this will also generate passwords (on STDOUT)
 
 For instance
 ```
-python ga_dashboard.py \
+python run_dashboard.py \
   --admin_login admin --admin_password <adm_password> \
   --db_name ga_db --db_user <db_user_name> --db_password <db_user_password> --pg_version 15 \
   --input_file <path_to_users_csv_file>
@@ -73,9 +73,9 @@ python ga_dashboard.py \
 
 Example of input file format (CSV format):
 ```
-Name,User name,Email,Password,Team name
-Thomas Greene,tg1,tg1@ga-test.com,<user_1_password>,Team 1
-Adam Mackay,am1,am1@ga-test.com,<user_2_password>,Team 2
+Name,User name,Email,Team name
+Thomas Greene,tg1,tg1@ga-test.com,Team 1
+Adam Mackay,am1,am1@ga-test.com,Team 2
 ...
 ```
 
@@ -97,11 +97,11 @@ Options are:
 ```
 
 > [!NOTE]
-> You can run the different steps individually via python scripts or manually via the Grafana web interface (see below).
+> You can run the different steps individually via the various python scripts or manually via the Grafana web interface (see below).
 
 ### Setup data source
 
-In the GA Project, the data source is a PostgreSQL database
+In the GA Project, the data source is a PostgreSQL database.
 
 #### Script version
 
@@ -186,16 +186,18 @@ Options are:
 
 Example of input file format (CSV format):
 ```
-Name,User name,Email,Password,Team name
-Thomas Greene,tg1,tg1@ga-test.com,<user_1_password>,Team 1
-Adam Mackay,am1,am1@ga-test.com,<user_2_password>,Team 2
+Name,User name,Email,Team name
+Thomas Greene,tg1,tg1@ga-test.com,Team 1
+Adam Mackay,am1,am1@ga-test.com,Team 2
 ...
 ```
+
+Note that this script will also generate Grafana passwords for new users.
 
 #### GUI version
 
 Some of the dashboards need to have a matching username to properly see all the panels.
-For the example, I created a user $\color{orange}{\textsf{ll582}}$ which I included in a team $\color{darkred}{\textsf{Test}}$.
+For the example, I created a user $\color{orange}{\textsf{ll582}}$ which I included in a team $\color{red}{\textsf{Test}}$.
 
 ##### User
 
@@ -205,10 +207,10 @@ Then use the Username $\color{orange}{\textsf{ll582}}$.
 ##### Team
 
 Go to $\color{green}{\textsf{Home > Administration > Users and access > Teams > New Team}}$.  
-Then use the name $\color{darkred}{\textsf{Test}}$.
-After that, click on the $\color{darkred}{\textsf{Test}}$ team and add $\color{orange}{\textsf{ll582}}$ as a new member.
+Then use the name $\color{red}{\textsf{Test}}$.
+After that, click on the $\color{red}{\textsf{Test}}$ team and add $\color{orange}{\textsf{ll582}}$ as a new member.
 
 Then go to the Dashboard directory $\color{purple}{\textsf{Green Algorithms > Folder actions (right hand-side) > Manage permissions}}$.  
-Add permission for the team $\color{darkred}{\textsf{Test}}$ and remove roles Editor and Viewer (although not sure about removing those roles).
+Add permission for the team $\color{red}{\textsf{Test}}$ and remove roles Editor and Viewer (although not sure about removing those roles).
 
 [Back to Contents](./Contents.md)
