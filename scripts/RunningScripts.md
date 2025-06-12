@@ -1,8 +1,12 @@
 # Running the scripts
+The software comprises:
+1. A database
+2. A backend (to query SLURM for data, enrich this data, and store it in the database)
+3. A frontend (which uses Grafana to query the database and display nice charts, etc.)
 
 The scripts in these directories can be used to run the entire cycle:
 
-1. Initialise the backend database
+1. Initialise the PostgreSQL database
 2. Running the backend (run `sacct` command, enhance the data and load it into the database)
 3. Set up the dashboards, users, etc.
 
@@ -54,7 +58,7 @@ sh scripts/backend/run_backend.sh \
     --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml  # NB absolute file path
 ```
 
-This will extract usage information using `sacct`, enhance it (work out some additional quantities using it), then add it to the database. Obviously, you will need to change the values passed as the script arguments to your own set-up. You will also need the `-S` and `-E` options, as shown above.
+This will extract usage information using `sacct`, enrich it (work out some additional quantities using it), then add it to the database. Obviously, you will need to change the values passed as the script arguments to your own set-up. You will also need the `-S` and `-E` options, as shown above.
 
 
 However, assuming you **cannot** run the code/scripts on the HPC system, you will need to run just the `sacct` command
@@ -103,7 +107,6 @@ For example, if you wanted to use the demo dashboard directory, and other parame
       --admin_password <grafana_admin_password> \
       --db_password <db_password> \
       --input_dir ga_dashboard/dashboards
-
 ```
 
 You can specify many options for what you want, however; run the following to see your options:
