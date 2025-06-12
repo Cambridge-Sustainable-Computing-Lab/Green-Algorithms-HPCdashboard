@@ -496,7 +496,7 @@
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "Carbon footprint (kgCO2e)",
+            "axisLabel": "Carbon footprint (kg CO2e)",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
@@ -541,7 +541,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Carbon footprint (gCO2e)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "massg"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -573,7 +586,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "--SELECT submitdate, SUM(carbonfootprint) AS \"Carbon footprint (gCO2e)\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC\n--SELECT submitdate, to_char(SUM(carbonfootprint)/1000, '99999.999') AS \"Carbon footprint (kgCO2e)\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC\nSELECT submitdate, SUM(carbonfootprint)/1000 AS \"Carbon footprint (kgCO2e)\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC",
+          "rawSql": "--SELECT submitdate, SUM(carbonfootprint) AS \"Carbon footprint (gCO2e)\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC\n--SELECT submitdate, to_char(SUM(carbonfootprint)/1000, '99999.999') AS \"Carbon footprint (kgCO2e)\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC\nSELECT submitdate, SUM(carbonfootprint) AS \"Carbon footprint (gCO2e)\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -959,7 +972,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decgbytes"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1104,9 +1130,23 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "masskg"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "massg"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 13,
@@ -1127,8 +1167,11 @@
           "showLegend": false
         },
         "orientation": "auto",
-        "showValue": "auto",
+        "showValue": "always",
         "stacking": "none",
+        "text": {
+          "valueSize": 15
+        },
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
@@ -1148,7 +1191,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT department, SUM(carbonfootprint)/1000 FROM (select u.user_name, u.department, d.carbonfootprint from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(submitdate)) GROUP BY department ORDER BY SUM(carbonfootprint) DESC;",
+          "rawSql": "SELECT department, SUM(carbonfootprint) FROM (select u.user_name, u.department, d.carbonfootprint from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(submitdate)) GROUP BY department ORDER BY SUM(carbonfootprint) DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1229,7 +1272,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CFP"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "massg"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1261,7 +1317,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint)/1000 AS \"CFP\", department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name)\nGROUP BY\nsubmitdate, department;",
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name)\nGROUP BY\nsubmitdate, department;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2460,7 +2516,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "massg"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -2492,7 +2561,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint)/1000 FROM (SELECT d.submitdate, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.user_name = '${__user.login}') GROUP BY submitdate ORDER BY submitdate ASC",
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) FROM (SELECT d.submitdate, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.user_name = '${__user.login}') GROUP BY submitdate ORDER BY submitdate ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2799,7 +2868,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decgbytes"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -3514,7 +3596,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CFP"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "massg"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -3546,7 +3641,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint)/1000 AS \"CFP\", group_name\nFROM\n(SELECT d.submitdate, u.group_name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.department = '$department')\nGROUP BY\nsubmitdate, group_name;",
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", group_name\nFROM\n(SELECT d.submitdate, u.group_name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.department = '$department')\nGROUP BY\nsubmitdate, group_name;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3741,7 +3836,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CFP"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "massg"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -3773,7 +3881,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint)/1000 AS \"CFP\", name\nFROM\n(SELECT d.submitdate, u.name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$group_name')\nGROUP BY\nsubmitdate, name;",
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", name\nFROM\n(SELECT d.submitdate, u.name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$group_name')\nGROUP BY\nsubmitdate, name;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3960,7 +4068,7 @@
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 20,
+  "version": 31,
   "weekStart": ""
 }
 
