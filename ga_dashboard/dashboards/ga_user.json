@@ -1955,7 +1955,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "## Memory efficiency (all institution)\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all jobs in the time period chosen (see date panel at top).",
+        "content": "## Memory efficiency <span style=\"color:#73BF69\">**(all institution)**</span>\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all jobs in the time period chosen (see date panel at top).",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -3056,7 +3056,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "## Efficiency metrics for user ${__user.login}: Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
+        "content": "## Efficiency metrics for user <span style=\"color:#5794F2\">**${__user.login}**</span>: Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -4176,7 +4176,7 @@
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 84,
+  "version": 86,
   "weekStart": ""
 }
 
