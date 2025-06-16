@@ -97,7 +97,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Institution Activity\n\nOverall activity at institution in the date range specified (see date panel above).\n\nComputing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess, then reduce, the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at the institution.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org) and the following assumptions:\n\n|Type|Value|\n|----|-----|\n|CPU |5.9 - 9.4 W/core|\n|GPU |NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)|\n|Memory power | 0.3725 W/GB|\n|Power usage effectiveness| 1.15|\n|Carbon intensity |231.12 gCO<sub>2</sub> e/kWh|\n|Energy cost| £0.34/kWh|\n\n\nWe built this tool in the hope of raising awareness of computing usage, highlighting resource waste, and fostering good computing practices. This\nis intended to be a lightweight carbon footprint calculator, not a cluster monitoring system.\n",
+        "content": "# <span style=\"color:#73BF69\">**Institution Activity**</span>\n\nOverall activity at institution in the date range specified (see date panel above).\n\nComputing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess, then reduce, the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at the institution.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org) and the following assumptions:\n\n|Type|Value|\n|----|-----|\n|CPU |5.9 - 9.4 W/core|\n|GPU |NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)|\n|Memory power | 0.3725 W/GB|\n|Power usage effectiveness| 1.15|\n|Carbon intensity |231.12 gCO<sub>2</sub> e/kWh|\n|Energy cost| £0.34/kWh|\n\n\nWe built this tool in the hope of raising awareness of computing usage, highlighting resource waste, and fostering good computing practices. This\nis intended to be a lightweight carbon footprint calculator, not a cluster monitoring system.\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -1463,7 +1463,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "## Efficiency metrics: Failed jobs (all institution)\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
+        "content": "## Efficiency metrics: Failed jobs <span style=\"color:#73BF69\">**(all institution)**</span>\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -1742,7 +1742,7 @@
         "type": "grafana-postgresql-datasource",
         "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
       },
-      "description": "Number of jobs submitted by entire institution in time period selected (see date panel at top).",
+      "description": "Number of jobs (all institution) submitted by entire institution in time period selected (see date panel at top).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2087,7 +2087,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# User's personal report: ${__user.login}\nFind out your carbon footprint for the time period selected (see date panel at top).",
+        "content": "# User's personal report: <span style=\"color:#5794F2\">**${__user.login}**</span>\n\nFind out your carbon footprint for the time period selected (see date panel at top).",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -2568,7 +2568,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
+            "fixedColor": "#5794F2",
             "mode": "fixed"
           },
           "custom": {
@@ -3510,7 +3510,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "## Memory efficiency (user ${__user.login})\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all this user's jobs in the period chosen (see date panel at top).",
+        "content": "## Memory efficiency (user <span style=\"color:#5794F2\">**${__user.login}**</span>)\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all this user's jobs in the period chosen (see date panel at top).",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -4176,7 +4176,7 @@
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 78,
+  "version": 84,
   "weekStart": ""
 }
 
