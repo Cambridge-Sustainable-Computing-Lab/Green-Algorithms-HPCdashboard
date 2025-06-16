@@ -1317,7 +1317,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name)\nGROUP BY\nsubmitdate, department;",
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"Carbon footprint of\", department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name)\nGROUP BY\nsubmitdate, department;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1438,7 +1438,7 @@
     {
       "description": "",
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 24,
         "x": 0,
         "y": 51
@@ -1506,7 +1506,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 55
+        "y": 54
       },
       "id": 17,
       "options": {
@@ -1637,7 +1637,7 @@
         "h": 11,
         "w": 12,
         "x": 12,
-        "y": 55
+        "y": 54
       },
       "id": 53,
       "options": {
@@ -1754,7 +1754,7 @@
         "h": 7,
         "w": 7,
         "x": 0,
-        "y": 59
+        "y": 58
       },
       "id": 16,
       "options": {
@@ -1867,7 +1867,7 @@
         "h": 7,
         "w": 5,
         "x": 7,
-        "y": 59
+        "y": 58
       },
       "id": 12,
       "options": {
@@ -1932,7 +1932,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 66
+        "y": 65
       },
       "id": 14,
       "options": {
@@ -1998,7 +1998,7 @@
         "h": 8,
         "w": 15,
         "x": 0,
-        "y": 69
+        "y": 68
       },
       "id": 15,
       "options": {
@@ -2064,7 +2064,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 76
       },
       "id": 54,
       "options": {
@@ -2123,7 +2123,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 80
+        "y": 79
       },
       "id": 55,
       "options": {
@@ -2224,7 +2224,7 @@
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 80
+        "y": 79
       },
       "id": 56,
       "options": {
@@ -2312,7 +2312,7 @@
         "h": 8,
         "w": 5,
         "x": 12,
-        "y": 80
+        "y": 79
       },
       "id": 57,
       "options": {
@@ -2401,7 +2401,7 @@
         "h": 8,
         "w": 7,
         "x": 17,
-        "y": 80
+        "y": 79
       },
       "id": 58,
       "options": {
@@ -2534,7 +2534,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 88
+        "y": 87
       },
       "id": 59,
       "options": {
@@ -2647,7 +2647,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 88
+        "y": 87
       },
       "id": 60,
       "options": {
@@ -2760,7 +2760,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 96
+        "y": 95
       },
       "id": 61,
       "options": {
@@ -2886,7 +2886,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 96
+        "y": 95
       },
       "id": 62,
       "options": {
@@ -2938,10 +2938,10 @@
     },
     {
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 24,
         "x": 0,
-        "y": 104
+        "y": 103
       },
       "id": 63,
       "options": {
@@ -3006,7 +3006,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 108
+        "y": 106
       },
       "id": 64,
       "options": {
@@ -3136,7 +3136,7 @@
         "h": 12,
         "w": 12,
         "x": 12,
-        "y": 108
+        "y": 106
       },
       "id": 66,
       "options": {
@@ -3216,7 +3216,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 112
+        "y": 110
       },
       "id": 69,
       "options": {
@@ -3329,7 +3329,7 @@
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 112
+        "y": 110
       },
       "id": 65,
       "options": {
@@ -3394,7 +3394,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 120
+        "y": 118
       },
       "id": 67,
       "options": {
@@ -3460,7 +3460,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 124
+        "y": 122
       },
       "id": 68,
       "options": {
@@ -3524,7 +3524,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 132
+        "y": 130
       },
       "id": 70,
       "options": {
@@ -3615,7 +3615,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 135
+        "y": 133
       },
       "id": 71,
       "options": {
@@ -3641,7 +3641,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", group_name\nFROM\n(SELECT d.submitdate, u.group_name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.department = '$department')\nGROUP BY\nsubmitdate, group_name;",
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"Carbon footprint of\", group_name\nFROM\n(SELECT d.submitdate, u.group_name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.department = '$department')\nGROUP BY\nsubmitdate, group_name;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3710,7 +3710,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 135
+        "y": 133
       },
       "id": 72,
       "options": {
@@ -3756,15 +3756,15 @@
           }
         }
       ],
-      "title": "Contribution of groups to the carbon footprint of your department",
+      "title": "Contribution of groups to the carbon footprint of your department ($department)",
       "type": "table"
     },
     {
       "gridPos": {
-        "h": 5,
+        "h": 3,
         "w": 24,
         "x": 0,
-        "y": 143
+        "y": 141
       },
       "id": 73,
       "options": {
@@ -3855,7 +3855,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 148
+        "y": 144
       },
       "id": 74,
       "options": {
@@ -3881,7 +3881,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"CFP\", name\nFROM\n(SELECT d.submitdate, u.name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$group_name')\nGROUP BY\nsubmitdate, name;",
+          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"Carbon footprint of\", name\nFROM\n(SELECT d.submitdate, u.name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$group_name')\nGROUP BY\nsubmitdate, name;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3950,7 +3950,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 148
+        "y": 144
       },
       "id": 75,
       "options": {
@@ -3975,7 +3975,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT user_name AS \"Username\", name AS \"Name\", to_char(SUM(carbonfootprint)/1000, '9999999') AS \"CFP (kgCO2e)\", to_char(SUM(cost), '9999') AS \"Cost (£)\"\nFROM\n(SELECT u.user_name, u.name, d.carbonfootprint, d.cost FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$group_name' AND $__timeFilter(submitdate))\nGROUP BY user_name, name\nORDER BY user_name;",
+          "rawSql": "SELECT user_name AS \"Username\", name AS \"Name\", to_char(SUM(carbonfootprint)/1000, '9999999') AS \"Carbon footprint (kgCO2e)\", to_char(SUM(cost), '9999') AS \"Cost (£)\"\nFROM\n(SELECT u.user_name, u.name, d.carbonfootprint, d.cost FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$group_name' AND $__timeFilter(submitdate))\nGROUP BY user_name, name\nORDER BY user_name;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4068,7 +4068,7 @@
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 43,
+  "version": 50,
   "weekStart": ""
 }
 
