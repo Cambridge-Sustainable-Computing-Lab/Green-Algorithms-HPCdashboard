@@ -693,7 +693,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "submitdate"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: DD.MM.YYYY"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1080,7 +1093,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Departments\n\nCarbon footprint of all departments in the time range selected (see date panel at top).\n",
+        "content": "## Departments\n\nCarbon footprint of all departments in the time range selected (see date panel at top).\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -1450,7 +1463,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Efficiency metrics: Failed jobs (all institution)\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
+        "content": "## Efficiency metrics: Failed jobs (all institution)\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -1942,7 +1955,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Memory efficiency (all institution)\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all jobs in the time period chosen (see date panel at top).",
+        "content": "## Memory efficiency (all institution)\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all jobs in the time period chosen (see date panel at top).",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -3043,7 +3056,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Efficiency metrics for user ${__user.login}: Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
+        "content": "## Efficiency metrics for user ${__user.login}: Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -3497,7 +3510,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Memory efficiency (user ${__user.login})\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all this user's jobs in the period chosen (see date panel at top).",
+        "content": "## Memory efficiency (user ${__user.login})\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all this user's jobs in the period chosen (see date panel at top).",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -3628,7 +3641,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Groups in your department ($department)\nCarbon footprint of all groups in your department in the time range specified (see date panel at top).",
+        "content": "## Groups in your department ($department)\nCarbon footprint of all groups in your department in the time range specified (see date panel at top).",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -3868,7 +3881,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Users in your group ($group_name)\nCarbon footprint of all users in your group ($group_name) in the time range specified.",
+        "content": "## Users in your group ($group_name)\nCarbon footprint of all users in your group ($group_name) in the time range specified.",
         "mode": "markdown"
       },
       "pluginVersion": "12.0.0",
@@ -4163,7 +4176,7 @@
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 71,
+  "version": 78,
   "weekStart": ""
 }
 
