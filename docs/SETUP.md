@@ -91,6 +91,13 @@ Go to the Grafana directory and run the command:
 
 Then log as admin on the web browser (admin:admin): [http://localhost:3000/](http://localhost:3000/).
 
+### Date format
+By default, Grafana displays dates in US format, i.e. MM/DD. If you want to use dates in DD/MM format, such as the UK uses, you can set the appropriate environment variable on the command line before invoking the server, i.e.:
+
+```
+$ export GF_DATE_FORMATS_USE_BROWSER_LOCALE=true
+$ ./bin/grafana server
+```
 
 ### PostgreSQL
 
