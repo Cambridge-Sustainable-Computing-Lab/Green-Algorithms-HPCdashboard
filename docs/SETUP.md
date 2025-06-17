@@ -98,6 +98,7 @@ By default, Grafana displays dates in US format, i.e. MM/DD. If you want to use 
 $ export GF_DATE_FORMATS_USE_BROWSER_LOCALE=true
 $ ./bin/grafana server
 ```
+Alternatively, one can set this environment variable in one's shell config file (e.g. `.bash_profile`, `.bashrc`, ...).
 
 ### PostgreSQL
 
