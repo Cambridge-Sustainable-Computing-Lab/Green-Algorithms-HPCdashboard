@@ -1191,7 +1191,7 @@
         "type": "grafana-postgresql-datasource",
         "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
       },
-      "description": "Carbon footprint of all departments between <start date> and <end-date>",
+      "description": "Carbon footprint of all departments in the time period selected (see date panel at top).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1438,7 +1438,7 @@
           }
         }
       ],
-      "title": "Daily carbon footprint",
+      "title": "Daily carbon footprint of departments.",
       "transformations": [
         {
           "id": "prepareTimeSeries",
@@ -4263,7 +4263,7 @@
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 87,
+  "version": 90,
   "weekStart": ""
 }
 
