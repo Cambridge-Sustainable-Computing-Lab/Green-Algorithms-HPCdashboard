@@ -60,7 +60,7 @@ echo "\n** Use CTRL-C to stop script. **\n"
 
 # Make user confirm this potentially drastic action!
 echo
-echo "WARNING! This will delete database '$db_name'! Are you sure you wish to continue?"
+echo "WARNING! This will delete database '$db_name' (if it exists)! Are you sure you wish to continue?"
 read -p "Type YES to continue, else script will abort."
 echo
 if [ "$REPLY" != "YES" ]; then
