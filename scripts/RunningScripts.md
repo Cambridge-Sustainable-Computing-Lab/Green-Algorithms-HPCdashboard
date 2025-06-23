@@ -29,6 +29,8 @@ Example:
 ```
 sh scripts/backend/create_or_overwrite_database.sh
 ```
+**Make sure you set the values in the script file to what you want** (we haven't set up command-line arguments for the user of this script, yet).
+
 This will create a new database with empty tables. If you run it and the database already exists, it will delete your data, as its name suggests.
 
 You will be prompted for your `postgres`-user password. This gives you the chance to CTRL-C out if you invoked it by mistake.
