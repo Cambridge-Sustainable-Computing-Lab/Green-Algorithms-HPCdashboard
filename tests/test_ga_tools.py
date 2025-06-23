@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import yaml
 
-from ga_dashboard.backend.ga_tools import GA_tools, extract_data
+from ga_dashboard.backend.ga_tools import extract_data # , GA_tools 
 
 # NB We assume the tests are run from the top-level GA4HPCdashboard directory.
 
