@@ -12,6 +12,8 @@ The scripts in these directories can be used to run the entire cycle:
 
 It should then be possible to view the data in the dashboards running on the Grafana server.
 
+If in doubt, use the absolute paths of files and directories when passing arguments to the scripts. Some scripts sometimes allow use of relative paths.
+
 It is envisaged that the first time the backend is run, the data obtained by `sacct` will be that of all the jobs (that the system still has a record of)
 which occurred before the current time (perhaps upto the end of the previous day). These would then be loaded into the database, and viewable with the
 dashboard.
@@ -22,12 +24,12 @@ perhaps over the previous 24 hours or 7 days, say.
 Users will need to be added to the HPC users file before running the backend, as the code currently raises an error if a job is encountered
 in the `sacct` output with a User which the backend hasn't been told about.
 
-## Backend database set-up
+## Database set-up
 Use `create_or_overwrite_database.sh`.
 
 Example:
 ```
-sh scripts/backend/create_or_overwrite_database.sh
+sh scripts/database/create_or_overwrite_database.sh
 ```
 **Make sure you set the values in the script file to what you want** (we haven't set up command-line arguments for the user of this script, yet).
 
@@ -39,8 +41,8 @@ You will be prompted for your `postgres`-user password. This gives you the chanc
 
 To add HPC users to this database, use the `add_users_to_database.py` script with your `postgres`-user password. For example:
 ```
-python scripts/backend/add_users_to_database.py \
-    --db_name ga_db --db_user postgres  --db_port 5432 --db_host localhost \
+python scripts/database/add_users_to_database.py \
+    --db_name ga_db --db_user postgres --db_port 5432 --db_host localhost \
     --input_file ga_dashboard/samples/hpc_users_list.csv --db_password <your_password>
 ```
 
