@@ -4,10 +4,32 @@
 from ga_dashboard.backend.workload_manager.slurm import Helpers_WM #, WorkloadManager
 import pandas as pd
 import pytest
+import yaml
 
-FIXED_PARAMS_FILE = "ga_dashboard/data/fixed_parameters.yaml"
-CLUSTER_INFO_FILE = "ga_dashboard/samples/cluster_info.yaml"
+FIXED_PARAMS_FILE = "tests/testdata/fixed_parameters.yaml" # "ga_dashboard/data/fixed_parameters.yaml"
+CLUSTER_INFO_FILE = "tests/testdata/cluster_info.yaml" # "ga_dashboard/samples/cluster_info.yaml"
 SINGLE_USER_SACCT_FILE = "ga_dashboard/samples/sacct_output_single_user.txt"
+
+
+# Utility function
+# TODO put into a file where the actual code can use it!
+def get_cluster_info(myfile):
+    '''
+    Load a cluster info .yaml file into a Python object.
+
+    :param myfile: Path to the .yaml file to load
+    :return: The created Python object
+    '''
+    ### Load cluster-specific info
+    with open(myfile, "r") as stream:
+        try:
+            cluster_info = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+            return None
+    return cluster_info
+
+
 
 # Test Helpers_WM.convert_to_GB()
 @pytest.mark.parametrize( "memory, unit, expected",  
@@ -43,24 +65,8 @@ def test_convert_to_GB(memory, unit, expected):
 #
 # Select 1 item - as df mydf = logs_df[logs_df.JobID == "7611224"]
 # series2 = mydf.squeeze(axis=0)
-
-#def test_calc_ReqMem():
-#    with open( SINGLE_USER_SACCT_FILE, 'rb') as f: # Move this to a setup func
-#        logs_raw = f.read()  # A Pandas dataframe
 #
-#    logs_df = pd.read_csv(BytesIO(logs_raw), sep="|", dtype='str')
-#    jobid = "7611224"
-#    mydf = logs_df[logs_df.JobID == jobid]
-#    if len(mydf) > 1:
-#        # raise pytest error message here
-#        return
-#    myseries = mydf.squeeze(axis=0)
-#
-#    HWM = Helpers_WM(None)
-#    mem_gb = HWM.calc_ReqMem(myseries)
-#    assert mem_gb == 300.75
 
-# x['ReqMem'], x['NNodes'], x['NCPUS']
     
 @pytest.mark.parametrize("reqmem, nnodes, ncpus, expected",  
     [   
@@ -78,9 +84,25 @@ def test_calc_ReqMem(reqmem, nnodes, ncpus, expected):
         assert HWM.calc_ReqMem(myseries) == pytest.approx(expected)
     
 
+@pytest.mark.parametrize("RSS, expected",
+    [
+        ("0", 0),   
+        (None, -1),
+        ('2745K', 0.002745),          
+        ('27G', 27),
+        ('60150M', 60.15),
+        ('154264', 0.154264)  # Example which needs to use default unit in cluster info file.             
+    ],)
+def test_clean_RSS(RSS, expected):
+     mydict = {}
+     mydict['MaxRSS'] = RSS
+     myseries = pd.Series(mydict) # Create df using Series constructor: a series of just one dict
+     HWM = Helpers_WM(None)
+     HWM.cluster_info = get_cluster_info(CLUSTER_INFO_FILE) # We only actually need this when the RSS value has no units.
+     assert HWM.clean_RSS(myseries) == expected
+
+
 # We might not need to test all of these. They are here simply as an aide memoire for now.
-def test_clean_RSS():
-    pass
 
 def test_clean_UsedMem():
     pass

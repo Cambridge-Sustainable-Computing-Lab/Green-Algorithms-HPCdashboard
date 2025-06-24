@@ -55,8 +55,8 @@ class Helpers_WM:
 
     def clean_RSS(self, x):
         """
-        Cleans the RSS value in sacct output.
-        :param x: [NaN or str] the RSS value, either NaN or of the form '2745K'
+        Cleans the RSS value in sacct output. (column 'MaxRSS').
+        :param x: A Pandas Series, where the RSS value is either NaN or a string of the form '2745K'
         (optionally, just a number, we then use default_unit_RSS from cluster_info.yaml as unit).
         :return: [float] RSS value, in GB.
         """
