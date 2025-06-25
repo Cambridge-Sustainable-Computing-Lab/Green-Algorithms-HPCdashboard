@@ -30,7 +30,7 @@ Combines the usage of several of the scripts:
 #        --input_file ga_dashboard/samples/grafana_users_list.csv \
 #        --db_name ga_db --db_user postgres --db_password <db_password> \
 #        --input_dir ga_dashboard/dashboards
-#        --name grafana-postgresql-datasource   <-- If not set, uses "grafana-postgresql-ga_db" 
+#        --name <name of your datasource>   <-- If not set, uses "grafana-postgresql-ga_db" 
 
 # Or: as above but:
 #    --input_dir scripts/end-to-end --name demo_datasource
@@ -67,7 +67,7 @@ def main():
     default_grafana_users_file = 'ga_dashboard/samples/grafana_users_list.csv'
 
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("--name", "-n", help='Data source name', required=False, metavar='DS_NAME', default='demo_datasource', dest='name')
+    argparser.add_argument("--name", "-n", help='Data source name', required=False, metavar='DS_NAME', default='grafana-postgresql-ga_db', dest='name')
     argparser.add_argument("--url", help='Grafana URL', required=False, metavar='URL', default='localhost:3000')
     argparser.add_argument("--admin_login", "-l", help='Grafana admin name', required=False, metavar='ADMIN_NAME', default='admin', dest='login')
     argparser.add_argument("--admin_password", "-a", help='Grafana admin password', required=True, metavar='ADMIN_PASS', dest='password')
