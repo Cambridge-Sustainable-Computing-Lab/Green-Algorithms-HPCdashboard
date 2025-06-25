@@ -177,7 +177,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "green",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -238,9 +239,10 @@
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT SUM(cpuhourscharged) FROM ga_data_aggregate LIMIT 50 ",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(cpuhourscharged) FROM ga_data_aggregate WHERE $__timeFilter(submitdate)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -273,7 +275,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "green",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -335,9 +338,10 @@
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT SUM(carbonfootprint) FROM ga_data_aggregate LIMIT 50 ",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(carbonfootprint) FROM ga_data_aggregate WHERE $__timeFilter(submitdate)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -377,7 +381,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "green",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -429,9 +434,10 @@
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT SUM(flying_ny_sf) FROM ga_data_aggregate LIMIT 50 ",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(flying_ny_sf) FROM ga_data_aggregate WHERE $__timeFilter(submitdate)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -471,7 +477,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "green",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -523,7 +530,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT SUM(treemonths)/12 FROM ga_data_aggregate;",
+          "rawSql": "SELECT SUM(treemonths)/12 FROM ga_data_aggregate WHERE $__timeFilter(submitdate);",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1227,7 +1234,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT SUM(energy_cpus) as \"CPUS\", SUM(energy_gpus) as \"GPUS\", SUM(energy_memory) as \"Memory\", SUM(energy-(energy_cpus+energy_gpus+energy_memory)) as \"Other\" FROM ga_data_aggregate ORDER BY SUM(energy_cpus) ",
+          "rawSql": "SELECT SUM(energy_cpus) as \"CPUS\", SUM(energy_gpus) as \"GPUS\", SUM(energy_memory) as \"Memory\", SUM(energy-(energy_cpus+energy_gpus+energy_memory)) as \"Other\" FROM ga_data_aggregate WHERE $__timeFilter(submitdate) ORDER BY SUM(energy_cpus) ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1408,7 +1415,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT department, SUM(carbonfootprint) FROM (select u.user_name, u.department, d.carbonfootprint from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name) GROUP BY department ORDER BY department ASC\n",
+          "rawSql": "SELECT department, SUM(carbonfootprint) FROM (select u.user_name, u.department, d.carbonfootprint from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(submitdate)) GROUP BY department ORDER BY SUM(carbonfootprint) DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1728,7 +1735,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT department AS \"Department\", SUM(carbonfootprint)/1000 AS \"Carbon footprint (kgCO2e)\", SUM(cost) as \"Cost(£)\" FROM\n(select u.user_name, u.department, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name) GROUP BY department ORDER BY department ASC;",
+          "rawSql": "SELECT department AS \"Department\", SUM(carbonfootprint)/1000 AS \"Carbon footprint (kgCO2e)\", SUM(cost) as \"Cost(£)\" FROM\n(select u.user_name, u.department, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(submitdate)) GROUP BY department ORDER BY department ASC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1893,7 +1900,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT SUM(n_jobs-n_success) AS \"Failed jobs\", SUM(n_success) AS \"Successful jobs\" FROM ga_data_aggregate ORDER BY SUM(n_jobs-n_success) ASC ",
+          "rawSql": "SELECT SUM(n_jobs-n_success) AS \"Failed jobs\", SUM(n_success) AS \"Successful jobs\" FROM ga_data_aggregate WHERE $__timeFilter(submitdate) ORDER BY SUM(n_jobs-n_success) ASC ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2212,7 +2219,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select r.range as \"Memory efficiency (%)\", SUM(n_jobs) as \"number of jobs\"\nfrom \n    (\n    select '0-4' as range, 4 as endrange\n\t\t\tunion all select '5-9',9\n\t    union all select '10-14',14\n\t    union all select '15-19',19\n\t    union all select '20-24',24\n\t    union all select '25-29',29\n\t    union all select '30-34',34\n\t    union all select '35-39',39\n\t    union all select '40-44',44\n\t    union all select '45-49',49\n\t    union all select '50-54',54\n\t    union all select '55-59',59\n\t    union all select '60-64',64\n\t    union all select '65-69',69\n\t    union all select '70-74',74\n\t    union all select '75-79',79\n\t    union all select '80-84',84\n\t    union all select '85-89',89\n\t    union all select '90-94',94\n\t\t\tunion all select '95-99',99\n\t\t\tunion all select '100',100\n    ) as r\nleft join ga_data_aggregate on \n    r.endrange = case \n\t\t\twhen ROUND((1/memoryoverallocationfactor)*100) = 100 then 100\n\t\t\twhen ROUND((1/memoryoverallocationfactor)*100) > 95 then 99\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 90 then 94\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 85 then 89\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 80 then 84\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 75 then 79\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 70 then 74\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 65 then 69\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 60 then 64\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 55 then 59\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 50 then 54\n\t\t\twhen ROUND((1/memoryoverallocationfactor)*100) > 45 then 49\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 40 then 44\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 35 then 39\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 30 then 34\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 25 then 29\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 20 then 24\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 15 then 19\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 10 then 14\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 5 then 9\n\t\t\twhen ROUND((1/memoryoverallocationfactor)*100) >= 0 then 4\n    end\ngroup by r.range,r.endrange order by r.endrange",
+          "rawSql": "select r.range as \"Memory efficiency (%)\", SUM(n_jobs) as \"number of jobs\"\nfrom \n    (\n    select '0-4' as range, 4 as endrange\n\t\t\tunion all select '5-9',9\n\t    union all select '10-14',14\n\t    union all select '15-19',19\n\t    union all select '20-24',24\n\t    union all select '25-29',29\n\t    union all select '30-34',34\n\t    union all select '35-39',39\n\t    union all select '40-44',44\n\t    union all select '45-49',49\n\t    union all select '50-54',54\n\t    union all select '55-59',59\n\t    union all select '60-64',64\n\t    union all select '65-69',69\n\t    union all select '70-74',74\n\t    union all select '75-79',79\n\t    union all select '80-84',84\n\t    union all select '85-89',89\n\t    union all select '90-94',94\n\t\t\tunion all select '95-99',99\n\t\t\tunion all select '100',100\n    ) as r\nleft join ga_data_aggregate on \n    r.endrange = case \n\t\t\twhen ROUND((1/memoryoverallocationfactor)*100) = 100 then 100\n\t\t\twhen ROUND((1/memoryoverallocationfactor)*100) > 95 then 99\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 90 then 94\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 85 then 89\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 80 then 84\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 75 then 79\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 70 then 74\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 65 then 69\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 60 then 64\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 55 then 59\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 50 then 54\n\t\t\twhen ROUND((1/memoryoverallocationfactor)*100) > 45 then 49\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 40 then 44\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 35 then 39\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 30 then 34\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 25 then 29\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 20 then 24\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 15 then 19\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 10 then 14\n\t    when ROUND((1/memoryoverallocationfactor)*100) > 5 then 9\n\t\t\twhen ROUND((1/memoryoverallocationfactor)*100) >= 0 then 4\n    end\n\tWHERE $__timeFilter(submitdate)\ngroup by r.range,r.endrange order by r.endrange",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2582,7 +2589,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT group_name AS \"Group\", SUM(carbonfootprint) AS \"Carbon footprint\", SUM(cost) AS \"Cost\" FROM \n(select u.group_name, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE u.department = '$department' )\nGROUP BY group_name \nORDER BY group_name ASC ;",
+          "rawSql": "SELECT group_name AS \"Group\", SUM(carbonfootprint) AS \"Carbon footprint\", SUM(cost) AS \"Cost\" FROM \n(select u.group_name, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE u.department = '$department' AND $__timeFilter(submitdate))\nGROUP BY group_name \nORDER BY group_name ASC ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2692,14 +2699,14 @@
     ]
   },
   "time": {
-    "from": "2023-05-02T00:00:00.000Z",
-    "to": "2023-06-30T00:00:00.000Z"
+    "from": "2023-05-06T11:22:52.295Z",
+    "to": "2023-06-23T21:57:41.678Z"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Department",
   "uid": "bdsq0sjqovyaggdb",
-  "version": 7,
+  "version": 1,
   "weekStart": ""
 }
 
