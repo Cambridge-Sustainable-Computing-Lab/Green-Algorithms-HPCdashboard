@@ -67,7 +67,7 @@ def test_convert_to_GB(memory, unit, expected):
 # series2 = mydf.squeeze(axis=0)
 #
 
-    
+# Test Helpers_WM.calc_ReqMem()    
 @pytest.mark.parametrize("reqmem, nnodes, ncpus, expected",  
     [   
         ("60150M", 1, 5, 60.15),
@@ -84,6 +84,7 @@ def test_calc_ReqMem(reqmem, nnodes, ncpus, expected):
         assert HWM.calc_ReqMem(myseries) == pytest.approx(expected)
     
 
+# Test calc_ReqMem.clean_RSS()
 @pytest.mark.parametrize("RSS, expected",
     [
         ("0", 0),   
