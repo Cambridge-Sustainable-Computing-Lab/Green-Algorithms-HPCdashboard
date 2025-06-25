@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# TODO update to new code. I think maybe best to have two script, one for the first install (creates virtual env, etc), and then a regular one
+
+# Example: 
+# NB The file/directory arguments need the absolute paths.
+#
+# sh scripts/backend/run_backend.sh --db_name ga_db --db_user postgres --db_password <password>
+#      # -S 2025-02-14 -E 2025-02-18   <--- NB dates are not needed if you are using a custom log file
+#      --useOtherInfrastructureInfo ~/repos/GA4HPCdashboard/ga_dashboard/samples
+#      --useCustomLogs ~/repos/GA4HPCdashboard/ga_dashboard/samples/sacct_output_single_user.txt
+#      --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml
+
+# NB The --useOtherInfrastructureInfo argument is the path to the directory
+# containing both the cluster_info.yaml and 
+
+## ~~~ TO BE EDITED TO BE TAILORED TO THE CLUSTER ~~~
+##
+## You only need to edit the module loading line (module load ...), make sure you are loading python 3.11 or greater.
+##
+
+# store the cwd in case we need to filter on it
+userCWD="$(pwd)"
+
+# Cd into the directory where the GA files are located
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "$parent_path"
+
+# Module loading line. The only requirement for the module is to start python 3.11 or later
+#module load miniconda/3
+
+## Test if the virtualenv GA_env already exists, and if not, creates it.
+# if [ ! -f GA_env/bin/activate ]; then
+#   echo "Need to create virtualenv"
+#   python -m venv GA_env
+#   source GA_env/bin/activate
+#   pip3 install -r requirements.txt
+# else
+#   echo "Virtualenv: OK"
+#   source GA_env/bin/activate
+# fi
+
+# Test if the python version is at least 3.11
+version_major=$(python -c 'import sys; print(sys.version_info[0])')
+version_minor=$(python -c 'import sys; print(sys.version_info[1])')
+if (( $version_major < 3 )); then
+  echo "The command python needs to refer to python 3"
+  exit 1
+fi
+
+if (( $version_minor < 11 )); then
+  echo "The command python needs to refer to python3.11 or higher."
+  exit 1
+fi
+echo "Python versions: OK"
+
+
+# Run the python code and pass on the arguments
+python run_backend.py "$@" --userCWD "$userCWD"

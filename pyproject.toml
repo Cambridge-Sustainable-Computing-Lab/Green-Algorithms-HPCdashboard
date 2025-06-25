@@ -1,0 +1,23 @@
+[project]
+name = "ga-dashboard"
+version = "0.1.0"
+description = "Package to extract HPC usage data and display it in an interactive dashboard."
+authors = [
+    {name = "Green Algorithms",email = "green.algorithms@gmail.com"}
+]
+license = {text = "CC-BY-4.0"}
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "grafana-client (>=4.3.1)",
+    "numpy (>=2.2.3)",
+    "pandas (>=2.2.3)",
+    "psycopg[binary] (>=3.2.5)",
+    "pyyaml (>=6.0.2)",
+    "random-password-generator (>=2.2.0,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

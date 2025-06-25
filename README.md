@@ -4,6 +4,9 @@ Repository used to setup the Green Algorithms dashboards, using [Grafana](https:
 
 The instructions for running the end-to-end demo are a little different. See bottom of page.
 
+[Documentation contents](./docs/Contents.md)
+
+[More info on scripts](./scripts/README.md)
 
 ## Prerequisites
 
@@ -28,23 +31,23 @@ The users file should be a comma-separated file combining these columns:
 * **Name**: Full user name (e.g. Thomas Greene)
 * **User name**: Company/Institute user name (e.g. tg1)
 * **Email**: Company/Institute user email (e.g. tg1@ga-test.com)
-* **Password**: Temporary password (could be automatically generated)
 * **Team name**: Name of the user team/department/unit (e.g. Team 1)
 
 Example of input file format (CSV format with header):
 ```
-Name,User name,Email,Password,Team name
-Thomas Greene,tg1,tg1@ga-test.com,<user_1_password>,Team 1
-Adam Mackay,am1,am1@ga-test.com,<user_2_password>,Team 2
+Name,User name,Email,Team name
+Thomas Greene,tg1,tg1@ga-test.com,Team 1
+Adam Mackay,am1,am1@ga-test.com,Team 2
 ...
 ```
 Display as a table:
-| Name          | User name | Email           | Password          | Team name |
-| ------------- | --------- | --------------- | ----------------- | --------- |
-| Thomas Greene | tg1       | tg1@ga-test.com | *user_1_password* | Team 1    |
-| Adam Mackay   | am1       | am1@ga-test.com | *user_2_password* | Team 2    |
-| ...           | ...       | ...             | ...               | ...       |
+| Name          | User name | Email           |  Team name |
+| ------------- | --------- | --------------- | ---------- |
+| Thomas Greene | tg1       | tg1@ga-test.com |  Team 1    |
+| Adam Mackay   | am1       | am1@ga-test.com |  Team 2    |
+| ...           | ...       | ...             |  ...       |
 
+Note that, for security reasons, passwords are not stored in this file. Passwords will be automatically generated (to be noted, or acted on by your setup in some other way) when users are added to the Grafana Dashboard by the `import_users.py` script.
 
 ## Setup Green Algorithms dashboards
 
@@ -154,18 +157,18 @@ All being well, you will see output to your terminal, ending with:
 The users file is used for both the frontend (Grafana users) and back-end (HPC users):
 
 ```
-User,UID,Name,GrafanaPassword,Email,Group,Department
-uid_1,11111,User_1,password1,user1@example.com,group_1,Dept_3
-uid_2,22222,User_2,password2,user2@example.com,group_1,Dept_3
+User,UID,Name,Email,Group,Department
+uid_1,11111,User_1,user1@example.com,group_1,Dept_3
+uid_2,22222,User_2,user2@example.com,group_1,Dept_3
 ...
 ```
 Displayed as a table:
 
-| User  | UID   | Name   | GrafanaPassword | Email             | Group   | Department |
-| ----- | ------| -------| --------------- | ----------------- |---------|------------|
-| uid_1 | 11111 | User_1 | password1       | user1@example.com | group_1 | Dept_3     |
-| uid_2 | 22222 | User_2 | password2       | user2@example.com | group_1 | Dept_3     |
-| ...   | ...   | ...    | ...             | ...               | ...     | ...        |
+| User  | UID   | Name   |  Email             | Group   | Department |
+| ----- | ------| -------| ----------------- |---------|------------|
+| uid_1 | 11111 | User_1  user1@example.com | group_1 | Dept_3     |
+| uid_2 | 22222 | User_2 |user2@example.com | group_1 | Dept_3     |
+| ...   | ...   | ...    |...               | ...     | ...        |
 
 The "teams" in the original dashboard version are the "Groups" in the end-to-end version.
 
