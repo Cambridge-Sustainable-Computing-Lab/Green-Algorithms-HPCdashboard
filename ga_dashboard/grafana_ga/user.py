@@ -52,8 +52,10 @@ class GrafanaGAUser(GrafanaGABase):
             logger.error(f"ERROR during fetching of team '{team_name}': {ex}")
 
 
-    def create_user(self, user_data:dict) -> None:
-        ''' Create a new Grafana user if it doesn't exist '''
+    def create_user(self, user_data:dict) -> any:
+        ''' Create a new Grafana user if it doesn't exist.
+            Return True if a new user is created 
+        '''
         user_login_or_email = None
 
         if "User" in user_data:
@@ -75,9 +77,13 @@ class GrafanaGAUser(GrafanaGABase):
                 logger.warning(f"User '{user_login_or_email}' is already in Grafana (and in team(s) '{', '.join(user_teams)}')")
             else:
                 logger.warning(f"User '{user_login_or_email}' is already in Grafana but is not member of a team")
+            return False
         else:
-            self.set_new_user(user_data)
-
+            if (self.set_new_user(user_data)):
+                return True
+            else:
+                return False
+            
 
     def check_existing_user(self,user_login_or_email:str) -> User:
         '''
@@ -93,7 +99,7 @@ class GrafanaGAUser(GrafanaGABase):
                 pass
 
 
-    def set_new_user(self, user_data:dict) -> None:
+    def set_new_user(self, user_data:dict) -> any:
         ''' Create a new Grafana user '''
         try:
             user = self.grafana.admin.create_user({
@@ -111,6 +117,7 @@ class GrafanaGAUser(GrafanaGABase):
         if user:
             logger.info(f"> User '{user_data['User']}' (user ID: {user['id']}): created successfully")
             self.add_to_team(user_data,user)
+            return True
 
 
     def add_to_team(self,user_data:dict,user:User) -> None:

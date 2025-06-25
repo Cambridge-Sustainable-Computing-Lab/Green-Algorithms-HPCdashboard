@@ -1,12 +1,18 @@
 # Running the scripts
+The software comprises:
+1. A database
+2. A backend (to query SLURM for data, enrich this data, and store it in the database)
+3. A frontend (which uses Grafana to query the database and display nice charts, etc.)
 
 The scripts in these directories can be used to run the entire cycle:
 
-1. Initialise the backend database
+1. Initialise the PostgreSQL database
 2. Running the backend (run `sacct` command, enhance the data and load it into the database)
 3. Set up the dashboards, users, etc.
 
 It should then be possible to view the data in the dashboards running on the Grafana server.
+
+If in doubt, use the absolute paths of files and directories when passing arguments to the scripts. Some scripts sometimes allow use of relative paths.
 
 It is envisaged that the first time the backend is run, the data obtained by `sacct` will be that of all the jobs (that the system still has a record of)
 which occurred before the current time (perhaps upto the end of the previous day). These would then be loaded into the database, and viewable with the
@@ -18,13 +24,15 @@ perhaps over the previous 24 hours or 7 days, say.
 Users will need to be added to the HPC users file before running the backend, as the code currently raises an error if a job is encountered
 in the `sacct` output with a User which the backend hasn't been told about.
 
-## Backend database set-up
+## Database set-up
 Use `create_or_overwrite_database.sh`.
 
 Example:
 ```
-sh scripts/backend/create_or_overwrite_database.sh
+sh scripts/database/create_or_overwrite_database.sh
 ```
+**Make sure you set the values in the script file to what you want** (we haven't set up command-line arguments for the user of this script, yet).
+
 This will create a new database with empty tables. If you run it and the database already exists, it will delete your data, as its name suggests.
 
 You will be prompted for your `postgres`-user password. This gives you the chance to CTRL-C out if you invoked it by mistake.
@@ -33,8 +41,8 @@ You will be prompted for your `postgres`-user password. This gives you the chanc
 
 To add HPC users to this database, use the `add_users_to_database.py` script with your `postgres`-user password. For example:
 ```
-python scripts/backend/add_users_to_database.py \
-    --db_name ga_db --db_user postgres  --db_port 5432 --db_host localhost \
+python scripts/database/add_users_to_database.py \
+    --db_name ga_db --db_user postgres --db_port 5432 --db_host localhost \
     --input_file ga_dashboard/samples/hpc_users_list.csv --db_password <your_password>
 ```
 
@@ -54,7 +62,7 @@ sh scripts/backend/run_backend.sh \
     --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml  # NB absolute file path
 ```
 
-This will extract usage information using `sacct`, enhance it (work out some additional quantities using it), then add it to the database. Obviously, you will need to change the values passed as the script arguments to your own set-up. You will also need the `-S` and `-E` options, as shown above.
+This will extract usage information using `sacct`, enrich it (work out some additional quantities using it), then add it to the database. Obviously, you will need to change the values passed as the script arguments to your own set-up. You will also need the `-S` and `-E` options, as shown above.
 
 
 However, assuming you **cannot** run the code/scripts on the HPC system, you will need to run just the `sacct` command
@@ -90,19 +98,20 @@ Note that:
 
 
 ## Grafana set-up
-A number of things need to be done, assuming you have downloaded Grafana and are able to run its server. These are:
+A number of things need to be done, assuming you have downloaded Grafana and are running its server. These are:
 * import the dashboard(s) you want to use into the Grafana server
 * add teams and users (and their information) to the Grafana server
 
-By default, this will use the demo dashboard file `scripts/end-to-end/demo.json`. 
+By default, the `--input_dir` argument, which specifies the directory on disk containing your JSON files for the 
+dashboards, will use the examples provided in `ga_dashboard/dashboards`. If you wish to use another directory, 
+you must set this option to the location you want.
 
-For example, using the defaults for the demo:
+For example, if you wanted to use the demo dashboard directory, and other parameters set to default:
 
 ```
 % python scripts/frontend/run_dashboard.py \
       --admin_password <grafana_admin_password> \
       --db_password <db_password> \
-
 ```
 
 You can specify many options for what you want, however; run the following to see your options:

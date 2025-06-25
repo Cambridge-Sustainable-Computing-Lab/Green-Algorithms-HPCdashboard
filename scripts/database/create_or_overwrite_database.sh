@@ -52,8 +52,21 @@ pg_version=$DEFAULT_POSTGRES_VERSION
 db_setup_script="$repo_root_dir/ga_dashboard/database/ga_db.sql"
 
 echo "\n*** Setting up empty Postgres database: ***\n"
+echo
+echo "NB Have you configured the values you want in this script?"
+echo
 echo "\n** WARNING: this will delete any existing data in the database. **\n"
 echo "\n** Use CTRL-C to stop script. **\n"
+
+# Make user confirm this potentially drastic action!
+echo
+echo "WARNING! This will delete database '$db_name' (if it exists)! Are you sure you wish to continue?"
+read -p "Type YES to continue, else script will abort."
+echo
+if [ "$REPLY" != "YES" ]; then
+    exit 
+fi
+
 psql -c 'drop database if exists '$db_name'; ' -U postgres -h $db_host -p $db_port
 psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
 psql -U $db_user -h $db_host -p $db_port -d $db_name < $db_setup_script
