@@ -102,7 +102,9 @@ A number of things need to be done, assuming you have downloaded Grafana and are
 * import the dashboard(s) you want to use into the Grafana server
 * add teams and users (and their information) to the Grafana server
 
-You must set the `--input_dir` argument, which specifies the directory containing your JSON files for the dashboards.
+By default, the `--input_dir` argument, which specifies the directory on disk containing your JSON files for the 
+dashboards, will use the examples provided in `ga_dashboard/dashboards`. If you wish to use another directory, 
+you must set this option to the location you want.
 
 For example, if you wanted to use the demo dashboard directory, and other parameters set to default:
 
@@ -110,7 +112,6 @@ For example, if you wanted to use the demo dashboard directory, and other parame
 % python scripts/frontend/run_dashboard.py \
       --admin_password <grafana_admin_password> \
       --db_password <db_password> \
-      --input_dir ga_dashboard/dashboards
 ```
 
 You can specify many options for what you want, however; run the following to see your options:
