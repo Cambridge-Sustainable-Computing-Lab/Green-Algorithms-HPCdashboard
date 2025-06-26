@@ -1,13 +1,10 @@
-
-
-# Script to create a more user-friendly interface to the other scripts.
+# Python script to create a more user-friendly interface to the other scripts.
 
 # Place your values in the user section. A user config file. Else, defaults are used. Some may be boolean.
 
 class Runner:
 
     def __init__(self):
-        #self.initialise_strings()
         self.create_mydir()
         self.create_defaults_dict()
         
@@ -15,8 +12,8 @@ class Runner:
     def create_mydir(self):
         """
         Create `mydir` dictionary which stores, for each script, tne name of the 
-        directory in which it resides. This will be used when we want to invoke
-        client scripts.
+        directory in which it resides. This will be used in constructing the path
+        when we want to invoke a client script.
 
         e.g. mydir["add_users_to_database.py"] = "database"
         """
@@ -50,21 +47,20 @@ class Runner:
         Create "defaults" dictionary. Key = argument name, value = default value of argument.
         We don't store the leading -- before the argument name (e.g. --db_host), but add it later.
 
-        NB (1) Some might not have defaults, (2) At least one argument is Boolean
+        NB (1) Some might not have defaults. (2) At least one argument is Boolean.
         '''
         defaults = {}
         defaults["admin_login"] = "admin" # Grafana admin user name.
         # defaults["allUsers"]  # Run sacct for all users (probably requires admin rights).
-        #defaults["customSuccessStates"]
-
+        # defaults["customSuccessStates"]
         defaults["dashboard_folder_name"] = "Green Algorithms"  # Name of the dashboard folder (on Grafana).
-
         defaults["db_host"] = "localhost"
         defaults["db_name"] = "ga_db"  # The name of the database to store your raw and enriched `sacct` data
         defaults["db_port"] = "5432"
         defaults["db_user"] = "postgres" # The default database user
-        #defaults["endDay"] = None # ???  The last day to take into account, as YYYY-MM-DD (default: today)
-        #defaults["filterCWD"]   Not currently used. 
+        defaults["debug"] = False  # Debug mode. e.g. python myscript.py --debug
+        # defaults["endDay"] = None # ???  The last day to take into account, as YYYY-MM-DD (default: today)
+        # defaults["filterCWD"]   Not currently used. 
         # defaults["filterJobIDs"]  Not currently used. Comma-separated list of Job IDs you want to filter on. (default: "all")
         # defaults["filterAccount"]  Not currently used. 
         defaults["fixed_params_file"] = "ga_dashboard/data/fixed_parameters.yaml"  # The fixed parameters file to use
@@ -73,13 +69,10 @@ class Runner:
         defaults["hpc_users_file"] = None  # CSV file of (HPC) user data
         defaults["input_dir"] = "ga_dashboard/dashboards"  # Dashboard JSON files directory, on disk.
         defaults["input_log_file"] = None  # Logs data, e.g., ga_dashboard/samples/userDaily_mockMultiUsers_1.csv 
-        
         defaults["name"] = "grafana-postgresql-ga_db" # Name of data source (on Grafana).
-        
         defaults["outFile"] = None # The name of the file to be written, for storing the output of sacct.
         # defaults["output"] = None  # Not currently used.
         defaults["pg_version"] = "13"  # PostgreSQL version.
-
         # defaults["reportBug"]
         # defaults["reportBugHere"]
         # defaults["slurmAdmin"]
@@ -91,23 +84,24 @@ class Runner:
         defaults["user"] = None # HPC username on slurm.
         # defaults["userCWD"]
 
-        # db_password mypassword 
-        # admin_password"  # Grafana admin password.
-        defaults["debug"] = False  # Debug mode. e.g. python myscript.py --debug
+        # db_password  # Database user password 
+        # admin_password  # Grafana admin password.
+    
+        self.defaults = defaults
+        # self.boolean_defaults = ...
 
 
-    def create_clients_dict(self): # is this needed?
-        '''
-        Create "clients" dictionary.
-        Key = argument name. Value = list of the scripts (clients) which can use this argument.
-        
-        '''
-        clients = {} # NB what to do where there is both a .sh and .py file? e.g. run_backend.sh
-        clients["db_name"] = [ "run_backend.py", "database/add_users_to_database.py" ]
-
-    #def initialise_strings(self):
+    def ingest_user_config_file(self):
+        pass
 
 
+    def command_loop(self):
+        pass
+
+
+# e.g. python run.py myconfig.txt
 if __name__ == "__main__":
     runner = Runner()
+    runner.ingest_user_config_file()
+    runner.command_loop()
     
