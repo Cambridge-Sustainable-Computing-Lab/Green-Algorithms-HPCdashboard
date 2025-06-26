@@ -27,7 +27,7 @@ Combines the usage of several of the scripts:
 # Example usage (run from top-level directory of repo):
 #
 # % python scripts/frontend/run_dashboard.py --admin_password <grafana_admin_password> \
-#        --input_file ga_dashboard/samples/grafana_users_list.csv \
+#        --grafana_users_file ga_dashboard/samples/grafana_users_list.csv \
 #        --db_name ga_db --db_user postgres --db_password <db_password> \
 #        --input_dir ga_dashboard/dashboards
 #        --name <name of your datasource>   <-- If not set, uses "grafana-postgresql-ga_db" 
@@ -79,7 +79,7 @@ def main():
     argparser.add_argument("--pg_version", help='PostgreSQL version', required=False, default=13)
     argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder on Grafana', required=False, dest='dashboard_folder_name', default='Green Algorithms')
     argparser.add_argument("--input_dir", "-r", help='Dashboard JSON files directory, on disk', required=False, default = 'ga_dashboard/dashboards', metavar='INPUT_DIR', dest='input_dir')
-    argparser.add_argument("--input_file", "-i", help='User list in CSV format', required=False, default=default_grafana_users_file, metavar='INPUT_FILE', dest='input_file')
+    argparser.add_argument("--grafana_users_file", "-i", help='User list in CSV format', required=False, default=default_grafana_users_file, metavar='INPUT_FILE', dest='grafana_users_file')
     argparser.add_argument("--debug", help='Debug mode', required=False, action='store_true')
 
     args = argparser.parse_args()
@@ -96,7 +96,7 @@ def main():
     pg_version = args.pg_version
     ga_dashboard_folder_name = args.dashboard_folder_name
     ga_dashboard_input_dir = args.input_dir # Where the dashboard JSON files are located, on disk.
-    input_file = args.input_file
+    input_file = args.grafana_users_file
     debug = args.debug
 
     logging_level = logging.DEBUG if debug else logging.INFO

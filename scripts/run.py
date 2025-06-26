@@ -64,19 +64,20 @@ class Runner:
         defaults["db_port"] = "5432"
         defaults["db_user"] = "postgres" # The default database user
         #defaults["endDay"] = None # ???  The last day to take into account, as YYYY-MM-DD (default: today)
-        #defaults["filterCWD"] = 
-        # defaults["filterJobIDs"] = 
-        # defaults["filterAccount"] = 
-        # defaults["fixed_params_file"] =  # The fixed parameters file to use
-        # defaults["granularity"] = 
+        #defaults["filterCWD"]   Not currently used. 
+        # defaults["filterJobIDs"]  Not currently used. Comma-separated list of Job IDs you want to filter on. (default: "all")
+        # defaults["filterAccount"]  Not currently used. 
+        defaults["fixed_params_file"] = "ga_dashboard/data/fixed_parameters.yaml"  # The fixed parameters file to use
+        defaults["grafana_users_file"] = None  # List of Grafana users, e.g., ga_dashboard/samples/grafana_users_list.csv
+        # defaults["granularity"]  Not currently used. The level of granularity of the report, needed with `--slurmAdmin`. 
+        defaults["hpc_users_file"] = None  # CSV file of (HPC) user data
         defaults["input_dir"] = "ga_dashboard/dashboards"  # Dashboard JSON files directory, on disk.
-        # defaults["input_file"] =    # CSV file of user data HPC or grafana. Also Logs data e.g. ga_dashboard/samples/userDaily_mockMultiUsers_1.csv
-        defaults["name"] = "grafana-postgresql-ga_db" # Name of data source (on Grafana).
-        # hpc users --input_file ga_dashboard/samples/hpc_users_list.csv
-
-        defaults["outFile"] = None
-        defaults["output"] = None  # The name of the file to be written, for storing the output of sacct.
+        defaults["input_log_file"] = None  # Logs data, e.g., ga_dashboard/samples/userDaily_mockMultiUsers_1.csv 
         
+        defaults["name"] = "grafana-postgresql-ga_db" # Name of data source (on Grafana).
+        
+        defaults["outFile"] = None # The name of the file to be written, for storing the output of sacct.
+        # defaults["output"] = None  # Not currently used.
         defaults["pg_version"] = "13"  # PostgreSQL version.
 
         # defaults["reportBug"]
@@ -85,7 +86,7 @@ class Runner:
         defaults["startDay"] = None  # The first day to take into account, as YYYY-MM-DD
         defaults["url"] = "localhost:3000"  # Grafana URL (including port).
         defaults["useCustomLogs"] = None  # Bypass workload manager and input a custom log file of your jobs. Example: ga_dashboard/backend/example_files/example_sacctOutput_raw.txt
-        # defaults["use_mock_agg_data"]
+        # defaults["use_mock_agg_data"]  Not currently used?  Uses mock aggregated usage data, for offline debugging
         # defaults["useOtherInfrastructureInfo"]
         defaults["user"] = None # HPC username on slurm.
         # defaults["userCWD"]
