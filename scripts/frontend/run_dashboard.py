@@ -77,7 +77,7 @@ def main():
     argparser.add_argument("--db_host", "-o", help='Database host', required=False, dest='db_host', default='localhost')
     argparser.add_argument("--db_port", help='Database port', required=False, default=5432)
     argparser.add_argument("--pg_version", help='PostgreSQL version', required=False, default=13)
-    argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder on Grafana', required=False, dest='dashboard_folder_name', default='Green Algorithms Demo')
+    argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder on Grafana', required=False, dest='dashboard_folder_name', default='Green Algorithms')
     argparser.add_argument("--input_dir", "-r", help='Dashboard JSON files directory, on disk', required=False, default = 'ga_dashboard/dashboards', metavar='INPUT_DIR', dest='input_dir')
     argparser.add_argument("--input_file", "-i", help='User list in CSV format', required=False, default=default_grafana_users_file, metavar='INPUT_FILE', dest='input_file')
     argparser.add_argument("--debug", help='Debug mode', required=False, action='store_true')
