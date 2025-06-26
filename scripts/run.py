@@ -2,54 +2,107 @@
 
 # Script to create a more user-friendly interface to the other scripts.
 
-# Place your values in the user section.
+# Place your values in the user section. A user config file. Else, defaults are used. Some may be boolean.
 
 class Runner:
 
     def __init__(self):
         #self.initialise_strings()
-        self.create_client_lists()
+        self.create_mydir()
         self.create_defaults_dict()
         
 
-    def create_client_lists(self):
+    def create_mydir(self):
+        """
+        Create `mydir` dictionary which stores, for each script, tne name of the 
+        directory in which it resides. This will be used when we want to invoke
+        client scripts.
+
+        e.g. mydir["add_users_to_database.py"] = "database"
+        """
         files = {}
 
         # List of all client scripts in scripts/frontend:
-        files["frontend"] = [ "test" ]
+        files["frontend"] = [ "create_data_source.py", "import_dashboards.py", "import_users.py", "run_dashboard.py" ]
 
         # List of all client scripts in scripts/database: 
         files["database"] = [ "add_users_to_database.py", "create_or_overwrite_database.sh", "import_mockup_aggregate.py" ]
 
         # List of all client scripts inscripts/backend:
-        files["backend"] = []
+        files["backend"] = [ "run_backend.py", "run_backend.sh", "run_sacct_only.py" ]
 
         # Now populate "mydir" dictionary. e.g. mydir["add_users_to_database.py"] = "database"
-        # res = [[i for i in test_dict[x]] for x in test_dict.keys()]
         mydir = {}
         for directory in files.keys():
             for client in files[directory]:
-                mydir[client] = directory 
+                # This should never happen, but check just in case:
+                if client in mydir:
+                    print(f"Error, duplicate script {client} !")
+                    exit()
+                else:
+                    mydir[client] = directory 
         print(mydir)
         self.mydir = mydir
 
 
     def create_defaults_dict(self):
         '''
-        Create "defaults" dictionary. Key = argument name, value = default value
+        Create "defaults" dictionary. Key = argument name, value = default value of argument.
+        We don't store the leading -- before the argument name (e.g. --db_host), but add it later.
+
+        NB (1) Some might not have defaults, (2) At least one argument is Boolean
         '''
         defaults = {}
-        defaults["db_name"] = "ga_db"  # The name of the database to store your raw and enriched `sacct` data
-        defaults["db_user"] = "postgres" # The default database user
+        defaults["admin_login"] = "admin" # Grafana admin user name.
+        # defaults["allUsers"]  # Run sacct for all users (probably requires admin rights).
+        #defaults["customSuccessStates"]
 
-    def create_clients_dict(self):
+        defaults["dashboard_folder_name"] = "Green Algorithms"  # Name of the dashboard folder (on Grafana).
+
+        defaults["db_host"] = "localhost"
+        defaults["db_name"] = "ga_db"  # The name of the database to store your raw and enriched `sacct` data
+        defaults["db_port"] = "5432"
+        defaults["db_user"] = "postgres" # The default database user
+        #defaults["endDay"] = None # ???  The last day to take into account, as YYYY-MM-DD (default: today)
+        #defaults["filterCWD"] = 
+        # defaults["filterJobIDs"] = 
+        # defaults["filterAccount"] = 
+        # defaults["fixed_params_file"] =  # The fixed parameters file to use
+        # defaults["granularity"] = 
+        defaults["input_dir"] = "ga_dashboard/dashboards"  # Dashboard JSON files directory, on disk.
+        # defaults["input_file"] =    # CSV file of user data HPC or grafana. Also Logs data e.g. ga_dashboard/samples/userDaily_mockMultiUsers_1.csv
+        defaults["name"] = "grafana-postgresql-ga_db" # Name of data source (on Grafana).
+        # hpc users --input_file ga_dashboard/samples/hpc_users_list.csv
+
+        defaults["outFile"] = None
+        defaults["output"] = None  # The name of the file to be written, for storing the output of sacct.
+        
+        defaults["pg_version"] = "13"  # PostgreSQL version.
+
+        # defaults["reportBug"]
+        # defaults["reportBugHere"]
+        # defaults["slurmAdmin"]
+        defaults["startDay"] = None  # The first day to take into account, as YYYY-MM-DD
+        defaults["url"] = "localhost:3000"  # Grafana URL (including port).
+        defaults["useCustomLogs"] = None  # Bypass workload manager and input a custom log file of your jobs. Example: ga_dashboard/backend/example_files/example_sacctOutput_raw.txt
+        # defaults["use_mock_agg_data"]
+        # defaults["useOtherInfrastructureInfo"]
+        defaults["user"] = None # HPC username on slurm.
+        # defaults["userCWD"]
+
+        # db_password mypassword 
+        # admin_password"  # Grafana admin password.
+        defaults["debug"] = False  # Debug mode. e.g. python myscript.py --debug
+
+
+    def create_clients_dict(self): # is this needed?
         '''
         Create "clients" dictionary.
         Key = argument name. Value = list of the scripts (clients) which can use this argument.
         
         '''
         clients = {} # NB what to do where there is both a .sh and .py file? e.g. run_backend.sh
-        clients["db_name"] = [ "backend/run_backend.py", "database/add_users_to_database.py" ]
+        clients["db_name"] = [ "run_backend.py", "database/add_users_to_database.py" ]
 
     #def initialise_strings(self):
 
