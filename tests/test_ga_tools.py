@@ -67,7 +67,7 @@ def get_fixed_params(ns: argparse.Namespace, fp_file: str) -> object:
 
 def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
     """
-    Get the Pandas DataFrame represneting the HPC users in user_list_file.
+    Get the Pandas DataFrame representing the HPC users in user_list_file.
     :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
     :param user_list_file: [str] Name of HPC users file, e.g., 'hpc_users_list.csv'
     :return: [pd.DataFrame] The data frame object.
