@@ -36,7 +36,8 @@ $ conda deactivate
 - Install PostgreSQL locally or have access to a PostgreSQL server.
   - Choose a suitable password for the `postgres` user (do not leave as default).
   - Make sure you also have the `psql` script. On my Mac this is `/Library/PostgreSQL/17/bin/psql`. It would be good to prepend this directory to your `PATH` environment variable.
-  - 
+  - If you intend to access the database from other machines, it's best to set one up with TLS/SSL support. In which case you may have to compile it. But, for running the demo, it should
+  be ok as-is.
 
 
 - Clone the repository:
