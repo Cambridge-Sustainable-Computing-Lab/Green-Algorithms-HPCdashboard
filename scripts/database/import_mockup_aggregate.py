@@ -18,7 +18,7 @@ I attached the script I used to simply import the CSV into PostgreSQL
 
 Example:
 
-python scripts/frontend/import_mockup_aggregate.py --input_file ga_dashboard/samples/userDaily_mockMultiUsers_1.csv 
+python scripts/database/import_mockup_aggregate.py --input_file ga_dashboard/samples/userDaily_mockMultiUsers_1.csv 
     --db_user postgres --db_password <password> --db_host localhost --db_port 5432 --db_name ga_db
 
  user_name | submitdate | n_jobs | first_job_period | last_job_period |       energy        |     energy_cpus      | energy_gpus |    energy_memory     |

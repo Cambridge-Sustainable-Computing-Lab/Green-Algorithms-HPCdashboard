@@ -10,4 +10,6 @@
 
 [Worked Example](./WorkedExample.md)
 
+[Handling Grafana export error](./grafana_bug_workaround.md)
+
 

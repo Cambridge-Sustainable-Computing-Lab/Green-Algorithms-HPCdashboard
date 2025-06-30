@@ -1,17 +1,88 @@
-# GA Grafana setup
+# Setting up the demo
 
 [Prerequisites](#prerequisites) - [Main installation](#main-installation) - [Database connection](#database-connection) - [Grafana setup](#grafana-setup)
 
+## Introduction
+
+The software has:
+
+(1) Back-end: extracts job information from the HPC, and enhances this data
+
+(2) Middle: writes this data to the Postgres database.
+
+(3) Front-end: displays helpful dashboards using a Grafana server, which reads the relevant data from the Postgres database.
+
+There are some helpful scripts in the `scripts/` directory of the repository (see below).
+
 ## Prerequisites
 
-- Install PostgreSQL locally or have access to a PostgreSQL server
-- Install the database locally or on a PostgreSQL server (from the dump SQL)
-- Download the Dashboard exports in JSON format: [dashboards/prod/](/frontend/dashboards/prod/)
+- Set up an environment for a suitable version of Python, e.g., by using [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main). Then you can issue a command such as:
 
-## Main installation
+```
+$ conda create -n py313 python=3.13 -c conda-forge
+$ conda activate py313
+$ python --version
+Python 3.13.2
+```
+This example is for installing Python 3.13 (which is why we decided to call the environment `py313`). Your version may be different.
 
-Install the self-manage installation (Enterprise, just in case we want to host it on the cloud): [https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1](https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1)
+You will probably have to issue the `conda activate py313` command every time you log on to your machine.
 
+If you need to exit the conda environment:
+```
+$ conda deactivate
+```
+
+- Install PostgreSQL locally or have access to a PostgreSQL server.
+  - Choose a suitable password for the `postgres` user (do not leave as default).
+  - Make sure you also have the `psql` script. On my Mac this is `/Library/PostgreSQL/17/bin/psql`. It would be good to prepend this directory to your `PATH` environment variable.
+  - If you intend to access the database from other machines, it's best to set one up with TLS/SSL support. In which case you may have to compile it. But, for running the demo, it should
+  be ok as-is.
+
+
+- Clone the repository:
+
+```
+$ git clone git@github.com:GreenAlgorithms/GA4HPCdashboard.git
+```
+
+So, on your machine, you should now have:
+
+```
+/some/path/or/other/GA4HPCdashboard
+```
+Navigate into this new `GA4HPCdashboard` directory.
+
+
+## Database connection
+
+#### DB installation
+
+1. Create database “ga_db” as `postgres` user
+
+```$ CREATE DATABASE ga_db;```
+
+Example running it with the default **postgres** user:
+
+```$ sudo -u postgres psql -c 'CREATE DATABASE ga_db;'```
+
+
+2. Install the database (e.g. with the user **postgres**)
+
+```
+$ psql -h localhost -p 5432 -U postgres -d ga_db < ga_db.sql
+````
+
+4. Create a database user, with a password, which is read-only, and has access to the database tables. This will be used by Grafana to read information from the database.
+
+
+## Grafana installation
+
+Install the self-managed Grafana installation (Enterprise, just in case we want to host it on the cloud): [https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1](https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1).
+
+In practice this involves downloading a `.tar.gz` file and unpacking it. The instructions should be on the Grafana download page.
+
+## Grafana setup
 
 ## First run
 
@@ -21,8 +92,14 @@ Go to the Grafana directory and run the command:
 
 Then log as admin on the web browser (admin:admin): [http://localhost:3000/](http://localhost:3000/).
 
+### Date format
+By default, Grafana displays dates in US format, i.e. MM/DD. If you want to use dates in DD/MM format, such as the UK uses, you can set the appropriate environment variable on the command line before invoking the server, i.e.:
 
-## Database connection
+```
+$ export GF_DATE_FORMATS_USE_BROWSER_LOCALE=true
+$ ./bin/grafana server
+```
+Alternatively, one can set this environment variable in one's shell config file (e.g. `.bash_profile`, `.bashrc`, ...).
 
 ### PostgreSQL
 
@@ -32,27 +109,6 @@ In Grafana go to $\color{green}{\textsf{Home > Connections > Data sources > Add 
 - Host URL: **localhost:5432**
 - Database name: **ga_db** (for instance)
 - TLS/SSL Mode: **disable** (for local installation)
-
-#### DB installation
-
-1. Create database “ga_db”
-
-```$ CREATE DATABASE ga_db;```
-
-Example running it with the default **postgres** user:
-
-```$ sudo -u postgres psql -c 'CREATE DATABASE ga_db;'```
-
-2. Download the SQL dump: [compressed database dump](/database/data/ga_db_aggregate.sql.gz)
-
-3. Install the database (e.g. with the user **postgres**)
-
-```
-$ gunzip ga_db_aggregate.sql.gz
-$ psql -h localhost -p 5432 -U postgres -d ga_db < ga_db_aggregate.sql
-````
-
-## Grafana setup
 
 ### Run all setup in one command
 

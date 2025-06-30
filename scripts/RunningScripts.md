@@ -93,7 +93,7 @@ sh scripts/backend/run_backend.sh \
 ```
 Note that:
 * The options for the start and end dates, `-S` and `-E`, are not needed, as the date range will be determined by the contents of the `sacct` output file.
-* The directory given with the `--useOtherInfrastructureInfo` option must contain **both** the cluster information file (`cluster_info.yaml`) and the file listing the HPC users (`hpc_users_list.csv`); here, the `samples` subdirectory, which is part of the repo, is used.
+* The directory given with the `--useOtherInfrastructureInfo` option must contain **both** the cluster information file (`cluster_info.yaml`) and the file listing the HPC users (`hpc_users_list.csv`); here, the `samples` subdirectory, which is part of the repo, is used. **BUT** the `main_backend()` function doesn't actually load the HPC users into the database, so this might need changing.
 * In this example, we use the file `sacct_20250414.txt`, which you just generated. Sample `sacct`-output files are also in the `samples` subdirectory. 
 
 

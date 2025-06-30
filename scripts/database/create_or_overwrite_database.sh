@@ -68,6 +68,7 @@ if [ "$REPLY" != "YES" ]; then
 fi
 
 psql -c 'drop database if exists '$db_name'; ' -U postgres -h $db_host -p $db_port
+psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
 psql -U $db_user -h $db_host -p $db_port -d $db_name < $db_setup_script
 echo "\n* Done! *\n"
 
