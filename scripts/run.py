@@ -1,6 +1,6 @@
 # Python script to create a more user-friendly interface to the other scripts.
 
-# Place your values in the user section. A user config file. Else, defaults are used. Some may be boolean.
+# Place your values in the user config file. Else, defaults are used. Some may be boolean.
 
 # Note: we assume that the scripts are invoked from the top-level directory in the repository,
 # i.e., the parent directory of scripts/
@@ -14,6 +14,10 @@ class Runner:
         self.create_mydir()
         self.create_defaults_dict()
         self.create_arg_lists()
+
+        # We will only need to get these once at most per program operation.
+        self.got_db_password = False
+        self.got_grafana_admin_password = False
         
 
     def create_mydir(self):
@@ -44,7 +48,7 @@ class Runner:
                     sys.exit(f"Error, duplicate client script {client} !")
                 else:
                     mydir[client] = directory 
-        print(mydir)
+        # print(mydir)
         self.mydir = mydir
 
 
@@ -64,6 +68,52 @@ class Runner:
         
         self.arg_list = arg_list
         self.need_db_password = need_db_password
+        self.need_grafana_password = need_grafana_password
+
+
+    def get_command_components(self, client: str) -> list:
+        '''
+        Supply a list of the command-line components needed to invoke the script.
+
+        Parameters
+        ----------
+        client : str. Name of the client script, e.g., "add_users_to_database.py"
+
+        Returns
+        -------
+        list of individual command-line components
+        e.g. ["python", "scripts/database/add_users_to_database.py", "db_name", "ga_db", "db_port", "5432", etc.]
+
+        '''
+        commander = "python"
+        path = "scripts" + "/" + self.mydir[client] + "/" + client
+        components = [commander, path]
+
+        for item in self.arg_list[client]:
+            value = None
+
+            # Get a value from user's config file, else use one from defaults (if there is one)
+            if (self.user_config_values) and item in self.user_config_values:
+                value = self.user_config_values[item]
+            else:
+                if item in self.defaults:
+                    value = self.defaults[item]
+                else:
+                    print(f"\nERROR: no value found for {item}, needed by {client}")
+                    print("Please add one to your config file.")
+                    sys.exit("Exiting...")
+
+            # Value can't be None or "None", as that isn't very helpful
+            if ( value and value != "None" ):
+                components.append(f"--{item}")  # <- Put the leading "--"" needed for each parameter name, e.g. "--db_name". 
+                components.append(value)        # <- e.g., "ga_db"
+            else:
+                print(f"\nERROR: 'None' is not a valid value for {item}, needed by {client}")
+                print("Please add one to your config file.")
+                sys.exit("Exiting...")
+
+        print(components)
+        return(components)
 
 
     def create_defaults_dict(self):
@@ -115,16 +165,75 @@ class Runner:
         # self.boolean_defaults = ...
 
 
-    def ingest_user_config_file(self):
+    def ingest_user_config_file(self, config_file):
         '''
-        Parse the config file and overwrite any default parameter values with values from that file.
+        Parse the config file and obtain any parameter values set by user.
         '''
-        pass
+        self.config_file = config_file
+        self.user_config_values = {}
+        self.user_config_values["hpc_users_file"] = "ga_dashboard/samples/hpc_users_list.csv"
+
+
+    def process_option(self, option: str) -> list:
+        '''
+        Process input from user during command loop
+        Input: typed by user
+        Returns: list containing:
+        client script name, need Grafana password?, need DB password?
+        '''
+        if (option == "q"):
+            sys.exit("Goodbye")
+        elif (option == "1"):
+            client = "add_users_to_database.py"
+        else:
+            print("invalid option")
+            return [None, None, None]
+        return[client, self.need_grafana_password[client], self.need_db_password[client]]
+
+
+    def get_grafana_password(self):
+        '''
+        Get Grafana admin password, if not already supplied.
+        '''
+        self.user_config_values["admin_password"] = input("Enter Grafana admin password: > ")
+        # TODO: obscure the typing
+        self.got_grafana_admin_password = True
+
+
+    def get_db_password(self):
+        '''
+        Get database admin password, if not already supplied.
+        '''
+        self.user_config_values["db_password"] = input("Enter database admin user password: > ")
+        # TODO: obscure the typing
+        self.got_db_password = True
 
 
     def command_loop(self):
-        #pass
-        subprocess.run(["python", "scripts/frontend/import_users.py", "-i", "ga_dashboard/samples/grafana_users_list.csv", "-p", "admin"])
+
+        while True:
+            print()
+            print(f"Using config file {self.config_file}")
+            print("Select option:")
+            print("[q] exit")
+            print("[1] import HPC users into database")
+
+            option = input("> ")
+            [client, need_grafana_password, need_db_password] = self.process_option(option)
+            if (client is None):
+                continue
+            if ( need_grafana_password and ("admin_password" not in self.user_config_values) ):
+                self.get_grafana_password()
+            if ( need_db_password and ("db_password" not in self.user_config_values) ):
+                self.get_db_password()
+            #print("Doing stuff!")
+            command_components = self.get_command_components(client)
+            if ( command_components is None ):
+                print("Error in components")
+            else:
+                subprocess.run(command_components)
+
+        #subprocess.run(["python", "scripts/frontend/import_users.py", "-i", "ga_dashboard/samples/grafana_users_list.csv", "-p", "admin"])
 
 
     #def invoke_command()
@@ -135,7 +244,7 @@ class Runner:
 if __name__ == "__main__":
     runner = Runner()
     config_file = "sample_config.txt"
-    #runner.ingest_user_config_file(config_file)
+    runner.ingest_user_config_file(config_file)
     runner.command_loop()
 
 # database
