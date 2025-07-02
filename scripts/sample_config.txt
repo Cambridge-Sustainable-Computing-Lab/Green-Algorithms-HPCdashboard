@@ -18,11 +18,11 @@
 # Machine (e.g. IP address) hosting your database
 # db_host = "localhost"
 
-# PostgreSQL host's port
-# db_port = "5432"
-
 # The name of the database to store your raw and enriched `sacct` data
 # db_name = "ga_db"  
+
+# PostgreSQL host's port
+# db_port = "5432"
 
 # The default database user
 # db_user = "postgres" 
