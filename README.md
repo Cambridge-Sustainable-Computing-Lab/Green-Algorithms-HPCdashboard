@@ -145,7 +145,7 @@ To run the script, assuming your Postgres user's password is ilovecats:
 
 ```
 cd GA4HPCdashboard
-sh ./demo.sh ilovecats
+sh scripts/end-to-end/demo.sh ilovecats
 ```
 Make sure there are no connections to the Postgres database before you run the script. This may require you to restart the grafana server, if it has an existing connection to it.
 
