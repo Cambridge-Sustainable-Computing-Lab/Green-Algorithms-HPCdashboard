@@ -9,7 +9,7 @@
 #      # -S 2025-02-14 -E 2025-02-18   <--- NB dates are not needed if you are using a custom log file
 #      --useOtherInfrastructureInfo ~/repos/GA4HPCdashboard/ga_dashboard/samples
 #      --useCustomLogs ~/repos/GA4HPCdashboard/ga_dashboard/samples/sacct_output_single_user.txt
-#      --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml
+#      --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/samples/fixed_parameters.yaml
 
 # NB The --useOtherInfrastructureInfo argument is the path to the directory
 # containing both the cluster_info.yaml and 

@@ -1,8 +1,8 @@
 import argparse
 import datetime
 
-import sys
-sys.path.append('../..')
+#import sys
+#sys.path.append('../..')
 
 from ga_dashboard.backend.utils import validate_args
 from ga_dashboard.backend.ga_tools import main_backend
