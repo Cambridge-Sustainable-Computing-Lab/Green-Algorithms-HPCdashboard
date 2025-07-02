@@ -3,9 +3,9 @@ import datetime
 import os
 import pandas as pd
 import pytest
-import yaml
 
 from ga_dashboard.backend.ga_tools import GA_tools, extract_data, enrich_data, summarise_data
+from ga_dashboard.backend.utils import get_cluster_info, get_fixed_params
 
 # NB We assume the tests are run from the top-level GA4HPCdashboard directory.
 
@@ -31,36 +31,6 @@ def generate_namespace(logfile: str) -> argparse.Namespace:
     print("using " + ns.useCustomLogs )
 
     return ns
-
-
-def get_cluster_info(ns: argparse.Namespace, info_file: str) -> object:
-    """
-    Get the YAML object representation of a cluster info file.
-    :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
-    :param info_file: [str] Name of info file, e.g., 'cluster_info.yaml'
-    :return: [argparse.Namespace] The populated Namespace (args) object.
-    """
-    with open(os.path.join(ns.path_infrastructure_info, info_file), "r") as stream:
-        try:
-            cluster_info = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-    return cluster_info
-
-
-def get_fixed_params(ns: argparse.Namespace, fp_file: str) -> object:
-    """
-    Get the YAML object representation of the fixed parameters file.
-    :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
-    :param fp_file: [str] Name of fixed params file, e.g., 'cluster_info.yaml'
-    :return: [argparse.Namespace] The populated Namespace (args) object.
-    """
-    with open(os.path.join(ns.path_infrastructure_info, fp_file), "r") as stream:
-        try:
-            fixed_params = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-    return fixed_params
 
 
 def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
