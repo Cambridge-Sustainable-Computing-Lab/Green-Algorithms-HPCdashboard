@@ -91,6 +91,10 @@ class Runner:
         need_db_password["run_dashboard.py"] = True
         need_grafana_password["run_dashboard.py"] = True
 
+        arg_list["run_sacct_only.py"] = ["startDay", "outFile"] ## [--"endDay", --allUsers, --debug]
+        need_db_password["run_sacct_only.py"] = False
+        need_grafana_password["run_sacct_only.py"] = False
+
         self.arg_list = arg_list
         self.need_db_password = need_db_password
         self.need_grafana_password = need_grafana_password
@@ -130,7 +134,7 @@ class Runner:
 
             # Value can't be None or "None", as that isn't very helpful
             if ( value and value != "None" ):
-                components.append(f"--{item}")  # <- Put the leading "--"" needed for each parameter name, e.g. "--db_name". 
+                components.append(f"--{item}")  # <- Put the leading "--"" needed for each parameter name, e.g., "--db_name". 
                 components.append(value)        # <- e.g., "ga_db"
             else:
                 print(f"\nERROR: 'None' is not a valid value for {item}, needed by {client}")
@@ -224,6 +228,8 @@ class Runner:
             client = "import_users.py"
         elif (option == "7"):
             client = "run_dashboard.py"
+        elif (option == "8"):
+            client = "run_sacct_only.py"
         else:
             print("\ninvalid option")
             return [None, None, None]
@@ -262,6 +268,7 @@ class Runner:
             print("[5] Import dashboard(s) into a Grafana folder.")
             print("[6] Generate user passwords, import users to Grafana, and set their folder permissions.")
             print("[7] Do [4], [5] and [6] in one go.")
+            print("[8] Run sacct command, and generate logfile, ON YOUR HPC SYSTEM.")
 
             option = input("> ")
             [client, need_grafana_password, need_db_password] = self.process_option(option)
