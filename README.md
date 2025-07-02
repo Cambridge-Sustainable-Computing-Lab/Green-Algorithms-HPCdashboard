@@ -10,6 +10,14 @@ The instructions for running the end-to-end demo are a little different. See bot
 
 ## Prerequisites
 
+## Install the `ga_dashboard` package
+In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory), type:
+```
+python -m pip install .
+```
+
+This should install the `ga_dashboard` package on your local machine.
+
 ### Database - PostgreSQL
 
 - Install PostgreSQL locally or have access to a PostgreSQL server
