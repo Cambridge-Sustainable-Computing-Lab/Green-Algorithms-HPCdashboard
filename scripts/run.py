@@ -82,6 +82,15 @@ class Runner:
         need_db_password["import_dashboards.py"] = False
         need_grafana_password["import_dashboards.py"] = True
 
+        arg_list["import_users.py"] = ["grafana_users_file", "url", "admin_login", "admin_password", "dashboard_folder_name"] ## [--debug]
+        need_db_password["import_users.py"] = False
+        need_grafana_password["import_users.py"] = True
+
+        arg_list["run_dashboard.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", "db_host", "db_port", "pg_version", \
+                                        "dashboard_folder_name", "input_dir", "grafana_users_file"] ## [--debug]"]
+        need_db_password["run_dashboard.py"] = True
+        need_grafana_password["run_dashboard.py"] = True
+
         self.arg_list = arg_list
         self.need_db_password = need_db_password
         self.need_grafana_password = need_grafana_password
@@ -211,6 +220,10 @@ class Runner:
             client = "create_data_source.py"
         elif (option == "5"):
             client = "import_dashboards.py"
+        elif (option == "6"):
+            client = "import_users.py"
+        elif (option == "7"):
+            client = "run_dashboard.py"
         else:
             print("\ninvalid option")
             return [None, None, None]
@@ -246,7 +259,9 @@ class Runner:
             print("[2] Import already-aggregated, mock-up data into database.")
             print("[3] NOT IMPLEMENTED YET Create or overwrite database.")
             print("[4] Create a data source in Grafana for dashboard to connect to.")
-            print("[5] Import dashboard(s) into Grafana.")
+            print("[5] Import dashboard(s) into a Grafana folder.")
+            print("[6] Generate user passwords, import users to Grafana, and set their folder permissions.")
+            print("[7] Do [4], [5] and [6] in one go.")
 
             option = input("> ")
             [client, need_grafana_password, need_db_password] = self.process_option(option)
@@ -295,11 +310,11 @@ if __name__ == "__main__":
 # usage: create_data_source.py [-h] [--name DS_NAME] [--url URL] [--admin_login ADMIN_NAME] --admin_password ADMIN_PASS --db_name DB_NAME --db_user DB_USER --db_password DB_PASSWORD [--db_host DB_HOST] [--db_port DB_PORT] [--pg_version PG_VERSION] [--debug]
 # create_data_source.py: error: the following arguments are required: --admin_password/-a, --db_name/-d, --db_user/-u, --db_password/-p
 #
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/import_dashboards.py 
+# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/import_dashboards.py  DONE (except for debug)
 # usage: import_dashboards.py [-h] [--input_dir INPUT_DIR] [--url URL] [--admin_login ADMIN_NAME] --admin_password ADMIN_PASS [--dashboard_folder_name DASHBOARD_FOLDER_NAME] [--debug]
 # import_dashboards.py: error: the following arguments are required: --admin_password/-p
 #
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/import_users.py 
+# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/import_users.py  DONE (except for debug)
 # usage: import_users.py [-h] --grafana_users_file INPUT_FILE [--url URL] [--admin_login ADMIN_NAME] --admin_password ADMIN_PASS [--debug] [--dashboard_folder_name DASHBOARD_FOLDER_NAME]
 # import_users.py: error: the following arguments are required: --grafana_users_file/-i, --admin_password/-p
 #
