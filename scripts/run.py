@@ -1,6 +1,7 @@
 # Python script to create a more user-friendly interface to the other scripts.
 
 # Place your values in the user config file. Else, defaults are used. Some may be boolean.
+# Many of the defaults are used in the demo. You will want to override these with your real data and users.
 
 # Note: we assume that the scripts are invoked from the top-level directory in the repository,
 # i.e., the parent directory of scripts/
@@ -66,6 +67,10 @@ class Runner:
         need_db_password["add_users_to_database.py"] = True
         need_grafana_password["add_users_to_database.py"] = False
         
+        arg_list["import_mockup_aggregate.py"] = ["input_log_file", "db_name", "db_user", "db_password", "db_host", "db_port"]
+        need_db_password["import_mockup_aggregate.py"] = True
+        need_grafana_password["import_mockup_aggregate.py"] = False
+
         self.arg_list = arg_list
         self.need_db_password = need_db_password
         self.need_grafana_password = need_grafana_password
@@ -138,11 +143,11 @@ class Runner:
         # defaults["filterJobIDs"]  Not currently used. Comma-separated list of Job IDs you want to filter on. (default: "all")
         # defaults["filterAccount"]  Not currently used. 
         defaults["fixed_params_file"] = "ga_dashboard/data/fixed_parameters.yaml"  # The fixed parameters file to use
-        defaults["grafana_users_file"] = None  # List of Grafana users, e.g., ga_dashboard/samples/grafana_users_list.csv
+        defaults["grafana_users_file"] = "ga_dashboard/samples/grafana_users_list.csv" # The list of Grafana users
         # defaults["granularity"]  Not currently used. The level of granularity of the report, needed with `--slurmAdmin`. 
-        defaults["hpc_users_file"] = None  # CSV file of (HPC) user data
+        defaults["hpc_users_file"] = "ga_dashboard/samples/hpc_users_list.csv"  # CSV file of HPC user data
         defaults["input_dir"] = "ga_dashboard/dashboards"  # Dashboard JSON files directory, on disk.
-        defaults["input_log_file"] = None  # Logs data, e.g., ga_dashboard/samples/userDaily_mockMultiUsers_1.csv 
+        defaults["input_log_file"] = "ga_dashboard/samples/userDaily_mockMultiUsers_1.csv"  # Logs data, e.g.,  
         defaults["name"] = "grafana-postgresql-ga_db" # Name of data source (on Grafana).
         defaults["outFile"] = None # The name of the file to be written, for storing the output of sacct.
         # defaults["output"] = None  # Not currently used.
@@ -171,7 +176,9 @@ class Runner:
         '''
         self.config_file = config_file
         self.user_config_values = {}
-        self.user_config_values["hpc_users_file"] = "ga_dashboard/samples/hpc_users_list.csv"
+
+        # Just mimic it for now
+        #self.user_config_values["hpc_users_file"] = "ga_dashboard/samples/hpc_users_list.csv"
 
 
     def process_option(self, option: str) -> list:
@@ -185,8 +192,10 @@ class Runner:
             sys.exit("Goodbye")
         elif (option == "1"):
             client = "add_users_to_database.py"
+        elif (option == "2"):
+            client = "import_mockup_aggregate.py"
         else:
-            print("invalid option")
+            print("\ninvalid option")
             return [None, None, None]
         return[client, self.need_grafana_password[client], self.need_db_password[client]]
 
@@ -215,8 +224,9 @@ class Runner:
             print()
             print(f"Using config file {self.config_file}")
             print("Select option:")
-            print("[q] exit")
-            print("[1] import HPC users into database")
+            print("[q] Exit")
+            print("[1] Import HPC users into database")
+            print("[2] Import already-aggregated, mock-up data into database")
 
             option = input("> ")
             [client, need_grafana_password, need_db_password] = self.process_option(option)
@@ -249,11 +259,11 @@ if __name__ == "__main__":
 
 # database
 #
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/database/add_users_to_database.py 
+# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/database/add_users_to_database.py  DONE
 # usage: add_users_to_database.py [-h] --db_name DB_NAME --db_user DB_USER --db_password DB_PASSWORD --db_port DB_PORT --db_host DB_HOST --hpc_users_file HPC_USERS_FILE
 # add_users_to_database.py: error: the following arguments are required: --db_name, --db_user, --db_password, --db_port, --db_host, --hpc_users_file
 #
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/database/import_mockup_aggregate.py 
+# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/database/import_mockup_aggregate.py  DONE
 # usage: import_mockup_aggregate.py [-h] --input_log_file INPUT_FILE --db_name DBNAME --db_user DBUSER --db_password DBPASS --db_host DBHOST --db_port DBPORT
 # import_mockup_aggregate.py: error: the following arguments are required: --input_log_file, --db_name, --db_user, --db_password, --db_host, --db_port
 #

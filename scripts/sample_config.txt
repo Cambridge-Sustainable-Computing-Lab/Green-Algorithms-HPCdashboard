@@ -4,8 +4,11 @@
 # default values will be used, although not all items have a default value.
 #
 # DO NOT STORE PASSWORDS IN THIS FILE!
+#
+# Any value you define in this file will be used instead of the corresponding default value
 
- defaults["admin_login"] = "admin" # Grafana admin user name.
+# Grafana admin user name.
+# admin_login = "admin" 
         
 # defaults["allUsers"]  # Run sacct for all users (probably requires admin rights).
 # defaults["customSuccessStates"]
@@ -14,27 +17,27 @@
 dashboard_folder_name = "Green Algorithms"
 
 # Machine (e.g. IP address) hosting your database
-db_host = "localhost"
+# db_host = "localhost"
 
-db_port = "5432"
+# db_port = "5432"
 
 # The name of the database to store your raw and enriched `sacct` data
-db_name = "ga_db"  
+# db_name = "ga_db"  
 
 # The default database user
-db_user = "postgres" 
+# db_user = "postgres" 
 
 # Set to True to enable debug mode
-debug = False
+# debug = False
 
 # defaults["endDay"] = None # ???  The last day to take into account, as YYYY-MM-DD (default: today)
 
 # The fixed parameters YAML file to use
-fixed_params_file = "ga_dashboard/data/fixed_parameters.yaml"  
+# fixed_params_file = "ga_dashboard/data/fixed_parameters.yaml"  
 
 # File contaning list of Grafana users, e.g., ga_dashboard/samples/grafana_users_list.csv
 # NB Do not store passwords in the file.
-grafana_users_file = None  
+# grafana_users_file = None  
         
         defaults["hpc_users_file"] = None  # CSV file of (HPC) user data
         defaults["input_dir"] = "ga_dashboard/dashboards"  # Dashboard JSON files directory, on disk.
