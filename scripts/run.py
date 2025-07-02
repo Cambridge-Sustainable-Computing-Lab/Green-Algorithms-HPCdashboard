@@ -5,6 +5,9 @@
 
 # Note: we assume that the scripts are invoked from the top-level directory in the repository,
 # i.e., the parent directory of scripts/
+#
+# This wrapper script tends to use the most common command-line arguments. If you want something
+# more specialised, please use the client script directly.
 
 import subprocess
 import sys
@@ -70,6 +73,14 @@ class Runner:
         arg_list["import_mockup_aggregate.py"] = ["input_log_file", "db_name", "db_user", "db_password", "db_host", "db_port"]
         need_db_password["import_mockup_aggregate.py"] = True
         need_grafana_password["import_mockup_aggregate.py"] = False
+
+        arg_list["create_data_source.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", "db_host", "db_port", "pg_version"] ## [--debug]
+        need_db_password["create_data_source.py"] = True
+        need_grafana_password["create_data_source.py"] = True
+
+        arg_list["import_dashboards.py"] = ["input_dir", "url", "admin_login", "admin_password", "dashboard_folder_name"] ## [--debug]]
+        need_db_password["import_dashboards.py"] = False
+        need_grafana_password["import_dashboards.py"] = True
 
         self.arg_list = arg_list
         self.need_db_password = need_db_password
@@ -194,6 +205,12 @@ class Runner:
             client = "add_users_to_database.py"
         elif (option == "2"):
             client = "import_mockup_aggregate.py"
+        #elif (option == "3"):
+        #   client = 
+        elif (option == "4"):
+            client = "create_data_source.py"
+        elif (option == "5"):
+            client = "import_dashboards.py"
         else:
             print("\ninvalid option")
             return [None, None, None]
@@ -224,9 +241,12 @@ class Runner:
             print()
             print(f"Using config file {self.config_file}")
             print("Select option:")
-            print("[q] Exit")
-            print("[1] Import HPC users into database")
-            print("[2] Import already-aggregated, mock-up data into database")
+            print("[q] Exit.")
+            print("[1] Import HPC users into database.")
+            print("[2] Import already-aggregated, mock-up data into database.")
+            print("[3] NOT IMPLEMENTED YET Create or overwrite database.")
+            print("[4] Create a data source in Grafana for dashboard to connect to.")
+            print("[5] Import dashboard(s) into Grafana.")
 
             option = input("> ")
             [client, need_grafana_password, need_db_password] = self.process_option(option)
@@ -271,7 +291,7 @@ if __name__ == "__main__":
 #
 # frontend
 #
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/create_data_source.py 
+# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/create_data_source.py DONE (except for debug)
 # usage: create_data_source.py [-h] [--name DS_NAME] [--url URL] [--admin_login ADMIN_NAME] --admin_password ADMIN_PASS --db_name DB_NAME --db_user DB_USER --db_password DB_PASSWORD [--db_host DB_HOST] [--db_port DB_PORT] [--pg_version PG_VERSION] [--debug]
 # create_data_source.py: error: the following arguments are required: --admin_password/-a, --db_name/-d, --db_user/-u, --db_password/-p
 #
