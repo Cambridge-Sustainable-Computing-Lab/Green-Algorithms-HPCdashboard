@@ -201,8 +201,33 @@ class Runner:
         self.config_file = config_file
         self.user_config_values = {}
 
-        # Just mimic it for now
-        #self.user_config_values["hpc_users_file"] = "ga_dashboard/samples/hpc_users_list.csv"
+        # Read the file into memory
+        with open(config_file, 'r') as infile:
+            content = infile.readlines()
+
+        # Examine each line of the file.
+        for line in content:
+            # print(line, end="")
+
+            # Skip over whitespace-only lines:
+            if line.isspace():
+                continue
+            if line.startswith("#"):
+                continue 
+
+            # Line should be like: "db_name = ga_db"
+            # Or "test = This is a test."
+            pieces = line.split(sep=" = ")
+            if len(pieces) != 2:
+                print(f"ERROR: line is {line}")
+                continue
+            arg = pieces[0]
+            value = pieces[1].rstrip()  # Remove trailing whitespace e.g. \n
+            # print(f"Got: *{arg}* and *{value}*")
+            
+            self.user_config_values[arg] = value
+
+        # print("Finished file ingestion")
 
 
     def process_option(self, option: str) -> list:
@@ -285,17 +310,14 @@ class Runner:
             else:
                 subprocess.run(command_components)
 
-        #subprocess.run(["python", "scripts/frontend/import_users.py", "-i", "ga_dashboard/samples/grafana_users_list.csv", "-p", "admin"])
-
-
-    #def invoke_command()
-
+        # It will be something like this:
+        # subprocess.run(["python", "scripts/frontend/import_users.py", "-i", "ga_dashboard/samples/grafana_users_list.csv", "-p", "admin"])
 
 
 # e.g. python run.py sample_config.txt
 if __name__ == "__main__":
     runner = Runner()
-    config_file = "sample_config.txt"
+    config_file = "scripts/sample_config.txt"
     runner.ingest_user_config_file(config_file)
     runner.command_loop()
 
