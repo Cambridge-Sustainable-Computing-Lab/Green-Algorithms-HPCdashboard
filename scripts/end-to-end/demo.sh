@@ -72,14 +72,14 @@ common_users_file=$DEFAULT_USERS_FILE
 sacct_file=$DEFAULT_SACCT_FILE
 fixed_params_file=$DEFAULT_FIXED_PARAMETERS_FILE
 
-front_end_dir = "$repo_root_dir/scripts/frontend"
-back_end_dir = "$repo_root_dir/scripts/backend"
+front_end_dir="$repo_root_dir/scripts/frontend"
+back_end_dir="$repo_root_dir/scripts/backend"
 
 echo "\n*** Setting up Postgres database: ***\n"
 export PGPASSWORD="$db_password"
-psql -c 'drop database if exists ga_db; ' -U postgres -h $db_host -p $db_port
-psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
-psql -U $db_user -h $db_host -p $db_port -d ga_db < $repo_root_dir/ga_dashboard/database/ga_db.sql
+psql -c "drop database if exists $db_name;" -U postgres -h $db_host -p $db_port
+psql -c "create database $db_name;" -U postgres -h $db_host -p $db_port
+psql -U $db_user -h $db_host -p $db_port -d $db_name < $repo_root_dir/ga_dashboard/database/ga_db.sql
 export PGPASSWORD=
 echo "\n* Done! *\n"
 
