@@ -31,8 +31,8 @@
 # The default database user
 # db_user = postgres 
 
-# The last day to take into account by the sacct command (on HPC), as YYYY-MM-DD (default: today)
-# endDay = 2025-02-01  
+# The last day to take into account by the sacct command (on HPC), as YYYY-MM-DD.
+endDay = 2025-02-01  
 
 # The fixed parameters YAML file to use
 # fixed_params_file = ga_dashboard/data/fixed_parameters.yaml

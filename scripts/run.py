@@ -74,7 +74,8 @@ class Runner:
         need_db_password["import_mockup_aggregate.py"] = True
         need_grafana_password["import_mockup_aggregate.py"] = False
 
-        arg_list["create_data_source.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", "db_host", "db_port", "pg_version"] ## [--debug]
+        arg_list["create_data_source.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", \
+                                             "db_host", "db_port", "pg_version"] ## [--debug]
         need_db_password["create_data_source.py"] = True
         need_grafana_password["create_data_source.py"] = True
 
@@ -86,14 +87,20 @@ class Runner:
         need_db_password["import_users.py"] = False
         need_grafana_password["import_users.py"] = True
 
-        arg_list["run_dashboard.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", "db_host", "db_port", "pg_version", \
+        arg_list["run_dashboard.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", \
+                                        "db_host", "db_port", "pg_version", \
                                         "dashboard_folder_name", "input_dir", "grafana_users_file"] ## [--debug]"]
         need_db_password["run_dashboard.py"] = True
         need_grafana_password["run_dashboard.py"] = True
 
-        arg_list["run_sacct_only.py"] = ["startDay", "outFile"] ## [--"endDay", --allUsers, --debug]
+        arg_list["run_sacct_only.py"] = ["startDay", "endDay", "outFile"]  ## [--allUsers, --debug]
         need_db_password["run_sacct_only.py"] = False
         need_grafana_password["run_sacct_only.py"] = False
+
+        arg_list["run_backend.py"] = ["startDay", "endDay", "db_name", "db_user", "db_password", "db_port", "db_host", \
+                                      "fixed_params_file"] ## [--reportBug | --reportBugHere] [--useCustomLogs USECUSTOMLOGS]"]
+        need_db_password["run_backend.py"] = True
+        need_grafana_password["run_backend.py"] = False
 
         self.arg_list = arg_list
         self.need_db_password = need_db_password
@@ -153,27 +160,27 @@ class Runner:
         NB (1) Some might not have defaults. (2) At least one argument is Boolean.
         '''
         defaults = {}
-        defaults["admin_login"] = "admin" # Grafana admin user name.
+        defaults["admin_login"] = "admin"  # Grafana admin user name.
         # defaults["allUsers"]  # Run sacct for all users (probably requires admin rights).
         # defaults["customSuccessStates"]
         defaults["dashboard_folder_name"] = "Green Algorithms"  # Name of the dashboard folder (on Grafana).
         defaults["db_host"] = "localhost"
         defaults["db_name"] = "ga_db"  # The name of the database to store your raw and enriched `sacct` data
         defaults["db_port"] = "5432"
-        defaults["db_user"] = "postgres" # The default database user
+        defaults["db_user"] = "postgres"  # The default database user
         defaults["debug"] = False  # Debug mode. e.g. python myscript.py --debug
         # defaults["endDay"] = None # ???  The last day to take into account, as YYYY-MM-DD (default: today)
         # defaults["filterCWD"]   Not currently used. 
         # defaults["filterJobIDs"]  Not currently used. Comma-separated list of Job IDs you want to filter on. (default: "all")
         # defaults["filterAccount"]  Not currently used. 
         defaults["fixed_params_file"] = "ga_dashboard/data/fixed_parameters.yaml"  # The fixed parameters file to use
-        defaults["grafana_users_file"] = "ga_dashboard/samples/grafana_users_list.csv" # The list of Grafana users
+        defaults["grafana_users_file"] = "ga_dashboard/samples/grafana_users_list.csv"  # The list of Grafana users
         # defaults["granularity"]  Not currently used. The level of granularity of the report, needed with `--slurmAdmin`. 
         defaults["hpc_users_file"] = "ga_dashboard/samples/hpc_users_list.csv"  # CSV file of HPC user data
         defaults["input_dir"] = "ga_dashboard/dashboards"  # Dashboard JSON files directory, on disk.
         defaults["input_log_file"] = "ga_dashboard/samples/userDaily_mockMultiUsers_1.csv"  # Logs data, e.g.,  
-        defaults["name"] = "grafana-postgresql-ga_db" # Name of data source (on Grafana).
-        defaults["outFile"] = None # The name of the file to be written, for storing the output of sacct.
+        defaults["name"] = "grafana-postgresql-ga_db"  # Name of data source (on Grafana).
+        defaults["outFile"] = None  # The name of the file to be written, for storing the output of sacct.
         # defaults["output"] = None  # Not currently used.
         defaults["pg_version"] = "13"  # PostgreSQL version.
         # defaults["reportBug"]
@@ -186,7 +193,6 @@ class Runner:
         # defaults["useOtherInfrastructureInfo"]
         defaults["user"] = None # HPC username on slurm.
         # defaults["userCWD"]
-
         # db_password  # Database user password 
         # admin_password  # Grafana admin password.
     
@@ -235,7 +241,9 @@ class Runner:
         Process input from user during command loop
         Input: typed by user
         Returns: list containing:
-        client script name, need Grafana password?, need DB password?
+        [client script name, need Grafana password?, need DB password?]
+
+        A little dictionary would be neater than the following big if-block!
         '''
         if (option == "q"):
             sys.exit("Goodbye")
@@ -255,6 +263,8 @@ class Runner:
             client = "run_dashboard.py"
         elif (option == "8"):
             client = "run_sacct_only.py"
+        elif (option == "9"):
+            client = "run_backend.py"
         else:
             print("\ninvalid option")
             return [None, None, None]
@@ -292,8 +302,9 @@ class Runner:
             print("[4] Create a data source in Grafana for dashboard to connect to.")
             print("[5] Import dashboard(s) into a Grafana folder.")
             print("[6] Generate user passwords, import users to Grafana, and set their folder permissions.")
-            print("[7] Do [4], [5] and [6] in one go.")
+            print("[7] Do [4], [5] and [6] in one go (invokes run_dashboard.py).")
             print("[8] Run sacct command, and generate logfile, ON YOUR HPC SYSTEM.")
+            print("[9] Run backend ON YOUR HPC SYSTEM (run sacct, enrich data with carbon footprint info, and add it to database).")
 
             option = input("> ")
             [client, need_grafana_password, need_db_password] = self.process_option(option)
@@ -347,14 +358,14 @@ if __name__ == "__main__":
 # usage: import_users.py [-h] --grafana_users_file INPUT_FILE [--url URL] [--admin_login ADMIN_NAME] --admin_password ADMIN_PASS [--debug] [--dashboard_folder_name DASHBOARD_FOLDER_NAME]
 # import_users.py: error: the following arguments are required: --grafana_users_file/-i, --admin_password/-p
 #
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/run_dashboard.py 
+# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/run_dashboard.py DONE (except for debug)
 # usage: run_dashboard.py [-h] [--name DS_NAME] [--url URL] [--admin_login ADMIN_NAME] --admin_password ADMIN_PASS [--db_name DB_NAME] [--db_user DB_USER] --db_password DB_PASSWORD [--db_host DB_HOST] [--db_port DB_PORT] [--pg_version PG_VERSION]
 #                        [--dashboard_folder_name DASHBOARD_FOLDER_NAME] [--input_dir INPUT_DIR] [--grafana_users_file INPUT_FILE] [--debug]
 # run_dashboard.py: error: the following arguments are required: --admin_password/-a, --db_password/-p
 #
 # backend
 #
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/backend/run_sacct_only.py 
+# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/backend/run_sacct_only.py # DONE except all users, and debug
 # usage: run_sacct_only.py [-h] -S STARTDAY [-E ENDDAY] -o OUTFILE [-a] [-d]
 # run_sacct_only.py: error: the following arguments are required: -S/--startDay, -o/--outFile
 #
