@@ -172,9 +172,9 @@ uid_2,22222,User_2,user2@example.com,group_1,Dept_3
 ```
 Displayed as a table:
 
-| User  | UID   | Name   |  Email             | Group   | Department |
-| ----- | ------| -------| ----------------- |---------|------------|
-| uid_1 | 11111 | User_1  user1@example.com | group_1 | Dept_3     |
+| User  | UID   | Name   | Email            | Group   | Department |
+| ----- | ------| -------|----------------- |---------|------------|
+| uid_1 | 11111 | User_1 |user1@example.com | group_1 | Dept_3     |
 | uid_2 | 22222 | User_2 |user2@example.com | group_1 | Dept_3     |
 | ...   | ...   | ...    |...               | ...     | ...        |
 
