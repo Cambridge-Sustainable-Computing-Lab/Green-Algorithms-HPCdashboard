@@ -16,7 +16,10 @@ import sys
 
 class Runner:
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Initialise Runner object.
+        """
         self.create_mydir()
         self.create_defaults_dict()
         self.create_arg_lists()
@@ -26,7 +29,7 @@ class Runner:
         self.got_grafana_admin_password = False
         
 
-    def create_mydir(self):
+    def create_mydir(self) -> None:
         """
         Create `mydir` dictionary which stores, for each script, tne name of the 
         directory in which it resides. This will be used in constructing the path
@@ -59,7 +62,7 @@ class Runner:
         self.mydir = mydir
 
 
-    def create_arg_lists(self):
+    def create_arg_lists(self) -> None:
         '''
         Each script we invoke has an argument list.
         This function populates the arg_list dictionary, with key = script name,
@@ -183,7 +186,7 @@ class Runner:
         return(components)
 
 
-    def create_defaults_dict(self):
+    def create_defaults_dict(self) -> None:
         '''
         Create "defaults" dictionary. Key = argument name, value = default value of argument.
         We don't store the leading -- before the argument name (e.g. --db_host), but add it later.
@@ -226,17 +229,17 @@ class Runner:
         # defaults["useOtherInfrastructureInfo"]
         defaults["user"] = None # HPC username on slurm.
         # defaults["userCWD"]
-
-        # db_password  # Do NOT put a value here! Database user password 
-        # admin_password  # Do NOT put a value here! Grafana admin password.
     
         self.defaults = defaults
-        # self.boolean_defaults = ...
 
 
-    def ingest_user_config_file(self, config_file):
+    def ingest_user_config_file(self, config_file: str) -> None:
         '''
         Parse the config file and obtain any parameter values set by user.
+
+        Parameters
+        ----------
+        config_file : str. Name of the config file to use. Default: sample_config.txt
         '''
         self.config_file = config_file
         self.user_config_values = {}
@@ -257,8 +260,8 @@ class Runner:
             if line.startswith("#"):
                 continue 
 
-            # Line should be like: "db_name = ga_db"
-            # Or "test = This is a test."
+            # Line should be like: db_name = ga_db
+            # Or: test = This is a test.
             pieces = line.split(sep=" = ")
             if len(pieces) != 2:
                 print(f"ERROR: line is {line}")
@@ -272,15 +275,21 @@ class Runner:
         # print("Finished file ingestion")
 
 
-    def process_option(self, option: str) -> list:
+    def process_option(self, option: str) -> tuple:
         '''
         Process input from user during command loop
-        Input: typed by user
-        Returns: list containing:
-        [client script name, need Grafana password?, need DB password?]
 
-        A little dictionary would be neater than the following big if-block!
+        Parameters
+        ----------
+        option : str. Option selected by user.
+
+        Returns
+        -------
+        Tuple containing:
+        (Name of client script, Is Grafana password required?, Is database password required?)
+        e.g., ("run_sacct_only", False, True)
         '''
+        # A little dictionary would be neater than the following big if-block!
         if (option == "q"):
             sys.exit("Goodbye")
         elif (option == "1"):
@@ -303,11 +312,11 @@ class Runner:
             client = "run_backend.py"
         else:
             print("\ninvalid option")
-            return [None, None, None]
-        return[client, self.need_grafana_password[client], self.need_db_password[client]]
+            return (None, None, None)
+        return(client, self.need_grafana_password[client], self.need_db_password[client])
 
 
-    def get_grafana_password(self):
+    def get_grafana_password(self) -> None:
         '''
         Get Grafana admin password, if not already supplied.
         '''
@@ -315,7 +324,7 @@ class Runner:
         self.got_grafana_admin_password = True
 
 
-    def get_db_password(self):
+    def get_db_password(self) -> None:
         '''
         Get database admin password, if not already supplied.
         '''
@@ -323,8 +332,10 @@ class Runner:
         self.got_db_password = True
 
 
-    def command_loop(self):
-
+    def command_loop(self) -> None:
+        '''
+        Continually ask user for input, and take appropriate action.
+        '''
         while True:
             print()
             print(f"Using config file {self.config_file}")
@@ -341,7 +352,7 @@ class Runner:
             print("[9] Run backend ON YOUR HPC SYSTEM (run sacct, enrich data with carbon footprint info, and add it to database).")
 
             option = input("> ")
-            [client, need_grafana_password, need_db_password] = self.process_option(option)
+            (client, need_grafana_password, need_db_password) = self.process_option(option)
             if (client is None):
                 continue
             if ( need_grafana_password and ("admin_password" not in self.user_config_values) ):
@@ -374,45 +385,3 @@ if __name__ == "__main__":
     runner = Runner()
     runner.ingest_user_config_file(config_file)
     runner.command_loop()
-
-
-#
-# backend
-#
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/backend/run_sacct_only.py # DONE except all users, and debug
-# usage: run_sacct_only.py [-h] -S STARTDAY [-E ENDDAY] -o OUTFILE [-a] [-d]
-# run_sacct_only.py: error: the following arguments are required: -S/--startDay, -o/--outFile
-#
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/backend/run_backend.py -h
-# usage: run_backend.py [-h] [-S STARTDAY] [-E ENDDAY] [--db_name DB_NAME] [--db_user DB_USER] [--db_password DB_PASSWORD] [--db_port DB_PORT] [--db_host DB_HOST] [--fixed_params_file FIXED_PARAMS_FILE] [--reportBug | --reportBugHere] [--useCustomLogs USECUSTOMLOGS]
-#
-# Calculate your carbon footprint on the server.
-#
-# options:
-#  -h, --help            show this help message and exit
-#  -S, --startDay STARTDAY
-#                        The first day to take into account, as YYYY-MM-DD
-#  -E, --endDay ENDDAY   The last day to take into account, as YYYY-MM-DD (default: today)
-#  --db_name DB_NAME     Database name
-#  --db_user DB_USER     Database user name
-#  --db_password DB_PASSWORD
-#                        Database user password
-#  --db_port DB_PORT     Database port
-#  --db_host DB_HOST     Database server host
-#  --fixed_params_file FIXED_PARAMS_FILE
-#                        The fixed parameters file to use
-
-#   --cluster_info_file CLUSTER_INFO_FILE
-#                        The cluster info file to use
-#  --hpc_users_file HPC_USERS_FILE
-#                        File with details of HPC users
-
-#  --reportBug           In case of a bug, this flag exports the jobs logs so that you/we can investigate further. The debug file will be stored in the shared folder where this tool is located (/error_logs), to export it to your home folder, user `--reportBugHere`. Note that
-#                        this will write out some basic information about your jobs, such as runtime, number of cores and memory usage.
-#  --reportBugHere       Similar to --reportBug, but exports the output to your home folder.
-#  --useCustomLogs USECUSTOMLOGS
-#                        This bypasses the workload manager, and enables you to input a custom log file of your jobs. This is mostly meant for debugging, but can be useful in some situations. An example of the expected file can be found at
-#                        `backend/example_files/example_sacctOutput_raw.txt`.
-#
-# run_backend.sh is just a wrapper around this
-#
