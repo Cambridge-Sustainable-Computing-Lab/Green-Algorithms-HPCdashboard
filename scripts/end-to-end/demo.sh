@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # To use:
-# sh ./demo.sh your_password
+# sh scripts/end-to-end/demo.sh <your_password>
 # assuming your password for the backend database user (postgres) is "your_password" 
 
 # set -x # Uncomment this to echo commands to screen (for debugging)
 
 # Abort script if we encounter any errors:
-#set -e  # Although, see https://stackoverflow.com/questions/39773637/in-a-bash-script-test-error-code-from-a-called-script
+set -e  # Although, see https://stackoverflow.com/questions/39773637/in-a-bash-script-test-error-code-from-a-called-script
 
 echo "\n\n ******* Demo script started. *******\n" 
 
@@ -42,7 +42,8 @@ DEFAULT_END_DATE="2025-02-18"
 DEFAULT_INFRASTRUCTURE_DIR="$repo_root_dir/ga_dashboard/samples"
 DEFAULT_DATASOURCE_NAME="demo_datasource"  # "grafana-postgresql-ga_db" 
 DEFAULT_POSTGRES_VERSION=13
-DEFAULT_USERS_FILE="$repo_root_dir/ga_dashboard/samples/common_users_list.csv"
+DEFAULT_GRAFANA_USERS_FILE="$repo_root_dir/ga_dashboard/samples/grafana_users_list.csv"
+DEFAULT_HPC_USERS_FILE="$repo_root_dir/ga_dashboard/samples/hpc_users_list.csv"
 DEFAULT_SACCT_FILE="$repo_root_dir/ga_dashboard/samples/sacct_output_single_user.txt"
 DEFAULT_FIXED_PARAMETERS_FILE="$repo_root_dir/ga_dashboard/data/fixed_parameters.yaml"
 
@@ -68,36 +69,39 @@ infrastructure_dir=$DEFAULT_INFRASTRUCTURE_DIR
 # --useCustomLogs for run_backend.sh
 datasource_name=$DEFAULT_DATASOURCE_NAME
 grafana_url=$DEFAULT_GRAFANA_URL
-common_users_file=$DEFAULT_USERS_FILE
+grafana_users_file=$DEFAULT_GRAFANA_USERS_FILE
+hpc_users_file=$DEFAULT_HPC_USERS_FILE
 sacct_file=$DEFAULT_SACCT_FILE
 fixed_params_file=$DEFAULT_FIXED_PARAMETERS_FILE
 
-front_end_dir = "$repo_root_dir/scripts/frontend"
-back_end_dir = "$repo_root_dir/scripts/backend"
+front_end_dir="$repo_root_dir/scripts/frontend"
+back_end_dir="$repo_root_dir/scripts/backend"
+db_dir="$repo_root_dir/scripts/database"
 
 echo "\n*** Setting up Postgres database: ***\n"
-export PGPASSWORD="$db_password"
-psql -c 'drop database if exists ga_db; ' -U postgres -h $db_host -p $db_port
-psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
-psql -U $db_user -h $db_host -p $db_port -d ga_db < $repo_root_dir/ga_dashboard/database/ga_db.sql
-export PGPASSWORD=
+python $db_dir/create_or_overwrite_database.py --db_password $db_password
+#export PGPASSWORD="$db_password"
+#psql -c 'drop database if exists ga_db; ' -U postgres -h $db_host -p $db_port
+#psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
+#psql -U $db_user -h $db_host -p $db_port -d ga_db < $repo_root_dir/ga_dashboard/database/ga_db.sql
+#export PGPASSWORD=
 echo "\n* Done! *\n"
 
 echo "\n*** Importing users to Grafana: ***\n" # This step will fail if Grafana is not running.
-python $front_end_dir/import_users.py --input_file $common_users_file \
+python $front_end_dir/import_users.py --grafana_users_file $grafana_users_file \
     --admin_login $grafana_admin_user --admin_password $grafana_admin_password \
     --url $grafana_url \
     --dashboard_folder "$grafana_dashboard_folder_name"   # --debug
 echo "\n* Done! *\n"
 
 echo "\n*** Importing users to backend database: ***\n"
-python $back_end_dir/add_users_to_database.py --db_name $db_name \
+python $db_dir/add_users_to_database.py --db_name $db_name \
     --db_user $db_user --db_password $db_password --db_port $db_port --db_host $db_host \
-    --input_file $common_users_file
+    --hpc_users_file $hpc_users_file
 echo "\n* Done! *\n"
 
 echo "\n*** Transforming user data (from sacct command output) and inserting to backend database: ***\n"
-sh $back_end_dir/run_backend.sh --db_name $db_name --db_user $db_user --db_password $db_password  \
+python $back_end_dir/run_backend.py --db_name $db_name --db_user $db_user --db_password $db_password  \
     -S $start_date -E $end_date --useOtherInfrastructureInfo $infrastructure_dir --useCustomLogs $sacct_file \
     --fixed_params_file $fixed_params_file
 
