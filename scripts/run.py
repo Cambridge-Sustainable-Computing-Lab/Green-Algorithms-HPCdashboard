@@ -1,10 +1,10 @@
-# Python script to create a more user-friendly interface to the other scripts.
+# Python script to offer a more user-friendly interface to the other scripts.
 
 # Place your values in the user config file. Else, defaults are used. Some may be boolean.
 # Many of the defaults are used in the demo. You will want to override these with your real data and users.
 
-# Note: we assume that the scripts are invoked from the top-level directory in the repository,
-# i.e., the parent directory of scripts/
+# Note: we assume that the scripts (including this one) are invoked from the top-level directory
+# in the repository, i.e., the parent directory of scripts/
 #
 # This wrapper script tends to use the most common command-line arguments. If you want something
 # more specialised, please use the client script directly.
@@ -31,7 +31,8 @@ class Runner:
         directory in which it resides. This will be used in constructing the path
         when we want to invoke a client script.
 
-        e.g. mydir["add_users_to_database.py"] = "database"
+        e.g. For client script scripts/database/add_users_to_database.py: 
+        mydir["add_users_to_database.py"] = "database"
         """
         files = {}
 
@@ -184,7 +185,7 @@ class Runner:
         defaults["db_port"] = "5432"
         defaults["db_user"] = "postgres"  # The default database user
         defaults["debug"] = False  # Debug mode. e.g. python myscript.py --debug
-        # defaults["endDay"] = None # ???  The last day to take into account, as YYYY-MM-DD (default: today)
+        defaults["endDay"] = None # ???  The last day to take into account, as YYYY-MM-DD
         # defaults["filterCWD"]   Not currently used. 
         # defaults["filterJobIDs"]  Not currently used. Comma-separated list of Job IDs you want to filter on. (default: "all")
         # defaults["filterAccount"]  Not currently used. 
@@ -208,8 +209,9 @@ class Runner:
         # defaults["useOtherInfrastructureInfo"]
         defaults["user"] = None # HPC username on slurm.
         # defaults["userCWD"]
-        # db_password  # Database user password 
-        # admin_password  # Grafana admin password.
+
+        # db_password  # Do NOT put a value here! Database user password 
+        # admin_password  # Do NOT put a value here! Grafana admin password.
     
         self.defaults = defaults
         # self.boolean_defaults = ...
