@@ -57,15 +57,15 @@ def create_arguments():
     #                              2-letter and full-length codes. Full list of job states: \
     #                              https://slurm.schedmd.com/squeue.html#SECTION_JOB-STATE-CODES")
     # Required settings if the generated/aggregated data is to be imported into a database
-    parser.add_argument('--db_name', type=str, help='Database name')
-    parser.add_argument('--db_user', type=str, help='Database user name')
+    parser.add_argument('--db_name', type=str, help='Database name', default='ga_db')
+    parser.add_argument('--db_user', type=str, help='Database user name', default='postgres')
     parser.add_argument('--db_password', type=str, help='Database user password')
     parser.add_argument('--db_port', type=int, help='Database port', default=5432)
     parser.add_argument('--db_host', type=str, help='Database server host', default='localhost')
 
-    parser.add_argument('--fixed_params_file', type=str, help='The fixed parameters file to use')
-    parser.add_argument('--cluster_info_file', type=str, help='The cluster info file to use')
-    parser.add_argument('--hpc_users_file', type=str, help='File with details of HPC users')
+    parser.add_argument('--fixed_params_file', type=str, help='The fixed parameters file to use', default='ga_dashboard/data/fixed_parameters.yaml')
+    parser.add_argument('--cluster_info_file', type=str, help='The cluster info file to use', default='ga_dashboard/samples/cluster_info.yaml')
+    parser.add_argument('--hpc_users_file', type=str, help='File with details of HPC users', default='ga_dashboard/samples/hpc_users_list.csv')
 
     ## Reporting bugs
     group1 = parser.add_mutually_exclusive_group()
