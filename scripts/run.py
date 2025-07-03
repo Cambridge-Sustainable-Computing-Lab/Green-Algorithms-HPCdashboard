@@ -98,7 +98,7 @@ class Runner:
         need_grafana_password["run_sacct_only.py"] = False
 
         arg_list["run_backend.py"] = ["startDay", "endDay", "db_name", "db_user", "db_password", "db_port", "db_host", \
-                                      "fixed_params_file"] ## [--reportBug | --reportBugHere] [--useCustomLogs USECUSTOMLOGS]"]
+                                      "fixed_params_file", "cluster_info_file", "hpc_users_file"]  ## [--reportBug | --reportBugHere] [--useCustomLogs USECUSTOMLOGS]"]
         need_db_password["run_backend.py"] = True
         need_grafana_password["run_backend.py"] = False
 
@@ -162,6 +162,7 @@ class Runner:
         defaults = {}
         defaults["admin_login"] = "admin"  # Grafana admin user name.
         # defaults["allUsers"]  # Run sacct for all users (probably requires admin rights).
+        defaults["cluster_info_file"] = "ga_dashboard/samples/cluster_info.yaml"  # Cluster info file.
         # defaults["customSuccessStates"]
         defaults["dashboard_folder_name"] = "Green Algorithms"  # Name of the dashboard folder (on Grafana).
         defaults["db_host"] = "localhost"

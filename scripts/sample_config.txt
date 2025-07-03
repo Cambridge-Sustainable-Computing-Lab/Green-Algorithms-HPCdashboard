@@ -16,6 +16,9 @@
 # Grafana admin user name.
 # admin_login = admin 
 
+# YAML file of your cluster's information
+# cluster_info_file = ga_dashboard/samples/cluster_info.yaml
+
 # Name of the dashboard folder (on Grafana).
 # dashboard_folder_name = Green Algorithms
 
@@ -32,7 +35,7 @@
 # db_user = postgres 
 
 # The last day to take into account by the sacct command (on HPC), as YYYY-MM-DD.
-endDay = 2025-02-01  
+endDay = 2025-07-03  
 
 # The fixed parameters YAML file to use
 # fixed_params_file = ga_dashboard/data/fixed_parameters.yaml

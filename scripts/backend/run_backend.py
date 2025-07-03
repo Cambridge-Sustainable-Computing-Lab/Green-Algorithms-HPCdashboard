@@ -64,6 +64,8 @@ def create_arguments():
     parser.add_argument('--db_host', type=str, help='Database server host', default='localhost')
 
     parser.add_argument('--fixed_params_file', type=str, help='The fixed parameters file to use')
+    parser.add_argument('--cluster_info_file', type=str, help='The cluster info file to use')
+    parser.add_argument('--hpc_users_file', type=str, help='File with details of HPC users')
 
     ## Reporting bugs
     group1 = parser.add_mutually_exclusive_group()
