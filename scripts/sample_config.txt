@@ -37,6 +37,9 @@
 # The default database user
 # db_user = postgres 
 
+# Uncomment the next line if you want to see debug output
+debug = True
+
 # The last day to take into account by the sacct command (on HPC), as YYYY-MM-DD.
 endDay = 2025-07-03  
 
@@ -81,9 +84,6 @@ startDay = 2025-02-01
 # *******************************************************
         
 test = This is a test.
-
-# Set to True to enable debug mode
-# debug = False
 
 # defaults["allUsers"]  # Run sacct for all users (probably requires admin rights).
 # defaults["customSuccessStates"]

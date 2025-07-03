@@ -81,25 +81,25 @@ class Runner:
         need_grafana_password["create_or_overwrite_database.py"] = False
 
         arg_list["create_data_source.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", \
-                                             "db_host", "db_port", "pg_version"] ## [--debug]
+                                             "db_host", "db_port", "pg_version", "debug"]
         need_db_password["create_data_source.py"] = True
         need_grafana_password["create_data_source.py"] = True
 
-        arg_list["import_dashboards.py"] = ["input_dir", "url", "admin_login", "admin_password", "dashboard_folder_name"] ## [--debug]]
+        arg_list["import_dashboards.py"] = ["input_dir", "url", "admin_login", "admin_password", "dashboard_folder_name", "debug"]
         need_db_password["import_dashboards.py"] = False
         need_grafana_password["import_dashboards.py"] = True
 
-        arg_list["import_users.py"] = ["grafana_users_file", "url", "admin_login", "admin_password", "dashboard_folder_name"] ## [--debug]
+        arg_list["import_users.py"] = ["grafana_users_file", "url", "admin_login", "admin_password", "dashboard_folder_name", "debug"]
         need_db_password["import_users.py"] = False
         need_grafana_password["import_users.py"] = True
 
         arg_list["run_dashboard.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", \
                                         "db_host", "db_port", "pg_version", \
-                                        "dashboard_folder_name", "input_dir", "grafana_users_file"] ## [--debug]"]
+                                        "dashboard_folder_name", "input_dir", "grafana_users_file", "debug"]
         need_db_password["run_dashboard.py"] = True
         need_grafana_password["run_dashboard.py"] = True
 
-        arg_list["run_sacct_only.py"] = ["startDay", "endDay", "outFile"]  ## [--allUsers, --debug]
+        arg_list["run_sacct_only.py"] = ["startDay", "endDay", "outFile", "debug"]  ## [--allUsers]
         need_db_password["run_sacct_only.py"] = False
         need_grafana_password["run_sacct_only.py"] = False
 
@@ -147,6 +147,10 @@ class Runner:
 
             # Optional parameters
             if item == "useCustomLogs" and not value:
+                continue
+            if item == "debug":
+                if value == "True":
+                    components.append("--debug")
                 continue
 
             # Value can't be None or "None", as that isn't very helpful
