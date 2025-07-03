@@ -9,7 +9,7 @@
 #
 # Any value you define in this file will be used instead of the corresponding default value
 #
-# NB It is assumed that there is one space character either side of the = sign, for clarity/
+# NB It is assumed that there is one space character either side of the = sign, for clarity.
 #
 # There is no need to use quotation marks.
 
@@ -72,6 +72,8 @@ startDay = 2025-02-01
 # Grafana URL (including port).
 # url = localhost:3000
 
+# Bypass workload manager and input a custom log file of your jobs.
+# useCustomLogs = ga_dashboard/backend/example_files/example_sacctOutput_raw.txt
 
 
 # *******************************************************
@@ -85,12 +87,10 @@ test = This is a test.
 
 # defaults["allUsers"]  # Run sacct for all users (probably requires admin rights).
 # defaults["customSuccessStates"]
-# defaults["useCustomLogs"] = None  # Bypass workload manager and input a custom log file of your jobs. Example: ga_dashboard/backend/example_files/example_sacctOutput_raw.txt
 # defaults["use_mock_agg_data"]  Not currently used?  Uses mock aggregated usage data, for offline debugging
 # defaults["useOtherInfrastructureInfo"]
 # defaults["user"] = None # HPC username on slurm. NB what about multiple usernames e.g. when done by an admin?
 # defaults["userCWD"]
-
 
 # defaults["reportBug"]
 # defaults["reportBugHere"]

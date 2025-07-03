@@ -104,7 +104,7 @@ class Runner:
         need_grafana_password["run_sacct_only.py"] = False
 
         arg_list["run_backend.py"] = ["startDay", "endDay", "db_name", "db_user", "db_password", "db_port", "db_host", \
-                                      "fixed_params_file", "cluster_info_file", "hpc_users_file"]  ## [--reportBug | --reportBugHere] [--useCustomLogs USECUSTOMLOGS]"]
+                                      "fixed_params_file", "cluster_info_file", "hpc_users_file", "useCustomLogs"]  ## [--reportBug | --reportBugHere]
         need_db_password["run_backend.py"] = True
         need_grafana_password["run_backend.py"] = False
 
@@ -145,6 +145,10 @@ class Runner:
                     print("Please add one to your config file.")
                     sys.exit("Exiting...")
 
+            # Optional parameters
+            if item == "useCustomLogs" and not value:
+                continue
+
             # Value can't be None or "None", as that isn't very helpful
             if ( value and value != "None" ):
                 components.append(f"--{item}")  # <- Put the leading "--"" needed for each parameter name, e.g., "--db_name". 
@@ -156,6 +160,7 @@ class Runner:
 
         # Show list of components to user.
         # We obscure the Grafana and PostgreSQL passwords.
+        print()
         for compnum in range(len(components)):
             comp = components[compnum]
             if compnum == 0:
@@ -166,6 +171,8 @@ class Runner:
                 print(" ********", end='')
             else:
                 print(f" {comp}", end='')
+        
+        print("\n", flush=True)
 
         #print(components)
         return(components)
@@ -229,7 +236,7 @@ class Runner:
         self.config_file = config_file
         self.user_config_values = {}
 
-        # Read the file into memory
+        # Read the file into memory (it's not enormous).
         with open(config_file, 'r') as infile:
             content = infile.readlines()
 
@@ -240,6 +247,8 @@ class Runner:
             # Skip over whitespace-only lines:
             if line.isspace():
                 continue
+
+            # Skip over comments:
             if line.startswith("#"):
                 continue 
 
@@ -334,7 +343,7 @@ class Runner:
                 self.get_grafana_password()
             if ( need_db_password and ("db_password" not in self.user_config_values) ):
                 self.get_db_password()
-            #print("Doing stuff!")
+
             command_components = self.get_command_components(client)
             if ( command_components is None ):
                 print("Error in components")
@@ -352,36 +361,7 @@ if __name__ == "__main__":
     runner.ingest_user_config_file(config_file)
     runner.command_loop()
 
-# database
-#
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/database/add_users_to_database.py  DONE
-# usage: add_users_to_database.py [-h] --db_name DB_NAME --db_user DB_USER --db_password DB_PASSWORD --db_port DB_PORT --db_host DB_HOST --hpc_users_file HPC_USERS_FILE
-# add_users_to_database.py: error: the following arguments are required: --db_name, --db_user, --db_password, --db_port, --db_host, --hpc_users_file
-#
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/database/import_mockup_aggregate.py  DONE
-# usage: import_mockup_aggregate.py [-h] --input_log_file INPUT_FILE --db_name DBNAME --db_user DBUSER --db_password DBPASS --db_host DBHOST --db_port DBPORT
-# import_mockup_aggregate.py: error: the following arguments are required: --input_log_file, --db_name, --db_user, --db_password, --db_host, --db_port
-#
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % sh scripts/database/create_or_overwrite_database.sh   <-- no help available. ?? change to python script??
-#
-# frontend
-#
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/create_data_source.py DONE (except for debug)
-# usage: create_data_source.py [-h] [--name DS_NAME] [--url URL] [--admin_login ADMIN_NAME] --admin_password ADMIN_PASS --db_name DB_NAME --db_user DB_USER --db_password DB_PASSWORD [--db_host DB_HOST] [--db_port DB_PORT] [--pg_version PG_VERSION] [--debug]
-# create_data_source.py: error: the following arguments are required: --admin_password/-a, --db_name/-d, --db_user/-u, --db_password/-p
-#
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/import_dashboards.py  DONE (except for debug)
-# usage: import_dashboards.py [-h] [--input_dir INPUT_DIR] [--url URL] [--admin_login ADMIN_NAME] --admin_password ADMIN_PASS [--dashboard_folder_name DASHBOARD_FOLDER_NAME] [--debug]
-# import_dashboards.py: error: the following arguments are required: --admin_password/-p
-#
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/import_users.py  DONE (except for debug)
-# usage: import_users.py [-h] --grafana_users_file INPUT_FILE [--url URL] [--admin_login ADMIN_NAME] --admin_password ADMIN_PASS [--debug] [--dashboard_folder_name DASHBOARD_FOLDER_NAME]
-# import_users.py: error: the following arguments are required: --grafana_users_file/-i, --admin_password/-p
-#
-# (py313) (base) mg2216@FL4P63QKYL GA4HPCdashboard % python scripts/frontend/run_dashboard.py DONE (except for debug)
-# usage: run_dashboard.py [-h] [--name DS_NAME] [--url URL] [--admin_login ADMIN_NAME] --admin_password ADMIN_PASS [--db_name DB_NAME] [--db_user DB_USER] --db_password DB_PASSWORD [--db_host DB_HOST] [--db_port DB_PORT] [--pg_version PG_VERSION]
-#                        [--dashboard_folder_name DASHBOARD_FOLDER_NAME] [--input_dir INPUT_DIR] [--grafana_users_file INPUT_FILE] [--debug]
-# run_dashboard.py: error: the following arguments are required: --admin_password/-a, --db_password/-p
+
 #
 # backend
 #
@@ -407,6 +387,12 @@ if __name__ == "__main__":
 #  --db_host DB_HOST     Database server host
 #  --fixed_params_file FIXED_PARAMS_FILE
 #                        The fixed parameters file to use
+
+#   --cluster_info_file CLUSTER_INFO_FILE
+#                        The cluster info file to use
+#  --hpc_users_file HPC_USERS_FILE
+#                        File with details of HPC users
+
 #  --reportBug           In case of a bug, this flag exports the jobs logs so that you/we can investigate further. The debug file will be stored in the shared folder where this tool is located (/error_logs), to export it to your home folder, user `--reportBugHere`. Note that
 #                        this will write out some basic information about your jobs, such as runtime, number of cores and memory usage.
 #  --reportBugHere       Similar to --reportBug, but exports the output to your home folder.
