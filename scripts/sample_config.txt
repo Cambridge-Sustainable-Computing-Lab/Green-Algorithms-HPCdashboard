@@ -38,7 +38,7 @@
 # db_user = postgres 
 
 # Uncomment the next line if you want to see debug output
-debug = True
+# debug = True
 
 # The last day to take into account by the sacct command (on HPC), as YYYY-MM-DD.
 endDay = 2025-07-03  
