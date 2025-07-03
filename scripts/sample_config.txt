@@ -58,7 +58,7 @@ endDay = 2025-07-03
 # name = grafana-postgresql-ga_db
 
 # The name of the file to be written, for storing the output of sacct.
-outFile = my_sacct_ouput.txt
+outFile = my_sacct_output.txt
 
 # PostgreSQL version.
 # pg_version = 13

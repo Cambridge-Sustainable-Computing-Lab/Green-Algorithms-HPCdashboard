@@ -148,7 +148,20 @@ class Runner:
                 print("Please add one to your config file.")
                 sys.exit("Exiting...")
 
-        print(components)
+        # Show list of components to user.
+        # We obscure the Grafana and PostgreSQL passwords.
+        for compnum in range(len(components)):
+            comp = components[compnum]
+            if compnum == 0:
+                print(f" {comp}", end='')
+                continue
+            prevcomp = components[compnum-1]
+            if prevcomp in ["--db_password", "--admin_password"]:
+                print(" ********", end='')
+            else:
+                print(f" {comp}", end='')
+
+        #print(components)
         return(components)
 
 
