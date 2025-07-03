@@ -9,7 +9,8 @@
 # This wrapper script tends to use the most common command-line arguments. If you want something
 # more specialised, please use the client script directly.
 
-import maskpass  # to hide the password
+import argparse
+import maskpass  # to hide the passwords
 import subprocess
 import sys
 
@@ -360,8 +361,17 @@ class Runner:
 
 # e.g. python run.py sample_config.txt
 if __name__ == "__main__":
+
+    argparser = argparse.ArgumentParser(description="User-friendly interface to the different scripts.", 
+                                        epilog="Uses sample config file by default.")
+    
+    argparser.add_argument("--config", help='Name of config file for your parameter values.', required=False, \
+                            metavar='CONFIG_FILE', default="scripts/sample_config.txt", dest='config')
+
+    args = argparser.parse_args()
+    config_file = args.config
+
     runner = Runner()
-    config_file = "scripts/sample_config.txt"
     runner.ingest_user_config_file(config_file)
     runner.command_loop()
 
