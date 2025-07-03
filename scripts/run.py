@@ -40,7 +40,7 @@ class Runner:
         files["frontend"] = [ "create_data_source.py", "import_dashboards.py", "import_users.py", "run_dashboard.py" ]
 
         # List of all client scripts in scripts/database: 
-        files["database"] = [ "add_users_to_database.py", "create_or_overwrite_database.sh", "import_mockup_aggregate.py" ]
+        files["database"] = [ "add_users_to_database.py", "create_or_overwrite_database.py", "import_mockup_aggregate.py" ]
 
         # List of all client scripts inscripts/backend:
         files["backend"] = [ "run_backend.py", "run_backend.sh", "run_sacct_only.py" ]
@@ -75,6 +75,10 @@ class Runner:
         arg_list["import_mockup_aggregate.py"] = ["input_log_file", "db_name", "db_user", "db_password", "db_host", "db_port"]
         need_db_password["import_mockup_aggregate.py"] = True
         need_grafana_password["import_mockup_aggregate.py"] = False
+
+        arg_list["create_or_overwrite_database.py"] = ["db_name", "db_host", "db_port", "db_user", "db_password", "db_script"]
+        need_db_password["create_or_overwrite_database.py"] = True
+        need_grafana_password["create_or_overwrite_database.py"] = False
 
         arg_list["create_data_source.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", \
                                              "db_host", "db_port", "pg_version"] ## [--debug]
@@ -183,6 +187,7 @@ class Runner:
         defaults["db_host"] = "localhost"
         defaults["db_name"] = "ga_db"  # The name of the database to store your raw and enriched `sacct` data
         defaults["db_port"] = "5432"
+        defaults["db_script"] = "ga_dashboard/database/ga_db.sql"
         defaults["db_user"] = "postgres"  # The default database user
         defaults["debug"] = False  # Debug mode. e.g. python myscript.py --debug
         defaults["endDay"] = None # ???  The last day to take into account, as YYYY-MM-DD
@@ -268,8 +273,8 @@ class Runner:
             client = "add_users_to_database.py"
         elif (option == "2"):
             client = "import_mockup_aggregate.py"
-        #elif (option == "3"):
-        #   client = 
+        elif (option == "3"):
+           client = "create_or_overwrite_database.py"
         elif (option == "4"):
             client = "create_data_source.py"
         elif (option == "5"):
@@ -313,7 +318,7 @@ class Runner:
             print("[q] Exit.")
             print("[1] Import HPC users into database.")
             print("[2] Import already-aggregated, mock-up data into database.")
-            print("[3] NOT IMPLEMENTED YET Create or overwrite database.")
+            print("[3] Create or overwrite database.")
             print("[4] Create a data source in Grafana for dashboard to connect to.")
             print("[5] Import dashboard(s) into a Grafana folder.")
             print("[6] Generate user passwords, import users to Grafana, and set their folder permissions.")

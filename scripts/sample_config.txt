@@ -31,6 +31,9 @@
 # PostgreSQL host's port
 # db_port = 5432
 
+# Script to create empty PostgreSQL database
+# db_script = ga_dashboard/database/ga_db.sql
+
 # The default database user
 # db_user = postgres 
 
