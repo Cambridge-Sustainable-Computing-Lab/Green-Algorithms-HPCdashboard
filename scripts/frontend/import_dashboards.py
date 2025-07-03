@@ -20,7 +20,7 @@ def main():
     script_path = os.path.dirname(os.path.realpath(__file__)) # Path to directory containing this file
     default_dashboards_dir = f'{script_path}/../../ga_dashboard/dashboards/'
 
-    argparser = argparse.ArgumentParser()
+    argparser = argparse.ArgumentParser(description="Import all dashboards into Grafana from the specified directory on disk.")
     argparser.add_argument("--input_dir", "-i", help='Dashboard files directory', required=False, metavar='INPUT_DIR', default=default_dashboards_dir, dest='input_dir')
     argparser.add_argument("--url", help='Grafana URL', required=False, metavar='URL', default='localhost:3000')
     argparser.add_argument("--admin_login", "-l", help='Grafana admin name', required=False, metavar='ADMIN_NAME', default='admin', dest='login')

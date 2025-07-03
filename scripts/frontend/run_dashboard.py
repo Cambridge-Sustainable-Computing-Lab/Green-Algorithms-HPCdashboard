@@ -64,7 +64,7 @@ def main():
     # Choose as appropriate
     default_grafana_users_file = 'ga_dashboard/samples/grafana_users_list.csv'
 
-    argparser = argparse.ArgumentParser()
+    argparser = argparse.ArgumentParser(description="On Grafana: adds data source, folder, dashboards and users, then updates folder permissions.")
     argparser.add_argument("--name", "-n", help='Data source name', required=False, metavar='DS_NAME', default='grafana-postgresql-ga_db', dest='name')
     argparser.add_argument("--url", help='Grafana URL', required=False, metavar='URL', default='localhost:3000')
     argparser.add_argument("--admin_login", "-l", help='Grafana admin name', required=False, metavar='ADMIN_NAME', default='admin', dest='login')

@@ -94,7 +94,7 @@ def parse_string_to_number(s):
 
 def main():
  
-    argparser = argparse.ArgumentParser()
+    argparser = argparse.ArgumentParser(description="Import some mock aggregated data into the database.")
     argparser.add_argument("--input_log_file", help='Logs data', required=True, metavar='INPUT_FILE')
     argparser.add_argument("--db_name", help='Database name', required=True, metavar='DBNAME',default='ga_db')
     argparser.add_argument("--db_user", help='Database user name', required=True, metavar='DBUSER')
