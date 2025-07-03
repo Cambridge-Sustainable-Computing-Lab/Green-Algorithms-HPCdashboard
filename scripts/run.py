@@ -9,6 +9,7 @@
 # This wrapper script tends to use the most common command-line arguments. If you want something
 # more specialised, please use the client script directly.
 
+import maskpass  # to hide the password
 import subprocess
 import sys
 
@@ -289,8 +290,7 @@ class Runner:
         '''
         Get Grafana admin password, if not already supplied.
         '''
-        self.user_config_values["admin_password"] = input("Enter Grafana admin password: > ")
-        # TODO: obscure the typing
+        self.user_config_values["admin_password"] = maskpass.askpass("Enter Grafana admin password: > ", mask="")
         self.got_grafana_admin_password = True
 
 
@@ -298,8 +298,7 @@ class Runner:
         '''
         Get database admin password, if not already supplied.
         '''
-        self.user_config_values["db_password"] = input("Enter database admin user password: > ")
-        # TODO: obscure the typing
+        self.user_config_values["db_password"] = maskpass.askpass("Enter database admin user password: > ", mask="")
         self.got_db_password = True
 
 
