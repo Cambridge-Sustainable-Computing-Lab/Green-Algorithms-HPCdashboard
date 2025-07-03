@@ -61,8 +61,6 @@ Combines the usage of several of the scripts:
 
 def main():
 
-    script_path = os.path.dirname(os.path.realpath(__file__))
-
     # Choose as appropriate
     default_grafana_users_file = 'ga_dashboard/samples/grafana_users_list.csv'
 
