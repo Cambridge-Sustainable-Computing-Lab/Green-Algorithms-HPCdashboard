@@ -1,6 +1,6 @@
-# GA4HPCDASHBOARD
+# GA4HPCDASHBOARD: Deployment notes
 
-Repository used to setup the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database.
+Repository used to setup the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database. This allows you to examine HPC usage over time, with helpful graphs, charts, etc.
 
 The instructions for running the end-to-end demo are a little different. See bottom of page.
 
@@ -10,13 +10,18 @@ The instructions for running the end-to-end demo are a little different. See bot
 
 ## Prerequisites
 
+You will probably want to set up a Python environment. We used miniconda. 
+
 ## Install the `ga_dashboard` package
 In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory), type:
 ```
 python -m pip install .
 ```
-
-This should install the `ga_dashboard` package on your local machine.
+This should install the `ga_dashboard` package on your local machine. if you want to be able to 
+edit it and still use it, use the `-e` option:
+```
+python -m pip install -e .
+```
 
 ### Database - PostgreSQL
 
@@ -83,12 +88,11 @@ Example running it with the default **postgres** user:
 ```$ sudo -u postgres psql -c 'CREATE DATABASE ga_db;'```
 
 2. Load the database schema (e.g. with the user **postgres**)  
-The database schema is located under the "**databases**" directory.
+The database schema is located under the "**databases**" directory. 
 ```
-psql -h <db_host> -p 5432 -U <db_user_with_write_access> -d ga_db /.../ga_data_aggregate_table_schema.sql
+psql -h <db_host> -p 5432 -U <db_user_with_write_access> -d ga_db ga_db.sql
 ```
-> [!NOTE]
-> This step could be embedded into a script
+
 
 
 ### Run GA4HPCDASHBOARD script
