@@ -75,7 +75,7 @@ def get_sql_command(data, columns):
     values = []
     for col in columns:
         value = data[col]
-        if type(value) == str:
+        if type(value) is str:
             values.append(f"'{data[col]}'")
         else:
             values.append(str(data[col]))
@@ -148,7 +148,7 @@ def main():
                 db_col = db_column_names_mapping[col]
                 value = row[col]
                 new_value = parse_string_to_number(value)
-                if new_value != None:
+                if new_value is not None:
                     value = new_value
                 if db_col in ['state_x']:
                     value = True if value == 1 else False
@@ -169,7 +169,7 @@ def main():
                 #print("db_col: " + db_col)
                 value = row[col]
                 new_value = parse_string_to_number(value)
-                if new_value != None:
+                if new_value is not None:
                     value = new_value
                 user_data_row[db_col] = value
             values = get_sql_command(user_data_row, user_db_column_names)

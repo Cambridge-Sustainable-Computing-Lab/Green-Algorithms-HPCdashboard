@@ -1,5 +1,7 @@
-import os, argparse, csv
+import argparse 
+import csv
 import logging
+import os
 import psycopg
 
 logger = logging.getLogger(__name__)
@@ -77,7 +79,7 @@ def create_arguments():
     Command line arguments for the script.
     :return: argparse object
     """
-    parser = argparse.ArgumentParser(description=f'Add/update users to ga_user table in database.')
+    parser = argparse.ArgumentParser(description='Add/update users to ga_user table in database.')
    
     # Required settings for the user data to be imported into a database
     parser.add_argument('--db_name', type=str, required=True, help='Database name')
@@ -137,7 +139,7 @@ if __name__ == "__main__":
             port=args.db_port
         )
     except psycopg.OperationalError as err:
-        logger.error("Unable to connect to database: {err}")
+        logger.error(f"Unable to connect to database: {err}")
         exit(1)
     
     cur = conn.cursor()
