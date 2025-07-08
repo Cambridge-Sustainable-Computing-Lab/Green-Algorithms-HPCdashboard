@@ -2,7 +2,7 @@
 
 Repository used to setup the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database. This allows you to examine HPC usage over time, with helpful graphs, charts, etc.
 
-(The instructions for running the end-to-end demo are a little different. See [documentation](./docs/end-to-end.md).
+(The instructions for running the end-to-end demo are a little different. See [documentation](./docs/end-to-end.md).)
 
 The system uses:
 * A PostgreSQL database.
@@ -50,11 +50,11 @@ But you will need to set a few things up first, however you use the scripts.
 
 [Documentation contents](./docs/Contents.md)
 
-[More info on scripts](./scripts/README.md)
+[More info on scripts](./scripts/RunningScripts.md)
 
 ## Prerequisites
 
-You will probably want to set up an environment for your Python dictribution. We used miniconda. Go to the [miniconda download link](https://www.anaconda.com/download/success) and follow the instructions for your platform.
+You will probably want to set up an environment for your Python distribution. We used miniconda. Go to the [miniconda download link](https://www.anaconda.com/download/success) and follow the instructions for your platform.
 
 Then, once installed, you can create an environment for a suitable version of python. For example:
 ```
@@ -121,14 +121,20 @@ DO NOT STORE PASSWORDS IN THIS FILE!
 You can import the listed users into the database by using option 1 of the wrapper script, and setting the value of `hpc_users_file` in the config file to what you want (unless you use `ga_dashboard/samples/hpc_users_list.csv`, in which case it will pick this up by default). Or, you can use the script `scripts/database/add_users_to_database.py` directly, although you will have to do a lot of typing if you choose to do so!
 
 ### Backend data
-The dashboard extracts usage information from the HPC system. Three (anonymised) examples of files you can use are:
+The dashboard extracts usage information from the HPC system. 
+
+You need to make sure you have a list of HPC users in the database (see previous section).
+
+Normally, you will run the `sacct` command on the HPC, using either the wrapper script `run.py`, or the scripts in `scripts/backend/`. But, to try out the software without getting logging information from your HPC system, you can use some samples we provide. 
+
+Three (anonymised) examples of files you can use are:
 
 * `ga_dashboard/samples/sacct_output_single_user.txt`
 * `ga_dashboard/samples/sacct_output_multi_user.txt`
 * `ga_dashboard/samples/userDaily_mockMultiUsers_1.csv`
 
 The first file is an example of output generated, for one user, by the `sacct` command on the HPC system. This can be used if you want/need to 
-import data into the database for testing, or if (say) you cannot get data from the HPC system. The second file is similar, but for multiple users. You need to make sure you have a list of HPC users in the database (q.v.). With both of these files, the backend part of the software will aggregate the data into one row per user per day, enrich it (add carbon footprint data), and then write this to the database. 
+import data into the database for testing, or if (say) you cannot get data from the HPC system. The second file is similar, but for multiple users. With both of these files, the backend part of the software will aggregate the data into one row per user per day, enrich it (add carbon footprint data), and then write this to the database. 
 
 In order to do this, you can either execute the relevant script directly:
 
