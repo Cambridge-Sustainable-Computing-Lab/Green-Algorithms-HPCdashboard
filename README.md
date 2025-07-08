@@ -280,15 +280,15 @@ Let's assume you want to log in as a basic user (not an admin). If you point you
 
 Assuming you now enter the login details for a user, you should see something like this:
 
-![Grafana welcome screen.](./docs/grafana_welcome_screen.png).
+![Grafana welcome screen.](./docs/grafana_welcome_screen.png)
 
 Click on "Dashboards" in the menu at the left of the screen. A new screen should then load:
 
-![Grafana dashboards screen.](./docs/dashboards.png).
+![Grafana dashboards screen.](./docs/dashboards.png)
 
 If you click the little arrow to the left of "Green Algorithms", you should see "User" listed. If you then clock on that, you should be taken to the User dashboard:
 
-![Grafana "User" dashboard.](./docs/user.png).
+![Grafana "User" dashboard.](./docs/user.png)
 
 Note that the data you see will depend on (1) which data you loaded into the PostgreSQL database, and (2) the time range you select (which you can either do with the panel near the top-right of the dashboard, or by manually selecting a time range from one of the time series plots.)
 
