@@ -1,4 +1,7 @@
 # Running the end-to-end demo
+
+**NOTE:** In the case of conflicts between this and the `README` file on the home page, go with the latter.
+
 The end-to-end demo script, `demo.sh`:
 * **Deletes any existing instance of the Postgres `ga_db` database!**
 * Creates a new `ga_db` Postgres database (with unpopulated tables). 
