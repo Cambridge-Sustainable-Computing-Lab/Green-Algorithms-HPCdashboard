@@ -46,7 +46,7 @@ endDay = 2025-07-03
 # The fixed parameters YAML file to use
 # fixed_params_file = ga_dashboard/data/fixed_parameters.yaml
 
-# File contaning list of Grafana users, e.g., ga_dashboard/samples/grafana_users_list.csv
+# File containing list of Grafana users, e.g., ga_dashboard/samples/grafana_users_list.csv
 # NB Do not store passwords in the file.
 # grafana_users_file = None  
         

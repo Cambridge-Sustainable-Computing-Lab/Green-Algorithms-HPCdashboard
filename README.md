@@ -2,7 +2,45 @@
 
 Repository used to setup the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database. This allows you to examine HPC usage over time, with helpful graphs, charts, etc.
 
-The instructions for running the end-to-end demo are a little different. See bottom of page.
+(The instructions for running the end-to-end demo are a little different. See [documentation](./docs/end-to-end.md).
+
+There are a number of scripts you can use to set-up the system with default values. You can either use these directly, or (recommended) use the wrapper script `scripts/run.py`, in which case you will need to ensure the values in `scripts/sample_config.txt` (or another config file of your choice). 
+
+```
+$ python scripts/run.py --help
+usage: run.py [-h] [--config CONFIG_FILE]
+
+User-friendly interface to the different scripts.
+
+options:
+  -h, --help            show this help message and exit
+  --config CONFIG_FILE  Name of config file for your parameter values.
+
+Uses sample config file by default.
+```
+The wrapper script calls the individual scripts under the hood.
+
+```
+$ python scripts/run.py
+
+Using config file scripts/sample_config.txt
+Select option:
+[q] Exit.
+[1] Import HPC users into database.
+[2] Import already-aggregated, mock-up data into database.
+[3] Create or overwrite database.
+[4] Create a data source in Grafana for dashboard to connect to.
+[5] Import dashboard(s) into a Grafana folder.
+[6] Generate user passwords, import users to Grafana, and set their folder permissions.
+[7] Do [4], [5] and [6] in one go (invokes run_dashboard.py).
+[8] Run sacct command, and generate logfile, ON YOUR HPC SYSTEM.
+[9] Run backend ON YOUR HPC SYSTEM (run sacct, enrich data with carbon footprint info, and add it to database).
+> 
+```
+
+
+But you will need to set a few things up first, however you use the scripts.
+
 
 [Documentation contents](./docs/Contents.md)
 
@@ -10,9 +48,27 @@ The instructions for running the end-to-end demo are a little different. See bot
 
 ## Prerequisites
 
-You will probably want to set up a Python environment. We used miniconda. 
+You will probably want to set up an environment for your Python dictribution. We used miniconda. Go to the [miniconda download link](https://www.anaconda.com/download/success) and follow the instructions for your platform.
+
+Then, once installed, you can create an environment for a suitable version of python. For example:
+```
+$ conda create -n py313 python=3.13 -c conda-forge
+$ conda activate py313
+```
+To leave the environment, type:
+```
+$ conda deactivate
+```
+To see your list of environments, type:
+```
+$ conda env list
+```
 
 ## Install the `ga_dashboard` package
+We assume you have `git` installed on your system. 
+
+(In my case, I was working on a Mac. First, I had to install [`brew`](https://brew.sh/). And install the Xcode command-line tools. Then I was able to install `git`.)
+
 In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory), type:
 ```
 python -m pip install .
@@ -26,19 +82,45 @@ python -m pip install -e .
 ### Database - PostgreSQL
 
 - Install PostgreSQL locally or have access to a PostgreSQL server
-- Install the database locally or on a PostgreSQL server (from the dump SQL)
 
-For Macs, we have used the relevant [Enterprise DB installer](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) to start with. 
+
+For Macs, we have used the relevant [Enterprise DB installer](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) to start with. Follow the instructions for your system.
 
 Later, it may be necessary to get a version of Postgres for your platform which supports ssh. This
 may require compiling Postgres yourself with the appropriate options. However, this is not
 needed for the simple demo. 
 
+Choose a username and password for the admin user. The former is usually `postgres` (although you can choose what you want). Do not record the password in a file! (In these instructions, we assume that the admin user name is `postgres`.)
+
+Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
+
+### Backend data
+The dashboard extracts usage information from the HPC system. Three (anonymised) examples of files you can use are:
+
+* `ga_dashboard/samples/sacct_output_single_user.txt`
+* `ga_dashboard/samples/sacct_output_multi_user.txt`
+* `ga_dashboard/samples/userDaily_mockMultiUsers_1.csv`
+
+The first file is an example of output generated, for one user, by the `sacct` command on the HPC system. This can be used if you want/need to 
+import data into the database for testing, or if (say) you cannot get data from the HPC system. The second file is similar, but for multiple users. You need to make sure you have a list of HPC users in the database (q.v.). With both of these files, the backend part of the software will aggregate the data into one row per user per day, enrich it (add carbon footprint data), and then write this to the database. 
+
+In order to do this, you can either execute the relavent script directly:
+
+```
+$ python scripts/backend/run_backend.py --useCustomLogs ga_dashboard/samples/sacct_output_multi_user.txt --db_password <password>
+```
+
+Or, use the wrapper script option 9, and set the `useCustomLogs` option in the wrapper config file to the file you want. (In normal operation, in which we query the HPC by running `sacct`, this option should be commented-out in the config file.)
+
+The third file can be imported directly into the database, as it has already been aggregated and enriched. You can use option 2 of the wrapper script `run.py` to do this.
+
+Of course, you don't have to use our sample files; you can get your own from your HPC system. Normally, you will either use option 8 or 9. Both options will run the `sacct` command. Option 9 will aggregate the data into one row per user per day, and enrich it with carbon footprint information, and write it to the database. That assumes your HPC node running the script can connect to your database. The alternative is to run option 8, which will save the output of the `sacct` command to a log file, which you can then download to a local machine, then load into the database using option 9 and the appropriate value for the `useCustomLogs` option in the wrapper config file, as described above. 
+
 ### Dashboard platform - Grafana
 
 Install the self-manage installation (Enterprise, just in case we want to host it on the cloud): [https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1](https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1)
 
-### Generate a users file - csv format
+### Generate a Grafana users file - csv format
 
 The users file should be a comma-separated file combining these columns:
 * **Name**: Full user name (e.g. Thomas Greene)
@@ -60,7 +142,9 @@ Display as a table:
 | Adam Mackay   | am1       | am1@ga-test.com |  Team 2    |
 | ...           | ...       | ...             |  ...       |
 
-Note that, for security reasons, passwords are not stored in this file. Passwords will be automatically generated (to be noted, or acted on by your setup in some other way) when users are added to the Grafana Dashboard by the `import_users.py` script.
+Note that, for security reasons, passwords are not stored in this file. Passwords will be automatically generated (to be noted, or acted on by your setup in some other way) when users are added to the Grafana Dashboard by the `import_users.py` script (or the wrapper script).
+
+An example you can use to try out the system is `ga_dashboard/samples/grafana_users_list.csv`
 
 ## Setup Green Algorithms dashboards
 
@@ -134,56 +218,3 @@ Options are:
 
 Import logs data via the [GreenAlgorithms4HPC](https://github.com/GreenAlgorithms/GreenAlgorithms4HPC) repository.
 
-
-## Running the end-to-end demo
-The end-to-end demo script, `demo.sh`:
-* **Deletes any existing instance of the Postgres `ga_db` database!**
-* Creates a new `ga_db` Postgres database (with unpopulated tables). 
-* Runs the backend code to read an example `sacct` output file, transform the data, and write it to the Postgres database
-* Runs the code to add users to both Grafana and `ga_db`
-* Loads Postgres into Grafana as a "data source" for the latter
-* Loads a simple dashboard, which reads the data just inserted in `ga_db` and displays graphs, etc.
-
-The idea of this script is to illustrate the entire process, from `sacct` file generation to dashboard viewing.
-
-To run the demo, the pre-requisites are:
-* You must have installed Postgres, and have the name and password for a user with write access (such as the `postgres` user)
-* You must have downloaded Grafana and started running the server.
-
-
-The simplest version runs everything on the same machine. However, there are plenty of configuration options in the `demo.sh` script, which you can override if you don't want to use the default values provided.
-
-To run the script, assuming your Postgres user's password is ilovecats:
-
-```
-cd GA4HPCdashboard
-sh ./demo.sh ilovecats
-```
-Make sure there are no connections to the Postgres database before you run the script. This may require you to restart the grafana server, if it has an existing connection to it.
-
-All being well, you will see output to your terminal, ending with:
-```
-******* Demo script completed. *******
-```
-
-The users file is used for both the frontend (Grafana users) and back-end (HPC users):
-
-```
-User,UID,Name,Email,Group,Department
-uid_1,11111,User_1,user1@example.com,group_1,Dept_3
-uid_2,22222,User_2,user2@example.com,group_1,Dept_3
-...
-```
-Displayed as a table:
-
-| User  | UID   | Name   | Email            | Group   | Department |
-| ----- | ------| -------|----------------- |---------|------------|
-| uid_1 | 11111 | User_1 |user1@example.com | group_1 | Dept_3     |
-| uid_2 | 22222 | User_2 |user2@example.com | group_1 | Dept_3     |
-| ...   | ...   | ...    |...               | ...     | ...        |
-
-The "teams" in the original dashboard version are the "Groups" in the end-to-end version.
-
-Note: none of the example data in this file have a space character. But tests show it all works OK with names like "Thomas Greene", groups like "Weston group", and departments like "Department of Time Travel".
-
-You will need to navigate to the "dashboards" menu on the Grafana server (in a web browser), and there select the Green Algorithms Demo dashboard.
