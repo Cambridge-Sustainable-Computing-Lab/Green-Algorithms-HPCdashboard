@@ -12,6 +12,8 @@ The system uses:
 
 There are a number of scripts you can use to set up the system with default values. You can either use these directly, or (recommended) use the wrapper script `scripts/run.py`, in which case you will need to ensure the values in `scripts/sample_config.txt` (or another config file of your choice) are what you want. 
 
+Note that the passwords for Grafana and the PostgreSQL database are NOT stored in any config file, but must be entered at the command-line when required. When using the wrapper script, these passwords will not be echoed to the screen. At the present time the underlying scripts do not obscure the passwords when typed. (NB When the wrapper script calls one of the underlying scripts, you will NOT see the passwords.) When using the wrapper script, the only time you will see passwords is when they are generated (for you to note or otherwise take action) for Grafana users.
+
 All the Python scripts allow you to specify a `--help` option to see the available options. Many of them have examples in the comments.
 
 ```
@@ -265,6 +267,30 @@ Options are:
   --input_dir INPUT_DIR: Dashboard files directory
   --input_file INPUT_FILE: User list in CSV format
 ```
+
+
+### Log in as a Grafana user.
+By default, only the administrator (default name: admin) is allowed to edit dashboards. Although you can allow other users to do so.
+
+Let's assume you want to log in as a basic user (not an admin). If you point your browser to port 3000, you should see something like this, if Grafana is running:
+
+![Grafana login screen.](./docs/grafana_login_screen.png)
+
+Assuming you now enter the login details for a user, you should see something like this:
+
+![Grafana welcome screen.](./docs/grafana_welcome_screen.png).
+
+Click on "Dashboards" in the menu at the left of the screen. A new screen should then load:
+
+![Grafana dashboards screen.](./docs/dashboards.png).
+
+If you click the little arrow to the left of "Green Algorithms", you should see "User" listed. If you then clock on that, you should be taken to the User dashboard:
+
+![Grafana "User" dashboard.](./docs/user.png).
+
+Note that the data you see will depend on (1) which data you loaded into the PostgreSQL database, and (2) the time range you select (which you can either do with the panel near the top-right of the dashboard, or by manually selecting a time range from one of the time series plots.)
+
+For this to work, it assumes you have the PostgreSQL database set up as a "data source" in Grafana (see notes on scripts above).
 
 
 
