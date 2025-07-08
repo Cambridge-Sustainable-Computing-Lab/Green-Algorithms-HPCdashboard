@@ -1,6 +1,10 @@
 # Running the end-to-end demo
 
-**NOTE:** In the case of conflicts between this and the `README` file on the home page, go with the latter.
+**NOTE 1:** In the case of conflicts between this and the `README` file on the home page, go with the latter.
+
+**NOTE 2:** This script and instructions are being retained for reference. The `demo.sh` script discussed on this page currently will not fully work because (a) Grafana needs to be stopped before the script is run, so that its connection to the database is ended, but (b) the latter stages of the script require Grafana to be running. Users are recommended to use the [newer instructions](../README.md), which use the much-more-user-friendly wrapper script `run.py`.
+
+However, the instructions here may still be helpful. You may also find it helpful to look at the commands invoked in the `demo.sh` script, as these are the sort of commands that the wrapper script issues.
 
 The end-to-end demo script, `demo.sh`:
 * **Deletes any existing instance of the Postgres `ga_db` database!**
@@ -23,7 +27,7 @@ To run the script, assuming your Postgres user's password is ilovecats:
 
 ```
 cd GA4HPCdashboard
-sh ./demo.sh ilovecats
+sh scripts/end-to-end/demo.sh ilovecats
 ```
 Make sure there are no connections to the Postgres database before you run the script. This may require you to restart the grafana server, if it has an existing connection to it.
 
