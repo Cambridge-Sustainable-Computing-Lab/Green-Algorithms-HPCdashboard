@@ -29,6 +29,8 @@ Laurent managed to save the JSON with a second existing datasource (just editing
 
 ![Image showing how to export a dashboard](exporting_dashboard.png?raw=true "Exporting dashboard")
 
+(If Grafana gives you an error at this point, see [instructions on how to deal with Grafana bug](./grafana_bug_workaround.md).)
+
 Then the JSON looks like this:
 
 ```
