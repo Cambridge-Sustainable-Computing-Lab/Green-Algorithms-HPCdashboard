@@ -4,7 +4,13 @@ Repository used to setup the Green Algorithms dashboards, using [Grafana](https:
 
 (The instructions for running the end-to-end demo are a little different. See [documentation](./docs/end-to-end.md).
 
-There are a number of scripts you can use to set-up the system with default values. You can either use these directly, or (recommended) use the wrapper script `scripts/run.py`, in which case you will need to ensure the values in `scripts/sample_config.txt` (or another config file of your choice). 
+The system uses:
+* A PostgreSQL database.
+* A backend, which obtains usage data from the HPC system (using the `sacct` command), aggregates it (to one row per user per day), enriches it (adds carbon footprint data), and then writes this to the database.
+* A frontend, which uses Grafana to query the database and display nice charts.
+
+
+There are a number of scripts you can use to set-up the system with default values. You can either use these directly, or (recommended) use the wrapper script `scripts/run.py`, in which case you will need to ensure the values in `scripts/sample_config.txt` (or another config file of your choice) are what you want. 
 
 ```
 $ python scripts/run.py --help
@@ -79,10 +85,17 @@ edit it and still use it, use the `-e` option:
 python -m pip install -e .
 ```
 
+### Configuration files
+A number of config files are required by the system, e.g., to calculate the carbon footprint. As well as a list of users for the database, and another list for Grafana, the system needs:
+
+* Information about your HPC cluster. Example: `ga_dashboard/samples/cluster_info.yaml`
+* Fixed parameters file. Example: `ga_dashboard/data/fixed_parameters.yaml`
+* If you want to use the wrapper script, either use your own config file, or amend the sample one as required.
+
+
 ### Database - PostgreSQL
 
 - Install PostgreSQL locally or have access to a PostgreSQL server
-
 
 For Macs, we have used the relevant [Enterprise DB installer](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) to start with. Follow the instructions for your system.
 
@@ -94,6 +107,19 @@ Choose a username and password for the admin user. The former is usually `postgr
 
 Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
 
+### HPC users file
+You will need a file with details of your HPC users for whom you are obtaining `sacct` data. For example, `ga_dashboard/samples/hpc_users_list.csv`. Or one like this:
+
+```
+User,UID,Name,Group,Department
+uid_1,11111,Bob Smith,group 1,Dept 3
+uid_2,22222,Tom Jones,group 1,Dept 3
+...
+```
+DO NOT STORE PASSWORDS IN THIS FILE!
+
+You can import the listed users into the database by using option 1 of the wrapper script, and setting the value of `hpc_users_file` in the config file to what you want (unless you use `ga_dashboard/samples/hpc_users_list.csv`, in which case it will pick this up by default). Or, you can use the script `scripts/database/add_users_to_database.py` directly, although you will have to do a lot of typing if you choose to do so!
+
 ### Backend data
 The dashboard extracts usage information from the HPC system. Three (anonymised) examples of files you can use are:
 
@@ -104,7 +130,7 @@ The dashboard extracts usage information from the HPC system. Three (anonymised)
 The first file is an example of output generated, for one user, by the `sacct` command on the HPC system. This can be used if you want/need to 
 import data into the database for testing, or if (say) you cannot get data from the HPC system. The second file is similar, but for multiple users. You need to make sure you have a list of HPC users in the database (q.v.). With both of these files, the backend part of the software will aggregate the data into one row per user per day, enrich it (add carbon footprint data), and then write this to the database. 
 
-In order to do this, you can either execute the relavent script directly:
+In order to do this, you can either execute the relevant script directly:
 
 ```
 $ python scripts/backend/run_backend.py --useCustomLogs ga_dashboard/samples/sacct_output_multi_user.txt --db_password <password>
@@ -122,7 +148,7 @@ Install the self-manage installation (Enterprise, just in case we want to host i
 
 ### Generate a Grafana users file - csv format
 
-The users file should be a comma-separated file combining these columns:
+The Grafana users file should be a comma-separated file combining these columns:
 * **Name**: Full user name (e.g. Thomas Greene)
 * **User name**: Company/Institute user name (e.g. tg1)
 * **Email**: Company/Institute user email (e.g. tg1@ga-test.com)
@@ -142,7 +168,7 @@ Display as a table:
 | Adam Mackay   | am1       | am1@ga-test.com |  Team 2    |
 | ...           | ...       | ...             |  ...       |
 
-Note that, for security reasons, passwords are not stored in this file. Passwords will be automatically generated (to be noted, or acted on by your setup in some other way) when users are added to the Grafana Dashboard by the `import_users.py` script (or the wrapper script).
+Note that, for security reasons, passwords are not stored in this file. Passwords will be automatically generated (to be noted, or acted on by your setup in some other way) when users are added to the Grafana Dashboard by option 6 of the wrapper script (or by using the `import_users.py` script).
 
 An example you can use to try out the system is `ga_dashboard/samples/grafana_users_list.csv`
 
