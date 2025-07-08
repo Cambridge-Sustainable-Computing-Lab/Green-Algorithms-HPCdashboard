@@ -12,6 +12,8 @@ The system uses:
 
 There are a number of scripts you can use to set-up the system with default values. You can either use these directly, or (recommended) use the wrapper script `scripts/run.py`, in which case you will need to ensure the values in `scripts/sample_config.txt` (or another config file of your choice) are what you want. 
 
+All the Python scripts allow you to specify a `--help` option to see the available options. Many of them have examples in the comments.
+
 ```
 $ python scripts/run.py --help
 usage: run.py [-h] [--config CONFIG_FILE]
@@ -77,12 +79,12 @@ We assume you have `git` installed on your system.
 
 In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory), type:
 ```
-python -m pip install .
+$ python -m pip install .
 ```
 This should install the `ga_dashboard` package on your local machine. if you want to be able to 
 edit it and still use it, use the `-e` option:
 ```
-python -m pip install -e .
+$ python -m pip install -e .
 ```
 
 ### Configuration files
@@ -106,6 +108,10 @@ needed for the simple demo.
 Choose a username and password for the admin user. The former is usually `postgres` (although you can choose what you want). Do not record the password in a file! (In these instructions, we assume that the admin user name is `postgres`.)
 
 Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
+
+You can then create the database by using option 3 of the wrapper script, or the `scripts/database/create_or_overwrite_database.py` script which it calls. The default database name is `ga_db`. **NOTE THAT THIS WILL DELETE ANY EXISTING INSTANCE OF THE DATABASE** As this is a dangerous operation, you will be prompted to confirm before proceeding with deletion and re-creation.
+
+**NOTE:** Ensure all connections to the database are closed before you do this, otherwise the script will fail. In particular, if you have started the Grafana server (as detailed further down this page), it may have a database connection, in which case you must stop the server (e.g. using CTRL-C).
 
 ### HPC users file
 You will need a file with details of your HPC users for whom you are obtaining `sacct` data. For example, `ga_dashboard/samples/hpc_users_list.csv`. Or one like this:
@@ -150,7 +156,7 @@ Of course, you don't have to use our sample files; you can get your own from you
 
 ### Dashboard platform - Grafana
 
-Install the self-manage installation (Enterprise, just in case we want to host it on the cloud): [https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1](https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1)
+Install the self-managed installation (Enterprise, just in case we want to host it on the cloud): [https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1](https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1)
 
 ### Generate a Grafana users file - csv format
 
@@ -183,50 +189,43 @@ An example you can use to try out the system is `ga_dashboard/samples/grafana_us
 
 ### Start Grafana
 
-Go to the Grafana directory and run the command:
+By default, Grafana displays dates in US format. If you'd like them in your local date format, run this command (or put it in your shell config):
+```
+$ export GF_DATE_FORMATS_USE_BROWSER_LOCALE=true
+```
+
+In the same shell, `cd` to the Grafana directory and start the server:
 
 ```
 $ cd /.../grafana/
 $ ./bin/grafana server
 ```
 
-Then log as admin on the web browser (admin:admin): [http://localhost:3000/](http://localhost:3000/).  
+Then log in as admin on the web browser (admin:admin): [http://localhost:3000/](http://localhost:3000/).  
 
 
-### Setup database - PostgreSQL
+### Run frontend script(s)
 
-1. Create database “**ga_db**”
-
-```$ CREATE DATABASE ga_db;```
-
-Example running it with the default **postgres** user:
-
-```$ sudo -u postgres psql -c 'CREATE DATABASE ga_db;'```
-
-2. Load the database schema (e.g. with the user **postgres**)  
-The database schema is located under the "**databases**" directory. 
-```
-psql -h <db_host> -p 5432 -U <db_user_with_write_access> -d ga_db ga_db.sql
-```
-
-
-
-### Run GA4HPCDASHBOARD script
-
-The script `ga_dashboard.py` runs sequentially the code to:
+Once Grafana is started, you will want to undertake a number of actions. You can use different options of the wrapper script to do these. To do everything in one go, choose option 7, or use the script `scripts/frontend/run_dashboard.py`. This will:
 
 * Create the data source
 * Create the dashboards folder
 * Import the dashboards
 * Create users and teams
+* Set the permissions on the folder
 
 
 For instance
 ```
-python ga_dashboard.py \
+$ python run_dashboard.py \
   --admin_login admin --admin_password <adm_password> \
   --db_name ga_db --db_user <db_user_name> --db_password <db_user_password> --pg_version 15 \
   --input_file <path_to_users_csv_file>
+```
+
+Using the default options, and default password for Grafana admin:
+```
+$ python scripts/frontend/run_dashboard.py --admin_password admin --db_password <password>
 ```
 
 Options are:
@@ -246,7 +245,5 @@ Options are:
   --input_file INPUT_FILE: User list in CSV format
 ```
 
-### Import logs data
 
-Import logs data via the [GreenAlgorithms4HPC](https://github.com/GreenAlgorithms/GreenAlgorithms4HPC) repository.
 
