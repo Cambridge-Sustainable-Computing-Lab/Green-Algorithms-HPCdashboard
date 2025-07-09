@@ -67,9 +67,7 @@ But you will need to set a few things up first, however you use the scripts.
 
 ## Prerequisites
 
-Use miniforge https://conda-forge.org/download/, https://github.com/conda-forge/miniforge 
-
-You will probably want to set up an environment for your Python distribution. We used miniconda. Go to the [miniconda download link](https://www.anaconda.com/download/success) and follow the instructions for your platform.
+You will probably want to set up an environment for your Python distribution. We used miniforge Go to the [download link](https://conda-forge.org/download/) and follow the instructions for your platform. You may need to look at the instructions on their [GitHub repository](https://github.com/conda-forge/miniforge).
 
 Then, once installed, you can create an environment for a suitable version of python. For example:
 ```
