@@ -2,13 +2,22 @@
 
 Repository used to setup the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database. This allows you to examine HPC usage over time, with helpful graphs, charts, etc.
 
-(The instructions for running the end-to-end demo are a little different. See [documentation](./docs/end-to-end.md).)
+[Prerequisites](#prerequisites) - [Install `ga_dashboard`](#install-the-ga_dashboard-package) - [Configuration files](#configuration-files) - [Database](#database---postgresql) - [HPC users file](#hpc-users-file) - [Backend data](#backend-data) - [Dashboard platform](#dashboard-platform---grafana) - [Grafana users file](#generate-a-grafana-users-file---csv-format) - [Setup Green Algorithms dashboards](#setup-green-algorithms-dashboards) - [Frontend scripts](#run-frontend-scripts) - [Logging in to Grafana](#log-in-as-a-grafana-user)
 
 The system uses:
 * A PostgreSQL database.
 * A backend, which obtains usage data from the HPC system (using the `sacct` command), aggregates it (to one row per user per day), enriches it (adds carbon footprint data), and then writes this to the database.
 * A frontend, which uses Grafana to query the database and display nice charts.
 
+Files required for the example instructions below (you can, of course, use your own):
+
+* Wrapper script config file: `sample_config.txt`  (in `scripts/`)
+* Cluster config file: `cluster_info.yaml` (in `ga_dashboard/samples/`)
+* HPC users for DB: `hpc_users_list.csv` (in `ga_dashboard/samples/`)
+* Grafana user file: `grafana_users_list.csv` (in `ga_dashboard/samples/`)
+* Fixed parameters file. Example: `ga_dashboard/data/fixed_parameters.yaml`
+
+Plus some anonymised log/data files, described in the [Backend data section](#backend-data).
 
 There are a number of scripts you can use to set up the system with default values. You can either use these directly, or (recommended) use the wrapper script `scripts/run.py`, in which case you will need to ensure the values in `scripts/sample_config.txt` (or another config file of your choice) are what you want. 
 
