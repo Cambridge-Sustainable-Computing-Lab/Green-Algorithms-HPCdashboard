@@ -12,10 +12,10 @@ The system uses:
 Files required for the example instructions below (you can, of course, use your own):
 
 * Wrapper script config file: `sample_config.txt`  (in `scripts/`)
-* Cluster config file: `cluster_info.yaml` (in `ga_dashboard/samples/`)
-* HPC users for DB: `hpc_users_list.csv` (in `ga_dashboard/samples/`)
-* Grafana user file: `grafana_users_list.csv` (in `ga_dashboard/samples/`)
-* Fixed parameters file. Example: `ga_dashboard/data/fixed_parameters.yaml`
+* [Cluster config file](#configuration-files): `cluster_info.yaml` (in `ga_dashboard/samples/`)
+* [HPC users for DB](#hpc-users-file): `hpc_users_list.csv` (in `ga_dashboard/samples/`)
+* [Grafana user file](#generate-a-grafana-users-file---csv-format): `grafana_users_list.csv` (in `ga_dashboard/samples/`)
+* [Fixed parameters file](#configuration-files). Example: `ga_dashboard/data/fixed_parameters.yaml`
 
 Plus some anonymised log/data files, described in the [Backend data section](#backend-data).
 
