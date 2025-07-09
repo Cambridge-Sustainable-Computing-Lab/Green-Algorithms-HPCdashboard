@@ -2,7 +2,7 @@
 
 Sometimes, when you want to export a Grafana dashboard so it can be used elsewhere, you might see the bug in the picture (click image to enlarge):
 
-![Screenshot of a Grafana export bug.](./grafana_bug.png)
+![Screenshot of a Grafana export bug.](./images/grafana_bug.png)
 
 If this happens, switch off "Export the dashboard to use in another instance", then copy the JSON there into a file.
 

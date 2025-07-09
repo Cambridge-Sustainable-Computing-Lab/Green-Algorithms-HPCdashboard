@@ -58,6 +58,8 @@ But you will need to set a few things up first, however you use the scripts.
 
 ## Prerequisites
 
+Use miniforge https://conda-forge.org/download/, https://github.com/conda-forge/miniforge 
+
 You will probably want to set up an environment for your Python distribution. We used miniconda. Go to the [miniconda download link](https://www.anaconda.com/download/success) and follow the instructions for your platform.
 
 Then, once installed, you can create an environment for a suitable version of python. For example:
@@ -120,10 +122,19 @@ You will need a file with details of your HPC users for whom you are obtaining `
 
 ```
 User,UID,Name,Group,Department
-uid_1,11111,Bob Smith,group 1,Dept 3
-uid_2,22222,Tom Jones,group 1,Dept 3
+tg1,11111,Thomas Greene,group 1,Dept 3
+am1,22222,Adam Mackay,group 1,Dept 3
 ...
 ```
+
+Displayed as a table:
+| User| UID | Name           |  Group | Department |
+| ----|---- | --------- | --------------- | ---------- |
+| tg1 | 11111 | Thomas Greene |  group 1    | Dept 3 |
+| am1 | 22222 | Adam Mackay| group 1| Dept 3 |
+| ... | ...   | ... | ... |  ...       |
+
+
 DO NOT STORE PASSWORDS IN THIS FILE!
 
 You can import the listed users into the database by using option 1 of the wrapper script, and setting the value of `hpc_users_file` in the config file to what you want (unless you use `ga_dashboard/samples/hpc_users_list.csv`, in which case it will pick this up by default). Or, you can use the script `scripts/database/add_users_to_database.py` directly, although you will have to do a lot of typing if you choose to do so!
@@ -177,12 +188,15 @@ Thomas Greene,tg1,tg1@ga-test.com,Team 1
 Adam Mackay,am1,am1@ga-test.com,Team 2
 ...
 ```
-Display as a table:
+Displayed as a table:
 | Name          | User name | Email           |  Team name |
 | ------------- | --------- | --------------- | ---------- |
 | Thomas Greene | tg1       | tg1@ga-test.com |  Team 1    |
 | Adam Mackay   | am1       | am1@ga-test.com |  Team 2    |
 | ...           | ...       | ...             |  ...       |
+
+In this example, we have the same list of users for both the HPC system and Grafana. But you may have some who are on one list only, e.g., a manager might want to have access to the Grafana dashboard, but not the HPC system.
+
 
 Note that, for security reasons, passwords are not stored in this file. Passwords will be automatically generated (to be noted, or acted on by your setup in some other way) when users are added to the Grafana Dashboard by option 6 of the wrapper script (or by using the `import_users.py` script).
 
@@ -215,7 +229,8 @@ $ sudo bin/systemctl enable grafana-server
 $ sudo bin/systemctl start grafana-server
 ```
 
-In the former case, you can just CTRL-C the server. In the latter, you might have to do:
+### To stop the Grafana server
+In the former case above, you can just CTRL-C the server. In the latter, you might have to do:
 
 ```
 $ sudo bin/systemctl stop grafana-server
@@ -276,19 +291,19 @@ In the following, you can click on the screenshots to enlarge them.
 
 Let's assume you want to log in as a basic user (not an admin). If you point your browser to port 3000, you should see something like this, if Grafana is running:
 
-![Grafana login screen.](./docs/grafana_login_screen.png)
+![Grafana login screen.](./docs/images/grafana_login_screen.png)
 
 Assuming you now enter the login details for a user, you should see something like this:
 
-![Grafana welcome screen.](./docs/grafana_welcome_screen.png)
+![Grafana welcome screen.](./docs/images/grafana_welcome_screen.png)
 
 Click on "Dashboards" in the menu at the left of the screen. A new screen should then load:
 
-![Grafana dashboards screen.](./docs/dashboards.png)
+![Grafana dashboards screen.](./docs/images/dashboards.png)
 
 If you click the little arrow to the left of "Green Algorithms", you should see "User" listed. If you then clock on that, you should be taken to the User dashboard:
 
-![Grafana "User" dashboard.](./docs/user.png)
+![Grafana "User" dashboard.](./docs/images/user.png)
 
 Note that the data you see will depend on (1) which data you loaded into the PostgreSQL database, and (2) the time range you select (which you can either do with the panel near the top-right of the dashboard, or by manually selecting a time range from one of the time series plots.)
 
