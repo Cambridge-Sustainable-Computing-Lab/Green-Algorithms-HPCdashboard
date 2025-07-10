@@ -50,7 +50,7 @@ def test_parse_string_to_number(a, expected):
 def test_main_backend():
     from collections import namedtuple
     argStruct = namedtuple('argStruct',
-                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastructure_info fixed_params_file')
+                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastructure_info fixed_params_file cluster_info_file hpc_users_file')
     args = argStruct(
         startDay='2022-01-01',
         endDay='2023-06-30',
@@ -58,8 +58,10 @@ def test_main_backend():
         use_mock_agg_data=False,
         reportBug=False,
         reportBugHere=False,
-        path_infrastructure_info="ga_dashboard/samples",
-        fixed_params_file="ga_dashboard/data/fixed_parameters.yaml"
+        path_infrastructure_info="tests/testdata",    # "ga_dashboard/samples",
+        fixed_params_file="tests/testdata/fixed_parameters.yaml",   # "ga_dashboard/data/fixed_parameters.yaml",
+        cluster_info_file="tests/testdata/cluster_info.yaml",    # "ga_dashboard/samples/cluster_info.yaml",
+        hpc_users_file="tests/testdata/hpc_users_list.csv",            # "ga_dashboard/samples/hpc_users_list.csv"
     )
 
     main_backend(args) 
