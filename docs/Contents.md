@@ -8,6 +8,10 @@
 
 [Running the scripts](../scripts/RunningScripts.md)
 
+[End-to-end demo](./end-to-end.md)
+
 [Worked Example](./WorkedExample.md)
+
+[Handling Grafana export error](./grafana_bug_workaround.md)
 
 

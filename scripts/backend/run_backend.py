@@ -17,6 +17,14 @@ def create_arguments():
 
     default_endDay = datetime.date.today().strftime("%Y-%m-%d")  # today
 
+    default_cluster_info = "ga_dashboard/samples/cluster_info.yaml"
+    default_db = "ga_db"
+    default_db_host = "localhost"
+    default_db_port = "5432"
+    default_db_user = "postgres"
+    default_fixed_params_file = "ga_dashboard/data/fixed_parameters.yaml"
+    default_hpc_users = "ga_dashboard/samples/hpc_users_list.csv"
+
     ## Timeframe
     # NB These two arguments aren't needed if --useCustomLogs is used.
     parser.add_argument('-S', '--startDay', type=str,
@@ -57,13 +65,16 @@ def create_arguments():
     #                              2-letter and full-length codes. Full list of job states: \
     #                              https://slurm.schedmd.com/squeue.html#SECTION_JOB-STATE-CODES")
     # Required settings if the generated/aggregated data is to be imported into a database
-    parser.add_argument('--db_name', type=str, help='Database name')
-    parser.add_argument('--db_user', type=str, help='Database user name')
+    parser.add_argument('--db_name', type=str, help=f'Database name. Default: {default_db}', default=default_db)
+    parser.add_argument('--db_user', type=str, help=f'Database user name. Default: {default_db_user}', default=default_db_user)
     parser.add_argument('--db_password', type=str, help='Database user password')
-    parser.add_argument('--db_port', type=int, help='Database port', default=5432)
-    parser.add_argument('--db_host', type=str, help='Database server host', default='localhost')
+    parser.add_argument('--db_port', type=int, help=f'Database port. Default: {default_db_port}', default=default_db_port)
+    parser.add_argument('--db_host', type=str, help=f'Database server host. Default: {default_db_host}', default=default_db_host)
 
-    parser.add_argument('--fixed_params_file', type=str, help='The fixed parameters file to use')
+    parser.add_argument('--fixed_params_file', type=str, help=f'The fixed parameters file to use. Default: {default_fixed_params_file}',
+                         default=default_fixed_params_file)
+    parser.add_argument('--cluster_info_file', type=str, help=f'The cluster info file to use. Default: {default_cluster_info}', default=default_cluster_info)
+    parser.add_argument('--hpc_users_file', type=str, help=f'File with details of HPC users. Default: {default_hpc_users}', default=default_hpc_users)
 
     ## Reporting bugs
     group1 = parser.add_mutually_exclusive_group()

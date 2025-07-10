@@ -27,10 +27,10 @@ Combines the usage of several of the scripts:
 # Example usage (run from top-level directory of repo):
 #
 # % python scripts/frontend/run_dashboard.py --admin_password <grafana_admin_password> \
-#        --input_file ga_dashboard/samples/grafana_users_list.csv \
+#        --grafana_users_file ga_dashboard/samples/grafana_users_list.csv \
 #        --db_name ga_db --db_user postgres --db_password <db_password> \
 #        --input_dir ga_dashboard/dashboards
-#        --name grafana-postgresql-datasource   <-- If not set, uses "grafana-postgresql-ga_db" 
+#        --name <name of your datasource>   <-- If not set, uses "grafana-postgresql-ga_db" 
 
 # Or: as above but:
 #    --input_dir scripts/end-to-end --name demo_datasource
@@ -61,14 +61,13 @@ Combines the usage of several of the scripts:
 
 def main():
 
-    #script_path = os.path.dirname(os.path.realpath(__file__))
     _ = os.path.dirname(os.path.realpath(__file__))
 
     # Choose as appropriate
     default_grafana_users_file = 'ga_dashboard/samples/grafana_users_list.csv'
 
-    argparser = argparse.ArgumentParser()
-    argparser.add_argument("--name", "-n", help='Data source name', required=False, metavar='DS_NAME', default='demo_datasource', dest='name')
+    argparser = argparse.ArgumentParser(description="On Grafana: adds data source, folder, dashboards and users, then updates folder permissions.")
+    argparser.add_argument("--name", "-n", help='Data source name', required=False, metavar='DS_NAME', default='grafana-postgresql-ga_db', dest='name')
     argparser.add_argument("--url", help='Grafana URL', required=False, metavar='URL', default='localhost:3000')
     argparser.add_argument("--admin_login", "-l", help='Grafana admin name', required=False, metavar='ADMIN_NAME', default='admin', dest='login')
     argparser.add_argument("--admin_password", "-a", help='Grafana admin password', required=True, metavar='ADMIN_PASS', dest='password')
@@ -78,9 +77,9 @@ def main():
     argparser.add_argument("--db_host", "-o", help='Database host', required=False, dest='db_host', default='localhost')
     argparser.add_argument("--db_port", help='Database port', required=False, default=5432)
     argparser.add_argument("--pg_version", help='PostgreSQL version', required=False, default=13)
-    argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder', required=False, dest='dashboard_folder_name', default='Green Algorithms Demo')
-    argparser.add_argument("--input_dir", "-r", help='Dashboard files directory', required=True, metavar='INPUT_DIR', dest='input_dir')
-    argparser.add_argument("--input_file", "-i", help='User list in CSV format', required=False, default=default_grafana_users_file, metavar='INPUT_FILE', dest='input_file')
+    argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder on Grafana', required=False, dest='dashboard_folder_name', default='Green Algorithms')
+    argparser.add_argument("--input_dir", "-r", help='Dashboard JSON files directory, on disk', required=False, default = 'ga_dashboard/dashboards', metavar='INPUT_DIR', dest='input_dir')
+    argparser.add_argument("--grafana_users_file", "-i", help='User list in CSV format', required=False, default=default_grafana_users_file, metavar='INPUT_FILE', dest='grafana_users_file')
     argparser.add_argument("--debug", help='Debug mode', required=False, action='store_true')
 
     args = argparser.parse_args()
@@ -96,8 +95,8 @@ def main():
     db_port = args.db_port
     pg_version = args.pg_version
     ga_dashboard_folder_name = args.dashboard_folder_name
-    ga_dashboard_input_dir = args.input_dir
-    input_file = args.input_file
+    ga_dashboard_input_dir = args.input_dir # Where the dashboard JSON files are located, on disk.
+    input_file = args.grafana_users_file
     debug = args.debug
 
     logging_level = logging.DEBUG if debug else logging.INFO

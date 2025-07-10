@@ -12,42 +12,37 @@ logger = logging.getLogger(__name__)
 """
 This script allows multiple users to be imported into Grafana, without using the web interface to add them.
 
-'Password' is their Grafana user password (not their HPC password!).
-
-Users of this repository should change the passwords in the files supplied and not push the
-amended files to GitHub, or use a different file. This is to ensure security. 
-
 Example user list for Grafana users. In CSV format.
 
-Name,User,Email,GrafanaPassword,Team name
-User_1,uid_1,user1@example.com,mypassword,Team 1
-User_2,uid_2,user2@example.com,yourpassword,Team 1
+Name,User,Email,Team name
+User_1,uid_1,user1@example.com,Team 1
+User_2,uid_2,user2@example.com,Team 1
 etc.
 
 Laurent says 'Team name' is mapped to 'Group' in the sample BACKEND csv file (anonymised).
 
 Example (using Grafana admin defaults) from `GA4HPCdashboard` top directory:
-python scripts/frontend/import_users.py --input_file ga_dashboard/samples/grafana_users_list.csv --admin_login admin --admin_password admin
+python scripts/frontend/import_users.py --grafana_users_file ga_dashboard/samples/grafana_users_list.csv --admin_login admin --admin_password <password>
 
 """ 
 
 def main():
     argparser = argparse.ArgumentParser(description="Import users in user list file to Grafana.")
-    argparser.add_argument("--input_file", "-i", help='User list in CSV format', required=True, metavar='INPUT_FILE', dest='input_file')
+    argparser.add_argument("--grafana_users_file", "-i", help='User list in CSV format', required=True, metavar='INPUT_FILE', dest='grafana_users_file')
     argparser.add_argument("--url", help='Grafana URL', required=False, metavar='URL', default='localhost:3000')
     argparser.add_argument("--admin_login", "-l", help='Grafana admin name', required=False, metavar='ADMIN_NAME', default='admin', dest='login')
     argparser.add_argument("--admin_password", "-p", help='Grafana admin password', required=True, metavar='ADMIN_PASS', dest='password')
     argparser.add_argument("--debug", "-d", help='Debug mode', required=False, dest='debug', action='store_true')
-    argparser.add_argument("--dashboard_folder", "-f", help='Name of the dashboard folder', required=False, dest='dashboard_folder', default='Green Algorithms')
+    argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder', required=False, dest='dashboard_folder_name', default='Green Algorithms')
 
     args = argparser.parse_args()
 
-    input_file = args.input_file
+    input_file = args.grafana_users_file
     grafana_url = args.url
     login = args.login
     password = args.password
     debug = args.debug
-    ga_dashboard_folder_name = args.dashboard_folder
+    ga_dashboard_folder_name = args.dashboard_folder_name
 
     logging_level = logging.DEBUG if debug else logging.INFO
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging_level)

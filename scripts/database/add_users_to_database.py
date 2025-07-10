@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 Script to add users in a file to the ga_user table in Postgres.
 
 Example: 
-python scripts/backend/add_users_to_database.py --db_name ga_db --db_user postgres --db_password mypassword 
-        --db_port 5432 --db_host localhost --input_file ga_dashboard/samples/hpc_users_list.csv
+python scripts/database/add_users_to_database.py --db_name ga_db --db_user postgres --db_password mypassword 
+        --db_port 5432 --db_host localhost --hpc_users_file ga_dashboard/samples/hpc_users_list.csv
 
 TODO I want to move this into a proper database wrapper class, which is used for all interaction with Postgres. It would be
 database-agnostic:
@@ -87,11 +87,11 @@ def create_arguments():
     parser.add_argument('--db_password', type=str, required=True, help='Database user password')
     parser.add_argument('--db_port', type=int, required=True, help='Database port', default=5432)
     parser.add_argument('--db_host', type=str, required=True, help='Database server host', default='localhost')
-    parser.add_argument('--input_file', type=str, required=True, help='CSV file of user data')
+    parser.add_argument('--hpc_users_file', type=str, required=True, help='CSV file of (HPC) user data')
 
     args = parser.parse_args()
 
-    input_file = args.input_file
+    input_file = args.hpc_users_file
     if not os.path.isfile(input_file):
         logger.error("File '" + input_file + "' can't be found")
         exit(1)
@@ -127,7 +127,7 @@ if __name__ == "__main__":
     logging_level = logging.DEBUG
     
     args = create_arguments()
-    user_objects = parse_file(args.input_file)
+    user_objects = parse_file(args.hpc_users_file)
     
     # TODO: move to a Database class
     try:

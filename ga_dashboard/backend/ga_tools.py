@@ -320,7 +320,7 @@ def main_backend(args):
     :return:
     '''
     ### Load cluster-specific info
-    with open(os.path.join(args.path_infrastructure_info, 'cluster_info.yaml'), "r") as stream:
+    with (open(args.cluster_info_file, "r")) as stream:
         try:
             cluster_info = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -338,7 +338,7 @@ def main_backend(args):
 
     ### Load user-specific data (if available)
     try:
-        users_df = pd.read_csv(os.path.join(args.path_infrastructure_info, 'hpc_users_list.csv'))
+        users_df = pd.read_csv(args.hpc_users_file)
     except FileNotFoundError:
         if has_slurmAdmin:
             raise ValueError("No user data available.")

@@ -1,0 +1,104 @@
+# Sample config file
+#
+# Uncomment, and amend, the item(s) for which you wish to use your own value(s). Otherwise,
+# default values will be used, although not all items have a default value.
+#
+# The parameters are listed in alphabetical order.
+#
+# DO NOT STORE PASSWORDS IN THIS FILE!
+#
+# Any value you define in this file will be used instead of the corresponding default value
+#
+# NB It is assumed that there is one space character either side of the = sign, for clarity.
+#
+# There is no need to use quotation marks.
+
+# Grafana admin user name.
+# admin_login = admin 
+
+# YAML file of your cluster's information
+# cluster_info_file = ga_dashboard/samples/cluster_info.yaml
+
+# Name of the dashboard folder (on Grafana).
+# dashboard_folder_name = Green Algorithms
+
+# Machine (e.g. IP address) hosting your database
+# db_host = localhost
+
+# The name of the database to store your raw and enriched `sacct` data
+# db_name = ga_db  
+
+# PostgreSQL host's port
+# db_port = 5432
+
+# Script to create empty PostgreSQL database
+# db_script = ga_dashboard/database/ga_db.sql
+
+# The default database user
+# db_user = postgres 
+
+# Uncomment the next line if you want to see debug output
+# debug = True
+
+# The last day to take into account by the sacct command (on HPC), as YYYY-MM-DD.
+endDay = 2025-07-03  
+
+# The fixed parameters YAML file to use
+# fixed_params_file = ga_dashboard/data/fixed_parameters.yaml
+
+# File containing list of Grafana users, e.g., ga_dashboard/samples/grafana_users_list.csv
+# NB Do not store passwords in the file.
+# grafana_users_file = None  
+        
+# CSV file of (HPC) user data
+# NB Do not store passwords in the file.
+# hpc_users_file = None
+
+# Dashboard JSON files directory, on disk.
+# input_dir = ga_dashboard/dashboards
+
+# sacct logs data, e.g., ga_dashboard/samples/userDaily_mockMultiUsers_1.csv 
+# input_log_file = None 
+
+# Name of data source (on Grafana).
+# name = grafana-postgresql-ga_db
+
+# The name of the file to be written, for storing the output of sacct.
+outFile = my_sacct_output.txt
+
+# PostgreSQL version.
+# pg_version = 13
+
+# The start date passed to the `sacct` command, as YYYY-MM-DD (e.g. 2025-02-01)
+startDay = 2025-02-01
+
+# Grafana URL (including port).
+# url = localhost:3000
+
+# Bypass workload manager and input a custom log file of your jobs.
+# useCustomLogs = ga_dashboard/backend/example_files/example_sacctOutput_raw.txt
+
+
+# *******************************************************
+# ********** IGNORE EVERYTHING BELOW THIS LINE **********
+# *******************************************************
+        
+test = This is a test.
+
+# defaults["allUsers"]  # Run sacct for all users (probably requires admin rights).
+# defaults["customSuccessStates"]
+# defaults["use_mock_agg_data"]  Not currently used?  Uses mock aggregated usage data, for offline debugging
+# defaults["useOtherInfrastructureInfo"]
+# defaults["user"] = None # HPC username on slurm. NB what about multiple usernames e.g. when done by an admin?
+# defaults["userCWD"]
+
+# defaults["reportBug"]
+# defaults["reportBugHere"]
+# defaults["slurmAdmin"]
+
+# Currently not used 
+# defaults["filterCWD"]   Not currently used. 
+# defaults["filterJobIDs"]  Not currently used. Comma-separated list of Job IDs you want to filter on. (default: "all")
+# defaults["filterAccount"]  Not currently used. 
+# defaults["granularity"]  Not currently used. The level of granularity of the report, needed with `--slurmAdmin`. 
+# defaults["output"] = None  # Not currently used.
