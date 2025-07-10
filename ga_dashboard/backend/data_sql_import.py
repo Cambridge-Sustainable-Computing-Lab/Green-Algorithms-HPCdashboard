@@ -104,7 +104,7 @@ class DataSQLImport:
                 # Prepare SQL command
 
                 # data is a list of dictionaries; item is one such dictionary
-                # NB there are multiple, identical instances of each data item. We only want the first in each. 
+                # NB there are multiple, identical instances of each data item (why?). We only want the first in each. 
                 for item in data:
 
                     # As we no longer want all columns in the data, we need to specify each one we want.
@@ -116,6 +116,7 @@ class DataSQLImport:
                     # data = ("O'Reilly", )
                     # cur.execute(SQL, data)  # Note: no % operator
                      
+                    # The columns in the ga_data_aggregate table in the ga_db database
                     columns = ['user_name', 'submitdate', 'n_jobs', 'first_job_period', 'last_job_period', 'energy', 'energy_cpus', 'energy_gpus', 'energy_memory', \
                                'carbonfootprint', 'carbonfootprint_memoryneededonly', 'carbonfootprint_failedjobs', 'cputime', 'gputime', 'wallclocktime', \
                                'cpuhourscharged', 'gpuhourscharged', 'memoryrequested', 'memoryoverallocationfactor', 'n_success', \

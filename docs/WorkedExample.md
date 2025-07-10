@@ -116,7 +116,7 @@ Looking at the file `cluster_info.yaml` in the directory `ga_dashboard/samples`,
 * the memory is 0.005047545729166667 x 231.12 = 1.166588768925 ??
 * the total is 0.017980941477430557 x 231.12 = 4.15575519426375  <- OK, see DB entry below
 
-NB total is NOT the other two quantities added together.
+NB total is NOT the other two quantities above added together.
 
 ```
 ga_db=# select carbonfootprint, carbonfootprint_memoryneededonly, carbonfootprint_failedjobs from ga_data_aggregate where user_name = 'uid_1' and submitdate = '2022-11-11';
@@ -140,6 +140,20 @@ ga_db=# select * from ga_data_aggregate where user_name = 'uid_1' and submitdate
 TODO edit above and keep only the columns we want.
 
 
+See function `calculate_energies()` in `ga_tools.py`.
+
+row['energy_CPUs'] = row.TotalCPUtime2useX.total_seconds() / 3600 * TDP2use4CPU / 1000  # in kWh
+
+row['energy_GPUs'] = row.TotalGPUtime2useX.total_seconds() / 3600 * TDP2use4GPU / 1000  # in kWh
+
+### memory
+for suffix, memory2use in zip(['','_memoryNeededOnly'], [row.ReqMemX,row.NeededMemX]):
+     row[f'energy_memory{suffix}'] = row.WallclockTimeX.total_seconds()/3600 * memory2use * self.fixed_params['power_memory_perGB'] /1000 # in kWh
+     row[f'energy{suffix}'] = (row.energy_CPUs +  row.energy_GPUs + row[f'energy_memory{suffix}']) * self.cluster_info['PUE'] # in kWh
+
+return row
+
+so we get 
 
 
 [Back to Contents](./Contents.md)
