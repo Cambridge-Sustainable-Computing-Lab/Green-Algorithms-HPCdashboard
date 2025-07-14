@@ -337,9 +337,18 @@ class WorkloadManager(Helpers_WM):
 
         ### Number of GPUs
         # TODO double check that it includes multiple GPUs correctly
+        # Examples of AllocTRES column: 
+        # "billing=5,cpu=5,mem=60150M,node=1" should find 0 GPus
+        # "billing=32,cpu=32,gres/gpu=1,mem=250G,node=1" should find 1 GPU. 
+        # Pandas Series.str.extract() method. Uses re (see https://docs.python.org/3/library/re.html#module-re)
+        # See https://pandas.pydata.org/docs/reference/api/pandas.Series.str.extract.html
+        # expand: If False, returns a Series/Index if there is one capture group, or a DataFrame if there are multiple capture groups.
         if 'AllocTRES' in self.logs_df.columns:
-            self.logs_df['NGPUS_'] = \
-                self.logs_df.AllocTRES.str.extract(r'((?<=gres\/gpu=)\d+)', expand=False).fillna(0).astype('int64')
+            with pd.option_context('future.no_silent_downcasting', True):
+                # See https://medium.com/@felipecaballero/deciphering-the-cryptic-futurewarning-for-fillna-in-pandas-2-01deb4e411a1
+                # and https://github.com/pandas-dev/pandas/issues/57734
+                self.logs_df['NGPUS_'] = self.logs_df.AllocTRES.str.extract(r'((?<=gres\/gpu=)\d+)', expand=False).fillna(0).astype('int64')
+                # = self.logs_df.AllocTRES.str.extract(r'((?<=gres\/gpu=)\d+)', expand=False).fillna(0).astype('int64')
         else:
             print('Using old logs, "AllocTRES" information not available.')  # TODO: remove this after a while
             self.logs_df['NGPUS_'] = 0
