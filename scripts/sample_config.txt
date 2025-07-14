@@ -41,6 +41,7 @@
 # debug = True
 
 # The last day to take into account by the sacct command (on HPC), as YYYY-MM-DD.
+# NB ignored if you specify an existing log file with useCustomLogs.
 endDay = 2025-07-03  
 
 # The fixed parameters YAML file to use
@@ -70,12 +71,15 @@ outFile = my_sacct_output.txt
 # pg_version = 13
 
 # The start date passed to the `sacct` command, as YYYY-MM-DD (e.g. 2025-02-01)
+# NB ignored if you specify an existing log file with useCustomLogs.
 startDay = 2025-02-01
 
 # Grafana URL (including port).
 # url = localhost:3000
 
 # Bypass workload manager and input a custom log file of your jobs.
+# Note that, if you specify a custom log file here, any "startDay" and "endDay"
+# values will be ignored.
 # useCustomLogs = ga_dashboard/backend/example_files/example_sacctOutput_raw.txt
 
 
