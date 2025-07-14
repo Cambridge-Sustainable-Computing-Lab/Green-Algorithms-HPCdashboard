@@ -3,7 +3,6 @@ import datetime
 import os
 import pandas as pd
 import pytest
-import yaml
 
 
 from ga_dashboard.backend.ga_tools import GA_tools, extract_data, enrich_data, summarise_data
@@ -12,8 +11,6 @@ from ga_dashboard.backend.utils import get_cluster_info, get_fixed_params
 
 # NB We assume the tests are run from the top-level GA4HPCdashboard directory.
 
-#def run_extract_data(logfile: str, clusterfile: str) -> pd.DataFrame:
-#    pass
 
 def generate_namespace(logfile: str) -> argparse.Namespace:
     """
