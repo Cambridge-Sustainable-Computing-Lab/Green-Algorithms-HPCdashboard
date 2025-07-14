@@ -272,8 +272,9 @@ def summarise_data(df: pd.DataFrame, args: argparse.Namespace) -> dict:
         dict_userActivity = df_userActivity.set_index(["User"]).to_dict('index')
 
         df_groupActivity = agg_jobs(df_userActivity, ['Group', 'Department'])
-        dict_groupActivity = df_groupActivity.groupby('Department').apply(lambda x: x.set_index('Group').to_dict(orient='index')).to_dict()
-        # dict_groupActivity = df_groupActivity.groupby('Department').apply(lambda x: x.set_index('Group').to_dict(orient='index'), include_groups=False).to_dict()
+        #dict_groupActivity = df_groupActivity.groupby('Department').apply(lambda x: x.set_index('Group').to_dict(orient='index')).to_dict()
+        # Fix pandas DataFrameGroupBy.apply Deprecation Warning:
+        dict_groupActivity = df_groupActivity.groupby('Department').apply(lambda x: x.set_index('Group').to_dict(orient='index'), include_groups=False).to_dict()
 
         df_deptActivity = agg_jobs(df_groupActivity, ['Department'])
         dict_deptActivity = df_deptActivity.set_index(["Department"]).to_dict('index')
