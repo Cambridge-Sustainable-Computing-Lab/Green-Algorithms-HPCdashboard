@@ -13,6 +13,7 @@ SINGLE_USER_SACCT_FILE = "ga_dashboard/samples/sacct_output_single_user.txt"
 
 # Utility function
 # TODO put into a file where the actual code can use it!
+# NB see also get_cluster_info() in utils.py
 def get_cluster_info(myfile):
     '''
     Load a cluster info .yaml file into a Python object.

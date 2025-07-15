@@ -7,10 +7,12 @@ import subprocess
 
 from io import BytesIO
 
+
 class Helpers_WM:
 
     def __init__(self, cluster_info):
         self.cluster_info = cluster_info
+
 
     def convert_to_GB(self, memory, unit):
         """
@@ -25,6 +27,7 @@ class Helpers_WM:
         elif unit == 'K':
             memory /= 1e6
         return memory
+
 
     def calc_ReqMem(self, x):
         """
@@ -53,6 +56,7 @@ class Helpers_WM:
 
         return self.convert_to_GB(memory, unit)
 
+
     def clean_RSS(self, x):
         """
         Cleans the RSS value in sacct output. (column 'MaxRSS').
@@ -76,6 +80,7 @@ class Helpers_WM:
 
         return memory
 
+
     def clean_UsedMem(self, x):
         """
         Cleans the UsedMemory column
@@ -84,6 +89,7 @@ class Helpers_WM:
         """
         # NB when MaxRSS didn't store any values, we assume that "memory used = memory requested"
         return x.ReqMemX if x.UsedMem_ == -1 else x.UsedMem_
+
 
     def clean_partition(self, x):
         """
@@ -103,9 +109,11 @@ class Helpers_WM:
             print(f"\n-!- WARNING: Multiple partitions logged on a job than ran: {x.JobID} - {x.Partition} (using the first one)\n")
         return L_partitions[0]
 
+
     def set_partitionType(self, x):
         assert x in self.cluster_info['partitions'], f"\n-!- Unknown partition: {x} -!-\n"
         return self.cluster_info['partitions'][x]['type']
+
 
     def parse_timedelta(self, x):
         """
@@ -147,6 +155,7 @@ class Helpers_WM:
             days=n_days, hours=n_h, minutes=n_m, seconds=n_s, milliseconds=n_ms
         )
 
+
     def calc_realMemNeeded(self, x, granularity_memory_request):
         """
         Calculate the minimum memory needed.
@@ -158,9 +167,11 @@ class Helpers_WM:
         minimum_mem = (int(x.UsedMem2_ / granularity_memory_request) + 1) * granularity_memory_request
         return minimum_mem if x.ReqMemX < x.UsedMem2_ else min(x.ReqMemX, minimum_mem)
 
+
     def calc_memory_overallocation(self, x):
         # This is in case ReqMem is wrong or too low
         return 1. if x.ReqMemX < x.NeededMemX else x.ReqMemX / x.NeededMemX
+
 
     def calc_CPUusage2use(self, x):
         if x.TotalCPUtime_.total_seconds() == 0:
@@ -171,12 +182,14 @@ class Helpers_WM:
         assert x.TotalCPUtime_ <= x.CPUwallclocktime_
         return x.TotalCPUtime_
 
+
     def calc_GPUusage2use(self, x):
         if x.PartitionTypeX != 'GPU':
             return datetime.timedelta(0)
         if x.WallclockTimeX.total_seconds() > 0:
             assert x.NGPUS_ != 0
         return x.WallclockTimeX * x.NGPUS_  # NB assuming usage factor of 100% for GPUs
+
 
     def calc_coreHoursCharged(self, x):
         '''
@@ -189,11 +202,13 @@ class Helpers_WM:
         else:
             return 0., x.WallclockTimeX * x.NGPUS_ / np.timedelta64(1, 'h')
 
+
     def clean_State(self, x, customSuccessStates_list):
         """
-        Standardise the job's state, coding with {-1,0,1}
+        Standardise the job's state, coding with {-2, -1, 0, 1}
         :param x: [str] "State" field from sacct output
-        :return: [int] in [-1,0,1]
+        :param customSuccessStates_list: [list] List of custom states (can be empty list)
+        :return: [int] in [-2, -1, 0, 1]
         """
         # Codes are found here: https://slurm.schedmd.com/squeue.html#SECTION_JOB-STATE-CODES
         # self.args.customSuccessStates = 'TO,TIMEOUT'
@@ -215,6 +230,7 @@ class Helpers_WM:
 
         return codeState
 
+
     def get_parent_jobID(self, x):
         """
         Get the parent job ID in case of array jobs
@@ -224,6 +240,7 @@ class Helpers_WM:
         job_id_parts = x.split('_')
         assert len(job_id_parts) <= 2, f"Can't parse the job ID: {x}"
         return job_id_parts[0]
+
 
 
 class WorkloadManager(Helpers_WM):
@@ -260,8 +277,8 @@ class WorkloadManager(Helpers_WM):
 
     def pull_logs(self):
         """
-        Run the command line to pull usage from the workload manager.
-        More: https://slurm.schedmd.com/sacct.html
+        Either runs the command line to pull usage from the workload manager
+        (https://slurm.schedmd.com/sacct.html), or opens an existing log file.
         """
         if self.args.useCustomLogs == '':
             bash_com = [
@@ -304,7 +321,7 @@ class WorkloadManager(Helpers_WM):
         Convert raw logs output into a pandas dataframe.
         """
         logs_df = pd.read_csv(BytesIO(self.logs_raw), sep="|", dtype='str')
-        for x in ['NNodes', 'NCPUS']:
+        for x in ['NNodes', 'NCPUS']: # and UID?
             logs_df[x] = logs_df[x].astype('int64')
 
         self.logs_df = logs_df
@@ -313,7 +330,7 @@ class WorkloadManager(Helpers_WM):
     def clean_logs_df(self):
         """
         Clean the different fields of the usage logs.
-        NB: the name of the columns ending with X need to be conserved, as they are used by the main script.
+        NB: the names of the columns ending with X need to be conserved, as they are used by the main script.
         """
         # self.logs_df_raw = self.logs_df.copy() # DEBUGONLY Save a copy of uncleaned raw for debugging mainly
 
@@ -327,7 +344,7 @@ class WorkloadManager(Helpers_WM):
         self.logs_df['WallclockTimeX'] = self.logs_df['Elapsed'].apply(self.parse_timedelta)
 
         ### Parse total CPU time
-        # This is the total CPU used time, accross all cores.
+        # This is the total CPU used time, across all cores.
         # But it is not reliably logged
         self.logs_df['TotalCPUtime_'] = self.logs_df['TotalCPU'].apply(self.parse_timedelta)
 
@@ -336,7 +353,7 @@ class WorkloadManager(Helpers_WM):
         self.logs_df['CPUwallclocktime_'] = self.logs_df['CPUTime'].apply(self.parse_timedelta)
 
         ### Number of GPUs
-        # TODO double check that it includes multiple GPUs correctly
+        # TODO double check that it includes multiple GPUs correctly -> probably better to put this in its own function so easier to test.
         # Examples of AllocTRES column: 
         # "billing=5,cpu=5,mem=60150M,node=1" should find 0 GPus
         # "billing=32,cpu=32,gres/gpu=1,mem=250G,node=1" should find 1 GPU. 
@@ -383,8 +400,8 @@ class WorkloadManager(Helpers_WM):
         self.logs_df['StateX'] = self.logs_df.State.apply(self.clean_State,
                                                           customSuccessStates_list=customSuccessStates_list)
 
-        ### Pull jobID
-        self.logs_df['single_jobID'] = self.logs_df.JobID.apply(lambda x: x.split('.')[0])
+        ### Pull jobID. e.g. JobID might be of the forms 8394465, 8394465.batch, 8394465.extern 
+        self.logs_df['single_jobID'] = self.logs_df.JobID.apply(lambda x: x.split('.')[0]) # e.g. "8394465" for all the above 3 examples.
 
         ### Account
         if 'Account' in self.logs_df.columns:
@@ -416,7 +433,7 @@ class WorkloadManager(Helpers_WM):
         ### Remove jobs that are still running or currently queued
         self.df_agg = self.df_agg_0.loc[self.df_agg_0.StateX != -2]
 
-        ### Turn StateX==-2 into 1
+        ### Turn StateX == -1 into 1
         self.df_agg.loc[self.df_agg.StateX == -1, 'StateX'] = 1
 
         ### Replace UsedMem_=-1 with memory requested (for when MaxRSS=NaN)

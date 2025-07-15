@@ -104,7 +104,10 @@ class GA_tools:
 
 
 def extract_data(args: argparse.Namespace, has_slurmAdmin: bool, cluster_info) -> pd.DataFrame:
-
+    '''
+    Gets usage data from the HPC system. This can be by running the `sacct` command, or by
+    using an existing file of such data. Then cleans up the data.
+    '''
     if args.use_mock_agg_data: # DEBUGONLY Create/use some mock jobs with different users
 
         # Steps done in pickle_it.py script:
@@ -167,8 +170,10 @@ def extract_data(args: argparse.Namespace, has_slurmAdmin: bool, cluster_info) -
 def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA: GA_tools) -> pd.DataFrame:
     """
     Adds data about the carbon footprint, etc.
+
     :param df: [pd.DataFrame] The existing data we've extracted.
     :param fixed_params: [dict] The fixed parameters used.
+    :param users_df: [pd.DataFrame] User info from CSV file (e.g. hpc_users_list.csv). Can be None.
     :param GA [GA_tools] A GA_tools object. 
     :return: [pd.DataFrame] The enriched data.
     """

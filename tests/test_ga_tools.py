@@ -15,6 +15,7 @@ from ga_dashboard.backend.utils import get_cluster_info, get_fixed_params
 def generate_namespace(logfile: str) -> argparse.Namespace:
     """
     Generates and populates an argparse.Namespace object, simulating command-line arguments.
+
     :param logfile: [str] The name of the sacct output file to use, e.g., 'sacct_output_single_user.txt'.
     :return: [argparse.Namespace] The populated Namespace (args) object.
     """
@@ -37,7 +38,7 @@ def generate_namespace(logfile: str) -> argparse.Namespace:
 
 def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
     """
-    Get the Pandas DataFrame represneting the HPC users in user_list_file.
+    Get the Pandas DataFrame representing the HPC users in user_list_file.
     :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
     :param user_list_file: [str] Name of HPC users file, e.g., 'hpc_users_list.csv'
     :return: [pd.DataFrame] The data frame object.
@@ -51,7 +52,7 @@ def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
     return users_df
 
 
-def test_extract_data():
+def test_extract_data_one_job():
     """
     Test the extract_data() function and dataframe
     """   
@@ -69,7 +70,6 @@ def test_extract_data():
     assert myseries.UIDX == "11111"
     assert myseries.UserX == "uid_1"
 
-
     # Load fixed parameters
     fixed_params = get_fixed_params(ns, 'fixed_parameters.yaml')
 
@@ -79,6 +79,7 @@ def test_extract_data():
     series2 = df2.squeeze(axis=0) 
     assert myseries.WallclockTimeX == series2.WallclockTimeX
     assert myseries.PartitionX == series2.PartitionX
+    assert myseries.SubmitDatetimeX == series2.SubmitDatetimeX
     # etc ... all should be the same
     series2 = None
 
@@ -97,6 +98,43 @@ def test_extract_data():
     print("SUMMARY STATS")
     print(summary_stats["groupActivity"])
 
+
+
+def test_extract_batched_data():
+    '''
+    Test extract_data() on some batched data.
+    '''
+    ns = generate_namespace('batched_sacct_output.txt')
+    cluster_info = get_cluster_info(ns, 'cluster_info.yaml')
+    df = extract_data(ns, True, cluster_info)
+    assert len(df) == 5
+
+    my_series = df.iloc[1]
+    assert my_series.ReqMemX == 3.37  # 3370 MB = 3.37 GB
+
+    #my_first_batched_df = df[df.Submit.str.startswith('2025-04-14')]  # 4 jobs.
+    #my_second_batched_df = df[df.Submit.str.startswith('2025-04-16')]  # Just one job
+
+    # Load fixed parameters
+    fixed_params = get_fixed_params(ns, 'fixed_parameters.yaml')
+
+    GA = GA_tools(cluster_info, fixed_params)
+
+    users_df = get_users_df(ns, 'hpc_users_list.csv')
+    df2 = enrich_data(df, fixed_params, users_df, GA)
+    assert len(df2) == 5
+
+    # Now drill into the
+
+
 def test_enrich_data():
+    pass
+
+
+def test_summarise_data():
+    pass
+
+
+def test_clean_logs():
     pass
 
