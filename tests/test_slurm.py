@@ -2,6 +2,7 @@
 #import datetime
 #from io import BytesIO
 from ga_dashboard.backend.workload_manager.slurm import Helpers_WM #, WorkloadManager
+from ga_dashboard.backend.utils import get_cluster_info
 import pandas as pd
 import pytest
 import yaml
@@ -9,28 +10,6 @@ import yaml
 FIXED_PARAMS_FILE = "tests/testdata/fixed_parameters.yaml" # "ga_dashboard/data/fixed_parameters.yaml"
 CLUSTER_INFO_FILE = "tests/testdata/cluster_info.yaml" # "ga_dashboard/samples/cluster_info.yaml"
 SINGLE_USER_SACCT_FILE = "ga_dashboard/samples/sacct_output_single_user.txt"
-
-
-# Utility function
-# TODO put into a file where the actual code can use it!
-# NB see also get_cluster_info() in utils.py
-def get_cluster_info(myfile):
-    '''
-    Load a cluster info .yaml file into a Python object.
-
-    :param myfile: Path to the .yaml file to load
-    :return: The created Python object
-    '''
-    ### Load cluster-specific info
-    with open(myfile, "r") as stream:
-        try:
-            cluster_info = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-            return None
-    return cluster_info
-
-
 
 # Test Helpers_WM.convert_to_GB()
 @pytest.mark.parametrize( "memory, unit, expected",  
@@ -100,7 +79,7 @@ def test_clean_RSS(RSS, expected):
      mydict['MaxRSS'] = RSS
      myseries = pd.Series(mydict) # Create df using Series constructor: a series of just one dict
      HWM = Helpers_WM(None)
-     HWM.cluster_info = get_cluster_info(CLUSTER_INFO_FILE) # We only actually need this when the RSS value has no units.
+     HWM.cluster_info = get_cluster_info(ns=None, info_file=CLUSTER_INFO_FILE) # We only actually need this when the RSS value has no units.
      assert HWM.clean_RSS(myseries) == expected
 
 

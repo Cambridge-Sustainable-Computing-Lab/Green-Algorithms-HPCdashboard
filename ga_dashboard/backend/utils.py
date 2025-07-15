@@ -124,6 +124,7 @@ def check_empty_results(df, args):
         ''')
         sys.exit()
 
+
 def simulate_mock_jobs(): # DEBUGONLY
     df_list = []
     for user in ['uid_1', 'uid_2', 'uid_3', 'uid_4', 'uid_5']:
@@ -151,18 +152,27 @@ def simulate_mock_jobs(): # DEBUGONLY
 
     return pd.concat(df_list)
 
+
 def get_cluster_info(ns: argparse.Namespace, info_file: str) -> object:
     """
     Get the YAML object representation of a cluster info file.
-    :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
+    :param ns: [argparse.Namespace] Namespace representing the command-line arguments. Can be None
     :param info_file: [str] Name of info file, e.g., 'cluster_info.yaml'
     :return: [argparse.Namespace] The populated Namespace (args) object.
+
+    NB The full path to the file can be specified in info_file if you set ns=None.
     """
-    with open(os.path.join(ns.path_infrastructure_info, info_file), "r") as stream:
+    if ns and ns.path_infrastructure_info:
+        file_path = os.path.join(ns.path_infrastructure_info, info_file)
+    else:
+        file_path = info_file
+
+    with open(file_path, "r") as stream:
         try:
             cluster_info = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
+            cluster_info = None
     return cluster_info
 
 
