@@ -98,7 +98,7 @@ class Helpers_WM:
     def clean_partition(self, x):
         """
         Cleans the partition field, by replacing NaNs with empty string and selecting just one partition per job.
-        :param x: data frame
+        :param x: Pandas Series
         :return: [str] one partition or empty string
 
         x.Partition is [str] partition or comma-separated list of partitions

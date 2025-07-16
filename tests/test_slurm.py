@@ -1,11 +1,11 @@
 #import argparse
-#import datetime
+import datetime
 #from io import BytesIO
 from ga_dashboard.backend.workload_manager.slurm import Helpers_WM #, WorkloadManager
 from ga_dashboard.backend.utils import get_cluster_info
 import pandas as pd
 import pytest
-import yaml
+
 
 FIXED_PARAMS_FILE = "tests/testdata/fixed_parameters.yaml" # "ga_dashboard/data/fixed_parameters.yaml"
 CLUSTER_INFO_FILE = "tests/testdata/cluster_info.yaml" # "ga_dashboard/samples/cluster_info.yaml"
@@ -94,13 +94,28 @@ def test_clean_UsedMem(ReqMemX, UsedMem_, expected):
     mydict = {}
     mydict['ReqMemX'] = ReqMemX
     mydict['UsedMem_'] = UsedMem_
-    myseries = pd.Series(mydict) # Create Series using Series constructor: a series of just one dict
+    myseries = pd.Series(mydict) # Create Series from the dict
     HWM = Helpers_WM(None)
     assert HWM.clean_UsedMem(myseries) == expected
 
 
-def test_clean_partition():
-    pass
+# Test clean_partition()
+@pytest.mark.parametrize("input, expected",
+    [
+        ("fred", "fred"),
+        (pd.NA, ""),
+        ("fred,jim,peter", "fred"),
+        # ([pd.NA, "fred"], "fred") <- this one won't work at the moment;
+        # gives ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()    
+    ],)
+def test_clean_partition(input, expected):
+    myseries = pd.Series
+    myseries.Partition = input
+    myseries.JobID = 12345678
+    myseries.WallclockTimeX = datetime.timedelta(seconds = 10)
+    #if pd.na(expected)
+    assert Helpers_WM(None).clean_partition(myseries) == expected
+
 
 def test_set_partitionType():
     pass
