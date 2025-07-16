@@ -2,7 +2,7 @@
 
 [Prerequisites](#prerequisites) - [Main installation](#main-installation) - [Database connection](#database-connection) - [Grafana setup](#grafana-setup)
 
-> [!IMPORTANT]  
+> [!WARNING]  
 > These are the old instructions, using the original wrapper scripts. The [new instructions](../README.md), which incorporate a more user-friendly wrapper script, and updated instructions, are probably what you want.
 
 However, this page may still be useful, in case you want/need to do things in a more manual fashion. So, we are keeping it.
