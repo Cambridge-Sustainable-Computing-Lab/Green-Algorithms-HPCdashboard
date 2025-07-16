@@ -87,7 +87,7 @@ def create_arguments():
     parser.add_argument('--db_password', type=str, required=True, help='Database user password')
     parser.add_argument('--db_port', type=int, required=True, help='Database port', default=5432)
     parser.add_argument('--db_host', type=str, required=True, help='Database server host', default='localhost')
-    parser.add_argument('--hpc_users_file', type=str, required=True, help='CSV file of (HPC) user data')
+    parser.add_argument('--hpc_users_file', type=str, required=True, help='HPC users datafile (CSV format)')
 
     args = parser.parse_args()
 
