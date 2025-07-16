@@ -2,8 +2,7 @@
 
 [Prerequisites](#prerequisites) - [Main installation](#main-installation) - [Database connection](#database-connection) - [Grafana setup](#grafana-setup)
 
-[!CAUTION]
-
+## Important note 
 These are the old instructions, using the original wrapper scripts. The [new instructions](../README.md), which incorporate a more user-friendly wrapper script, and updated instructions, are probably what you want.
 
 However, this page may still be useful, in case you want/need to do things in a more manual fashion. So, we are keeping it.
@@ -75,10 +74,9 @@ Example running it with the default **postgres** user:
 2. Install the database (e.g. with the user **postgres**)
 
 ```
-$ psql -h localhost -p 5432 -U postgres -d ga_db < ga_data_aggregate_table_schema.sql 
+$ psql -h localhost -p 5432 -U postgres -d ga_db < ga_db.sql 
 ````
 
-NB This command uses the current `ga_data_aggregate_table_schema.sql` script. The older script was `ga_db.sql`, which stored all data in one large database table. The current script stores user information in a separate table, and is what is expected by all the code which talks to the database.
 
 3. Create a database user, with a password, which is read-only, and has access to the database tables. This will be used by Grafana to read information from the database.
 
