@@ -121,9 +121,12 @@ def test_extract_batched_data():
     #my_first_batched_df = raw_df[raw_df.Submit.str.startswith('2025-04-14')]  # 4 jobs.
     my_first_batched_df = raw_df[raw_df.JobID.str.startswith('8325013')]
     assert len(my_first_batched_df) == 3
+    # The submit date is taken as the minimum of the 3 with this common JobID
+    # by clean_logs() in slurm.py, called by extract_data()
+    submit_date = min(my_first_batched_df.Submit)
 
 
-    pytest.set_trace()  # run with pytest --pdb
+    ##pytest.set_trace()  # run with pytest --pdb
 
     # Now we can check that the results we get back from extract_data() are correct,
     # with reference to the raw_df we read in directly from the logfile.
