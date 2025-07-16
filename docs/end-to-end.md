@@ -1,8 +1,10 @@
 # Running the end-to-end demo
 
-**NOTE 1:** In the case of conflicts between this and the `README` file on the home page, go with the latter.
+> [!NOTE]
+> 1. In the case of conflicts between this and the `README` file on the home page, go with the latter.
 
-**NOTE 2:** This script and instructions are being retained for reference. The `demo.sh` script discussed on this page currently will not fully work because (a) Grafana needs to be stopped before the script is run, so that its connection to the database is ended, but (b) the latter stages of the script require Grafana to be running. Users are recommended to use the [newer instructions](../README.md), which use the much-more-user-friendly wrapper script `run.py`.
+> [!NOTE]
+> 2. This script and instructions are being retained for reference. The `demo.sh` script discussed on this page currently will not fully work because (a) Grafana needs to be stopped before the script is run, so that its connection to the database is ended, but (b) the latter stages of the script require Grafana to be running. Users are recommended to use the [newer instructions](../README.md), which use the much-more-user-friendly wrapper script `run.py`.
 
 However, the instructions here may still be helpful. You may also find it helpful to look at the commands invoked in the `demo.sh` script, as these are the sort of commands that the wrapper script issues.
 
