@@ -71,9 +71,10 @@ python scripts/database/create_or_overwrite_database.py --db-password mypassword
 ```
 It uses a lot of default arguments. Run the script with `--help` to see them.
 
-This will create a new database with empty tables. If you run it and the database already exists, it will delete your data, as its name suggests.
+> [!WARNING]
+> This will create a new database with empty tables. If you run it and the database already exists, it will delete your data, as its name suggests.
 
-You will be prompted for your db admin-user password. This gives you the chance to CTRL-C out if you invoked it by mistake.
+You will be prompted for the password of your db admin-user (possibly your `postgres` user). This gives you the chance to CTRL-C out if you invoked it by mistake.
 
 <ins>**WARNING!! This script will delete any existing instance of the database, including all its data, so only run this if you are sure that's what you want.**</ins>
 
