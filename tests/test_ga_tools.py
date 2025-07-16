@@ -104,7 +104,11 @@ def test_extract_batched_data():
     '''
     Test extract_data() on some batched data.
     '''
-    ns = generate_namespace('batched_sacct_output.txt')
+    #sacct_logfile = "batched_sacct_output.txt"
+    # We use this later, below.
+    raw_df = pd.read_csv('tests/testdata/batched_sacct_output.txt', sep='|')
+
+    ns = generate_namespace("batched_sacct_output.txt")
     cluster_info = get_cluster_info(ns, 'cluster_info.yaml')
     df = extract_data(ns, True, cluster_info)
     assert len(df) == 5
@@ -112,7 +116,19 @@ def test_extract_batched_data():
     my_series = df.iloc[1]
     assert my_series.ReqMemX == 3.37  # 3370 MB = 3.37 GB
 
-    #my_first_batched_df = df[df.Submit.str.startswith('2025-04-14')]  # 4 jobs.
+   # pytest.set_trace()
+
+    #my_first_batched_df = raw_df[raw_df.Submit.str.startswith('2025-04-14')]  # 4 jobs.
+    my_first_batched_df = raw_df[raw_df.JobID.str.startswith('8325013')]
+    assert len(my_first_batched_df) == 3
+
+
+    pytest.set_trace()  # run with pytest --pdb
+
+    # Now we can check that the results we get back from extract_data() are correct,
+    # with reference to the raw_df we read in directly from the logfile.
+    #assert df.SubmitDatetimeX == my_first_batched_df.iloc[0].Submit
+
     #my_second_batched_df = df[df.Submit.str.startswith('2025-04-16')]  # Just one job
 
     # Load fixed parameters

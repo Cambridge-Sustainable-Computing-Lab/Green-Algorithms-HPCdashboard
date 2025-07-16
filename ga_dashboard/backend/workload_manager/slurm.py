@@ -301,7 +301,7 @@ class WorkloadManager(Helpers_WM):
         else:
             message = "Overriding logs_raw with: "
             foundIt = False
-            for sacctFileLocation in ['', 'testdata', 'error_logs']:
+            for sacctFileLocation in ['', 'testdata', 'error_logs', '.']:
                 if not foundIt:
                     try:
                         with open(os.path.join(sacctFileLocation, self.args.useCustomLogs), 'rb') as f:

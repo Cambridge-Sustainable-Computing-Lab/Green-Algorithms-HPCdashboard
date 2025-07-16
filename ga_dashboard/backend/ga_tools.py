@@ -126,7 +126,7 @@ def extract_data(args: argparse.Namespace, has_slurmAdmin: bool, cluster_info) -
         return pd.read_pickle(pickled_test_data)
 
 
-    ### Pull usage statistics from the workload manager
+    ### Pull usage statistics (by running sacct or opening a log file) from the workload manager
     WM = WorkloadManager(args, cluster_info)
     WM.pull_logs()
 
