@@ -64,7 +64,7 @@ def test_calc_ReqMem(reqmem, nnodes, ncpus, expected):
         assert HWM.calc_ReqMem(myseries) == pytest.approx(expected)
     
 
-# Test calc_ReqMem.clean_RSS()
+# Test clean_RSS()
 @pytest.mark.parametrize("RSS, expected",
     [
         ("0", 0),   
@@ -77,16 +77,27 @@ def test_calc_ReqMem(reqmem, nnodes, ncpus, expected):
 def test_clean_RSS(RSS, expected):
      mydict = {}
      mydict['MaxRSS'] = RSS
-     myseries = pd.Series(mydict) # Create df using Series constructor: a series of just one dict
+     myseries = pd.Series(mydict) # Create Series using Series constructor: a series of just one dict
      HWM = Helpers_WM(None)
      HWM.cluster_info = get_cluster_info(ns=None, info_file=CLUSTER_INFO_FILE) # We only actually need this when the RSS value has no units.
      assert HWM.clean_RSS(myseries) == expected
 
 
-# We might not need to test all of these. They are here simply as an aide memoire for now.
+# Test clean_UsedMem()
+@pytest.mark.parametrize("ReqMemX, UsedMem_, expected",
+    [
+        (67.6, -1.0, 67.6),
+        (3.37, -1, 3.37),
+        (10.7, 20, 20)
+    ],)
+def test_clean_UsedMem(ReqMemX, UsedMem_, expected):
+    mydict = {}
+    mydict['ReqMemX'] = ReqMemX
+    mydict['UsedMem_'] = UsedMem_
+    myseries = pd.Series(mydict) # Create Series using Series constructor: a series of just one dict
+    HWM = Helpers_WM(None)
+    assert HWM.clean_UsedMem(myseries) == expected
 
-def test_clean_UsedMem():
-    pass
 
 def test_clean_partition():
     pass

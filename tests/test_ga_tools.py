@@ -110,10 +110,10 @@ def test_extract_batched_data():
 
     ns = generate_namespace("batched_sacct_output.txt")
     cluster_info = get_cluster_info(ns, 'cluster_info.yaml')
-    df = extract_data(ns, True, cluster_info)
-    assert len(df) == 5
+    extracted_df = extract_data(ns, True, cluster_info)
+    assert len(extracted_df) == 5
 
-    my_series = df.iloc[1]
+    my_series = extracted_df.iloc[1]
     assert my_series.ReqMemX == 3.37  # 3370 MB = 3.37 GB
 
    # pytest.set_trace()
@@ -126,7 +126,7 @@ def test_extract_batched_data():
     submit_date = min(my_first_batched_df.Submit)
 
 
-    ##pytest.set_trace()  # run with pytest --pdb
+    #pytest.set_trace()  # run with pytest --pdb
 
     # Now we can check that the results we get back from extract_data() are correct,
     # with reference to the raw_df we read in directly from the logfile.
@@ -140,7 +140,7 @@ def test_extract_batched_data():
     GA = GA_tools(cluster_info, fixed_params)
 
     users_df = get_users_df(ns, 'hpc_users_list.csv')
-    df2 = enrich_data(df, fixed_params, users_df, GA)
+    df2 = enrich_data(extracted_df, fixed_params, users_df, GA)
     assert len(df2) == 5
 
     # Now drill into the

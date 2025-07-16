@@ -83,9 +83,13 @@ class Helpers_WM:
 
     def clean_UsedMem(self, x):
         """
-        Cleans the UsedMemory column
-        :param x:
-        :return: [float]
+        Cleans the UsedMemory element of a Pandas Series
+        :param x: Pandas Series
+        :return: [float] cleaned element content
+
+        e.g., x might include the following:
+        ReqMemX                             67.6
+        UsedMem_                            -1.0
         """
         # NB when MaxRSS didn't store any values, we assume that "memory used = memory requested"
         return x.ReqMemX if x.UsedMem_ == -1 else x.UsedMem_
