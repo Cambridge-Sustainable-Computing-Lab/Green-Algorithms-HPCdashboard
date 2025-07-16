@@ -129,16 +129,20 @@ def test_set_partitionType():
 
 
 # Test parse_timedelta(). Parse times in format '[DD-HH:MM:]SS[.MS]'
-# datetime.timedelta(days=n_days, hours=n_h, minutes=n_m, seconds=n_s, milliseconds=n_ms)
 @pytest.mark.parametrize("input, days, hours, minutes, seconds, milliseconds",
     [
         ("20", 0, 0, 0, 20, 0),
         ("0", 0, 0, 0, 0, 0),
         ("20.106", 0, 0, 0, 20, 106),
         ("2-10:54:30.678", 2, 10, 54, 30, 678),
-        ("02-10:54:30.678", 2, 10, 54, 30, 678)
+        ("02-10:54:30.678", 2, 10, 54, 30, 678),
+        ("0.123", 0, 0, 0, 0, 123),
+        ("00-00:00:00.123", 0, 0, 0, 0, 123),
+
     ],)
 def test_parse_timedelta(input, days, hours, minutes, seconds, milliseconds):
     expected = datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
     assert Helpers_WM(None).parse_timedelta(input) == expected
+
+
 
