@@ -68,6 +68,12 @@ def main():
         sys.exit(2)                                               
 
     # We temporarily use an environment variable to store the database admin password.
+    # The following are the commands issued, in a format which is easier to read!
+    # export PGPASSWORD="$db_password"
+    # psql -c 'drop database if exists ga_db; ' -U postgres -h $db_host -p $db_port
+    # psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
+    # psql -U $db_user -h $db_host -p $db_port -d ga_db < $repo_root_dir/ga_dashboard/database/ga_db.sql
+    # export PGPASSWORD=   # Resets back to nothing
     os.environ['PGPASSWORD'] = f"{db_password}"
     subprocess.run(["psql", "-c", f"drop database if exists {db_name}; ", "-U", f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}"])
     subprocess.run(["psql", "-c", f"create database {db_name}; ", "-U", f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}"])

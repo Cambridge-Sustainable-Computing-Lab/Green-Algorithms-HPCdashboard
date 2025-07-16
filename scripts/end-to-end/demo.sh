@@ -80,11 +80,6 @@ db_dir="$repo_root_dir/scripts/database"
 
 echo "\n*** Setting up Postgres database: ***\n"
 python $db_dir/create_or_overwrite_database.py --db_password $db_password
-#export PGPASSWORD="$db_password"
-#psql -c 'drop database if exists ga_db; ' -U postgres -h $db_host -p $db_port
-#psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
-#psql -U $db_user -h $db_host -p $db_port -d ga_db < $repo_root_dir/ga_dashboard/database/ga_db.sql
-#export PGPASSWORD=
 echo "\n* Done! *\n"
 
 echo "\n*** Importing users to Grafana: ***\n" # This step will fail if Grafana is not running.
