@@ -193,45 +193,46 @@ class Runner:
 
         NB (1) Some might not have defaults. (2) At least one argument is Boolean.
         '''
-        defaults = {}
-        defaults["admin_login"] = "admin"  # Grafana admin user name.
-        # defaults["allUsers"]  # Run sacct for all users (probably requires admin rights).
-        defaults["cluster_info_file"] = "ga_dashboard/samples/cluster_info.yaml"  # Cluster info file.
-        # defaults["customSuccessStates"]
-        defaults["dashboard_folder_name"] = "Green Algorithms"  # Name of the dashboard folder (on Grafana).
-        defaults["db_host"] = "localhost"
-        defaults["db_name"] = "ga_db"  # The name of the database to store your raw and enriched `sacct` data
-        defaults["db_port"] = "5432"
-        defaults["db_script"] = "ga_dashboard/database/ga_db.sql"
-        defaults["db_user"] = "postgres"  # The default database user
-        defaults["debug"] = False  # Debug mode. e.g. python myscript.py --debug
-        defaults["endDay"] = None # ???  The last day to take into account, as YYYY-MM-DD
-        # defaults["filterCWD"]   Not currently used. 
-        # defaults["filterJobIDs"]  Not currently used. Comma-separated list of Job IDs you want to filter on. (default: "all")
-        # defaults["filterAccount"]  Not currently used. 
-        defaults["fixed_params_file"] = "ga_dashboard/data/fixed_parameters.yaml"  # The fixed parameters file to use
-        defaults["grafana_users_file"] = "ga_dashboard/samples/grafana_users_list.csv"  # The list of Grafana users
-        # defaults["granularity"]  Not currently used. The level of granularity of the report, needed with `--slurmAdmin`. 
-        defaults["hpc_users_file"] = "ga_dashboard/samples/hpc_users_list.csv"  # CSV file of HPC user data
-        defaults["input_dir"] = "ga_dashboard/dashboards"  # Dashboard JSON files directory, on disk.
-        defaults["input_log_file"] = "ga_dashboard/samples/userDaily_mockMultiUsers_1.csv"  # Logs data, e.g.,  
-        defaults["name"] = "grafana-postgresql-ga_db"  # Name of data source (on Grafana).
-        defaults["outFile"] = None  # The name of the file to be written, for storing the output of sacct.
-        # defaults["output"] = None  # Not currently used.
-        defaults["pg_version"] = "13"  # PostgreSQL version.
-        # defaults["reportBug"]
-        # defaults["reportBugHere"]
-        # defaults["slurmAdmin"]
-        defaults["startDay"] = None  # The first day to take into account, as YYYY-MM-DD
-        defaults["url"] = "localhost:3000"  # Grafana URL (including port).
-        defaults["useCustomLogs"] = None  # Bypass workload manager and input a custom log file of your jobs. Example: ga_dashboard/backend/example_files/example_sacctOutput_raw.txt
-        # defaults["use_mock_agg_data"]  Not currently used?  Uses mock aggregated usage data, for offline debugging
-        # defaults["useOtherInfrastructureInfo"]
-        defaults["user"] = None # HPC username on slurm.
-        # defaults["userCWD"]
-    
-        self.defaults = defaults
+        self.defaults = {
+            "admin_login": "admin",  # Grafana admin user name.
+            "cluster_info_file": "ga_dashboard/samples/cluster_info.yaml",  # Cluster info file.
+            "dashboard_folder_name": "Green Algorithms",  # Name
+            "db_host": "localhost",
+            "db_name": "ga_db",  # The name of the database to store your raw and enriched `sacct` data
+            "db_port": "5432",
+            "db_script": "ga_dashboard/database/ga_db.sql",
+            "db_user": "postgres",  # The default database user
+            "debug": False,  # Debug mode. e.g. python myscript.py --debug
+            "endDay": None, # ???  The last day to take into account, as YYYY-MM-DD
+            "fixed_params_file": "ga_dashboard/data/fixed_parameters.yaml",  # The fixed parameters file to use
+            "grafana_users_file": "ga_dashboard/samples/grafana_users_list.csv",  # The list of Grafana users
+            "hpc_users_file": "ga_dashboard/samples/hpc_users_list.csv",  # CSV file of HPC user data
+            "input_dir": "ga_dashboard/dashboards",  # Dashboard JSON files directory, on disk.
+            "input_log_file": "ga_dashboard/samples/userDaily_mockMultiUsers_1.csv",  # Logs data, e.g.,  
+            "name": "grafana-postgresql-ga_db",  # Name of data source (on Grafana).
+            "outFile": None,  # The name of the file to be written, for storing the output of sacct.
+            "pg_version": "13",  # PostgreSQL version.
+            "startDay": None,  # The first day to take into account, as YYYY-MM-DD
+            "url": "localhost:3000",  # Grafana URL (including port).
+            "useCustomLogs": None,  # Bypass workload manager and input a cu
+            "user": None, # HPC username on slurm.
 
+            # The following are currently unused, but put here for completeness:
+            # "allUsers"  # Run sacct for all users (probably requires admin rights).
+            # "customSuccessStates"
+            # "filterCWD" 
+            # "filterJobIDs" # Comma-separated list of Job IDs you want to filter on. (default: "all")
+            # "filterAccount" 
+            # "granularity"  # The level of granularity of the report, needed with `--slurmAdmin`. 
+            # "output" = None 
+            # "reportBug"
+            # "reportBugHere"
+            # "slurmAdmin"
+            # "use_mock_agg_data"  Not currently used?  Uses mock aggregated usage data, for offline debugging
+            # "useOtherInfrastructureInfo"
+            # "userCWD"
+        }
+        
 
     def ingest_user_config_file(self, config_file: str) -> None:
         '''
