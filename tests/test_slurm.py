@@ -105,7 +105,8 @@ def test_clean_UsedMem(ReqMemX, UsedMem_, expected):
         ("fred", "fred"),
         (pd.NA, ""),
         ("fred,jim,peter", "fred"),
-        # ([pd.NA, "fred"], "fred") <- this one won't work at the moment;
+        # (["jim","bob","alice"], "jim"),
+        # ([pd.NA, "fred"], "fred") <- This one won't work at the moment;
         # gives ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()    
     ],)
 def test_clean_partition(input, expected):
@@ -117,7 +118,27 @@ def test_clean_partition(input, expected):
     assert Helpers_WM(None).clean_partition(myseries) == expected
 
 
+# Test set_partitionType()
 def test_set_partitionType():
-    pass
+    HWM = Helpers_WM(None)
+    HWM.cluster_info = get_cluster_info(ns=None, info_file=CLUSTER_INFO_FILE)
+    assert HWM.set_partitionType('yew') == "CPU"
+    assert HWM.set_partitionType('oak') == "GPU"
+    with pytest.raises(Exception):
+        assert HWM.set_partitionType('fred') == "CPU"
 
-# etc ...
+
+# Test parse_timedelta(). Parse times in format '[DD-HH:MM:]SS[.MS]'
+# datetime.timedelta(days=n_days, hours=n_h, minutes=n_m, seconds=n_s, milliseconds=n_ms)
+@pytest.mark.parametrize("input, days, hours, minutes, seconds, milliseconds",
+    [
+        ("20", 0, 0, 0, 20, 0),
+        ("0", 0, 0, 0, 0, 0),
+        ("20.106", 0, 0, 0, 20, 106),
+        ("2-10:54:30.678", 2, 10, 54, 30, 678),
+        ("02-10:54:30.678", 2, 10, 54, 30, 678)
+    ],)
+def test_parse_timedelta(input, days, hours, minutes, seconds, milliseconds):
+    expected = datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
+    assert Helpers_WM(None).parse_timedelta(input) == expected
+
