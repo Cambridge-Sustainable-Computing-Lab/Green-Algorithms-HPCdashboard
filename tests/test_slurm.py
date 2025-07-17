@@ -154,10 +154,27 @@ def test_parse_timedelta(input, days, hours, minutes, seconds, milliseconds):
 # clean_State
 #
 # and then tests for WorkloadManager class - probably better in a new file?
+
+# Test clean_State()
+@pytest.mark.parametrize("state, custom_success_list, expected",
+    [
+        ("COMPLETED", [], 1),
+        ('CD', ['CD', 'COMPLETED'], 1),
+        ('dog', ['cat', 'dog', 'fish'], -1),
+        ('pig', [], 0),
+        ('pig', ['cat', 'dog', 'fish'], 0),
+        ('RUNNING', [], -2),
+        ('RUNNING', ['RUNNING', 'cat'], -2),
+    ],)
+def test_clean_State(state: str, custom_success_list: list, expected: int) -> None:
+    assert Helpers_WM(None).clean_State(state, custom_success_list) == expected
+
+
+# Test get_parent_jobID()
 @pytest.mark.parametrize("input, expected",
     [
         ("123456789_0", "123456789"),
         ("123456789", "123456789"),
     ],)
-def test_get_parent_jobID(input, expected):
+def test_get_parent_jobID(input: str, expected: str) -> None:
     assert Helpers_WM(None).get_parent_jobID(input) == expected
