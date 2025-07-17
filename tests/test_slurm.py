@@ -144,5 +144,20 @@ def test_parse_timedelta(input, days, hours, minutes, seconds, milliseconds):
     expected = datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
     assert Helpers_WM(None).parse_timedelta(input) == expected
 
-
-
+# TODO tests outstanding for this class:
+#
+# calc_realMemNeeded
+# calc_memory_overallocation
+# calc_CPUusage2use
+# calc_GPUusage2use
+# calc_coreHoursCharged
+# clean_State
+#
+# and then tests for WorkloadManager class - probably better in a new file?
+@pytest.mark.parametrize("input, expected",
+    [
+        ("123456789_0", "123456789"),
+        ("123456789", "123456789"),
+    ],)
+def test_get_parent_jobID(input, expected):
+    assert Helpers_WM(None).get_parent_jobID(input) == expected
