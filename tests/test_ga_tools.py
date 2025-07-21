@@ -9,9 +9,11 @@ from ga_dashboard.backend.ga_tools import GA_tools, extract_data, enrich_data, s
 
 from ga_dashboard.backend.utils import get_cluster_info, get_fixed_params
 
+# Tests for the functions in ga_tools.py
+
 # NB We assume the tests are run from the top-level GA4HPCdashboard directory.
 
-
+# Utility function
 def generate_namespace(logfile: str) -> argparse.Namespace:
     """
     Generates and populates an argparse.Namespace object, simulating command-line arguments.
@@ -36,6 +38,7 @@ def generate_namespace(logfile: str) -> argparse.Namespace:
     return ns
 
 
+# Utility function
 def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
     """
     Get the Pandas DataFrame representing the HPC users in user_list_file.
@@ -157,3 +160,4 @@ def test_summarise_data():
 def test_clean_logs():
     pass
 
+# I want to test that jobs are aggregated correctly

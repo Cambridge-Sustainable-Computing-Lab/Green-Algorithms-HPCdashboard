@@ -138,11 +138,11 @@ def test_set_partitionType():
         ("02-10:54:30.678", 2, 10, 54, 30, 678),
         ("0.123", 0, 0, 0, 0, 123),
         ("00-00:00:00.123", 0, 0, 0, 0, 123),
-
     ],)
 def test_parse_timedelta(input, days, hours, minutes, seconds, milliseconds):
     expected = datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds, milliseconds=milliseconds)
     assert Helpers_WM(None).parse_timedelta(input) == expected
+
 
 # TODO tests outstanding for this class:
 #
@@ -151,9 +151,27 @@ def test_parse_timedelta(input, days, hours, minutes, seconds, milliseconds):
 # calc_CPUusage2use
 # calc_GPUusage2use
 # calc_coreHoursCharged
-# clean_State
 #
 # and then tests for WorkloadManager class - probably better in a new file?
+
+
+# Test calc_coreHoursCharged() type, CPUwallclocktime_, WallclockTimeX, NGPUS_
+@pytest.mark.parametrize("type, cpu_time, gpu_time, num_gpus, expected",
+    [
+        ("CPU", "0 days 01:07:35", 0, 0, (1.12638888888888888, 0.) ), # x.CPUwallclocktime_ / np.timedelta64(1, 'h'), 0.
+        ("GPU", 0, "0 days 01:07:35", 5, (0., 5.631944444444445))     # 0., x.WallclockTimeX * x.NGPUS_ / np.timedelta64(1, 'h')
+    ],)
+def test_calc_coreHoursCharged(type, cpu_time, gpu_time, num_gpus, expected: tuple) -> None:
+    myseries = pd.Series
+    myseries.PartitionTypeX = type
+    myseries.CPUwallclocktime_ = pd.Timedelta(cpu_time)
+    myseries.WallclockTimeX = pd.Timedelta(gpu_time)
+    myseries.NGPUS_ = num_gpus
+    assert Helpers_WM(None).calc_coreHoursCharged(myseries) == expected
+
+# CPU, 0 days 01:07:35, 0 days 00:13:31, 0
+
+
 
 # Test clean_State()
 @pytest.mark.parametrize("state, custom_success_list, expected",
