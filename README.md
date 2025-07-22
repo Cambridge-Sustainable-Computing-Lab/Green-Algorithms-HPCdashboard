@@ -298,6 +298,9 @@ Options are:
 ### Log in as a Grafana user.
 By default, only the administrator (default name: admin) is allowed to edit dashboards. Although you can allow other users to do so.
 
+> [!IMPORTANT]  
+> You should change the admin password to something else, to reduce the likelihood of being hacked.
+
 In the following, you can click on the screenshots to enlarge them.
 
 Let's assume you want to log in as a basic user (not an admin). If you point your browser to port 3000, you should see something like this, if Grafana is running:
