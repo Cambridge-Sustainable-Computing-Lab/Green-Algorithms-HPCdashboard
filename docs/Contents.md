@@ -2,7 +2,7 @@
 
 [Top level README](../README.md)
 
-[Set-up](./SETUP.md)
+[Outdated set-up instructions (retained for reference)](./outdated_setup.md)
 
 [Grafana tips](./GrafanaTips.md)
 
