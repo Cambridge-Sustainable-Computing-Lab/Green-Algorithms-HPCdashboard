@@ -116,7 +116,7 @@ Later, it may be necessary to get a version of Postgres for your platform which 
 may require compiling Postgres yourself with the appropriate options. However, this is not
 needed for the simple demo. 
 
-Choose a username and password for the admin user. The former is usually `postgres` (although you can choose what you want). Do not record the password in a file! (In these instructions, we assume that the admin user name is `postgres`.)
+Choose a username and password for the admin user. The former is usually `postgres` (although you can choose what you want). Do not record the password in a file! (In these instructions, we assume that the admin user name is `postgres`.) (If you forget the password at any point, try [these steps](https://stackoverflow.com/questions/14588212/postgresql-resetting-password-of-postgresql-on-ubuntu).)
 
 Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
 
