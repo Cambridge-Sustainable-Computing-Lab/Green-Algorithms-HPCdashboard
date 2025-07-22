@@ -120,9 +120,13 @@ Choose a username and password for the admin user. The former is usually `postgr
 
 Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
 
-You can then create the database by using option 3 of the wrapper script, or the `scripts/database/create_or_overwrite_database.py` script which it calls. The default database name is `ga_db`. **NOTE THAT THIS WILL DELETE ANY EXISTING INSTANCE OF THE DATABASE!!!** As this is a dangerous operation, you will be prompted to confirm before proceeding with deletion and re-creation.
+You can then create the database by using option 3 of the wrapper script, or the `scripts/database/create_or_overwrite_database.py` script which it calls. The default database name is `ga_db`. 
 
-**NOTE:** Ensure all connections to the database are closed before you do this, otherwise the script will fail. In particular, if you have started the Grafana server (as detailed further down this page), it may have a database connection, in which case you must stop the server (e.g. using CTRL-C).
+> [!WARNING]  
+> **NOTE THAT THIS WILL DELETE ANY EXISTING INSTANCE OF THE DATABASE!!!** As this is a dangerous operation, you will be prompted to confirm before proceeding with deletion and re-creation.
+
+> [!WARNING]  
+> **NOTE:** Ensure all connections to the database are closed before you do this, otherwise the script will fail. In particular, if you have started the Grafana server (as detailed further down this page), it may have a database connection, in which case you must stop the server (e.g. using CTRL-C).
 
 ### HPC users file
 You will need a file with details of your HPC users for whom you are obtaining `sacct` data. For example, `ga_dashboard/samples/hpc_users_list.csv`. Or one like this:
