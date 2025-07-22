@@ -95,7 +95,7 @@ def create_arguments():
     group2.add_argument('--useCustomLogs', type=str, default='',
                         help='This bypasses the workload manager, and enables you to input a custom log file of your jobs. \
                                  This is mostly meant for debugging, but can be useful in some situations. '
-                             'An example of the expected file can be found at `backend/example_files/example_sacctOutput_raw.txt`.')
+                             'Examples of the expected file format can be found in the sacct output files in `tests/testdata`.')
     # Arguments for debugging only (not visible to users)
     # To use arbitrary folder for the infrastructure information and user info.
     parser.add_argument('--useOtherInfrastructureInfo', type=str, default='', help=argparse.SUPPRESS)
