@@ -117,7 +117,7 @@ In Grafana go to $\color{green}{\textsf{Home > Connections > Data sources > Add 
 
 ### Run all setup in one command
 
-The script `run_dashboard.py` runs sequentially the code to:
+The script `setup_frontend.py` runs sequentially the code to:
 
 * Create the data source
 * Create the dashboards folder
@@ -126,7 +126,7 @@ The script `run_dashboard.py` runs sequentially the code to:
 
 For instance
 ```
-python run_dashboard.py \
+python rsetup_frontend.py \
   --admin_login admin --admin_password <adm_password> \
   --db_name ga_db --db_user <db_user_name> --db_password <db_user_password> --pg_version 15 \
   --input_file <path_to_users_csv_file>

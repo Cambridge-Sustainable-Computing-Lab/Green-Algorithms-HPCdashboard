@@ -41,7 +41,7 @@ class Runner:
         files = {}
 
         # List of all client scripts in scripts/frontend:
-        files["frontend"] = [ "create_data_source.py", "import_dashboards.py", "import_users.py", "run_dashboard.py" ]
+        files["frontend"] = [ "create_data_source.py", "import_dashboards.py", "import_users.py", "setup_frontend.py" ]
 
         # List of all client scripts in scripts/database: 
         files["database"] = [ "add_users_to_database.py", "create_or_overwrite_database.py", "import_mockup_aggregate.py" ]
@@ -97,11 +97,11 @@ class Runner:
         need_db_password["import_users.py"] = False
         need_grafana_password["import_users.py"] = True
 
-        arg_list["run_dashboard.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", \
+        arg_list["setup_frontend.py"] = ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", \
                                         "db_host", "db_port", "pg_version", \
                                         "dashboard_folder_name", "input_dir", "grafana_users_file", "debug"]
-        need_db_password["run_dashboard.py"] = True
-        need_grafana_password["run_dashboard.py"] = True
+        need_db_password["setup_frontend.py"] = True
+        need_grafana_password["setup_frontend.py"] = True
 
         arg_list["run_sacct_only.py"] = ["startDay", "endDay", "outFile", "debug"]  ## [--allUsers]
         need_db_password["run_sacct_only.py"] = False
@@ -306,7 +306,7 @@ class Runner:
         elif (option == "6"):
             client = "import_users.py"
         elif (option == "7"):
-            client = "run_dashboard.py"
+            client = "setup_frontend.py"
         elif (option == "8"):
             client = "run_sacct_only.py"
         elif (option == "9"):
@@ -348,7 +348,7 @@ class Runner:
             print("[4] Create a data source in Grafana for dashboard to connect to.")
             print("[5] Import dashboard(s) into a Grafana folder.")
             print("[6] Generate user passwords, import users to Grafana, and set their folder permissions.")
-            print("[7] Do [4], [5] and [6] in one go (invokes run_dashboard.py).")
+            print("[7] Do [4], [5] and [6] in one go (invokes setup_frontend.py).")
             print("[8] Run sacct command, and generate logfile, ON YOUR HPC SYSTEM.")
             print("[9] Run backend ON YOUR HPC SYSTEM (run sacct, enrich data with carbon footprint info, and add it to database).")
 

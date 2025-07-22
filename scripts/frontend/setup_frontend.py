@@ -26,7 +26,7 @@ Combines the usage of several of the scripts:
 
 # Example usage (run from top-level directory of repo):
 #
-# % python scripts/frontend/run_dashboard.py --admin_password <grafana_admin_password> \
+# % python scripts/frontend/setup_frontend.py --admin_password <grafana_admin_password> \
 #        --grafana_users_file ga_dashboard/samples/grafana_users_list.csv \
 #        --db_name ga_db --db_user postgres --db_password <db_password> \
 #        --input_dir ga_dashboard/dashboards

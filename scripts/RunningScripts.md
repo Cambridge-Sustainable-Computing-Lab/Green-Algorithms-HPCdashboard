@@ -40,7 +40,7 @@ Select option:
 [4] Create a data source in Grafana for dashboard to connect to.
 [5] Import dashboard(s) into a Grafana folder.
 [6] Generate user passwords, import users to Grafana, and set their folder permissions.
-[7] Do [4], [5] and [6] in one go (invokes run_dashboard.py).
+[7] Do [4], [5] and [6] in one go (invokes setup_frontend.py).
 [8] Run sacct command, and generate logfile, ON YOUR HPC SYSTEM.
 [9] Run backend ON YOUR HPC SYSTEM (run sacct, enrich data with carbon footprint info, and add it to database).
 > 
@@ -143,7 +143,7 @@ you must set this option to the location you want.
 For example, if you wanted to use the demo dashboard directory, and other parameters set to default:
 
 ```
-% python scripts/frontend/run_dashboard.py \
+% python scripts/frontend/setup_frontend.py \
       --admin_password <grafana_admin_password> \
       --db_password <db_password>
 ```
@@ -151,7 +151,7 @@ For example, if you wanted to use the demo dashboard directory, and other parame
 You can specify many options for what you want, however; run the following to see your options:
 
 ```
-% python scripts/frontend/run_dashboard.py -h
+% python scripts/frontend/setup_frontend.py -h
 ```
 
 
@@ -172,6 +172,6 @@ You can specify many options for what you want, however; run the following to se
   ...
   ```
 
-To use this dashboard, you would need to use the option `--name grafana-postgresql-ga_db` with `run_dashboard.py`.
+To use this dashboard, you would need to use the option `--name grafana-postgresql-ga_db` with `setup_frontend.py`.
 
 [Back to Contents](../docs/Contents.md)

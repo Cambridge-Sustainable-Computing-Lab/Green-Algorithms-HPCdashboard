@@ -51,7 +51,7 @@ Select option:
 [4] Create a data source in Grafana for dashboard to connect to.
 [5] Import dashboard(s) into a Grafana folder.
 [6] Generate user passwords, import users to Grafana, and set their folder permissions.
-[7] Do [4], [5] and [6] in one go (invokes run_dashboard.py).
+[7] Do [4], [5] and [6] in one go (invokes setup_frontend.py).
 [8] Run sacct command, and generate logfile, ON YOUR HPC SYSTEM.
 [9] Run backend ON YOUR HPC SYSTEM (run sacct, enrich data with carbon footprint info, and add it to database).
 > 
@@ -254,7 +254,7 @@ Once you have started Grafana on your system, log in as admin on the web browser
 
 ### Run frontend script(s)
 
-Once Grafana is started, you will want to undertake a number of actions. You can use different options of the wrapper script to do these. To do everything in one go, choose option 7, or use the script `scripts/frontend/run_dashboard.py`. This will:
+Once Grafana is started, you will want to undertake a number of actions. You can use different options of the wrapper script to do these. To do everything in one go, choose option 7, or use the script `scripts/frontend/setup_frontend.py`. This will:
 
 * Create the data source
 * Create the dashboards folder
@@ -266,7 +266,7 @@ There is a lot of typing if you don't use the wrapper script (and amended config
 
 For instance:
 ```
-$ python run_dashboard.py \
+$ python setup_frontend.py \
   --admin_login admin --admin_password <adm_password> \
   --db_name ga_db --db_user <db_user_name> --db_password <db_user_password> --pg_version 15 \
   --input_file <path_to_users_csv_file>
@@ -274,7 +274,7 @@ $ python run_dashboard.py \
 
 Using the default options, and default password for Grafana admin:
 ```
-$ python scripts/frontend/run_dashboard.py --admin_password admin --db_password <password>
+$ python scripts/frontend/setup_frontend.py --admin_password admin --db_password <password>
 ```
 
 Options are:
