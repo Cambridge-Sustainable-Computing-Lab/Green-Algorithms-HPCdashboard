@@ -3,7 +3,7 @@
 # Run this script as sudo to perform initial set-up.
 #
 
-# Name of this script
+# Name and path of this script
 GA_SCRIPT="$0"
 #GA_PATH="realpath $GA_SCRIPT"
 echo "Script is $GA_SCRIPT"  #, path is $GA_PATH"
@@ -21,19 +21,22 @@ function get_miniconda() {
 	if [ "$?" -eq "0" ]
 	then
         	echo "Miniconda version OK"
-		return 0	
+		touch "$FILE"
+		return 0
 	fi
 
 	echo "Miniconda not found. Downloading miniconda..."
-	
-        #cd /opt
+
         mkdir -p /opt/miniforge3
-        # NB we should install wget first
-        #wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"  -O /opt/miniforge3/miniforge.sh
-        #bash /opt/miniforge3/miniforge.sh -b -u -p /opt/miniforge3
         wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"  -O /opt/miniforge3/miniforge.sh
 
 	/opt/miniforge3/miniforge.sh -b -u -p /opt/miniforge3
+	if  [ "$?" -ne "0" ]
+        then
+		echo "Permissions error. Please try running script again."
+		exit 1
+	fi
+
         chgrp -R anaconda /opt/miniforge3/
         chmod 770 -R /opt/miniforge3/
 
@@ -42,14 +45,25 @@ function get_miniconda() {
         # We need to close and re-open the shell for changes to take effect.
 	# How to continue the script? -> touch/delete a file
 	touch "$FILE"
+
+	echo "Restarting shell to pick up changes..."
+	exec "$SHELL"
 }
 
 
 # Install Python environment
 function set_up_python_envt() {
 	echo
-	echo "Installing Python environment"
-	conda create -n py313 python=3.13 -c conda-forge
+
+	echo "Checking for Python environment..."
+	conda env list | grep py313
+	if [ "$?" -ne "0" ]
+	then
+		echo "Installing Python environment"
+		# Installs a conda environment at /opt/miniforge3/envs/py313.
+		conda create -n py313 python=3.13 -c conda-forge
+		conda init
+	fi
 	conda activate py313
 }
 
@@ -65,7 +79,7 @@ function download_packages() {
 	# We loop over each package so we continue if a package fails to install.
 	# It would be good if we could keep track of which ones don't get installed, and
 	# tell the user at the end
-	for PKG in wget postgres git
+	for PKG in wget postgresql git
 	do
 		echo "Downloading $PKG"
 		apt-get install -y $PKG
@@ -81,14 +95,15 @@ echo "**************************"
 # Are we continuing the script after a shell restart?
 if  [ ! -f "$FILE" ]  # No, we are not; this is first script invocation.
 then
-	echo "** Before shell restart **"
+	echo "** Before checking for conda **"
 	download_packages
 	get_miniconda # should create the file
-	exec "$SHELL $GA_SCRIPT"
+	#echo "** 
+	#exec "$SHELL" # $GA_SCRIPT"
 fi
 
-# We restarted the shell
-echo "** After shell restart **"
+# We already checked for conda, and possibly restarted the shell
+echo "** After checking for conda (and possible shell restart) **"
 rm "$FILE"
 set_up_python_envt
 
