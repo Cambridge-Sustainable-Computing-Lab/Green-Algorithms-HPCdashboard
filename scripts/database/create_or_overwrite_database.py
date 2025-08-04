@@ -46,7 +46,7 @@ def main():
     #logging_level = logging.DEBUG if debug else logging.INFO
     #logging.basicConfig(format='%(levelname)s: %(message)s', level=logging_level)
 
-    print("\n\n ******* create_or_overwrite_database script started. *******\n" )
+    print("\n ******* create_or_overwrite_database script started. *******\n" )
 
     # Check if we have psql on our PATH
     try:
@@ -57,14 +57,14 @@ def main():
 
     print("\n*** Setting up empty Postgres database: ***\n")
     print("NB Have you configured the values you want in this script?")    
-    print("\n** WARNING: this will delete any existing data in the database. **\n")
-    print("\n** Use CTRL-C to stop script. **\n")
+    print("\n** WARNING: this will delete any existing data in the database. **")
+    print("\n** Use CTRL-C to stop script. **")
 
     # Make user confirm this potentially drastic action!
     print(f"\nWARNING! This will delete database '{db_name}' (if it exists)! Are you sure you wish to continue?")
     answer = input("Type YES to continue, else script will abort. > ")
     print()
-    if answer != "YES":
+    if answer not in ["YES","yes"]:
         sys.exit(2)                                               
 
     # We temporarily use an environment variable to store the database admin password.
@@ -80,7 +80,7 @@ def main():
     subprocess.run(["psql", "-U",  f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}", "-d", f"{db_name}", "-f", f"{db_script}"])
     os.environ['PGPASSWORD'] = ""
 
-    print("\n ******* create_or_overwrite_database script completed. *******\n\n")
+    print("\n ******* create_or_overwrite_database script completed. *******\n")
 
 if __name__ == "__main__":
      main()

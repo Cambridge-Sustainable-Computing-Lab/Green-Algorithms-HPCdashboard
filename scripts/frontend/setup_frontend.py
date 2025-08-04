@@ -104,13 +104,14 @@ def main():
     if not os.path.isdir(ga_dashboard_input_dir):
         logger.error("Directory '" + ga_dashboard_input_dir + "' can't be found")
         exit(1)
-
+    logger.info('')
     logger.info('###############')
     logger.info('# Data source #')
     logger.info('###############')
     ga_data_source = GrafanaGADataSource(login, password, grafana_url, db_name, db_user, db_password, db_host, db_port, pg_version, datasource_name)
     ga_data_source.create_datasource()
 
+    logger.info('')
     logger.info('##################')
     logger.info('# Grafana folder #')
     logger.info('##################')
@@ -118,6 +119,7 @@ def main():
     ga_folder_import.get_folder()
 
     # Loop over dashboard files
+    logger.info('')
     logger.info('########################')
     logger.info('# Grafana dashboard(s) #')
     logger.info('########################')
@@ -125,8 +127,8 @@ def main():
         if dashboard_filename.endswith('.json'):
             ga_dashboard = GrafanaGADashboard(login, password, grafana_url, ga_dashboard_input_dir, dashboard_filename, ga_folder_import.folder_uid)
             ga_dashboard.import_dashboard()
-    
 
+    logger.info('')
     logger.info('###########################')
     logger.info('# Grafana users and teams #')
     logger.info('###########################')
@@ -151,6 +153,7 @@ def main():
                 logger.info(f"** Grafana password for user {row['User']} is {grafana_password} **")
 
     # Folder
+    logger.info('')
     logger.info('##############################')
     logger.info('# Grafana folder permissions #')
     logger.info('##############################')
@@ -158,7 +161,6 @@ def main():
     if not grafana_folder.find_ga_folder():
         grafana_folder.get_folder()
     grafana_folder.add_ga_folder_permissions(grafana_user.teams)
-
 
 
 if __name__ == "__main__":
