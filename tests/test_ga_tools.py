@@ -29,7 +29,7 @@ def generate_namespace(logfile: str) -> argparse.Namespace:
     cwd = os.getcwd()
     print("cwd is " + cwd) # Hopefully the GA4HPCdashboard dir
 
-    # Get path to samples/subdir
+    # Get path to testdata/ subdir
     ns.path_infrastructure_info = os.path.join(cwd, 'tests/testdata')
     #ns.useCustomLogs = os.path.join(ns.path_infrastructure_info, 'sacct_output_single_user.txt')
     ns.useCustomLogs = os.path.join(ns.path_infrastructure_info, logfile)
@@ -55,9 +55,9 @@ def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
     return users_df
 
 
-def test_extract_data_one_job():
+def test_extract_enrich_data_one_job():
     """
-    Test the extract_data() function and dataframe
+    Test the extract_data() and enrich_data() functions and dataframe
     """   
     ns = generate_namespace('one_line_sacct_output.txt')
     cluster_info = get_cluster_info(ns, 'cluster_info.yaml')
@@ -114,28 +114,56 @@ def test_extract_batched_data():
     ns = generate_namespace("batched_sacct_output.txt")
     cluster_info = get_cluster_info(ns, 'cluster_info.yaml')
     extracted_df = extract_data(ns, True, cluster_info)
-    assert len(extracted_df) == 5
+    assert len(extracted_df) == 5 # There are 5 jobs in the file, including two batched ones.
+                                  # Job 8325013 is 4th (i.e. index=3)
 
+    # memory check (on a different job) for completeness
     my_series = extracted_df.iloc[1]
     assert my_series.ReqMemX == 3.37  # 3370 MB = 3.37 GB
 
-   # pytest.set_trace()
+    # OK, now we will compare this series for job 8325013 with what we expect
+    my_series = extracted_df.iloc[3]
 
-    #my_first_batched_df = raw_df[raw_df.Submit.str.startswith('2025-04-14')]  # 4 jobs.
+    # pytest.set_trace()
+    # UID|User|JobID|JobName|Submit|Elapsed|Partition|NNodes|NCPUS|TotalCPU|CPUTime|ReqMem|MaxRSS|WorkDir|State|Account|AllocTRES
+    # 47892|uid_2|8325013|hellojob|2025-04-14T16:30:21|00:00:06|yew|1|1|00:00.262|00:00:06|3370M||/home/uid_2|COMPLETED|group_1-sl3-cpu|billing=1,cpu=1,mem=3370M,node=1
+    # ||8325013.batch|batch|2025-04-15T04:53:39|00:00:06||1|1|00:00.261|00:00:06||0||COMPLETED|group_1-sl3-cpu|cpu=1,mem=3370M,node=1
+    # ||8325013.extern|extern|2025-04-15T04:53:39|00:00:06||1|1|00:00:00|00:00:06||0||COMPLETED|group_1-sl3-cpu|billing=1,cpu=1,mem=3370M,node=1
     my_first_batched_df = raw_df[raw_df.JobID.str.startswith('8325013')]
     assert len(my_first_batched_df) == 3
-    # The submit date is taken as the minimum of the 3 with this common JobID
-    # by clean_logs() in slurm.py, called by extract_data()
-    submit_date = min(my_first_batched_df.Submit)
-
-
-    #pytest.set_trace()  # run with pytest --pdb
 
     # Now we can check that the results we get back from extract_data() are correct,
     # with reference to the raw_df we read in directly from the logfile.
-    #assert df.SubmitDatetimeX == my_first_batched_df.iloc[0].Submit
 
-    #my_second_batched_df = df[df.Submit.str.startswith('2025-04-16')]  # Just one job
+    # NB It may be better to move this to test_slurm.py, as clean_logs_df() is in slurm.py
+
+    # The submit date is taken as the minimum of the 3 with this common JobID
+    # by clean_logs_df() in slurm.py, called by extract_data()
+    submit_date = min(my_first_batched_df.Submit)
+    timestamp = datetime.datetime.strptime(submit_date, "%Y-%m-%dT%H:%M:%S")
+    assert(my_series.SubmitDatetimeX == timestamp)
+    # AssertionError: assert Timestamp('2025-04-14 16:30:21') == '2025-04-14T16:30:21'
+    # lambda x: datetime.datetime.strptime(x, "%Y-%m-%dT%H:%M:%S"))
+
+    assert my_series.PartitionX == "yew"
+    assert my_series.ReqMemX == 3.37
+    #assert my_series.UsedMem_ == 3.37 WallclockTimeX
+    assert my_series.WallclockTimeX == datetime.timedelta(days=0, hours=0, minutes=0, seconds=6)
+    assert my_series.UIDX == "47892"
+    assert my_series.UserX == "uid_2"
+    assert my_series.StateX == 1
+    assert my_series.PartitionTypeX == "CPU"
+    assert my_series.TotalCPUtime2useX == datetime.timedelta(milliseconds=262)
+    assert my_series.TotalGPUtime2useX == datetime.timedelta(0)
+    assert my_series.CPUhoursChargedX == 0.0016666666666666668  # 6 seconds
+    assert my_series.GPUhoursChargedX == 0.
+
+    # MaxRSS = None for this job.
+    # granularity of memory request = 6GB
+    assert my_series.NeededMemX == 3.37 # per clean_UsedMem() in slurm.py (No MaxRSS value)
+    assert my_series.memOverallocationFactorX == 1.
+    #pytest.set_trace()  # run with pytest --pdb
+
 
     # Load fixed parameters
     fixed_params = get_fixed_params(ns, 'fixed_parameters.yaml')
@@ -145,8 +173,6 @@ def test_extract_batched_data():
     users_df = get_users_df(ns, 'hpc_users_list.csv')
     df2 = enrich_data(extracted_df, fixed_params, users_df, GA)
     assert len(df2) == 5
-
-    # Now drill into the
 
 
 def test_enrich_data():
@@ -161,3 +187,4 @@ def test_clean_logs():
     pass
 
 # I want to test that jobs are aggregated correctly
+# hierachical aggregation in pandas
