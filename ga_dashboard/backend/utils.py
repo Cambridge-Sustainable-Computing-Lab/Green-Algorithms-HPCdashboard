@@ -158,7 +158,7 @@ def get_cluster_info(ns: argparse.Namespace, info_file: str) -> object:
     Get the YAML object representation of a cluster info file.
     :param ns: [argparse.Namespace] Namespace representing the command-line arguments. Can be None
     :param info_file: [str] Name of info file, e.g., 'cluster_info.yaml'
-    :return: [argparse.Namespace] The populated Namespace (args) object.
+    :return: [object] The YAML object representation of the cluster info file.
 
     NB The full path to the file can be specified in info_file if you set ns=None.
     """
@@ -181,7 +181,7 @@ def get_fixed_params(ns: argparse.Namespace, fp_file: str) -> object:
     Get the YAML object representation of the fixed parameters file.
     :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
     :param fp_file: [str] Name of fixed params file, e.g., 'cluster_info.yaml'
-    :return: [argparse.Namespace] The populated Namespace (args) object.
+    :return: [object] The YAML object representation of the fixed parameters file.
     """
     with open(os.path.join(ns.path_infrastructure_info, fp_file), "r") as stream:
         try:
