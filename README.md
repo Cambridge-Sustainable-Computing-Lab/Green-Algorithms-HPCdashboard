@@ -14,29 +14,28 @@ Content
   * [Database server](#database---postgresql)
   * [Dashboard platform - Grafana](#dashboard-platform---grafana)
 * [Configuration files](#configuration-files)
+  * [System configuration files](#system-configuration-files)
   * [HPC users file](#hpc-users-file)
   * [Grafana users file](#generate-a-grafana-users-file---csv-format)
+* [Install Green Algorithms dashboard](#install-green-algorithms-dashboard)
 * [HPC usage data collection](#hpc-usage-data-collection)
-* [Wrapper script](#wrapper_script)
 * [Green Algorithms dashboards](#green-algorithms-dashboards)
   * [Run Grafana server](#run-grafana-server)
   * [Setup dashboards and users](#setup-dashboards-and-users)
   * [Logging in to Grafana](#logging-in-to-Grafana)
+* [Additional documentation](./docs/Contents.md)
 
 
 Files required for the example instructions below (you can, of course, use your own):
 
-* Wrapper script config file: `sample_config.txt`  (in `scripts/`)
+* [Scripts configuration file](#configuration-files): template `config_templates.txt` (in `scripts/`) to copy and edit.
 * [Cluster config file](#configuration-files): `cluster_info.yaml` (in `ga_dashboard/samples/`)
 * [HPC users for DB](#hpc-users-file): `hpc_users_list.csv` (in `ga_dashboard/samples/`)
 * [Grafana user file](#generate-a-grafana-users-file---csv-format): `grafana_users_list.csv` (in `ga_dashboard/samples/`)
 * [Fixed parameters file](#configuration-files). Example: `ga_dashboard/data/fixed_parameters.yaml`
 
 
-[Documentation contents](./docs/Contents.md)
-
-[More info on scripts](./scripts/RunningScripts.md)
-
+---
 ## Prerequisites
 
 ### Python environment (Miniforge)
@@ -58,6 +57,7 @@ To see your list of environments, type:
 $ conda env list
 ```
 
+
 ### Install the `ga_dashboard` python package
 We assume you have `git` installed on your system.
 
@@ -71,8 +71,8 @@ edit it and still use it, use the `-e` option:
 $ python -m pip install -e .
 ```
 
-### Database server - PostgreSQL
 
+### Database server - PostgreSQL
 Install PostgreSQL locally or have access to a PostgreSQL server
 
 For Macs, we have used the relevant [Enterprise DB installer](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) to start with. Follow the instructions for your system.
@@ -85,27 +85,25 @@ Choose a username and password for the admin user. The former is usually `postgr
 
 Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
 
-You can then create the database by using `option 3` of the wrapper script, or the `scripts/database/create_or_overwrite_database.py` script which it calls. The default database name is `ga_db`. 
-
-> [!WARNING]  
-> **NOTE THAT THIS WILL DELETE ANY EXISTING INSTANCE OF THE DATABASE!!!** As this is a dangerous operation, you will be prompted to confirm before proceeding with deletion and re-creation.
-
-> [!NOTE]  
-> Ensure all connections to the database are closed before you do this, otherwise the script will fail. In particular, if you have started the Grafana server (as detailed further down this page), it may have a database connection, in which case you must stop the server (e.g. using CTRL-C).
 
 ### Dashboard platform - Grafana
 
 Install the self-managed installation (Enterprise, just in case we want to host it on the cloud): [https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1](https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1)
 
 
-
+---
 ## Configuration files
 
-A number of config files are required by the system, e.g., to calculate the carbon footprint. As well as a list of users for the database, and another list for Grafana, the system needs:
+A number of config files are required by the system (e.g., to calculate the carbon footprint), as well as list of users for the database and for Grafana:
 
-* Information about your HPC cluster. Example: `ga_dashboard/samples/cluster_info.yaml`
-* Fixed parameters file. Example: `ga_dashboard/data/fixed_parameters.yaml`
-* If you want to use the wrapper script, either use your own config file, or amend the sample one as required.
+### System configuration files
+As well as a list of users for the database, and another list for Grafana, the system needs:
+* A **scripts configuration file** with all the required parameters (database connection, paths to the others configurations files, ...). You can:
+  * Copy the template provided in `scripts/config_templates.txt`
+  * Replace all the parameters surrounded by the `< >` characters
+  * Uncomment the optional parameters you want to use.
+* **Information about your HPC cluster**. Example: `ga_dashboard/samples/cluster_info.yaml`.
+* **Fixed parameters file**. Example: `ga_dashboard/data/fixed_parameters.yaml`.
 
 
 ### HPC users file
@@ -126,17 +124,15 @@ am1,22222,Adam Mackay,group 1,Dept 3
 ```
 
 Displayed as a table:
-| User| UID | Name           |  Group | Department |
-| ----|---- | --------- | --------------- | ---------- |
-| tg1 | 11111 | Thomas Greene |  group 1    | Dept 3 |
-| am1 | 22222 | Adam Mackay| group 1| Dept 3 |
-| ... | ...   | ... | ... |  ...       |
+| User| UID   | Name          | Group   | Department |
+| ----|------ | ------------- | ------- | ---------- |
+| tg1 | 11111 | Thomas Greene | group 1 | Dept 3     |
+| am1 | 22222 | Adam Mackay   | group 1 | Dept 3     |
+| ... | ...   | ...           | ...     | ...        |
 
 
 > [!WARNING]  
 > Do not store passwords in this file!
-
-You can import the listed users into the database by using `option 1` of the [wrapper script](#wrapper_script), and setting the value of `hpc_users_file` in the config file to what you want (unless you use `ga_dashboard/samples/hpc_users_list.csv`, in which case it will pick this up by default). Or, you can use the script `scripts/database/add_users_to_database.py` directly, although you will have to do a lot of typing if you choose to do so!
 
 
 ### Generate a Grafana users file - csv format
@@ -164,89 +160,74 @@ Displayed as a table:
 In this example, we have the same list of users for both the HPC system and Grafana. But you may have some who are on one list only, e.g., a manager might want to have access to the Grafana dashboard, but not the HPC system.
 
 
-Note that, for security reasons, passwords are not stored in this file. Passwords will be automatically generated (to be noted, or acted on by your setup in some other way) when users are added to the Grafana Dashboard by `option 6` of the [wrapper script](#wrapper_script) (or by using the `import_users.py` script).
-
 An example you can use to try out the system is `ga_dashboard/samples/grafana_users_list.csv`
 
 The passwords generated by this process adhere to [Grafana password policy](https://grafana.com/docs/grafana/next/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy), if you decide to enforce it.
 
 
+---
+## Install Green Algorithms dashboard
+
+After the creation of your scripts configuration file (cf. [Configuration files](#configuration-files)), you can run the script below to:
+* Create the database (empty)
+* Insert the list of HPC users into this database (using the [HPC users file](#hpc-users-file))
+* Setup Grafana:
+  * Link the database to Grafana
+  * Create the Green Algorithms folder and import the dashboard(s) in it.
+  * Create Grafana users and teams (using the [Grafana users file](#generate-a-grafana-users-file---csv-format))
+  * Setup Grafana permissions
+
+```
+$ python scripts/install_GAdashboard.py --config <your_config_file.txt>
+```
+This will prompt you to enter the Grafana admin password and the PostgreSQL user password
+
+
+---
 ## HPC usage data collection
 The dashboard extracts usage information from the HPC system. 
 
 You need to make sure you have a list of HPC users in the database (see previous section).
 
-Normally, you will run the `sacct` command on the HPC, using either the wrapper script `run.py`, or the scripts in `scripts/backend/`. But, to try out the software without getting logging information from your HPC system, you can use some samples we provide. 
+If you run it for the first time, the command to run is:
+```
+$ python scripts/run_green_algorithms_on_historical_logs.py --config <your_config_file.txt>
+```
+This will collect all the logs available by default (if no `startDay` / `endDay` are defined in the configuration file).
 
-Three (anonymised) examples of files you can use are:
+For a scheduled execution, the command to run is:
+```
+$ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.txt>
+```
+By default, it will collect the logs from yesterday (if no `startDay` / `endDay` are defined in the configuration file).
+
+The 2 scripts proceed to:
+* Collect the Slurm logs
+* Enrich the logs, i.e. calculate carbon footprint data
+* Aggregate the enriched data into one row per user per day
+* Write the data to the database
+
+> [!NOTE]
+> Both scripts will run the `sacct` command (on HPC) unless you use the `useCustomLogs` in the scripts configuration file. See below how to use the `useCustomLogs` parameter.
+
+The (anonymised) examples of files you can use with `useCustomLogs` are:
 
 * `ga_dashboard/samples/sacct_output_single_user.txt`
+  > Example of output generated, for one user, by the `sacct` command on the HPC system.
 * `ga_dashboard/samples/sacct_output_multi_user.txt`
-* `ga_dashboard/samples/userDaily_mockMultiUsers_1.csv`
+  > Same example as above, but for multiple users.
 
-The first file is an example of output generated, for one user, by the `sacct` command on the HPC system. This can be used if you want/need to 
-import data into the database for testing, or if (say) you cannot get data from the HPC system. The second file is similar, but for multiple users. With both of these files, the backend part of the software will aggregate the data into one row per user per day, enrich it (add carbon footprint data), and then write this to the database. 
+The backend part of the software will aggregate the data into one row per user per day, enrich it (add carbon footprint data), and then write this to the database. 
 
-In order to do this, you can either execute the relevant script directly:
+In order to do this, you need to uncomment `useCustomLogs` and set it with a value (e.g. ga_dashboard/samples/sacct_output_multi_user.txt) in your scripts configuration file before running 
 
 ```
-$ python scripts/backend/run_backend.py --useCustomLogs ga_dashboard/samples/sacct_output_multi_user.txt --db_password <password>
+$ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.txt>
 ```
-
-Or, use the [wrapper script](#wrapper_script) (`option 9`), and set the `useCustomLogs` option in the wrapper config file to the file you want. (In normal operation, in which we query the HPC by running `sacct`, this option should be commented-out in the config file.)
-
-The third file can be imported directly into the database, as it has already been aggregated and enriched. You can use `option 2` of the [wrapper script](#wrapper_script) `run.py` to do this.
-
-Of course, you don't have to use our sample files; you can get your own from your HPC system. Normally, you will either use `option 8 or 9`. Both options will run the `sacct` command. `Option 9` will aggregate the data into one row per user per day, and enrich it with carbon footprint information, and write it to the database. That assumes your HPC node running the script can connect to your database. The alternative is to run `option 8`, which will save the output of the `sacct` command to a log file, which you can then download to a local machine, then load into the database using `option 9` and the appropriate value for the `useCustomLogs` option in the wrapper config file, as described above. 
 
 NB In order to run the `sacct` command, the scripts will need to run on the HPC system. Other than that, you can run them on your local machine.
 
-
-## Wrapper script
-
-There are a number of scripts you can use to set up the system with default values. You can either use these directly, or (recommended) use the wrapper script `scripts/run.py`, in which case you will need to ensure the values in `scripts/sample_config.txt` (or another config file of your choice) are what you want. 
-
-> [!NOTE] 
-> The passwords for Grafana and the PostgreSQL database are NOT stored in any config file, but must be entered at the command-line when required. When using the wrapper script, these passwords will not be echoed to the screen. At the present time the underlying scripts do not obscure the passwords when typed. (NB When the wrapper script calls one of the underlying scripts, you will NOT see the passwords.) When using the wrapper script, the only time you will see passwords is when they are generated (for you to note or otherwise take action) for Grafana users.
-
-All the Python scripts allow you to specify a `--help` option to see the available options. Many of them have examples in the comments.
-
-```
-$ python scripts/run.py --help
-usage: run.py [-h] [--config CONFIG_FILE]
-
-User-friendly interface to the different scripts.
-
-options:
-  -h, --help            show this help message and exit
-  --config CONFIG_FILE  Name of config file for your parameter values.
-
-Uses sample config file by default.
-```
-The wrapper script calls the individual scripts under the hood.
-
-```
-$ python scripts/run.py
-
-Using config file scripts/sample_config.txt
-Select option:
-[q] Exit.
-[1] Import HPC users into database.
-[2] Import already-aggregated, mock-up data into database.
-[3] Create or overwrite database.
-[4] Create a data source in Grafana for dashboard to connect to.
-[5] Import dashboard(s) into a Grafana folder.
-[6] Generate user passwords, import users to Grafana, and set their folder permissions.
-[7] Do [4], [5] and [6] in one go (invokes setup_frontend.py).
-[8] Run sacct command, and generate logfile, ON YOUR HPC SYSTEM.
-[9] Run backend ON YOUR HPC SYSTEM (run sacct, enrich data with carbon footprint info, and add it to database).
-> 
-```
-
-> [!TIP]
-> For additional documentation, please visit the [Documentation contents](./docs/Contents.md) page.
-
-
+---
 ## Green Algorithms dashboards
 
 ### Run Grafana server
