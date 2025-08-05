@@ -105,8 +105,8 @@ class GA_tools:
 
 def extract_data(args: argparse.Namespace, has_slurmAdmin: bool, cluster_info) -> pd.DataFrame:
     '''
-    Gets usage data from the HPC system. This can be by running the `sacct` command, or by
-    using an existing file of such data. Then cleans up the data.
+    Gets usage data from the HPC system. (This can be by running the `sacct` command, or by
+    using an existing file of such data.) Then cleans up the data.
     '''
     if args.use_mock_agg_data: # DEBUGONLY Create/use some mock jobs with different users
 
