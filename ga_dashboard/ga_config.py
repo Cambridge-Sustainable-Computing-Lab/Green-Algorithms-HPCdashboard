@@ -1,32 +1,40 @@
+import os
+import re
+import maskpass
+import psycopg
+
 
 class GAConfig:
-    # Class to parse and store the configuration data into a dictionary
-    # TODO:
-    # - Improve validation (use groups to be used like in backend/utils/validate_args ?)
-    # - Set additional config_attr for the backend script
+    # Class to parse, store and validate the configuration data into a dictionary
 
     # Mandatory parameters
     config_attr = {
-        'admin_login': { 'expected_type': str },
-        'cluster_info_file': { 'expected_type': str },
-        'dashboard_folder_name': { 'expected_type': str },
-        'db_host': { 'expected_type': str },
-        'db_name': { 'expected_type': str },
-        'db_port': { 'expected_type': str },
-        'db_script': { 'expected_type': str },
-        'db_user': { 'expected_type': str },
-        'fixed_params_file': { 'expected_type': str },
-        'grafana_users_file': { 'expected_type': str },
-        'hpc_users_file': { 'expected_type': str },
-        'input_dir': { 'expected_type': str },
-        'name': { 'expected_type': str },
-        'outFile': { 'expected_type': str },
-        'pg_version': { 'expected_type': str },
-        'url': { 'expected_type': str }
+        'admin_login': { 'expected_type': 'string' },
+        'cluster_info_file': { 'expected_type': 'path' },
+        'dashboard_folder_name': { 'expected_type': 'string' },
+        'db_host': { 'expected_type': 'string' },
+        'db_name': { 'expected_type': 'string' },
+        'db_port': { 'expected_type': 'numeric' },
+        'db_script': { 'expected_type': 'string' },
+        'db_user': { 'expected_type': 'string' },
+        'fixed_params_file': { 'expected_type': 'path' },
+        'grafana_users_file': { 'expected_type': 'path' },
+        'hpc_users_file': { 'expected_type': 'path' },
+        'input_dir': { 'expected_type': 'path' },
+        'name': { 'expected_type': 'string' },
+        'outFile': { 'expected_type': 'string' }, # Path doesn't exist yet
+        'pg_version': { 'expected_type': 'numeric' },
+        'url': { 'expected_type': 'string' }
     }
 
-    def __init__(self, config_file: str):
+    extra_attr = {
+        'startDay': { 'expected_type': 'date (YYYY-MM-DD)' },
+        'endDay': { 'expected_type': 'date (YYYY-MM-DD)' }
+    }
+
+    def __init__(self, config_file:str):
         self.config_file = config_file
+        # Default value
         self.config_values = {
             'debug': False
         }
@@ -64,29 +72,120 @@ class GAConfig:
                 print(f"ERROR: line is {line}")
                 continue
             arg = pieces[0]
-            value = pieces[1].rstrip()  # Remove trailing whitespace e.g. \n
-            # print(f"Got: *{arg}* and *{value}*")
-            
-            self.config_values[arg] = value
+            self.config_values[arg] = pieces[1].rstrip()  # Remove trailing whitespace and new line characters
+
+        # Add database password
+        self._get_db_password()
         # Check values
-        self.check_config_values()
+        self._check_config_values()
+        # Check DB connection
+        self._validate_db_conn()
 
 
-    def check_config_values(self) -> None:
+    def _check_config_values(self) -> None:
         '''
         Check the configuration parameters.
-        TODO: Need to be updated/improved (cf. look at backend/utils/validate_args)
         '''
         user_config_items = self.config_values.keys()
-        check_ok = True
-        for conf_item in self.config_attr.keys():
-            expected_type = self.config_attr[conf_item]['expected_type']
-            if conf_item not in user_config_items:
-                print(f"ERROR: Configuration missing for '{conf_item}' in the config file")
-                check_ok = False
-            elif (type(self.config_values[conf_item]) != expected_type):
-                print(f"ERROR: Configuration for '{conf_item}': format unexpected ({type(self.config_values[conf_item])} instead of {expected_type})")
-                check_ok = False
-        if check_ok == False:
+        invalid_items = {}
+        missing_items = []
+        # Check mandatory parameters
+        for conf_param in self.config_attr.keys():
+            if conf_param not in user_config_items:
+                missing_items.append(conf_param)
+            else:
+                # Validate types
+                expected_type = self.config_attr[conf_param]['expected_type']
+                value = self.config_values[conf_param]
+
+                is_valid = self._is_valid_type(conf_param,expected_type,value)
+                if is_valid == False:
+                    invalid_items[conf_param] = {
+                        'type': type(self.config_values[conf_param]),
+                        'expected_type': expected_type,
+                        'value': value
+                    }
+        # Check extra parameters
+        for extra_conf_param in self.extra_attr.keys():
+            if extra_conf_param in self.config_values.keys():
+                expected_type = self.extra_attr[extra_conf_param]['expected_type']
+                value = self.config_values[extra_conf_param]
+
+                is_valid = self._is_valid_type(extra_conf_param,expected_type,value)
+
+                if is_valid == False:
+                    invalid_items[extra_conf_param] = {
+                        'type': type(self.config_values[extra_conf_param]),
+                        'expected_type': expected_type,
+                        'value': value
+                    }
+
+        # Invalid items
+        if invalid_items or missing_items:
+            if missing_items:
+                for conf_param in missing_items:
+                    print(f"  ERROR: Configuration missing for '{conf_param}' in the config file")
+            if invalid_items:
+                for conf_param in invalid_items.keys():
+                    print(f"  ERROR: Configuration for '{conf_param}': format unexpected ({invalid_items[conf_param]['type']} instead of {invalid_items[conf_param]['expected_type']}) => '{invalid_items[conf_param]['value']}'")
             exit(1)
-        
+        else:
+            print(f"  >> Configuration parameters look OK")
+
+
+    def _is_valid_type(self, conf_param:str, expected_type:str, value) -> bool:
+        '''
+        Check the item value is in the valid type.
+
+        Parameters
+        ----------
+        conf_param : [str] Name of the configuration parameter (e.g. db_name)
+        expected_type: [str] Name of the expected data type (e.g. string)
+        value: Value of the configuration parameter
+        '''
+        is_valid = True
+        match expected_type:
+            case 'string':
+                if type(value) != str:
+                    is_valid = False
+            case 'numeric':
+                if not value.isnumeric():
+                    is_valid = False
+            case 'path':
+                if not os.path.exists(value):
+                    if not os.path.exists(os.path.join(os.getcwd(),value)):
+                        is_valid = False
+            case 'date (YYYY-MM-DD)':
+                if not re.match('^\d{4}-\d{2}-\d{2}$',value):
+                    is_valid = False
+            case _:
+                print(f"  The attribute {conf_param} expected type ({expected_type}) is not a recognised type in the config module")
+        return is_valid
+
+
+    def _validate_db_conn(self) -> None :
+        """
+        Validates that the database exists and is accessible, using the provided "db" parameters.
+        """
+        try:
+            # Connect to an existing database
+            conn = psycopg.connect(
+                f"""dbname={self.config_values['db_name']}
+                user={self.config_values['db_user']}
+                password={self.config_values['db_password']}
+                host={self.config_values['db_host']}
+                port={self.config_values['db_port']}"""
+            )
+            conn.close()
+            print(f"  >> Database connection parameters look OK")
+        except psycopg.OperationalError as err:
+            print(f"\n  ERROR: Issue to connect to the database {self.config_values['db_name']}: {err}")
+            exit(1)
+
+
+    def _get_db_password(self) -> None:
+        '''
+        Get database password, if not already supplied.
+        '''
+        if "db_password" not in self.config_values.keys():
+            self.config_values["db_password"] = maskpass.askpass("  Enter database admin user password: > ", mask="")
