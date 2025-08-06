@@ -156,18 +156,21 @@ def main():
         for row in reader:
             # Create team (if needed)
             grafana_user.create_team(row['Group'])   #grafana_user.create_team(row['Team name'])
+        
+            # Create user (if needed)
+            row['org_id'] = 1 # Default organisation
 
             # Generate password. It's up to you to decide what to do with it.
             grafana_password = PWG.generate()
             row['GrafanaPassword'] = grafana_password
 
-            if create_password_file:
-                writer.writerow({'User': row['User'], 'Password': grafana_password})
-
-            # Create user (if needed)
-            row['org_id'] = 1 # Default organisation
+            # We only output (and optionally store) password if it's a *new* Grafana user
             if (grafana_user.create_user(row)):
                 logger.info(f"** Grafana password for user {row['User']} is {grafana_password} **")
+
+                if create_password_file:
+                    writer.writerow({'User': row['User'], 'Password': grafana_password})
+
 
     if create_password_file:
         outfile.close()
