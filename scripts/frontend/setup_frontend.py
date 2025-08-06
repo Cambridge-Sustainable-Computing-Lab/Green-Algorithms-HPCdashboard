@@ -164,7 +164,8 @@ def main():
             grafana_password = PWG.generate()
             row['GrafanaPassword'] = grafana_password
 
-            # We only output (and optionally store) password if it's a *new* Grafana user
+            # We only output (and optionally write to file) password if it's a *new* Grafana user.
+            # Otherwise, we simply discard the password just generated above.
             if (grafana_user.create_user(row)):
                 logger.info(f"** Grafana password for user {row['User']} is {grafana_password} **")
 
