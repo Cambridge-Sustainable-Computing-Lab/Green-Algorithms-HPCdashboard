@@ -1,7 +1,6 @@
 import datetime
 import pandas
 import psycopg
-# import re
 
 # TODO: From Laurent's PR code review: "It's good for now, but in the future it might make more sense to use the logging package, like in the grafana_ga modules."
 
@@ -48,7 +47,7 @@ class DataSQLImport:
         values = []
         for col in columns:
             value = data[col]
-            if type(value) == str:
+            if value.isinstance(str):
                 values.append(f"'{data[col]}'")
             else:
                 values.append(str(data[col]))
@@ -58,11 +57,11 @@ class DataSQLImport:
     def convert_data_type(self,value,db_col_name:str) -> str|int|bool:
         new_value = value
         # Different timestamps
-        if type(value) == datetime.date:
+        if value.isinstance(datetime.date):
             new_value = str(value)
-        elif type(value) == pandas._libs.tslibs.timestamps.Timestamp:
+        elif value.isinstance(pandas._libs.tslibs.timestamps.Timestamp):
             new_value = str(value).split(' ')[0]
-        elif type(value) == pandas._libs.tslibs.timedeltas.Timedelta:
+        elif value.isinstance(pandas._libs.tslibs.timedeltas.Timedelta):
             new_value = str(value)
 
         if isinstance(value, str):
@@ -79,7 +78,7 @@ class DataSQLImport:
         #db_column_names = db_column_names_mapping.values()
 
         data = []
-        print(f'> Parsing - start')
+        print('> Parsing - start')
         # Row by row
         for index, row in self.dict_users_data.iterrows():
             data_row = {}
@@ -91,9 +90,9 @@ class DataSQLImport:
                 data.append(data_row)
             #values = self.get_sql_command(data_row,db_column_names)
             #data.append(values)
-        print(f'> Parsing - end')
+        print('> Parsing - end')
 
-        print(f'> DB import - start')
+        print('> DB import - start')
         conn = self.get_connection()
         
         if conn:
@@ -155,7 +154,7 @@ class DataSQLImport:
             # Close connection with the database
             cur.close()
             conn.close()
-        print(f'> DB import - end')
+        print('> DB import - end')
 
 
 def parse_string_to_number(s:str) -> int | float | str:

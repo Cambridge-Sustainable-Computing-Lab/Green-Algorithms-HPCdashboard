@@ -95,7 +95,7 @@ class GrafanaGAFolder(GrafanaGABase):
         ''' Add new team permissions on the folder '''
         for team in teams:
             team_id = team['id']
-            if not team_id in self.teams.keys():
+            if team_id not in self.teams.keys():
                 self.teams[team_id] = {'teamId': team_id, 'permission': self.default_permission_level}
 
 

@@ -1,4 +1,3 @@
-import argparse
 import datetime
 import numpy as np
 import os
