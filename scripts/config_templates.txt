@@ -17,6 +17,9 @@ admin_login = <admin_login>
 # YAML file of your cluster's information (e.g. ga_dashboard/samples/cluster_info.yaml).
 cluster_info_file = <cluster_info_file_path>
 
+# Uncomment the next line if you want the Grafana passwords output to a file
+# create_password_file = True
+
 # Name of the dashboard folder (on Grafana).
 dashboard_folder_name = Green Algorithms
 

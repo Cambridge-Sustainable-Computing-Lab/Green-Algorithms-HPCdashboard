@@ -79,6 +79,7 @@ def main():
     argparser.add_argument("--input_dir", "-r", help='Dashboard JSON files directory, on disk', required=False, default = 'ga_dashboard/dashboards', metavar='INPUT_DIR', dest='input_dir')
     argparser.add_argument("--grafana_users_file", "-i", help='User list in CSV format', required=False, default=default_grafana_users_file, metavar='INPUT_FILE', dest='grafana_users_file')
     argparser.add_argument("--debug", help='Debug mode', required=False, action='store_true')
+    argparser.add_argument("--create_password_file", help='Put Grafana passwords in a file', required=False, action='store_true')
 
     args = argparser.parse_args()
 
@@ -96,6 +97,8 @@ def main():
     ga_dashboard_input_dir = args.input_dir # Where the dashboard JSON files are located, on disk.
     input_file = args.grafana_users_file
     debug = args.debug
+    create_password_file = args.create_password_file
+
 
     logging_level = logging.DEBUG if debug else logging.INFO
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging_level)
@@ -137,6 +140,17 @@ def main():
     # Set up password generator
     PWG = initialise_strict_password_generator()
 
+    if create_password_file:
+        password_file = "grafana-passwords.csv"
+        try:
+            outfile = open(password_file, 'w', encoding='utf-8-sig', newline='')
+            fieldnames = ['User', 'Password']
+            writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+            writer.writeheader()
+        except Exception as e:
+            logger.error(f"Couldn't open output file for passwords: {e}")
+            exit(1)
+
     with open(input_file, encoding='utf-8-sig', newline='') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
         for row in reader:
@@ -147,10 +161,16 @@ def main():
             grafana_password = PWG.generate()
             row['GrafanaPassword'] = grafana_password
 
+            if create_password_file:
+                writer.writerow({'User': row['User'], 'Password': grafana_password})
+
             # Create user (if needed)
             row['org_id'] = 1 # Default organisation
             if (grafana_user.create_user(row)):
                 logger.info(f"** Grafana password for user {row['User']} is {grafana_password} **")
+
+    if create_password_file:
+        outfile.close()
 
     # Folder
     logger.info('')

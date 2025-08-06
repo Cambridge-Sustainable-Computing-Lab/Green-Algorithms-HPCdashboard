@@ -60,7 +60,7 @@ class GADashboardInstall:
                 "title": "Setup Grafana",
                 "arg_list": ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", \
                             "db_host", "db_port", "pg_version", \
-                            "dashboard_folder_name", "input_dir", "grafana_users_file", "debug"]
+                            "dashboard_folder_name", "input_dir", "grafana_users_file", "debug", "create_password_file"]
             }
         })
 
@@ -109,6 +109,10 @@ class GADashboardInstall:
             if item == "debug":
                 if value == "True":
                     components.append("--debug")
+                continue
+            if item == "create_password_file":
+                if value == "True":
+                    components.append("--create_password_file")
                 continue
 
             # Value can't be None or "None", as that isn't very helpful

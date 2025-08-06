@@ -146,7 +146,7 @@ class GAConfig:
         is_valid = True
         match expected_type:
             case 'string':
-                if not value.isinstance(str):
+                if not isinstance(value, str):
                     is_valid = False
             case 'numeric':
                 if not value.isnumeric():
@@ -189,3 +189,4 @@ class GAConfig:
         '''
         if "db_password" not in self.config_values.keys():
             self.config_values["db_password"] = maskpass.askpass("  Enter database admin user password: > ", mask="")
+            
