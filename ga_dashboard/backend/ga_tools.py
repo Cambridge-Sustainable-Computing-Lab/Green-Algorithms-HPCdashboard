@@ -91,21 +91,19 @@ class GA_tools:
         return df[col_energy] * self.cluster_info['CI']
 
 
-# def get_slurmAdmin(args:argparse.Namespace) -> bool:
-#     print(type(args))
-#     args_dict = args.__dict__
+# def get_slurmAdmin(config_data: dict) -> bool:
 #     has_slurmAdmin = False
-#     if 'db_name' in args_dict.keys():
+#     if 'db_name' in config_data.keys():
 #         has_slurmAdmin = True
-#     elif 'slurmAdmin' in args_dict.keys():
-#         if args.slurmAdmin:
+#     elif 'slurmAdmin' in config_data.keys():
+#         if config_data['slurmAdmin']:
 #             has_slurmAdmin = True
 #     return has_slurmAdmin
 
 
-def extract_data(args: argparse.Namespace, has_slurmAdmin: bool, cluster_info) -> pd.DataFrame:
+def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.DataFrame:
 
-    if args.use_mock_agg_data: # DEBUGONLY Create/use some mock jobs with different users
+    if 'use_mock_agg_data' in config_data.keys(): # DEBUGONLY Create/use some mock jobs with different users
 
         # Steps done in pickle_it.py script:
         # df2 = simulate_mock_jobs()
@@ -124,22 +122,22 @@ def extract_data(args: argparse.Namespace, has_slurmAdmin: bool, cluster_info) -
 
 
     ### Pull usage statistics from the workload manager
-    WM = WorkloadManager(args, cluster_info)
+    WM = WorkloadManager(config_data, cluster_info)
     WM.pull_logs()
 
     ### Log the output for debugging
-    if args.reportBug | args.reportBugHere:
+    if 'reportBug' in config_data.keys() | 'reportBugHere' in config_data.keys():
         log_name = str(datetime.datetime.now().timestamp()).replace(".", "_")
 
         scripts_dir = os.path.dirname(os.path.realpath(__file__))
 
-        if args.reportBug:
+        if 'reportBug' in config_data.keys():
             log_path = os.path.join(scripts_dir, '../error_logs', f'sacctOutput_{log_name}.csv')
             # Logging into a separate dir to write-protect the main one (not in place for now)
             # log_path = os.path.join(pathlib.Path(scripts_dir).parent.absolute(), 'GreenAlgorithms4HPC_errorLogs', f'sacctOutput_{log_name}.csv')
         else:
-            # i.e. args.reportBugHere is True
-            log_path = f'{args.userCWD}/sacctOutput_{log_name}.csv'
+            # i.e. config_data['reportBugHere is True
+            log_path = f'{config_data['userCWD']}/sacctOutput_{log_name}.csv'
 
         os.makedirs(os.path.dirname(log_path), exist_ok=True) # Create error_logs dir if needed
         with open(log_path, 'wb') as f:
@@ -152,7 +150,7 @@ def extract_data(args: argparse.Namespace, has_slurmAdmin: bool, cluster_info) -
     # And clean
     WM.clean_logs_df()
     # Check if there are any jobs during the period from this directory and with these jobIDs
-    check_empty_results(WM.df_agg, args)
+    check_empty_results(WM.df_agg, config_data)
 
     # Check that there is only one user's data if no admin right
     if not has_slurmAdmin:
@@ -210,7 +208,7 @@ def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA
     return df2
 
 
-def summarise_data(df: pd.DataFrame, args: argparse.Namespace) -> dict:
+def summarise_data(df: pd.DataFrame) -> dict:
 
     if df is None:
         print("summarise_data(): df is None")
@@ -313,21 +311,21 @@ def summarise_data(df: pd.DataFrame, args: argparse.Namespace) -> dict:
     return output
 
 
-def main_backend(args):
+def main_backend(config_data: dict):
     '''
 
-    :param args:
+    :param config_data: dict
     :return:
     '''
     ### Load cluster-specific info
-    with (open(args.cluster_info_file, "r")) as stream:
+    with (open(config_data['cluster_info_file'], "r")) as stream:
         try:
             cluster_info = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
 
     ### Load fixed parameters
-    with open(args.fixed_params_file, "r") as stream:        
+    with open(config_data['fixed_params_file'], "r") as stream:
         try:
             fixed_params = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -338,7 +336,7 @@ def main_backend(args):
 
     ### Load user-specific data (if available)
     try:
-        users_df = pd.read_csv(args.hpc_users_file)
+        users_df = pd.read_csv(config_data['hpc_users_file'])
     except FileNotFoundError:
         if has_slurmAdmin:
             raise ValueError("No user data available.")
@@ -346,50 +344,30 @@ def main_backend(args):
 
     GA = GA_tools(cluster_info, fixed_params)
 
-    df = extract_data(args, has_slurmAdmin, cluster_info=cluster_info)
+    df = extract_data(config_data, has_slurmAdmin, cluster_info=cluster_info)
     df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA)
-    summary_stats = summarise_data(df2, args=args) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
+    summary_stats = summarise_data(df2) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
     ## Store data into a database
-    try:
-        dict_keys = args.__dict__.keys() # This is when using command line arguments (Namespace)
-    except Exception:
-        dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
+    dict_keys = config_data.keys() # This is when using command line arguments (Namespace)
+    # try:
+    #     dict_keys = args.__dict__.keys() # This is when using command line arguments (Namespace)
+    # except Exception:
+    #     dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
     if 'db_name' in dict_keys:
-        import_data_in_db(summary_stats, args)
+        import_data_in_db(summary_stats, config_data)
 
     return summary_stats
 
 
-def import_data_in_db(summary_stats:dict,args) -> None:
+def import_data_in_db(summary_stats:dict,config_data:dict) -> None:
     # Import aggregated data into a database
     data2db = DataSQLImport(
                 summary_stats,
-                db_name=args.db_name,
-                db_user=args.db_user,
-                db_password=args.db_password,
-                db_host=args.db_host,
-                db_port=args.db_port
+                db_name=config_data['db_name'],
+                db_user=config_data['db_user'],
+                db_password=config_data['db_password'],
+                db_host=config_data['db_host'],
+                db_port=config_data['db_port']
             )
     data2db.import_data()
-
-
-if __name__ == "__main__":
-
-    #### This is used for testing only ####
-
-    from collections import namedtuple
-    argStruct = namedtuple('argStruct',
-                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastructure_info')
-    args = argStruct(
-        startDay='2022-01-01',
-        endDay='2023-06-30',
-        useCustomLogs="",
-        use_mock_agg_data=True,
-        reportBug=False,
-        reportBugHere=False,
-        path_infrastructure_info="",
-    )
-
-    main_backend(args)
-

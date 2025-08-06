@@ -54,7 +54,7 @@ class GrafanaGADataSource(GrafanaGABase):
         datasource = None
         try:
             datasource = self.grafana.datasource.create_datasource(self.ds_content)
-            logger.info(f"Created data source:\n{datasource}")
+            logger.info(f"Created data source: {self.datasource_name} (uid: {datasource['datasource']['uid']})")
         except GrafanaClientError as ex:
             # Data source already exist
             if ex.status_code == 409:
