@@ -104,7 +104,7 @@ def parse_file(input_file: str) -> list:
     Extracts user data from the CSV file. Returns it as a list of User objects 
 
     Args:
-        input_file (str: Path to input CSV file.
+        input_file (str): Path to input CSV file.
 
     Returns:
         list: The list of User objects.
