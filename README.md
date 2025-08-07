@@ -106,7 +106,7 @@ As well as a list of users for the database, and another list for Grafana, the s
 * **Information about your HPC cluster**. Example: `ga_dashboard/samples/cluster_info.yaml`. 
   * You will need to acquire the information about your own cluster, and present it in the same YAML format as the example file. Each partition (a set of computing nodes with a dedicated queue) will need information for `type` (CPU or GPU), `model` and `TDP`. This last you may have to find from data sheets on the internet. For partitions of `type` GPU, you will also need values for `model_CPU` and `TDP_CPU`. 
   * Note also that you will need values for the other items in the file: `institution`, `cluster_name`, `granularity_memory_request`, `PUE`, etc.
-* **Fixed parameters file**. Example: `ga_dashboard/data/fixed_parameters.yaml`.
+* **Fixed parameters file**. Example: `ga_dashboard/data/fixed_parameters.yaml`. We suggest you use this example file for now.
 
 
 ### HPC users file
