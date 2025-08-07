@@ -22,7 +22,6 @@ Content
 * [HPC usage data collection](#hpc-usage-data-collection)
 * [Green Algorithms dashboards](#green-algorithms-dashboards)
   * [Run Grafana server](#run-grafana-server)
-  * [Setup dashboards and users](#setup-dashboards-and-users)
   * [Logging in to Grafana](#logging-in-to-Grafana)
 * [Additional documentation](./docs/Contents.md)
 
@@ -100,7 +99,7 @@ A number of config files are required by the system (e.g., to calculate the carb
 ### System configuration files
 As well as a list of users for the database, and another list for Grafana, the system needs:
 * A **scripts configuration file** with all the required parameters (database connection, paths to the others configurations files, ...). You can:
-  * Copy the template provided in `scripts/config_templates.txt`
+  * Copy the template provided in `scripts/config_templates.txt` (e.g., to `<your_config_file.txt>`)
   * Replace all the parameters surrounded by the `< >` characters
   * Uncomment the optional parameters you want to use.
 * **Information about your HPC cluster**. Example: `ga_dashboard/samples/cluster_info.yaml`. 
@@ -275,50 +274,6 @@ $ sudo bin/systemctl stop grafana-server
 the `systemctl` command might be elsewhere on a Linux system, e.g., `/usr/bin/systemctl`.
 
 Once you have started Grafana on your system, log in as admin on the web browser (admin:admin): [http://localhost:3000/](http://localhost:3000/).  
-
-
-### Setup dashboards and users
-
-Once Grafana is started, you will want to undertake a number of actions. You can use different wrapper script options to do these. To do everything in one go, choose `option 7`, or use the script `scripts/frontend/setup_frontend.py`. 
-
-This will:
-
-* Create the data source (i.e. link Grafana to the PostgreSQL server)
-* Create the dashboards folder
-* Import the dashboards
-* Create users and teams
-* Set the read/write permissions on the folder for the users and teams
-
-There is a lot of typing if you don't use the wrapper script (and amended config file), but use the underlying script directly instead.
-
-For instance:
-```
-$ python setup_frontend.py \
-  --admin_login admin --admin_password <adm_password> \
-  --db_name ga_db --db_user <db_user_name> --db_password <db_user_password> --pg_version <postgresql_version> \
-  --input_file <path_to_users_csv_file>
-```
-
-Using the default options, and default password for Grafana admin:
-```
-$ python scripts/frontend/setup_frontend.py --admin_password admin --db_password <password>
-```
-
-Options are:
-| Option | Description | Default value |
-| ------ | ----------- | ------------- |
-| --name | Data source name       | grafana-postgresql-ga_db   |
-| --url | Grafana URL | localhost:3000 |
-| --admin_login | Grafana admin name | admin |
-| --db_name | Database name | |
-| --db_user | Database user name | |
-| --db_password | Database user password | |
-| --db_host | Database host | localhost |
-| --db_port | Database port | 5432 |
-| --pg_version | PostgreSQL version | 13 |
-| --dashboard_folder_name | Name of the dashboard folder | Green Algorithms |
-| --input_dir | Dashboard files directory | |
-| --input_file | Grafana user list in CSV format | |
 
 
 ### Logging in to Grafana
