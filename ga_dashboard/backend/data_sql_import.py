@@ -47,7 +47,7 @@ class DataSQLImport:
         values = []
         for col in columns:
             value = data[col]
-            if value.isinstance(str):
+            if isinstance(value, str):
                 values.append(f"'{data[col]}'")
             else:
                 values.append(str(data[col]))
@@ -57,11 +57,11 @@ class DataSQLImport:
     def convert_data_type(self,value,db_col_name:str) -> str|int|bool:
         new_value = value
         # Different timestamps
-        if value.isinstance(datetime.date):
+        if isinstance(value, datetime.date):
             new_value = str(value)
-        elif value.isinstance(pandas._libs.tslibs.timestamps.Timestamp):
+        elif isinstance(value, pandas._libs.tslibs.timestamps.Timestamp):
             new_value = str(value).split(' ')[0]
-        elif value.isinstance(pandas._libs.tslibs.timedeltas.Timedelta):
+        elif isinstance(value, pandas._libs.tslibs.timedeltas.Timedelta):
             new_value = str(value)
 
         if isinstance(value, str):
