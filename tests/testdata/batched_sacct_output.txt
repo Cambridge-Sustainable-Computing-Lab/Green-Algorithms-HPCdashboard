@@ -1,0 +1,10 @@
+UID|User|JobID|JobName|Submit|Elapsed|Partition|NNodes|NCPUS|TotalCPU|CPUTime|ReqMem|MaxRSS|WorkDir|State|Account|AllocTRES
+47892|uid_2|8320621|cpujob|2025-04-14T15:01:20|00:00:00|yew|1|0|00:00:00|00:00:00|256120M||/home/uid_2|CANCELLED by 47892|group_1-sl3-cpu|
+47892|uid_2|8324793|cpujob|2025-04-14T16:25:03|00:00:00|yew|0|0|00:00:00|00:00:00|3370M||/home/uid_2|FAILED|group_1-sl3-cpu|
+47892|uid_2|8324856|cpujob|2025-04-14T16:26:39|00:00:00|yew|1|0|00:00:00|00:00:00|3370M||/home/uid_2|CANCELLED by 47892|group_1-sl3-cpu|
+47892|uid_2|8325013|hellojob|2025-04-14T16:30:21|00:00:06|yew|1|1|00:00.262|00:00:06|3370M||/home/uid_2|COMPLETED|group_1-sl3-cpu|billing=1,cpu=1,mem=3370M,node=1
+||8325013.batch|batch|2025-04-15T04:53:39|00:00:06||1|1|00:00.261|00:00:06||0||COMPLETED|group_1-sl3-cpu|cpu=1,mem=3370M,node=1
+||8325013.extern|extern|2025-04-15T04:53:39|00:00:06||1|1|00:00:00|00:00:06||0||COMPLETED|group_1-sl3-cpu|billing=1,cpu=1,mem=3370M,node=1
+47892|uid_2|8394465|hellojob2|2025-04-16T10:17:11|00:00:04|yew|1|1|00:00.242|00:00:04|3370M||/home/uid_2/scripts|COMPLETED|group_1-sl3-cpu|billing=1,cpu=1,mem=3370M,node=1
+||8394465.batch|batch|2025-04-16T10:29:04|00:00:04||1|1|00:00.241|00:00:04||0||COMPLETED|group_1-sl3-cpu|cpu=1,mem=3370M,node=1
+||8394465.extern|extern|2025-04-16T10:29:04|00:00:04||1|1|00:00:00|00:00:04||0||COMPLETED|group_1-sl3-cpu|billing=1,cpu=1,mem=3370M,node=1
