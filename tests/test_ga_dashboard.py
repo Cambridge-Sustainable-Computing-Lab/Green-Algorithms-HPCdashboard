@@ -31,7 +31,7 @@ def test_check_slurm_data_file(): # To test check_slurm_data_file()
 # Just placeholders for now
 
 FIXED_PARAMS_FILE = "ga_dashboard/data/fixed_parameters.yaml"
-CLUSTER_INFO_FILE = "ga_dashboard/samples/cluster_info.yaml"
+CLUSTER_INFO_FILE = "docs/templates/cluster_info.yaml"
 
 
 # parse_string_to_number()
@@ -54,11 +54,11 @@ def test_main_backend():
     args = argStruct(
         startDay='2022-01-01',
         endDay='2023-06-30',
-        useCustomLogs="ga_dashboard/samples/sacct_output_single_user.txt",  #useCustomLogs="", #"sacct_output_loic1.txt",
+        useCustomLogs="docs/templates/sacct_output_single_user.txt",  #useCustomLogs="", #"sacct_output_loic1.txt",
         use_mock_agg_data=False,
         reportBug=False,
         reportBugHere=False,
-        path_infrastructure_info="ga_dashboard/samples",
+        path_infrastructure_info="docs/templates",
         fixed_params_file="ga_dashboard/data/fixed_parameters.yaml"
     )
 
