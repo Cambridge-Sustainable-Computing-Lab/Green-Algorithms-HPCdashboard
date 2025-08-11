@@ -21,13 +21,13 @@ def create_arguments():
 
     default_endDay = datetime.date.today().strftime("%Y-%m-%d")  # today
 
-    default_cluster_info = "ga_dashboard/samples/cluster_info.yaml"
+    default_cluster_info = "docs/templates/cluster_info.yaml"
     default_db = "ga_db"
     default_db_host = "localhost"
     default_db_port = "5432"
     default_db_user = "postgres"
     default_fixed_params_file = "ga_dashboard/data/fixed_parameters.yaml"
-    default_hpc_users = "ga_dashboard/samples/hpc_users_list.csv"
+    default_hpc_users = "docs/templates/sample_user_list.csv"
 
     ## Timeframe
     # NB These two arguments aren't needed if --useCustomLogs is used.

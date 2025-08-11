@@ -195,7 +195,7 @@ class Runner:
         '''
         self.defaults = {
             "admin_login": "admin",  # Grafana admin user name.
-            "cluster_info_file": "ga_dashboard/samples/cluster_info.yaml",  # Cluster info file.
+            "cluster_info_file": "docs/templates/cluster_info.yaml",  # Cluster info file.
             "dashboard_folder_name": "Green Algorithms",  # Name
             "db_host": "localhost",
             "db_name": "ga_db",  # The name of the database to store your raw and enriched `sacct` data
@@ -205,10 +205,10 @@ class Runner:
             "debug": False,  # Debug mode. e.g. python myscript.py --debug
             "endDay": None, # ???  The last day to take into account, as YYYY-MM-DD
             "fixed_params_file": "ga_dashboard/data/fixed_parameters.yaml",  # The fixed parameters file to use
-            "grafana_users_file": "ga_dashboard/samples/grafana_users_list.csv",  # The list of Grafana users
-            "hpc_users_file": "ga_dashboard/samples/hpc_users_list.csv",  # CSV file of HPC user data
+            "grafana_users_file": "docs/templates/sample_user_list.csv",  # The list of Grafana users
+            "hpc_users_file": "docs/templates/sample_user_list.csv",  # CSV file of HPC user data
             "input_dir": "ga_dashboard/dashboards",  # Dashboard JSON files directory, on disk.
-            "input_log_file": "ga_dashboard/samples/userDaily_mockMultiUsers_1.csv",  # Logs data, e.g.,  
+            "input_log_file": "docs/templates/userDaily_mockMultiUsers_1.csv",  # Logs data, e.g.,  
             "name": "grafana-postgresql-ga_db",  # Name of data source (on Grafana).
             "outFile": None,  # The name of the file to be written, for storing the output of sacct.
             "pg_version": "13",  # PostgreSQL version.
@@ -368,7 +368,7 @@ class Runner:
                 subprocess.run(command_components)
 
         # It will be something like this:
-        # subprocess.run(["python", "scripts/frontend/import_users.py", "-i", "ga_dashboard/samples/grafana_users_list.csv", "-p", "admin"])
+        # subprocess.run(["python", "scripts/frontend/import_users.py", "-i", "docs/templates/sample_user_list.csv", "-p", "admin"])
 
 
 # e.g. python run.py sample_config.txt

@@ -82,7 +82,7 @@ To add HPC users to this database, use the `add_users_to_database.py` script wit
 ```
 python scripts/database/add_users_to_database.py \
     --db_name ga_db --db_user postgres --db_port 5432 --db_host localhost \
-    --input_file ga_dashboard/samples/hpc_users_list.csv --db_password <your_password>
+    --input_file docs/templates/sample_user_list.csv --db_password <your_password>
 ```
 
 Note that we want to add HPC users to the database before running `sacct`; the users we want should exists in the backend database regardless of whether there is any `sacct` data for them!
@@ -128,7 +128,7 @@ python scripts/backend/run_backend.py --db_password <password> \
 ```
 Note that:
 * The options for the start and end dates are not needed, as the date range will be determined by the contents of the `sacct` output file.
-* In this example, we use the file `sacct_2025_07_27.txt`, which you just generated. Sample `sacct`-output files are also in the `samples` subdirectory. 
+* In this example, we use the file `sacct_2025_07_27.txt`, which you just generated. Sample `sacct`-output files are also in the `docs/templates` subdirectory. 
 
 
 ## Grafana set-up

@@ -39,12 +39,12 @@ DEFAULT_DB_PORT=5432
 DEFAULT_DB_USER="postgres"
 DEFAULT_START_DATE="2025-02-14"
 DEFAULT_END_DATE="2025-02-18"
-DEFAULT_INFRASTRUCTURE_DIR="$repo_root_dir/ga_dashboard/samples"
+DEFAULT_INFRASTRUCTURE_DIR="$repo_root_dir/docs/templates"
 DEFAULT_DATASOURCE_NAME="demo_datasource"  # "grafana-postgresql-ga_db" 
 DEFAULT_POSTGRES_VERSION=13
-DEFAULT_GRAFANA_USERS_FILE="$repo_root_dir/ga_dashboard/samples/grafana_users_list.csv"
-DEFAULT_HPC_USERS_FILE="$repo_root_dir/ga_dashboard/samples/hpc_users_list.csv"
-DEFAULT_SACCT_FILE="$repo_root_dir/ga_dashboard/samples/sacct_output_single_user.txt"
+DEFAULT_GRAFANA_USERS_FILE="$repo_root_dir/docs/templates/grafana_users_list.csv"
+DEFAULT_HPC_USERS_FILE="$repo_root_dir/docs/templates/sample_user_list.csv"
+DEFAULT_SACCT_FILE="$repo_root_dir/docs/templates/sacct_output_single_user.txt"
 DEFAULT_FIXED_PARAMETERS_FILE="$repo_root_dir/ga_dashboard/data/fixed_parameters.yaml"
 
 ###############################################################

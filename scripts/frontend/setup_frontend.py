@@ -27,7 +27,7 @@ Combines the usage of several of the scripts:
 # Example usage (run from top-level directory of repo):
 #
 # % python scripts/frontend/setup_frontend.py --admin_password <grafana_admin_password> \
-#        --grafana_users_file ga_dashboard/samples/grafana_users_list.csv \
+#        --grafana_users_file docs/templates/sample_user_list.csv \
 #        --db_name ga_db --db_user postgres --db_password <db_password> \
 #        --input_dir ga_dashboard/dashboards
 #        --name <name of your datasource>   <-- If not set, uses "grafana-postgresql-ga_db" 
@@ -62,7 +62,7 @@ Combines the usage of several of the scripts:
 def main():
 
     # Choose as appropriate
-    default_grafana_users_file = 'ga_dashboard/samples/grafana_users_list.csv'
+    default_grafana_users_file = 'docs/templates/sample_user_list.csv'
 
     argparser = argparse.ArgumentParser(description="On Grafana: adds data source, folder, dashboards and users, then updates folder permissions.")
     argparser.add_argument("--name", "-n", help='Data source name', required=False, metavar='DS_NAME', default='grafana-postgresql-ga_db', dest='name')
