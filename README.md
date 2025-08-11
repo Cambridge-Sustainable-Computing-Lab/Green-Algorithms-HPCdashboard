@@ -172,6 +172,8 @@ $ python scripts/run_green_algorithms_on_historical_logs.py --config <your_confi
 ```
 This will collect all the logs available by default (if no `startDay` / `endDay` are defined in the configuration file).
 
+Note: we have tested the software successfully with a `sacct`-output data file of more than one million entries. Our intention is to update the software so that it can safely handle much more than this.
+
 For a scheduled execution, the command to run is:
 ```
 $ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.txt>
