@@ -41,21 +41,20 @@ def test_parse_string_to_number(a, expected):
 
 # This isn't really a proper test.
 def test_main_backend():
-    from collections import namedtuple
-    argStruct = namedtuple('argStruct',
-                           'startDay endDay useCustomLogs use_mock_agg_data reportBug reportBugHere path_infrastructure_info fixed_params_file')
-    args = argStruct(
-        startDay='2022-01-01',
-        endDay='2023-06-30',
-        useCustomLogs="ga_dashboard/samples/sacct_output_single_user.txt",  #useCustomLogs="", #"sacct_output_loic1.txt",
-        use_mock_agg_data=False,
-        reportBug=False,
-        reportBugHere=False,
-        path_infrastructure_info="ga_dashboard/samples",
-        fixed_params_file="ga_dashboard/data/fixed_parameters.yaml"
-    )
+    
+    config_data = {}
 
-    main_backend(args) 
+    config_data['startDay'] = '2022-01-01'
+    config_data['endDay'] = '2023-06-30'
+    config_data['useCustomLogs'] = "ga_dashboard/samples/sacct_output_single_user.txt"  #useCustomLogs="", #"sacct_output_loic1.txt",
+    config_data['use_mock_agg_data'] = False
+    config_data['reportBug'] = False
+    config_data['reportBugHere'] = False
+    config_data['path_infrastructure_info'] = "ga_dashboard/samples"
+    config_data['fixed_params_file'] = "tests/testdata/fixed_parameters.yaml"
+    config_data['cluster_info_file'] = "tests/testdata/cluster_info.yaml"
+
+    main_backend(config_data) 
 
 
 # Debugging and testing
