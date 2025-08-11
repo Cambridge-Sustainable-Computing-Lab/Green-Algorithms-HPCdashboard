@@ -1,0 +1,6 @@
+User,UID,Name,Email,Group,Department
+uid_1,11111,John Smith,user1@example.com,group_1,Dept_3
+uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3
+uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3
+uid_4,44444,Lisa Bookbinder,user4@example.com,group_3,Dept_2
+uid_5,55555,Ali Hassan,user5@example.com,group_4,Dept_1

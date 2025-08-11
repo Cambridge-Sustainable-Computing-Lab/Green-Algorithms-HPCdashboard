@@ -1,8 +1,6 @@
 # Run this from GA4HPCdashboard/ga_dashboard directory:
 # python tests/pickle_it.py
 
-import pickle
-
 # Add the module's path:
 import sys
 sys.path.append('src')

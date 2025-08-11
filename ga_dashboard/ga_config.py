@@ -99,7 +99,7 @@ class GAConfig:
                 value = self.config_values[conf_param]
 
                 is_valid = self._is_valid_type(conf_param,expected_type,value)
-                if is_valid == False:
+                if not is_valid:
                     invalid_items[conf_param] = {
                         'type': type(self.config_values[conf_param]),
                         'expected_type': expected_type,
@@ -113,7 +113,7 @@ class GAConfig:
 
                 is_valid = self._is_valid_type(extra_conf_param,expected_type,value)
 
-                if is_valid == False:
+                if not is_valid:
                     invalid_items[extra_conf_param] = {
                         'type': type(self.config_values[extra_conf_param]),
                         'expected_type': expected_type,
@@ -130,7 +130,7 @@ class GAConfig:
                     print(f"  ERROR: Configuration for '{conf_param}': format unexpected ({invalid_items[conf_param]['type']} instead of {invalid_items[conf_param]['expected_type']}) => '{invalid_items[conf_param]['value']}'")
             exit(1)
         else:
-            print(f"  >> Configuration parameters look OK")
+            print("  >> Configuration parameters look OK")
 
 
     def _is_valid_type(self, conf_param:str, expected_type:str, value) -> bool:
@@ -146,7 +146,7 @@ class GAConfig:
         is_valid = True
         match expected_type:
             case 'string':
-                if type(value) != str:
+                if not isinstance(value, str):
                     is_valid = False
             case 'numeric':
                 if not value.isnumeric():
@@ -177,7 +177,7 @@ class GAConfig:
                 port={self.config_values['db_port']}"""
             )
             conn.close()
-            print(f"  >> Database connection parameters look OK")
+            print("  >> Database connection parameters look OK")
         except psycopg.OperationalError as err:
             print(f"\n  ERROR: Issue to connect to the database {self.config_values['db_name']}: {err}")
             exit(1)
