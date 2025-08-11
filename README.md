@@ -1,9 +1,9 @@
-# GA4HPCdashsboard: Deployment notes
+# GA4HPCdashboard: Deployment notes
 
 Repository used to setup the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database. This allows you to examine HPC usage over time, with helpful graphs, charts, etc.
 
 The system is composed of:
-* A backend, which obtains usage data from the HPC system (using the `sacct` command), aggregates it (to one row per user per day), enriches it (adds carbon footprint data).
+* A backend, which obtains usage data from the HPC system (using the `sacct` command), aggregates it (to one row per user per day), and enriches it (adds carbon footprint data).
 * A PostgreSQL database to store the HPC usage calculated by the backend
 * A frontend, which uses Grafana to query the database and display the data through graph and charts.
 
@@ -15,8 +15,7 @@ Content
   * [Dashboard platform - Grafana](#dashboard-platform---grafana)
 * [Configuration files](#configuration-files)
   * [System configuration files](#system-configuration-files)
-  * [HPC users file](#hpc-users-file)
-  * [Grafana users file](#generate-a-grafana-users-file---csv-format)
+  * [HPC and Grafana users file](#list-of-users)
 * [Install Green Algorithms dashboard](#install-green-algorithms-dashboard)
 * [HPC usage data collection](#hpc-usage-data-collection)
 * [Green Algorithms dashboards](#green-algorithms-dashboards)
@@ -29,9 +28,8 @@ Content
 Files required for the example instructions below (you can, of course, use your own):
 
 * [Scripts configuration file](#configuration-files): template `config_templates.txt` (in `scripts/`) to copy and edit.
-* [Cluster config file](#configuration-files): `cluster_info.yaml` (in `ga_dashboard/samples/`)
-* [HPC users for DB](#hpc-users-file): `hpc_users_list.csv` (in `ga_dashboard/samples/`)
-* [Grafana user file](#generate-a-grafana-users-file---csv-format): `grafana_users_list.csv` (in `ga_dashboard/samples/`)
+* [Cluster config file](#configuration-files): `cluster_info.yaml` (in `docs/templates/`)
+* [HPC and Grafana users file](#list-of-users) `sample_user_list.csv` (in `docs/templates/`)
 * [Fixed parameters file](#configuration-files). Example: `ga_dashboard/data/fixed_parameters.yaml`
 
 
@@ -39,7 +37,7 @@ Files required for the example instructions below (you can, of course, use your 
 ## Prerequisites
 
 ### Python environment (Miniforge)
-You will need tp set up an environment for your Python distribution. We recommend to use Miniforge. 
+You will need tp set up an environment for your Python distribution. We recommend you use Miniforge. 
 
 Go to the [download link](https://conda-forge.org/download/) and follow the instructions for your platform. You may need to look at the instructions on their [GitHub repository](https://github.com/conda-forge/miniforge).
 
@@ -102,67 +100,46 @@ As well as a list of users for the database, and another list for Grafana, the s
   * Copy the template provided in `scripts/config_templates.txt`
   * Replace all the parameters surrounded by the `< >` characters
   * Uncomment the optional parameters you want to use.
-* **Information about your HPC cluster**. Example: `ga_dashboard/samples/cluster_info.yaml`.
+* **Information about your HPC cluster**. Example: `docs/templates/cluster_info.yaml`.
 * **Fixed parameters file**. Example: `ga_dashboard/data/fixed_parameters.yaml`.
 
 
-### HPC users file
-You will need a file with details of your HPC users for whom you are obtaining `sacct` data (e.g. name, group).
-The HPC users file should be a comma-separated file combining these columns:
+### List of users
+
+You will need a file with details of your HPC users for whom you are obtaining `sacct` data (e.g. name, group), and the Grafana users. For simplicity, we are using the same file for both in this example.
+The users file should be a comma-separated file combining these columns:
 * **User name**: Company/Institute user name (e.g. tg1)
 * **User unique idendifier** (UID): Numeric user unique idendifier (e.g. 11111)
 * **Name**: Full user name (e.g. Thomas Greene)
+* **Email**: email address of user
 * **Group name**: Name of the user group/team (e.g. group 1)
 * **Department name**: Name of the user department/unit (e.g. Dept 3)
 
-For example in `ga_dashboard/samples/hpc_users_list.csv` or like this:
+For example in `docs/templates/sample_user_list.csv`:
 ```
-User,UID,Name,Group,Department
-tg1,11111,Thomas Greene,group 1,Dept 3
-am1,22222,Adam Mackay,group 1,Dept 3
-...
+User,UID,Name,Email,Group,Department
+uid_1,11111,John Smith,user1@example.com,group_1,Dept_3
+uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3
+uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3
+uid_4,44444,Lisa Bookbinder,user4@example.com,group_3,Dept_2
+uid_5,55555,Ali Hassan,user5@example.com,group_4,Dept_1
 ```
 
 Displayed as a table:
-| User| UID   | Name          | Group   | Department |
-| ----|------ | ------------- | ------- | ---------- |
-| tg1 | 11111 | Thomas Greene | group 1 | Dept 3     |
-| am1 | 22222 | Adam Mackay   | group 1 | Dept 3     |
-| ... | ...   | ...           | ...     | ...        |
+
+| User | UID   | Name          | Email | Group   | Department |
+| -----|------ | ------------- | ------- | ---------- | ----|
+| uid_1 | 11111 | John Smith | user1@example.com | group 1 | Dept 3     |
+| uid_2 | 22222 | Sarah Jones | user2@example.com   | group 1 | Dept 3     |
+| ...   | ...   | ...           | ...     | ...  | ...      |
+
 
 
 > [!WARNING]  
 > Do not store passwords in this file!
 
 
-### Generate a Grafana users file - csv format
-
-The Grafana users file should be a comma-separated file combining these columns:
-* **Name**: Full user name (e.g. Thomas Greene)
-* **User name**: Company/Institute user name (e.g. tg1)
-* **Email**: Company/Institute user email (e.g. tg1@ga-test.com)
-* **Team name**: Name of the user team/department/unit (e.g. Team 1)
-
-Example of input file format (CSV format with header):
-```
-Name,User name,Email,Team name
-Thomas Greene,tg1,tg1@ga-test.com,Team 1
-Adam Mackay,am1,am1@ga-test.com,Team 2
-...
-```
-Displayed as a table:
-| Name          | User name | Email           |  Team name |
-| ------------- | --------- | --------------- | ---------- |
-| Thomas Greene | tg1       | tg1@ga-test.com |  Team 1    |
-| Adam Mackay   | am1       | am1@ga-test.com |  Team 2    |
-| ...           | ...       | ...             |  ...       |
-
-In this example, we have the same list of users for both the HPC system and Grafana. But you may have some who are on one list only, e.g., a manager might want to have access to the Grafana dashboard, but not the HPC system.
-
-
-An example you can use to try out the system is `ga_dashboard/samples/grafana_users_list.csv`
-
-The passwords generated by this process adhere to [Grafana password policy](https://grafana.com/docs/grafana/next/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy), if you decide to enforce it.
+The passwords generated by the script which adds new users to Grafana (`import_users.py` or `setup_frontend.py`, both in `scripts/frontend/`) adhere to the [Grafana password policy](https://grafana.com/docs/grafana/next/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy), if you decide to enforce it.
 
 
 ---
@@ -212,14 +189,14 @@ The 2 scripts proceed to:
 
 The (anonymised) examples of files you can use with `useCustomLogs` are:
 
-* `ga_dashboard/samples/sacct_output_single_user.txt`
+* `docs/templates/sacct_output_single_user.txt`
   > Example of output generated, for one user, by the `sacct` command on the HPC system.
-* `ga_dashboard/samples/sacct_output_multi_user.txt`
+* `docs/templates/sacct_output_multi_user.txt`
   > Same example as above, but for multiple users.
 
 The backend part of the software will aggregate the data into one row per user per day, enrich it (add carbon footprint data), and then write this to the database. 
 
-In order to do this, you need to uncomment `useCustomLogs` and set it with a value (e.g. ga_dashboard/samples/sacct_output_multi_user.txt) in your scripts configuration file before running 
+In order to do this, you need to uncomment `useCustomLogs` and set it with a value (e.g. docs/templates/sacct_output_multi_user.txt) in your scripts configuration file before running 
 
 ```
 $ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.txt>

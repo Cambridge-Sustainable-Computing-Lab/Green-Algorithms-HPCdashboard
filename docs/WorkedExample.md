@@ -50,7 +50,7 @@ The time, *t*, is the `wallclocktime`, `0 days 00:13:31`, which is 13.5166666666
 
 The number of cores, *n*<sub>c</sub>, is 5.
 
-We see that the `Partition` used was `yew-himem`. Referring to the file `cluster_info.yaml` in the `samples` subdirectory, we see that the type of CPU model used was a Xeon Gold 6142, with TDP (Thermal Design Power) of 9.4 Watts per core. This is *P*<sub>c</sub>.
+We see that the `Partition` used was `yew-himem`. Referring to the file `cluster_info.yaml` in the `docs/templates` subdirectory, we see that the type of CPU model used was a Xeon Gold 6142, with TDP (Thermal Design Power) of 9.4 Watts per core. This is *P*<sub>c</sub>.
 
 The core usage factor, *u*<sub>c</sub>, is unknown, and the paper suggests we set core usage to 100% of run time, i.e. *u*<sub>c</sub> = 1.
 
@@ -111,7 +111,7 @@ The carbon footprint *C* (in gCO<sub>2</sub>e) of producing a quantity of energy
 
 *C* = *E* × *CI*
 
-Looking at the file `cluster_info.yaml` in the directory `ga_dashboard/samples`, we find a value for *CI* = 231.12 gCO<sub>2</sub>e kWh<sup>−1</sup>. Hence, the carbon footprint of the energy of:
+Looking at the file `cluster_info.yaml` in the directory `docs/templates`, we find a value for *CI* = 231.12 gCO<sub>2</sub>e kWh<sup>−1</sup>. Hence, the carbon footprint of the energy of:
 * the CPUs is 0.010588055555555555 x 231.12 = 2.4471114 ??
 * the memory is 0.005047545729166667 x 231.12 = 1.166588768925 ??
 * the total is 0.017980941477430557 x 231.12 = 4.15575519426375  <- OK, see DB entry below
