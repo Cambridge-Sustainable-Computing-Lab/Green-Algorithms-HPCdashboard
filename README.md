@@ -1,6 +1,6 @@
 # GA4HPCdashboard: Deployment notes
 
-Repository used to setup the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database. This allows you to examine HPC usage over time, with helpful graphs, charts, etc.
+Repository used to set up the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database. This allows you to examine HPC usage over time, with helpful graphs, charts, etc.
 
 The system is composed of:
 * A backend, which obtains usage data from the HPC system (using the `sacct` command), aggregates it (to one row per user per day), and enriches it (adds carbon footprint data).
@@ -37,7 +37,7 @@ Files required to deploy the dashboard (you will need your own versions of these
 ## Prerequisites
 
 ### Python environment (Miniforge)
-You will need tp set up an environment for your Python distribution. We recommend you use Miniforge. 
+You will need to set up an environment for your Python distribution. We recommend you use Miniforge. 
 
 Go to the [download link](https://conda-forge.org/download/) and follow the instructions for your platform. You may need to look at the instructions on their [GitHub repository](https://github.com/conda-forge/miniforge).
 
@@ -63,7 +63,7 @@ In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level ab
 ```
 $ python -m pip install .
 ```
-This should install the `ga_dashboard` package on your local machine. if you want to be able to 
+(Note the period character at the end). This should install the `ga_dashboard` package on your local machine. if you want to be able to 
 edit it and still use it, use the `-e` option:
 ```
 $ python -m pip install -e .
@@ -71,7 +71,7 @@ $ python -m pip install -e .
 
 
 ### Database server - PostgreSQL
-Install PostgreSQL locally or have access to a PostgreSQL server
+Install PostgreSQL locally or have access to a PostgreSQL server.
 
 For Macs, we have used the relevant [Enterprise DB installer](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) to start with. Follow the instructions for your system.
 
@@ -79,7 +79,7 @@ Later, it may be necessary to get a version of Postgres for your platform which 
 may require compiling Postgres yourself with the appropriate options. However, this is not
 needed for the simple demo. 
 
-Choose a username and password for the Postgres admin user. The former is usually `postgres` (although you can choose what you want). Do not record the password in a file! (In these instructions, we assume that the admin user name is `postgres`.) (If you forget the password at any point, try [these steps](https://stackoverflow.com/questions/14588212/postgresql-resetting-password-of-postgresql-on-ubuntu).)
+Choose a username and password for the Postgres admin user. The former is usually `postgres` (although you can choose what you want). Do not record this sensitive password in a file! (In these instructions, we assume that the admin user name is `postgres`.) (If you forget the password at any point, try [these steps](https://stackoverflow.com/questions/14588212/postgresql-resetting-password-of-postgresql-on-ubuntu).)
 
 Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
 
@@ -87,6 +87,8 @@ Check that your `$PATH` allows you to access the PostgreSQL `psql` utility progr
 ### Dashboard platform - Grafana
 
 Install the [self-managed installation](https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1) (Enterprise, just in case we want to host it on the cloud).
+
+By default, the super-user on Grafana is called `admin`, and has the password `admin`. You will probably want to change this, to make your set-up more secure.
 
 
 ---
@@ -114,27 +116,30 @@ The users file should be a comma-separated file combining these columns:
 * **Email**: email address of user
 * **Group name**: Name of the user group/team (e.g. group 1)
 * **Department name**: Name of the user department/unit (e.g. Dept 3)
+* **GrafanaPassword**: Password required by this user for Grafana. By default, users only have view access.
 
 For example in `docs/templates/sample_user_list.csv`:
 ```
-User,UID,Name,Email,Group,Department
-uid_1,11111,John Smith,user1@example.com,group_1,Dept_3
-uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3
-uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3
-uid_4,44444,Lisa Bookbinder,user4@example.com,group_3,Dept_2
-uid_5,55555,Ali Hassan,user5@example.com,group_4,Dept_1
+User,UID,Name,Email,Group,Department,GrafanaPassword
+uid_1,11111,John Smith,user1@example.com,group_1,Dept_3,*0IK^I^&UpO$2aX
+uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3,yGg=kA-6v**7BS)
+uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3,ibVvlpo$r7b0u
+uid_4,44444,Lisa Bookbinder,user4@example.com,group_3,Dept_2,!3Q4o&%Fs5SE2
+uid_5,55555,Ali Hassan,user5@example.com,group_4,Dept_1,qiY_pI%7BFz<JT
 ```
 
 Displayed as a table:
 
-| User | UID   | Name          | Email | Group   | Department |
-| -----|------ | ------------- | ------- | ---------- | ----|
-| uid_1 | 11111 | John Smith | user1@example.com | group 1 | Dept 3     |
-| uid_2 | 22222 | Sarah Jones | user2@example.com   | group 1 | Dept 3     |
-| ...   | ...   | ...           | ...     | ...  | ...      |
+| User | UID   | Name          | Email | Group   | Department | GrafanaPassword |
+| -----|------ | ------------- | ------- | ---------- | ----| ------------ |
+| uid_1 | 11111 | John Smith | user1@example.com | group 1 | Dept 3     | *0IK^I^&UpO$2aX |
+| uid_2 | 22222 | Sarah Jones | user2@example.com   | group 1 | Dept 3     | yGg=kA-6v**7BS) |
+| ...   | ...   | ...           | ...     | ...  | ...      | ... |
 
 
-The passwords generated by the scripts adhere to the [Grafana password policy](https://grafana.com/docs/grafana/next/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy), if you decide to enforce it.
+The passwords in the above example adhere to the [Grafana password policy](https://grafana.com/docs/grafana/next/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy), should you decide to enforce it.
+
+Make sure the passwords don't contain a comma character (`','`), otherwise this will affect the CSV file parsing.
 
 
 ---
@@ -167,7 +172,7 @@ $ python scripts/run_green_algorithms_on_historical_logs.py --config <your_confi
 ```
 This will collect all the logs available by default (if no `startDay` / `endDay` are defined in the configuration file).
 
-Note: we have tested the software successfully with a `sacct`-output data file of more than one million entries. Our intention is to update the software so that it can safely handle much more than this.
+**Note:** we have tested the software successfully with a `sacct`-output data file of more than one million entries. Our intention is to update the software so that it can safely handle much more than this.
 
 For a scheduled execution (e.g. a `cron` job), the command to run is:
 ```
@@ -235,7 +240,7 @@ In the former case above, you can just CTRL-C the server. In the latter, you mig
 $ sudo bin/systemctl stop grafana-server
 ```
 
-the `systemctl` command might be elsewhere on a Linux system, e.g., `/usr/bin/systemctl`.
+The `systemctl` command might be elsewhere on a Linux system, e.g., `/usr/bin/systemctl`.
 
 Once you have started Grafana on your system, log in as admin on the web browser (Default: admin, admin): [http://localhost:3000/](http://localhost:3000/).  
 
