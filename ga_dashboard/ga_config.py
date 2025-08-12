@@ -145,7 +145,7 @@ class GAConfig:
         is_valid = True
         match expected_type:
             case 'string':
-                if type(value) != str:
+                if not isinstance(value, str):
                     is_valid = False
             case 'numeric':
                 if not value.isnumeric():
