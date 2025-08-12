@@ -178,7 +178,7 @@ class GAConfig:
             conn.close()
             print("  >> Database connection parameters look OK")
         except psycopg.OperationalError as err:
-            print(f"\n  ERROR: Issue to connect to the database {self.config_values['db_name']}: {err}")
+            print(f"\n  ERROR: Problem connecting to the database {self.config_values['db_name']}: {err}")
             exit(1)
 
 
