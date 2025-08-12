@@ -25,7 +25,7 @@ Content
 * [Additional documentation](./docs/Contents.md)
 
 
-Files required for the example instructions below (you can, of course, use your own):
+Files required to deploy the dashboard (you will need your own versions of these):
 
 * [Scripts configuration file](#configuration-files): template `config_templates.txt` (in `scripts/`) to copy and edit.
 * [Cluster config file](#configuration-files): `cluster_info.yaml` (in `docs/templates/`)
