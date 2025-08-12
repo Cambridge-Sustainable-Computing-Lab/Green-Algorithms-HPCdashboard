@@ -56,7 +56,7 @@ input_log_file = <input_log_file_path>
 # Name of data source (on Grafana).
 name = grafana-postgresql-ga_db
 
-# The name of the file to be written, for storing the output of sacct (e.g. my_sacct_output.txt).
+# The name and path of the file to be written, for storing the output of sacct (e.g. my_sacct_output.txt).
 outFile = <outFile_path>
 
 # PostgreSQL version, e.g. 15
