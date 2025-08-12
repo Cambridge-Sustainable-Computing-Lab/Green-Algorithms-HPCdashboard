@@ -22,18 +22,18 @@ etc.
 Laurent says 'Team name' is mapped to 'Group' in the sample BACKEND csv file (anonymised).
 
 Example (using Grafana admin defaults) from `GA4HPCdashboard` top directory:
-python scripts/frontend/import_users.py --grafana_users_file docs/templates/sample_user_list.csv --admin_login admin --admin_password <password>
+python scripts/frontend/import_users.py --dashboard_users_file docs/templates/sample_user_list.csv --admin_login admin --admin_password <password>
 
 """ 
 
 def main():
     argparser = argparse.ArgumentParser(description="Import users in user list file to Grafana.")
-    argparser.add_argument("--grafana_users_file", "-i", help='User list in CSV format', required=True, metavar='INPUT_FILE', dest='grafana_users_file')
+    argparser.add_argument("--dashboard_users_file", "-i", help='Location of dashboard user list, in CSV format', required=True, metavar='INPUT_FILE', dest='dashboard_users_file')
     argparser.add_argument("--url", help='Grafana URL', required=False, metavar='URL', default='localhost:3000')
     argparser.add_argument("--admin_login", "-l", help='Grafana admin name', required=False, metavar='ADMIN_NAME', default='admin', dest='login')
     argparser.add_argument("--admin_password", "-p", help='Grafana admin password', required=True, metavar='ADMIN_PASS', dest='password')
     argparser.add_argument("--debug", "-d", help='Debug mode', required=False, dest='debug', action='store_true')
-    argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder', required=False, dest='dashboard_folder_name', default='Green Algorithms')
+    argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder on Grafana', required=False, dest='dashboard_folder_name', default='Green Algorithms')
 
     args = argparser.parse_args()
 

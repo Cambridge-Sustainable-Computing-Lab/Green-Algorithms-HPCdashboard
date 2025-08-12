@@ -20,6 +20,9 @@ cluster_info_file = <cluster_info_file_path>
 # Name of the dashboard folder (on Grafana).
 dashboard_folder_name = Green Algorithms
 
+# Dashboard users file (e.g., `docs/templates/sample_user_list.csv`)
+dashboard_users_file = <dashboard_users_file_path>
+
 # Machine (e.g. IP address) hosting your database (e.g. localhost).
 db_host = <db_host>
 
@@ -43,15 +46,7 @@ endDay = <YYYY-MM-DD>
 
 # The fixed parameters YAML file to use (e.g. ga_dashboard/data/fixed_parameters.yaml).
 fixed_params_file = <fixed_params_file_path>
-
-# File containing list of Grafana users (e.g. docs/templates/sample_user_list.csv).
-# NB Do not store passwords in the file.
-grafana_users_file = <grafana_users_file_path>  
-        
-# CSV file of (HPC) user data (e.g. docs/templates/sample_user_list.csv).
-# NB Do not store passwords in the file.
-hpc_users_file = <hpc_users_file_path>
-
+       
 # Dashboard JSON files directory, on disk.
 input_dir = ga_dashboard/dashboards
 
