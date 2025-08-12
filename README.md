@@ -5,9 +5,9 @@ Repository used to set up the Green Algorithms dashboards, using [Grafana](https
 The system is composed of:
 * A backend, which obtains usage data from the HPC system (using the `sacct` command), aggregates it (to one row per user per day), and enriches it (adds carbon footprint data).
 * A PostgreSQL database to store the HPC usage calculated by the backend
-* A frontend, which uses Grafana to query the database and display the data through graph and charts.
+* A frontend, which uses Grafana to query the database and display the data through graphs and charts.
 
-Content
+### Contents
 * [Prerequisites](#prerequisites)
   * [Python environment](#python-environment-miniforge)
   * [`ga_dashboard` python package](#install-the-ga_dashboard-python-package)
@@ -57,7 +57,6 @@ $ conda env list
 
 
 ### Install the `ga_dashboard` python package
-We assume you have `git` installed on your system.
 
 In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory), type:
 ```
@@ -79,7 +78,7 @@ Later, it may be necessary to get a version of Postgres for your platform which 
 may require compiling Postgres yourself with the appropriate options. However, this is not
 needed for the simple demo. 
 
-Choose a username and password for the Postgres admin user. The former is usually `postgres` (although you can choose what you want). Do not record this sensitive password in a file! (In these instructions, we assume that the admin user name is `postgres`.) (If you forget the password at any point, try [these steps](https://stackoverflow.com/questions/14588212/postgresql-resetting-password-of-postgresql-on-ubuntu).)
+Choose a username and password for the Postgres admin user. The former is usually `postgres` (although you can choose what you want). Do not record this sensitive password in a file! In these instructions, we assume that the admin user name is `postgres`. (If you forget the password at any point, try [these steps](https://stackoverflow.com/questions/14588212/postgresql-resetting-password-of-postgresql-on-ubuntu).)
 
 Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
 
@@ -94,7 +93,7 @@ By default, the super-user on Grafana is called `admin`, and has the password `a
 ---
 ## Configuration files
 
-A number of config files are required by the system (e.g., to calculate the carbon footprint), as well as list of dashboard users:
+A number of config files are required by the system (e.g., to calculate the carbon footprint), as well as a list of dashboard users:
 
 ### System configuration files
 As well as a list of dashboard users, the system needs:
