@@ -144,7 +144,7 @@ class GADashboardInstall:
         '''
         Parse the config file and obtain any parameter values set by user.
         '''
-        ga_config = GAConfig(config_file)
+        ga_config = GAConfig(self.config_file)
         ga_config.ingest_config_file()
         self.ga_config_values = ga_config.config_values
 
