@@ -37,7 +37,7 @@ def main():
 
     args = argparser.parse_args()
 
-    input_file = args.grafana_users_file
+    input_file = args.dashboard_users_file
     grafana_url = args.url
     login = args.login
     password = args.password

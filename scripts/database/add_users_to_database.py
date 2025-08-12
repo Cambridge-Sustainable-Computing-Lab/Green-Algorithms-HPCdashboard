@@ -91,7 +91,7 @@ def create_arguments():
 
     args = parser.parse_args()
 
-    input_file = args.hpc_users_file
+    input_file = args.dashboard_users_file
     if not os.path.isfile(input_file):
         logger.error("File '" + input_file + "' can't be found")
         exit(1)

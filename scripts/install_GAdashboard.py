@@ -191,8 +191,7 @@ class GADashboardInstall:
 # e.g. python scripts/install_GAdashboard.py --config my_config.txt
 if __name__ == "__main__":
 
-    argparser = argparse.ArgumentParser(description="Script to initialise the database storing the Green Algorithms data and setup Grafana.",
-                                        epilog="Uses sample config file by default.")
+    argparser = argparse.ArgumentParser(description="Script to initialise the database storing the Green Algorithms data and setup Grafana.")
     
     argparser.add_argument("--config", help='Name of config file for your parameter values.', required=True, \
                             metavar='CONFIG_FILE', dest='config')

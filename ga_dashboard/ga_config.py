@@ -12,14 +12,13 @@ class GAConfig:
         'admin_login': { 'expected_type': 'string' },
         'cluster_info_file': { 'expected_type': 'path' },
         'dashboard_folder_name': { 'expected_type': 'string' },
+        'dashboard_users_file': { 'expected_type': 'string' },
         'db_host': { 'expected_type': 'string' },
         'db_name': { 'expected_type': 'string' },
         'db_port': { 'expected_type': 'numeric' },
         'db_script': { 'expected_type': 'string' },
         'db_user': { 'expected_type': 'string' },
         'fixed_params_file': { 'expected_type': 'path' },
-        'grafana_users_file': { 'expected_type': 'path' },
-        'hpc_users_file': { 'expected_type': 'path' },
         'input_dir': { 'expected_type': 'path' },
         'name': { 'expected_type': 'string' },
         'outFile': { 'expected_type': 'string' }, # Path doesn't exist yet
@@ -99,7 +98,7 @@ class GAConfig:
                 value = self.config_values[conf_param]
 
                 is_valid = self._is_valid_type(conf_param,expected_type,value)
-                if is_valid == False:
+                if not is_valid:
                     invalid_items[conf_param] = {
                         'type': type(self.config_values[conf_param]),
                         'expected_type': expected_type,
@@ -113,7 +112,7 @@ class GAConfig:
 
                 is_valid = self._is_valid_type(extra_conf_param,expected_type,value)
 
-                if is_valid == False:
+                if not is_valid:
                     invalid_items[extra_conf_param] = {
                         'type': type(self.config_values[extra_conf_param]),
                         'expected_type': expected_type,
@@ -130,7 +129,7 @@ class GAConfig:
                     print(f"  ERROR: Configuration for '{conf_param}': format unexpected ({invalid_items[conf_param]['type']} instead of {invalid_items[conf_param]['expected_type']}) => '{invalid_items[conf_param]['value']}'")
             exit(1)
         else:
-            print(f"  >> Configuration parameters look OK")
+            print("  >> Configuration parameters look OK")
 
 
     def _is_valid_type(self, conf_param:str, expected_type:str, value) -> bool:
