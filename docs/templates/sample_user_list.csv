@@ -1,4 +1,4 @@
-User,UID,Name,Email,Group,Department,Password
+User,UID,Name,Email,Group,Department,GrafanaPassword
 uid_1,11111,John Smith,user1@example.com,group_1,Dept_3,*0IK^I^&UpO$2aX
 uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3,yGg=kA-6v**7BS)
 uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3,ibVvlpo$r7b0u

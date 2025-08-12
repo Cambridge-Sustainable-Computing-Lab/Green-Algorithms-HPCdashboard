@@ -8,11 +8,7 @@
 # in the config file.
 
 import argparse
-#import maskpass  # to hide the passwords
-#import subprocess
-#import sys
 from collections import OrderedDict
-#from ga_dashboard.ga_config import GAConfig
 from install_GAdashboard import GADashboardInstall 
 
 class GADashboardAddUsers (GADashboardInstall):
@@ -52,12 +48,9 @@ class GADashboardAddUsers (GADashboardInstall):
         # Fetch config file data
         self.config_file = config_file
         self.ingest_config_file()
+  
 
-     
-
-
-
-# e.g. python scripts/install_GAdashboard.py --config my_config.txt
+# e.g. python scripts/add_users.py --config my_config.txt
 if __name__ == "__main__":
 
     argparser = argparse.ArgumentParser(description="Script to add users to the dashboard.")

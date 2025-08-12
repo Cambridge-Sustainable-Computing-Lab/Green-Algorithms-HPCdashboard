@@ -4,7 +4,6 @@ import logging
 import os
 
 from ga_dashboard.grafana_ga.folder import GrafanaGAFolder
-from ga_dashboard.grafana_ga.password_gen import initialise_strict_password_generator
 from ga_dashboard.grafana_ga.user import GrafanaGAUser
 
 logger = logging.getLogger(__name__)
@@ -12,12 +11,15 @@ logger = logging.getLogger(__name__)
 """
 This script allows multiple users to be imported into Grafana, without using the web interface to add them.
 
-Example user list for Grafana users. In CSV format.
+Example user list in CSV format:
 
-Name,User,Email,Team name
-User_1,uid_1,user1@example.com,Team 1
-User_2,uid_2,user2@example.com,Team 1
-etc.
+User,UID,Name,Email,Group,Department,Password
+uid_1,11111,John Smith,user1@example.com,group_1,Dept_3,*0IK^I^&UpO$2aX
+uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3,yGg=kA-6v**7BS)
+uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3,ibVvlpo$r7b0u
+uid_4,44444,Lisa Bookbinder,user4@example.com,group_3,Dept_2,!3Q4o&%Fs5SE2
+uid_5,55555,Ali Hassan,user5@example.com,group_4,Dept_1,qiY_pI%7BFz<JT
+
 
 Laurent says 'Team name' is mapped to 'Group' in the sample BACKEND csv file (anonymised).
 
@@ -40,7 +42,7 @@ def main():
     input_file = args.dashboard_users_file
     grafana_url = args.url
     login = args.login
-    password = args.password
+    password = args.password  # The Grafana password of an admin user, running this script.
     debug = args.debug
     ga_dashboard_folder_name = args.dashboard_folder_name
 
@@ -52,7 +54,7 @@ def main():
         exit(1)
 
     # Set up password generator
-    PWG = initialise_strict_password_generator()
+    #PWG = initialise_strict_password_generator()
 
     # current_grafana_user is the person corresponding to the Grafana admin/whoever is running this script.
     current_grafana_user = GrafanaGAUser(login, password, grafana_url, ga_dashboard_folder_name)
@@ -67,15 +69,11 @@ def main():
             else:
                 logger.error("No Group in users file!")
                 exit(1)
-            
-            # Generate password. It's up to you to decide what to do with it.
-            grafana_password = PWG.generate()
-            row['GrafanaPassword'] = grafana_password
-         
+             
             # Create Grafana user (if needed)
             row['org_id'] = 1 # Default organisation
             if (current_grafana_user.create_user(row)):
-                logger.info(f"** Grafana password for user {row['User']} is {grafana_password} **")
+                logger.info(f"** Added dashboard user {row['User']} to Grafana. **")
 
     # Folder
     grafana_folder = GrafanaGAFolder(login, password, grafana_url, ga_dashboard_folder_name)
