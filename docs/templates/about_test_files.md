@@ -5,8 +5,8 @@ These are anonymised test files to use for debugging and development. Their main
 
 The two files that are most relevant are:
 - To run the code offline on a single user, use `--useCustomLogs sacct_output_single_user.txt`
-- To run the code on multiple users (either offline or without admin rights), use `--use_mock_agg_data`, which will use `df_agg_X_mockMultiUsers_1.csv`.
-- To run only the database generation (and possibly frontend), bypassing the backend, use `userDaily_mockMultiUsers_1.csv`.
+- To run the code on multiple users (either offline or without admin rights), use `--use_mock_agg_data`, which will use `extracted_multi_users.csv`.
+- To run only the database generation (and possibly frontend), bypassing the backend, use `aggregated_multi_users.csv`.
 
 The other files can mostly be ignored (although can occasionally be useful for debugging).
 
