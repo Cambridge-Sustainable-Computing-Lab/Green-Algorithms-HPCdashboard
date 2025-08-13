@@ -2,7 +2,6 @@ import pytest
 
 # This works if run as `pytest` from the `GA4HPCdashboard` directory.
 
-#from ga_dashboard.backend.utils import validate_args
 from ga_dashboard.backend.data_sql_import import parse_string_to_number # , DataSQLImport
 from ga_dashboard.backend.ga_tools import main_backend # GA_tools, extract_data, agg_functions_from_raw,
 

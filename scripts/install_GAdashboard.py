@@ -110,10 +110,6 @@ class GADashboardInstall:
                 if value == "True":
                     components.append("--debug")
                 continue
-            if item == "create_password_file":
-                if value == "True":
-                    components.append("--create_password_file")
-                continue
 
             # Value can't be None or "None", as that isn't very helpful
             if ( value and value != "None" ):
