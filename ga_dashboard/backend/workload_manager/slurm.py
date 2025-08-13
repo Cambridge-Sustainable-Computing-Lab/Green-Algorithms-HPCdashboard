@@ -250,7 +250,7 @@ class WorkloadManager(Helpers_WM):
 
     def use_as_admin(self) -> bool:
         has_slurmAdmin = False
-        if 'db_name' in self.arconfig_datags_dict.keys():
+        if 'db_name' in self.config_data.keys():
             has_slurmAdmin = True
         elif 'slurmAdmin' in self.config_data.keys():
             if 'slurmAdmin' in self.config_data.keys():
@@ -286,16 +286,16 @@ class WorkloadManager(Helpers_WM):
             bash_com = [
                 "sacct",
                 "--starttime",
-                self.config_data.startDay, # format YYYY-MM-DD
+                self.config_data['startDay'], # format YYYY-MM-DD
                 "--endtime",
-                self.config_data.endDay,  # format YYYY-MM-DD
+                self.config_data['endDay'],  # format YYYY-MM-DD
                 "--format",
                 "UID,User,JobID,JobName,Submit,Elapsed,Partition,NNodes,NCPUS,TotalCPU,CPUTime,ReqMem,MaxRSS,WorkDir,State,Account,AllocTres",
                 "-P",
                 "-L"  # All clusters
             ]
 
-            if self.use_as_admin(self.config_data):
+            if self.use_as_admin():
                 bash_com.append('--allusers')
 
             logs = subprocess.run(bash_com, capture_output=True)
