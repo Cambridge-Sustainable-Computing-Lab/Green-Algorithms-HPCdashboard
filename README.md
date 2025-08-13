@@ -72,11 +72,9 @@ $ python -m pip install -e .
 ### Database server - PostgreSQL
 Install PostgreSQL locally or have access to a PostgreSQL server.
 
-For Macs, we have used the relevant [Enterprise DB installer](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) to start with. Follow the instructions for your system.
+It is assumed that the operating system used to run the dashboard will be a flavour of UNIX/Linux. However, if you want to run it on a Mac, we suggest you use the relevant [Enterprise DB installer](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) to start with. Regardless, follow the instructions for your system.
 
-Later, it may be necessary to get a version of Postgres for your platform which supports ssh. This
-may require compiling Postgres yourself with the appropriate options. However, this is not
-needed for the simple demo. 
+Later, it may be necessary to get a version of Postgres for your platform which supports ssh. This may require compiling Postgres yourself with the appropriate options. However, this is not needed for the simple demo. 
 
 Choose a username and password for the Postgres admin user. The former is usually `postgres` (although you can choose what you want). Do not record this sensitive password in a file! In these instructions, we assume that the admin user name is `postgres`. (If you forget the password at any point, try [these steps](https://stackoverflow.com/questions/14588212/postgresql-resetting-password-of-postgresql-on-ubuntu).)
 
@@ -227,7 +225,7 @@ $ cd /.../grafana/
 $ ./bin/grafana server
 ```
 
-Depending on your system, you may not be able to do this. For example, on Linux, you might need to use these steps to run the Grafana server after installation:
+Alternatively, you might need to use these steps to run the Grafana server after installation:
 
 ```
 $ sudo bin/systemctl daemon-reload
