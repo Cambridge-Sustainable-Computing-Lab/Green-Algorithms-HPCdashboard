@@ -189,7 +189,9 @@ The 2 scripts proceed to:
 > [!NOTE]
 > Both scripts will run the `sacct` command (on HPC) unless you use the `useCustomLogs` in the scripts configuration file. See below how to use the `useCustomLogs` parameter.
 
-The (anonymised) examples of files you can use with `useCustomLogs` are:
+It may not always be possible to run all the steps in these 2 Python scripts. For example, the HPC system on which you want to collect the Slurm logs (via the scripts calling `sacct`) might not be able to connect to a Postgres database. In such cases, you will have to download the Slurm log data to a file on a system which *can* connect to Postgres, and then run the scripts using this file. To do so requires use of the `useCustomLogs` flag.
+
+Examples (anonymised) in the file format required to use this flag are:
 
 * `docs/templates/sacct_output_single_user.txt`
   > Example of output generated, for one user, by the `sacct` command on the HPC system.
