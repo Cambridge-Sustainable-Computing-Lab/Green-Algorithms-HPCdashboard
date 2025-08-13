@@ -26,7 +26,7 @@ def generate_namespace(logfile: str) -> argparse.Namespace:
     cwd = os.getcwd()
     print("cwd is " + cwd) # Hopefully the GA4HPCdashboard dir
 
-    # Get path to samples/subdir
+    # Get path to testdata/ subdir
     ns.path_infrastructure_info = os.path.join(cwd, 'tests/testdata')
     #ns.useCustomLogs = os.path.join(ns.path_infrastructure_info, 'sacct_output_single_user.txt')
     ns.useCustomLogs = os.path.join(ns.path_infrastructure_info, logfile)

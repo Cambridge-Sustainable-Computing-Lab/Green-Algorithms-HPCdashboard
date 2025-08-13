@@ -7,9 +7,9 @@
 #
 # sh scripts/backend/run_backend.sh --db_name ga_db --db_user postgres --db_password <password>
 #      # -S 2025-02-14 -E 2025-02-18   <--- NB dates are not needed if you are using a custom log file
-#      --useOtherInfrastructureInfo ~/repos/GA4HPCdashboard/ga_dashboard/samples
-#      --useCustomLogs ~/repos/GA4HPCdashboard/ga_dashboard/samples/sacct_output_single_user.txt
-#      --fixed_params_file ~/repos/GA4HPCdashboard/ga_dashboard/data/fixed_parameters.yaml
+#      --useOtherInfrastructureInfo ~/repos/GA4HPCdashboard/docs/templates
+#      --useCustomLogs ~/repos/GA4HPCdashboard/tests/testdata/sacct_output_single_user.txt
+#      --fixed_params_file ~/repos/GA4HPCdashboard/docs/templates/fixed_parameters.yaml
 
 # NB The --useOtherInfrastructureInfo argument is the path to the directory
 # containing both the cluster_info.yaml and 

@@ -12,14 +12,13 @@ class GAConfig:
         'admin_login': { 'expected_type': 'string' },
         'cluster_info_file': { 'expected_type': 'path' },
         'dashboard_folder_name': { 'expected_type': 'string' },
+        'dashboard_users_file': { 'expected_type': 'string' },
         'db_host': { 'expected_type': 'string' },
         'db_name': { 'expected_type': 'string' },
         'db_port': { 'expected_type': 'numeric' },
         'db_script': { 'expected_type': 'string' },
         'db_user': { 'expected_type': 'string' },
         'fixed_params_file': { 'expected_type': 'path' },
-        'grafana_users_file': { 'expected_type': 'path' },
-        'hpc_users_file': { 'expected_type': 'path' },
         'input_dir': { 'expected_type': 'path' },
         'name': { 'expected_type': 'string' },
         'outFile': { 'expected_type': 'string' }, # Path doesn't exist yet
@@ -179,7 +178,7 @@ class GAConfig:
             conn.close()
             print("  >> Database connection parameters look OK")
         except psycopg.OperationalError as err:
-            print(f"\n  ERROR: Issue to connect to the database {self.config_values['db_name']}: {err}")
+            print(f"\n  ERROR: Problem connecting to the database {self.config_values['db_name']}: {err}")
             exit(1)
 
 

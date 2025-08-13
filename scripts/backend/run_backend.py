@@ -21,13 +21,13 @@ def create_arguments():
 
     default_endDay = datetime.date.today().strftime("%Y-%m-%d")  # today
 
-    default_cluster_info = "ga_dashboard/samples/cluster_info.yaml"
+    default_cluster_info = "docs/templates/cluster_info.yaml"
     default_db = "ga_db"
     default_db_host = "localhost"
     default_db_port = "5432"
     default_db_user = "postgres"
     default_fixed_params_file = "ga_dashboard/data/fixed_parameters.yaml"
-    default_hpc_users = "ga_dashboard/samples/hpc_users_list.csv"
+    default_dashboard_users_file = "docs/templates/sample_user_list.csv"
 
     ## Timeframe
     # NB These two arguments aren't needed if --useCustomLogs is used.
@@ -78,7 +78,7 @@ def create_arguments():
     parser.add_argument('--fixed_params_file', type=str, help='The fixed parameters file to use.',
                          default=default_fixed_params_file)
     parser.add_argument('--cluster_info_file', type=str, help='The cluster info file to use.', default=default_cluster_info)
-    parser.add_argument('--hpc_users_file', type=str, help='File with details of HPC users.', default=default_hpc_users)
+    parser.add_argument('--dashboard_users_file', type=str, help='File with details of dashboard users.', default=default_dashboard_users_file)
 
     ## Reporting bugs
     group1 = parser.add_mutually_exclusive_group()

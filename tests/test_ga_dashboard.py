@@ -24,7 +24,7 @@ def test_check_slurm_data_file(): # To test check_slurm_data_file()
 # Just placeholders for now
 
 FIXED_PARAMS_FILE = "ga_dashboard/data/fixed_parameters.yaml"
-CLUSTER_INFO_FILE = "ga_dashboard/samples/cluster_info.yaml"
+CLUSTER_INFO_FILE = "docs/templates/cluster_info.yaml"
 
 
 # parse_string_to_number()
@@ -41,7 +41,7 @@ def test_parse_string_to_number(a, expected):
 
 # This isn't really a proper test.
 def test_main_backend():
-    
+
     config_data = {}
 
     config_data['startDay'] = '2022-01-01'
@@ -64,13 +64,13 @@ def test_main_backend():
 # `sacct` can only be called from CSD3, and `sacct --allusers` can only be called with admin rights (which we don’t have on CSD3).
 # So for now, the backend can be tested two different ways:
 #
-# - By using a single users’ `sacct` output, e.g. Loïc’s: `testdata/sacct_output_loic1.txt` which only bypasses the `sacct` call.
+# - By using a single users’ `sacct` output, e.g. Loïc’s: `tests/testdata/sacct_output_single_user.txt` which only bypasses the `sacct` call.
 # This is the equivalent of `WorkloadManager.logs_raw` .
 #
 # - By using a simulated aggregated output (equivalent to `df_agg_X` ) containing multiple users’ data. For example,
-# `testdata/df_agg_X_mockMultiUsers_1` can be used for this.
+# `tests/testdata/extracted_multi_users.csv` can be used for this.
 #
 #
 ## For the frontend
 #
-# The frontend can use data aggregated further (1 row per user per day), e.g. `testdata/userDaily_mockMultiUsers_1.csv`
+# The frontend can use data aggregated further (1 row per user per day), e.g. `tests/testdata/aggregated_multi_users.csv`

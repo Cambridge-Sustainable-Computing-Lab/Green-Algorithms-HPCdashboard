@@ -11,8 +11,8 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Script used to calculate Green Algorithms from HPC logs.",
                                         epilog="Requires a config file.")
     
-    argparser.add_argument("--config", help='Name of config file for your parameter values.', required=False, \
-                            metavar='CONFIG_FILE', default="scripts/sample_config.txt", dest='config')
+    argparser.add_argument("--config", help='Name of config file for your parameter values.', required=True, \
+                            metavar='CONFIG_FILE', dest='config')
 
     args = argparser.parse_args()
     config_file = args.config

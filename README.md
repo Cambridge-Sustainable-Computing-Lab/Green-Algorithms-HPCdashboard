@@ -1,13 +1,13 @@
-# GA4HPCdashsboard: Deployment notes
+# GA4HPCdashboard: Deployment notes
 
-Repository used to setup the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database. This allows you to examine HPC usage over time, with helpful graphs, charts, etc.
+Repository used to set up the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database. This allows you to examine HPC usage over time, with helpful graphs, charts, etc.
 
 The system is composed of:
 * A backend, which obtains usage data from the HPC system (using the `sacct` command), aggregates it (to one row per user per day), and enriches it (adds carbon footprint data).
 * A PostgreSQL database to store the HPC usage calculated by the backend
 * A frontend, which uses Grafana to query the database and display the data through graphs and charts.
 
-Content
+### Contents
 * [Prerequisites](#prerequisites)
   * [Python environment](#python-environment-miniforge)
   * [`ga_dashboard` python package](#install-the-ga_dashboard-python-package)
@@ -15,9 +15,7 @@ Content
   * [Dashboard platform - Grafana](#dashboard-platform---grafana)
 * [Configuration files](#configuration-files)
   * [System configuration files](#system-configuration-files)
-  * [HPC users file](#hpc-users-file)
-  * [Grafana users file](#generate-a-grafana-users-file---csv-format)
-  * [Using the same file for both](#using-the-same-file-for-both)
+  * [Dashboard users file](#list-of-users)
 * [Install Green Algorithms dashboard](#install-green-algorithms-dashboard)
 * [HPC usage data collection](#hpc-usage-data-collection)
 * [Green Algorithms dashboards](#green-algorithms-dashboards)
@@ -26,12 +24,11 @@ Content
 * [Additional documentation](./docs/Contents.md)
 
 
-Files required for the example instructions below (you can, of course, use your own):
+Files required to deploy the dashboard (you will need your own versions of these):
 
-* [Scripts configuration file](#configuration-files): template `config_templates.txt` (in `scripts/`) to copy and edit.
-* [Cluster config file](#configuration-files): `cluster_info.yaml` (in `ga_dashboard/samples/`)
-* [HPC users for DB](#hpc-users-file): `hpc_users_list.csv` (in `ga_dashboard/samples/`)
-* [Grafana user file](#generate-a-grafana-users-file---csv-format): `grafana_users_list.csv` (in `ga_dashboard/samples/`)
+* [Scripts configuration file](#configuration-files): template `config_templates.txt` (in `docs/templates/`) to copy and edit.
+* [Cluster config file](#configuration-files): `cluster_info.yaml` (in `docs/templates/`)
+* [Dashboard users file](#list-of-users) `sample_user_list.csv` (in `docs/templates/`)
 * [Fixed parameters file](#configuration-files). Example: `ga_dashboard/data/fixed_parameters.yaml`
 
 
@@ -59,13 +56,12 @@ $ conda env list
 
 
 ### Install the `ga_dashboard` python package
-We assume you have `git` installed on your system.
 
 In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory), type:
 ```
 $ python -m pip install .
 ```
-This should install the `ga_dashboard` package on your local machine. If you want to be able to 
+(Note the period character at the end). This should install the `ga_dashboard` package on your local machine. if you want to be able to 
 edit it and still use it, use the `-e` option:
 ```
 $ python -m pip install -e .
@@ -75,96 +71,75 @@ $ python -m pip install -e .
 ### Database server - PostgreSQL
 Install PostgreSQL locally or have access to a PostgreSQL server.
 
-For Macs, we have used the relevant [Enterprise DB installer](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) to start with. Follow the instructions for your system.
+It is assumed that the operating system used to run the dashboard will be a flavour of UNIX/Linux. However, if you want to run it on a Mac, we suggest you use the relevant [Enterprise DB installer](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) to start with. Regardless, follow the instructions for your system.
 
-Later, it may be necessary to get a version of Postgres for your platform which supports ssh. This
-may require compiling Postgres yourself with the appropriate options. However, this is not
-needed for the simple demo. 
+Later, it may be necessary to get a version of Postgres for your platform which supports ssh. This may require compiling Postgres yourself with the appropriate options. However, this is not needed for the simple demo. 
 
-Choose a username and password for the Postgres admin user. The former is usually `postgres` (although you can choose what you want). Do not record the password in a file! (In these instructions, we assume that the admin user name is `postgres`.) (If you forget the password at any point, try [these steps](https://stackoverflow.com/questions/14588212/postgresql-resetting-password-of-postgresql-on-ubuntu).)
+Choose a username and password for the Postgres admin user. The former is usually `postgres` (although you can choose what you want). Do not record this sensitive password in a file! In these instructions, we assume that the admin user name is `postgres`. (If you forget the password at any point, try [these steps](https://stackoverflow.com/questions/14588212/postgresql-resetting-password-of-postgresql-on-ubuntu).)
 
 Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
 
 
 ### Dashboard platform - Grafana
 
-Install the self-managed installation (Enterprise, just in case we want to host it on the cloud): [https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1](https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1)
+Install the [self-managed installation](https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1) (Enterprise, just in case we want to host it on the cloud).
+
+By default, the super-user on Grafana is called `admin`, and has the password `admin`. You will probably want to change this, to make your set-up more secure.
 
 
 ---
 ## Configuration files
 
-A number of config files are required by the system (e.g., to calculate the carbon footprint), as well as list of users for the database and for Grafana:
+A number of config files are required by the system (e.g., to calculate the carbon footprint), as well as a list of dashboard users:
 
 ### System configuration files
-As well as a list of users for the database, and another list for Grafana, the system needs:
+As well as a list of dashboard users, the system needs:
 * A **scripts configuration file** with all the required parameters (database connection, paths to the others configurations files, ...). You can:
-  * Copy the template provided in `scripts/config_templates.txt` (e.g., to `<your_config_file.txt>`)
+  * Copy the template provided in `docs/templates/config_templates.txt` (e.g., to `<your_config_file.txt>`)
   * Replace all the parameters surrounded by the `< >` characters
   * Uncomment the optional parameters you want to use.
-* **Information about your HPC cluster**. Example: `ga_dashboard/samples/cluster_info.yaml`. 
+* **Information about your HPC cluster**. Example: `docs/templates/cluster_info.yaml`. 
   * You will need to acquire the information about your own cluster, and present it in the same YAML format as the example file. Each partition (a set of computing nodes with a dedicated queue) will need information for `type` (CPU or GPU), `model` and `TDP`. This last you may have to find from data sheets on the internet. For partitions of `type` GPU, you will also need values for `model_CPU` and `TDP_CPU`. 
   * Note also that you will need values for the other items in the file: `institution`, `cluster_name`, `granularity_memory_request`, `PUE`, etc.
 * **Fixed parameters file**. Example: `ga_dashboard/data/fixed_parameters.yaml`. We suggest you use this example file for now.
 
 
-### HPC users file
-You will need a file with details of your HPC users for whom you are obtaining `sacct` data (e.g. name, group).
-The HPC users file should be a comma-separated file combining these columns:
+
+### List of users
+
+This is a file with details of your Dashboard users, to collate their HPC use and create a Grafana account for them.
+
+The users file should be a comma-separated file combining these columns:
 * **User name**: Company/Institute user name (e.g. tg1)
 * **User unique identifier** (UID): Numeric user unique idendifier (e.g. 11111)
 * **Name**: Full user name (e.g. Thomas Greene)
+* **Email**: email address of user
 * **Group name**: Name of the user group/team (e.g. group 1)
 * **Department name**: Name of the user department/unit (e.g. Dept 3)
+* **GrafanaPassword**: Password required by this user for Grafana. By default, users only have view access.
 
-For example, in `ga_dashboard/samples/hpc_users_list.csv`, or like this:
+For example in `docs/templates/sample_user_list.csv`:
 ```
-User,UID,Name,Group,Department
-tg1,11111,Thomas Greene,group 1,Dept 3
-am1,22222,Adam Mackay,group 1,Dept 3
-...
+User,UID,Name,Email,Group,Department,GrafanaPassword
+uid_1,11111,John Smith,user1@example.com,group_1,Dept_3,*0IK^I^&UpO$2aX
+uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3,yGg=kA-6v**7BS)
+uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3,ibVvlpo$r7b0u
+uid_4,44444,Lisa Bookbinder,user4@example.com,group_3,Dept_2,!3Q4o&%Fs5SE2
+uid_5,55555,Ali Hassan,user5@example.com,group_4,Dept_1,qiY_pI%7BFz<JT
 ```
 
 Displayed as a table:
-| User| UID   | Name          | Group   | Department |
-| ----|------ | ------------- | ------- | ---------- |
-| tg1 | 11111 | Thomas Greene | group 1 | Dept 3     |
-| am1 | 22222 | Adam Mackay   | group 1 | Dept 3     |
-| ... | ...   | ...           | ...     | ...        |
+
+| User | UID   | Name          | Email | Group   | Department | GrafanaPassword |
+| -----|------ | ------------- | ------- | ---------- | ----| ------------ |
+| uid_1 | 11111 | John Smith | user1@example.com | group 1 | Dept 3     | *0IK^I^&UpO$2aX |
+| uid_2 | 22222 | Sarah Jones | user2@example.com   | group 1 | Dept 3     | yGg=kA-6v**7BS) |
+| ...   | ...   | ...           | ...     | ...  | ...      | ... |
 
 
-> [!WARNING]  
-> Do not store passwords in this file!
+The passwords in the above example adhere to the [Grafana password policy](https://grafana.com/docs/grafana/next/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy), should you decide to enforce it.
 
-
-### Generate a Grafana users file - csv format
-
-The Grafana users file should be a comma-separated file combining these columns:
-* **Name**: Full user name (e.g. Thomas Greene)
-* **User name**: Company/Institute user name (e.g. tg1)
-* **Email**: Company/Institute user email (e.g. tg1@ga-test.com)
-* **Team name**: Name of the user team/department/unit (e.g. Team 1)
-
-Example of input file format (CSV format with header):
-```
-Name,User name,Email,Team name
-Thomas Greene,tg1,tg1@ga-test.com,Team 1
-Adam Mackay,am1,am1@ga-test.com,Team 2
-...
-```
-Displayed as a table:
-| Name          | User name | Email           |  Team name |
-| ------------- | --------- | --------------- | ---------- |
-| Thomas Greene | tg1       | tg1@ga-test.com |  Team 1    |
-| Adam Mackay   | am1       | am1@ga-test.com |  Team 2    |
-| ...           | ...       | ...             |  ...       |
-
-In this example, we have the same list of users for both the HPC system and Grafana. But you may have some who are on one list only, e.g., a manager might want to have access to the Grafana dashboard, but not the HPC system.
-
-
-An example you can use to try out the system is `ga_dashboard/samples/grafana_users_list.csv`
-
-The passwords generated by this process adhere to [Grafana password policy](https://grafana.com/docs/grafana/next/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy), if you decide to enforce it.
+Make sure the passwords don't contain a comma character (`','`), otherwise this will affect the CSV file parsing.
 
 
 ### Using the same file for both
@@ -179,33 +154,35 @@ User,UID,Name,Email,Group,Department
 ## Install Green Algorithms dashboard
 
 After the creation of your scripts configuration file (cf. [Configuration files](#configuration-files)), you can run the script below to:
-* Create the database (with empty tables)
-* Insert the list of HPC users into this database (using the [HPC users file](#hpc-users-file))
+* Create the database (empty).
+* Insert the list of dashboard users into this database.
 * Setup Grafana:
   * Link the database to Grafana
-  * Create the Green Algorithms folder and import the dashboard(s) in it.
-  * Create Grafana users and teams (using the [Grafana users file](#generate-a-grafana-users-file---csv-format))
-  * Setup Grafana permissions
+  * Create the Green Algorithms folder (on Grafana) and import the dashboard(s) into it.
+  * Add the dashboard users to Grafana.
+  * Setup Grafana folder permissions for the users.
 
 ```
 $ python scripts/install_GAdashboard.py --config <your_config_file.txt>
 ```
-This will prompt you to enter the Grafana admin password and the PostgreSQL user password
+This will prompt you to enter the Grafana admin password and the PostgreSQL user password.
 
 
 ---
 ## HPC usage data collection
 The dashboard extracts usage information from the HPC system. 
 
-You need to make sure you have a list of HPC users in the database (see previous section).
+Each user will need to be added to Postgres.
 
-If you run it for the first time, the command to run is:
+To run it for the first time, the command is:
 ```
 $ python scripts/run_green_algorithms_on_historical_logs.py --config <your_config_file.txt>
 ```
 This will collect all the logs available by default (if no `startDay` / `endDay` are defined in the configuration file).
 
-For a scheduled execution, the command to run is:
+**Note:** we have tested the software successfully with a `sacct`-output data file of more than one million entries. Our intention is to update the software so that it can safely handle much more than this.
+
+For a scheduled execution (e.g. a `cron` job), the command to run is:
 ```
 $ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.txt>
 ```
@@ -220,16 +197,18 @@ The 2 scripts proceed to:
 > [!NOTE]
 > Both scripts will run the `sacct` command (on HPC) unless you use the `useCustomLogs` in the scripts configuration file. See below how to use the `useCustomLogs` parameter.
 
-The (anonymised) examples of files you can use with `useCustomLogs` are:
+It may not always be possible to run all the steps in these 2 Python scripts. For example, the HPC system on which you want to collect the Slurm logs (via the scripts calling `sacct`) might not be able to connect to a Postgres database. In such cases, you will have to download the Slurm log data to a file on a system which *can* connect to Postgres, and then run the scripts using this file. To do so requires use of the `useCustomLogs` flag.
 
-* `ga_dashboard/samples/sacct_output_single_user.txt`
+Examples (anonymised) in the file format required to use this flag are:
+
+* `tests/testdata/sacct_output_single_user.txt`
   > Example of output generated, for one user, by the `sacct` command on the HPC system.
-* `ga_dashboard/samples/sacct_output_multi_user.txt`
+* `tests/testdata/sacct_output_multi_user.txt`
   > Same example as above, but for multiple users.
 
 The backend part of the software will aggregate the data into one row per user per day, enrich it (add carbon footprint data), and then write this to the database. 
 
-In order to do this, you need to uncomment `useCustomLogs` and set it with a value (e.g., `ga_dashboard/samples/sacct_output_multi_user.txt`) in your scripts configuration file, before running: 
+In order to do this, you need to uncomment `useCustomLogs` and set it with a value (e.g. `tests/testdata/sacct_output_multi_user.txt`) in your scripts configuration file before running: 
 
 ```
 $ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.txt>
@@ -256,7 +235,7 @@ $ cd /.../grafana/
 $ ./bin/grafana server
 ```
 
-Depending on your system, you may not be able to do this. For example, on Linux, you will need to use these steps to run the Grafana server after installation:
+Alternatively, you might need to use these steps to run the Grafana server after installation:
 
 ```
 $ sudo bin/systemctl daemon-reload
@@ -271,9 +250,9 @@ In the former case above, you can just CTRL-C the server. In the latter, you mig
 $ sudo bin/systemctl stop grafana-server
 ```
 
-the `systemctl` command might be elsewhere on a Linux system, e.g., `/usr/bin/systemctl`.
+The `systemctl` command might be elsewhere on a Linux system, e.g., `/usr/bin/systemctl`.
 
-Once you have started Grafana on your system, log in as admin on the web browser (admin:admin): [http://localhost:3000/](http://localhost:3000/).  
+Once you have started Grafana on your system, log in as admin on the web browser (Default: admin, admin): [http://localhost:3000/](http://localhost:3000/).  
 
 
 ### Logging in to Grafana
@@ -303,7 +282,7 @@ If you click the little arrow to the left of "Green Algorithms", you should see 
 > [!NOTE]
 > The data you see will depend on (1) which data you loaded into the PostgreSQL database, and (2) the time range you select (which you can either do with the panel near the top-right of the dashboard, or by manually selecting a time range from one of the time series plots.)
 
-For this to work, it assumes you have the PostgreSQL database set up as a "data source" in Grafana (see notes on scripts above).
+For this to work, it assumes you have the PostgreSQL database set up as a "data source" in Grafana (this is done for you automatically by the installation script).
 
 
 
