@@ -18,5 +18,9 @@ Here is a detailed description of the different files:
 
 To generate these test files, example data files have also been used, in particular `sample_user_list.csv` and `cluster_info.yaml` which have simply been adapted to the names/partitions etc. of the example files above.
 
-
+NB for maintainer reference and testing:
+old name                            new name    
+df_agg_X_mockMultiUsers_1.csv       extracted_multi_users.csv
+df_agg_X_mockMultiUsers_2.csv       enriched_multi_users.csv
+userDaily_mockMultiUsers_1.csv      aggregated_multi_users.csv(
 
