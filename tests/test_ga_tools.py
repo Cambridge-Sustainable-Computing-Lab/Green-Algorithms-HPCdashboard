@@ -65,20 +65,37 @@ def get_fixed_params(ns: argparse.Namespace, fp_file: str) -> object:
     return fixed_params
 
 
-def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
+#def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
+#    """
+#    Get the Pandas DataFrame representing the HPC users in user_list_file.
+#    :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
+#    :param user_list_file: [str] Name of users file, e.g., 'sample_user_list.csv'
+#    :return: [pd.DataFrame] The data frame object.
+#    """
+#    try:
+#        users_df = pd.read_csv(os.path.join(ns.path_infrastructure_info, user_list_file))
+#    except FileNotFoundError:
+#        #if has_slurmAdmin:
+#        #    raise ValueError("No user data available.")
+#        users_df = None
+#    return users_df
+
+
+
+def get_users_df(user_list_file: str) -> pd.DataFrame:
     """
-    Get the Pandas DataFrame represneting the HPC users in user_list_file.
-    :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
+    Get the Pandas DataFrame representing the HPC users in user_list_file.
     :param user_list_file: [str] Name of users file, e.g., 'sample_user_list.csv'
     :return: [pd.DataFrame] The data frame object.
     """
     try:
-        users_df = pd.read_csv(os.path.join(ns.path_infrastructure_info, user_list_file))
+        users_df = pd.read_csv(user_list_file)
     except FileNotFoundError:
         #if has_slurmAdmin:
         #    raise ValueError("No user data available.")
         users_df = None
     return users_df
+
 
 
 def test_extract_data():
@@ -116,7 +133,8 @@ def test_extract_data():
     # etc ... all should be the same
     series2 = None
 
-    users_df = get_users_df(ns, 'hpc_users_list.csv')
+    #users_df = get_users_df(ns, 'hpc_users_list.csv')
+    users_df = get_users_df('docs/templates/sample_user_list.csv')
     df2 = enrich_data(df, fixed_params, users_df, GA)
     assert len(df2) == 1
     series2 = df2.squeeze(axis=0) 
