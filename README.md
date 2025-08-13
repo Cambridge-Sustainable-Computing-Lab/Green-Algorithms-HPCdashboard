@@ -195,26 +195,8 @@ The 2 scripts proceed to:
 * Write the data to the database
 
 > [!NOTE]
-> Both scripts will run the `sacct` command (on HPC) unless you use the `useCustomLogs` in the scripts configuration file. See below how to use the `useCustomLogs` parameter.
+> The scripts above have the same admin user run the SLURM `sacct` command to download all the logs, process these logs, and add the processed data to the Postgres database. In some cases, it may not be suitable, e.g., if you want to run the `sacct` command on one machine, transfer the data to another one hosting the database and the two can't communicate directly. We haven't developed this alternative pipeline in the beta version quite yet, but if this is your case, do get in touch, we can walk you through separating the two parts of the code. 
 
-It may not always be possible to run all the steps in these 2 Python scripts. For example, the HPC system on which you want to collect the Slurm logs (via the scripts calling `sacct`) might not be able to connect to a Postgres database. In such cases, you will have to download the Slurm log data to a file on a system which *can* connect to Postgres, and then run the scripts using this file. To do so requires use of the `useCustomLogs` flag.
-
-Examples (anonymised) in the file format required to use this flag are:
-
-* `tests/testdata/sacct_output_single_user.txt`
-  > Example of output generated, for one user, by the `sacct` command on the HPC system.
-* `tests/testdata/sacct_output_multi_user.txt`
-  > Same example as above, but for multiple users.
-
-The backend part of the software will aggregate the data into one row per user per day, enrich it (add carbon footprint data), and then write this to the database. 
-
-In order to do this, you need to uncomment `useCustomLogs` and set it with a value (e.g. `tests/testdata/sacct_output_multi_user.txt`) in your scripts configuration file before running: 
-
-```
-$ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.txt>
-```
-
-NB In order to run the `sacct` command, the scripts will need to run on the HPC system. Other than that, you can run them on your local machine.
 
 ---
 ## Green Algorithms dashboards
