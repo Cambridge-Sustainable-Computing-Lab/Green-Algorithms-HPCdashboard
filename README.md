@@ -27,7 +27,7 @@ The system is composed of:
 
 Files required to deploy the dashboard (you will need your own versions of these):
 
-* [Scripts configuration file](#configuration-files): template `config_templates.txt` (in `scripts/`) to copy and edit.
+* [Scripts configuration file](#configuration-files): template `config_templates.txt` (in `docs/templates/`) to copy and edit.
 * [Cluster config file](#configuration-files): `cluster_info.yaml` (in `docs/templates/`)
 * [Dashboard users file](#list-of-users) `sample_user_list.csv` (in `docs/templates/`)
 * [Fixed parameters file](#configuration-files). Example: `ga_dashboard/data/fixed_parameters.yaml`
@@ -96,7 +96,7 @@ A number of config files are required by the system (e.g., to calculate the carb
 ### System configuration files
 As well as a list of dashboard users, the system needs:
 * A **scripts configuration file** with all the required parameters (database connection, paths to the others configurations files, ...). You can:
-  * Copy the template provided in `scripts/config_templates.txt`
+  * Copy the template provided in `docs/templates/config_templates.txt`
   * Replace all the parameters surrounded by the `< >` characters
   * Uncomment the optional parameters you want to use.
 * **Information about your HPC cluster**. Example: `docs/templates/cluster_info.yaml`.
