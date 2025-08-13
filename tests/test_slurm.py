@@ -7,7 +7,7 @@ import pytest
 
 FIXED_PARAMS_FILE = "ga_dashboard/data/fixed_parameters.yaml"
 CLUSTER_INFO_FILE = "docs/templates/cluster_info.yaml"
-SINGLE_USER_SACCT_FILE = "docs/templates/sacct_output_single_user.txt"
+SINGLE_USER_SACCT_FILE = "tests/testdata/sacct_output_single_user.txt"
 
 # Test Helpers_WM.convert_to_GB()
 @pytest.mark.parametrize( "memory, unit, expected",  
@@ -32,7 +32,7 @@ def test_convert_to_GB(memory, unit, expected):
 # Only one job ran on this day:
 # 11111|uid_1|7611224|somejob_P|2022-11-11T18:54:33|00:13:31|yew-himem|1|5|00:00:00|01:07:35|60150M||another/path|COMPLETED|group_1-sl2-cpu|billing=5,cpu=5,mem=60150M,node=1
 #
-# with open( "docs/templates/sacct_output_single_user.txt", 'rb') as f:
+# with open( "tests/testdata/sacct_output_single_user.txt", 'rb') as f:
 #...     logs_raw = f.read()
 # logs_df = pd.read_csv(BytesIO(logs_raw), sep="|", dtype='str') # data frame
 # select rows with job id 57365635

@@ -43,7 +43,7 @@ DEFAULT_INFRASTRUCTURE_DIR="$repo_root_dir/docs/templates"
 DEFAULT_DATASOURCE_NAME="demo_datasource"  # "grafana-postgresql-ga_db" 
 DEFAULT_POSTGRES_VERSION=13
 DEFAULT_USERS_FILE="$repo_root_dir/docs/templates/sample_user_list.csv"
-DEFAULT_SACCT_FILE="$repo_root_dir/docs/templates/sacct_output_single_user.txt"
+DEFAULT_SACCT_FILE="$repo_root_dir/tests/testdata/sacct_output_single_user.txt"
 DEFAULT_FIXED_PARAMETERS_FILE="$repo_root_dir/ga_dashboard/data/fixed_parameters.yaml"
 
 ###############################################################

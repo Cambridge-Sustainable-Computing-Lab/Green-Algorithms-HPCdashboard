@@ -191,14 +191,14 @@ It may not always be possible to run all the steps in these 2 Python scripts. Fo
 
 Examples (anonymised) in the file format required to use this flag are:
 
-* `docs/templates/sacct_output_single_user.txt`
+* `tests/testdata/sacct_output_single_user.txt`
   > Example of output generated, for one user, by the `sacct` command on the HPC system.
-* `docs/templates/sacct_output_multi_user.txt`
+* `tests/testdata/sacct_output_multi_user.txt`
   > Same example as above, but for multiple users.
 
 The backend part of the software will aggregate the data into one row per user per day, enrich it (add carbon footprint data), and then write this to the database. 
 
-In order to do this, you need to uncomment `useCustomLogs` and set it with a value (e.g. `docs/templates/sacct_output_multi_user.txt`) in your scripts configuration file before running: 
+In order to do this, you need to uncomment `useCustomLogs` and set it with a value (e.g. `tests/testdata/sacct_output_multi_user.txt`) in your scripts configuration file before running: 
 
 ```
 $ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.txt>

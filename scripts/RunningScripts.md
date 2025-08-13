@@ -128,7 +128,7 @@ python scripts/backend/run_backend.py --db_password <password> \
 ```
 Note that:
 * The options for the start and end dates are not needed, as the date range will be determined by the contents of the `sacct` output file.
-* In this example, we use the file `sacct_2025_07_27.txt`, which you just generated. Sample `sacct`-output files are also in the `docs/templates` subdirectory. 
+* In this example, we use the file `sacct_2025_07_27.txt`, which you just generated. Sample `sacct`-output files are also in the `tests/testdata` subdirectory. 
 
 
 ## Grafana set-up

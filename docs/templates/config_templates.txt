@@ -50,7 +50,7 @@ fixed_params_file = <fixed_params_file_path>
 # Dashboard JSON files directory, on disk.
 input_dir = ga_dashboard/dashboards
 
-# Slurm sacct logs data (e.g. docs/templates/extracted_multi_users.csv).
+# Slurm sacct logs data (e.g. tests/testdata/extracted_multi_users.csv).
 input_log_file = <input_log_file_path> 
 
 # Name of data source (on Grafana).
