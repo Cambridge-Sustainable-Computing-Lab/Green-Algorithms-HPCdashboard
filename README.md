@@ -107,7 +107,8 @@ As well as a list of dashboard users, the system needs:
 
 ### List of users
 
-You will need a file with details of your Dashboard users. For each, you will obtain their `sacct` data, and add them to the Postgres database and the Grafana instance.
+This is a file with details of your Dashboard users, to collate their HPC use and create a Grafana account for them.
+
 The users file should be a comma-separated file combining these columns:
 * **User name**: Company/Institute user name (e.g. tg1)
 * **User unique idendifier** (UID): Numeric user unique idendifier (e.g. 11111)
