@@ -69,7 +69,7 @@ def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
     """
     Get the Pandas DataFrame represneting the HPC users in user_list_file.
     :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
-    :param user_list_file: [str] Name of HPC users file, e.g., 'hpc_users_list.csv'
+    :param user_list_file: [str] Name of users file, e.g., 'sample_user_list.csv'
     :return: [pd.DataFrame] The data frame object.
     """
     try:
@@ -85,9 +85,13 @@ def test_extract_data():
     """
     Test the extract_data() function and dataframe
     """   
-    ns = generate_namespace('one_line_sacct_output.txt')
+    logfile = "tests/testdata/one_line_sacct_output.txt"
+    #ns = generate_namespace('one_line_sacct_output.txt')
+    ns = generate_namespace("tests/testdata/one_line_sacct_output.txt")
     cluster_info = get_cluster_info(ns, 'cluster_info.yaml')
-    df = extract_data(ns, True, cluster_info)
+    config_data = {}
+    config_data['useCustomLogs'] = logfile
+    df = extract_data(config_data, True, cluster_info)
 
     assert len(df) == 1  # Only 1 job ran
     myseries = df.squeeze(axis=0) # Convert the one-item dataframe into a pandas series
@@ -123,7 +127,7 @@ def test_extract_data():
     #assert series2.carbonFootprint == 
     # (row.energy_CPUs +  row.energy_GPUs + row[f'energy_memory{suffix}']) * self.cluster_info['PUE'] # in kWh
 
-    summary_stats = summarise_data(df2, ns)
+    summary_stats = summarise_data(df2) #, ns)
     print("SUMMARY STATS")
     print(summary_stats["groupActivity"])
 

@@ -53,6 +53,7 @@ def test_main_backend():
     config_data['path_infrastructure_info'] = "ga_dashboard/samples"
     config_data['fixed_params_file'] = "tests/testdata/fixed_parameters.yaml"
     config_data['cluster_info_file'] = "tests/testdata/cluster_info.yaml"
+    config_data['dashboard_users_file'] = "docs/templates/sample_user_list.csv"
 
     main_backend(config_data) 
 
