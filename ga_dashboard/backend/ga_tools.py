@@ -335,7 +335,7 @@ def main_backend(config_data: dict):
 
     ### Load user-specific data (if available)
     try:
-        users_df = pd.read_csv(config_data['hpc_users_file'])
+        users_df = pd.read_csv(config_data['dashboard_users_file'])
     except FileNotFoundError:
         if has_slurmAdmin:
             raise ValueError("No user data available.")

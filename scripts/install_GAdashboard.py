@@ -25,12 +25,12 @@ class GADashboardInstall:
     """
     Module used to install the Green Algorithms dashboard
     1 - Create the database
-    2 - Add the HPC users list to the database
+    2 - Add the dashboard users list to the database
     3 - Setup Grafana:
         > Create datasource (link database to Grafana)
         > Create Grafana folder "Green Algorithms"
         > Import Grafana dashboards (in the Green Algorithms" folder)
-        > Import Grafana users and teams (and generate users passwords) -> TODO might be good to export/save the list of users/passwords in a file ?
+        > Import dashboard users and teams into Grafana (and generate users passwords)
         > Setup Grafana folder permissions for the teams
     """
 
@@ -53,14 +53,14 @@ class GADashboardInstall:
             "add_users_to_database.py": {
                 "dir": "database",
                 "title": "Add HPC users in the database",
-                "arg_list": ["db_name", "db_user", "db_password", "db_port", "db_host", "hpc_users_file"]
+                "arg_list": ["db_name", "db_user", "db_password", "db_port", "db_host", "dashboard_users_file"]
             },
             "setup_frontend.py": { 
                 "dir" : "frontend", 
                 "title": "Setup Grafana",
                 "arg_list": ["name", "url", "admin_login", "admin_password", "db_name", "db_user", "db_password", \
                             "db_host", "db_port", "pg_version", \
-                            "dashboard_folder_name", "input_dir", "grafana_users_file", "debug"]
+                            "dashboard_folder_name", "input_dir", "dashboard_users_file", "debug"]
             }
         })
 
@@ -144,7 +144,7 @@ class GADashboardInstall:
         '''
         Parse the config file and obtain any parameter values set by user.
         '''
-        ga_config = GAConfig(config_file)
+        ga_config = GAConfig(self.config_file)
         ga_config.ingest_config_file()
         self.ga_config_values = ga_config.config_values
 
@@ -191,11 +191,10 @@ class GADashboardInstall:
 # e.g. python scripts/install_GAdashboard.py --config my_config.txt
 if __name__ == "__main__":
 
-    argparser = argparse.ArgumentParser(description="Script to initialise the database storing the Green Algorithms data and setup Grafana.",
-                                        epilog="Uses sample config file by default.")
+    argparser = argparse.ArgumentParser(description="Script to initialise the database storing the Green Algorithms data and setup Grafana.")
     
-    argparser.add_argument("--config", help='Name of config file for your parameter values.', required=False, \
-                            metavar='CONFIG_FILE', default="scripts/sample_config.txt", dest='config')
+    argparser.add_argument("--config", help='Name of config file for your parameter values.', required=True, \
+                            metavar='CONFIG_FILE', dest='config')
 
     args = argparser.parse_args()
     config_file = args.config

@@ -250,7 +250,7 @@ class WorkloadManager(Helpers_WM):
 
     def use_as_admin(self) -> bool:
         has_slurmAdmin = False
-        if 'db_name' in self.arconfig_datags_dict.keys():
+        if 'db_name' in self.config_data.keys():
             has_slurmAdmin = True
         elif 'slurmAdmin' in self.config_data.keys():
             if 'slurmAdmin' in self.config_data.keys():
@@ -263,41 +263,43 @@ class WorkloadManager(Helpers_WM):
         Run the command line to pull usage from the workload manager.
         More: https://slurm.schedmd.com/sacct.html
         """
-        if 'useCustomLogs' in self.config_data.keys():
-            if self.config_data['useCustomLogs'] == '':
-                bash_com = [
-                    "sacct",
-                    "--starttime",
-                    self.config_data.startDay, # format YYYY-MM-DD
-                    "--endtime",
-                    self.config_data.endDay,  # format YYYY-MM-DD
-                    "--format",
-                    "UID,User,JobID,JobName,Submit,Elapsed,Partition,NNodes,NCPUS,TotalCPU,CPUTime,ReqMem,MaxRSS,WorkDir,State,Account,AllocTres",
-                    "-P",
-                    "-L"  # All clusters
-                ]
-
-                if self.use_as_admin(self.config_data):
-                    bash_com.append('--allusers')
-
-                logs = subprocess.run(bash_com, capture_output=True)
-                self.logs_raw = logs.stdout
-            else:
-                message = "Overriding logs_raw with: "
-                foundIt = False
-                for sacctFileLocation in ['', 'testdata', 'error_logs']:
-                    if not foundIt:
-                        try:
-                            with open(os.path.join(sacctFileLocation, self.config_data['useCustomLogs']), 'rb') as f:
-                                self.logs_raw = f.read()
-                            message += f"{sacctFileLocation}/{self.config_data['useCustomLogs']}"
-                            foundIt = True
-                        except Exception:
-                            pass
+        # Case where we can't run sacct, but use previously-obtained data instead
+        if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '':
+            message = "Overriding logs_raw with: "
+            foundIt = False
+            for sacctFileLocation in ['', 'testdata', 'error_logs']:
                 if not foundIt:
-                    raise FileNotFoundError(f"Couldn't find {self.config_data['useCustomLogs']} \n "
-                                            f"It should be either be in the testData/ or error_logs/ subdirectories, or the full path should be provided by --useCustomLogs.")
-                print(message)
+                    try:
+                        with open(os.path.join(sacctFileLocation, self.config_data['useCustomLogs']), 'rb') as f:
+                            self.logs_raw = f.read()
+                        message += f"{sacctFileLocation}/{self.config_data['useCustomLogs']}"
+                        foundIt = True
+                    except Exception:
+                        pass
+            if not foundIt:
+                raise FileNotFoundError(f"Couldn't find {self.config_data['useCustomLogs']} \n "
+                                        f"It should be either be in the testData/ or error_logs/ subdirectories, or the full path should be provided by --useCustomLogs.")
+            print(message)
+
+        # What we expect to be the usual case, where we run the sacct command.
+        else:
+            bash_com = [
+                "sacct",
+                "--starttime",
+                self.config_data['startDay'], # format YYYY-MM-DD
+                "--endtime",
+                self.config_data['endDay'],  # format YYYY-MM-DD
+                "--format",
+                "UID,User,JobID,JobName,Submit,Elapsed,Partition,NNodes,NCPUS,TotalCPU,CPUTime,ReqMem,MaxRSS,WorkDir,State,Account,AllocTres",
+                "-P",
+                "-L"  # All clusters
+            ]
+
+            if self.use_as_admin():
+                bash_com.append('--allusers')
+
+            logs = subprocess.run(bash_com, capture_output=True)
+            self.logs_raw = logs.stdout                
 
 
     def convert2dataframe(self):

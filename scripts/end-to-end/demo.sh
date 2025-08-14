@@ -39,12 +39,11 @@ DEFAULT_DB_PORT=5432
 DEFAULT_DB_USER="postgres"
 DEFAULT_START_DATE="2025-02-14"
 DEFAULT_END_DATE="2025-02-18"
-DEFAULT_INFRASTRUCTURE_DIR="$repo_root_dir/ga_dashboard/samples"
+DEFAULT_INFRASTRUCTURE_DIR="$repo_root_dir/docs/templates"
 DEFAULT_DATASOURCE_NAME="demo_datasource"  # "grafana-postgresql-ga_db" 
 DEFAULT_POSTGRES_VERSION=13
-DEFAULT_GRAFANA_USERS_FILE="$repo_root_dir/ga_dashboard/samples/grafana_users_list.csv"
-DEFAULT_HPC_USERS_FILE="$repo_root_dir/ga_dashboard/samples/hpc_users_list.csv"
-DEFAULT_SACCT_FILE="$repo_root_dir/ga_dashboard/samples/sacct_output_single_user.txt"
+DEFAULT_USERS_FILE="$repo_root_dir/docs/templates/sample_user_list.csv"
+DEFAULT_SACCT_FILE="$repo_root_dir/tests/testdata/sacct_output_single_user.txt"
 DEFAULT_FIXED_PARAMETERS_FILE="$repo_root_dir/ga_dashboard/data/fixed_parameters.yaml"
 
 ###############################################################
@@ -69,8 +68,7 @@ infrastructure_dir=$DEFAULT_INFRASTRUCTURE_DIR
 # --useCustomLogs for run_backend.sh
 datasource_name=$DEFAULT_DATASOURCE_NAME
 grafana_url=$DEFAULT_GRAFANA_URL
-grafana_users_file=$DEFAULT_GRAFANA_USERS_FILE
-hpc_users_file=$DEFAULT_HPC_USERS_FILE
+dashboard_users_file=$DEFAULT_USERS_FILE
 sacct_file=$DEFAULT_SACCT_FILE
 fixed_params_file=$DEFAULT_FIXED_PARAMETERS_FILE
 
@@ -83,7 +81,7 @@ python $db_dir/create_or_overwrite_database.py --db_password $db_password
 echo "\n* Done! *\n"
 
 echo "\n*** Importing users to Grafana: ***\n" # This step will fail if Grafana is not running.
-python $front_end_dir/import_users.py --grafana_users_file $grafana_users_file \
+python $front_end_dir/import_users.py --dashboard_users_file $dashboard_users_file \
     --admin_login $grafana_admin_user --admin_password $grafana_admin_password \
     --url $grafana_url \
     --dashboard_folder "$grafana_dashboard_folder_name"   # --debug
@@ -92,7 +90,7 @@ echo "\n* Done! *\n"
 echo "\n*** Importing users to backend database: ***\n"
 python $db_dir/add_users_to_database.py --db_name $db_name \
     --db_user $db_user --db_password $db_password --db_port $db_port --db_host $db_host \
-    --hpc_users_file $hpc_users_file
+    --dashboard_users_file $dashboard_users_file
 echo "\n* Done! *\n"
 
 echo "\n*** Transforming user data (from sacct command output) and inserting to backend database: ***\n"
