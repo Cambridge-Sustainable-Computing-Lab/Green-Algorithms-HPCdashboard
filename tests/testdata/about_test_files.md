@@ -23,6 +23,6 @@ NB Notes for maintainer reference and testing:
 old name                            new name    
 df_agg_X_mockMultiUsers_1.csv       extracted_multi_users.csv
 df_agg_X_mockMultiUsers_2.csv       enriched_multi_users.csv
-userDaily_mockMultiUsers_1.csv      aggregated_multi_users.csv(
+userDaily_mockMultiUsers_1.csv      aggregated_multi_users.csv
 
 To use the file `aggregated_multi_users.csv`, for the moment the script `import_mockup_aggregate.py` can be used.

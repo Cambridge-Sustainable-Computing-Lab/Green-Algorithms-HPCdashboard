@@ -127,8 +127,6 @@ class GrafanaGAUser(GrafanaGABase):
         Best to call check_existing_user() before this.
         '''
 
-        # Map between our user_data dict and the Grafana user dict:
-        #
         # (Pdb) user
         # {'id': 41, 'uid': '', 'email': 'user1@example.com', 'name': 'John Smith', 'login': 'user1@example.com', 'theme': '', 'orgId': 1, 
         # 'isGrafanaAdmin': False, 'isDisabled': False, 'isExternal': False, 'isExternallySynced': False, 
@@ -138,14 +136,20 @@ class GrafanaGAUser(GrafanaGABase):
         # (Pdb) user_data
         # {'User': 'uid_1', 'UID': '11111', 'Name': 'John Smith', 'Email': 'user1@example.com', 'Group': 'group_1', 
         # 'Department': 'Dept_3', 'GrafanaPassword': '*0IK^I^&UpO$2aX', 'org_id': 1}
+        #
+        # But some things in Grafana are read from Postgres e.g. $department will read what Postgres has for that user
+
+        # Map between Grafana user dict and our user_data dict:
         user["name"] = user_data['Name'] 
         user["email"] = user_data['Email']
         user["login"] = user_data['User'] 
-        user["password"] = user_data['GrafanaPassword'] 
         user["OrgId"] = user_data['org_id']    
         
-        #user["Department"] = user_data["Department"]
-        
+        # This will update the user's password even if they are currently logged in to grafana.
+        if not self.grafana.admin.change_user_password(user['id'], user_data['GrafanaPassword']):
+            logger.error(f"ERROR unable to change password for user {user_data['User']}")
+            exit(1)
+
         return self.grafana.users.update_user(user['id'], user)
 
 

@@ -75,15 +75,13 @@ def main():
 
             #logger.info("row")
 
-            # If user exists, update it.
-            # Else create it
-            user_login_or_email = None
-
             # Check if user exists, using both User and Email values
             user = current_grafana_user.check_existing_user(row["Email"])
             if not user:
                 user = current_grafana_user.check_existing_user(row["User"])
 
+            # If user exists, update it.
+            # Else create it
             if user:
                 logger.info("user exists")
                 if current_grafana_user.update_user(user, row): # NB It doesn't update the password
