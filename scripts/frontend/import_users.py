@@ -65,15 +65,39 @@ def main():
 
             # Create team (if needed)
             if "Group" in row:
-                current_grafana_user.create_team(row['Group'])
+                current_grafana_user.create_team(row['Group']) # FIXME check team not exist first
             else:
                 logger.error("No Group in users file!")
                 exit(1)
              
             # Create Grafana user (if needed)
             row['org_id'] = 1 # Default organisation
-            if (current_grafana_user.create_user(row)):
-                logger.info(f"** Added dashboard user {row['User']} to Grafana. **")
+
+            #logger.info("row")
+
+            # If user exists, update it.
+            # Else create it
+            user_login_or_email = None
+
+            # Check if user exists, using both User and Email values
+            user = current_grafana_user.check_existing_user(row["Email"])
+            if not user:
+                user = current_grafana_user.check_existing_user(row["User"])
+
+            if user:
+                logger.info("user exists")
+                if current_grafana_user.update_user(user, row): # NB It doesn't update the password
+                    logger.info(f"** Updated dashboard user {row['User']} on Grafana. **")
+                else:
+                    logger.error(f"** ERROR: unable to update dashboard user {row['User']} on Grafana. **")
+                    exit(1) ## ?
+            else:
+                logger.info("user NOT exist")
+                if (current_grafana_user.create_user(row)):
+                    logger.info(f"** Added dashboard user {row['User']} to Grafana. **")
+                else:
+                    logger.error(f"** ERROR: unable to create dashboard user {row['User']} on Grafana. **")
+                    exit(1)
 
     # Folder
     grafana_folder = GrafanaGAFolder(login, password, grafana_url, ga_dashboard_folder_name)

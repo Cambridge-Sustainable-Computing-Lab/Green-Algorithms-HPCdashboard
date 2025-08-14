@@ -85,7 +85,7 @@ class GrafanaGAUser(GrafanaGABase):
                 return False
             
 
-    def check_existing_user(self,user_login_or_email:str) -> User:
+    def check_existing_user(self, user_login_or_email:str) -> User:
         '''
             Check if a Grafana user already exists or not
             @return: A grafana_client User (if found)
@@ -99,7 +99,7 @@ class GrafanaGAUser(GrafanaGABase):
                 pass
 
 
-    def set_new_user(self, user_data:dict) -> any:
+    def set_new_user(self, user_data: dict) -> any:
         ''' Create a new Grafana user '''
         try:
             user = self.grafana.admin.create_user({
@@ -120,7 +120,36 @@ class GrafanaGAUser(GrafanaGABase):
             return True
 
 
-    def add_to_team(self,user_data:dict,user:User) -> None:
+    def update_user(self, user:User, user_data: dict):
+        ''' 
+        Update an existing Grafana user. 
+        
+        Best to call check_existing_user() before this.
+        '''
+
+        # Map between our user_data dict and the Grafana user dict:
+        #
+        # (Pdb) user
+        # {'id': 41, 'uid': '', 'email': 'user1@example.com', 'name': 'John Smith', 'login': 'user1@example.com', 'theme': '', 'orgId': 1, 
+        # 'isGrafanaAdmin': False, 'isDisabled': False, 'isExternal': False, 'isExternallySynced': False, 
+        # 'isGrafanaAdminExternallySynced': False, 'authLabels': None, 'updatedAt': '2025-08-14T14:11:50+01:00', 
+        # 'createdAt': '2025-08-14T11:08:44+01:00', 'avatarUrl': '', 'isProvisioned': False}
+        #
+        # (Pdb) user_data
+        # {'User': 'uid_1', 'UID': '11111', 'Name': 'John Smith', 'Email': 'user1@example.com', 'Group': 'group_1', 
+        # 'Department': 'Dept_3', 'GrafanaPassword': '*0IK^I^&UpO$2aX', 'org_id': 1}
+        user["name"] = user_data['Name'] 
+        user["email"] = user_data['Email']
+        user["login"] = user_data['User'] 
+        user["password"] = user_data['GrafanaPassword'] 
+        user["OrgId"] = user_data['org_id']    
+        
+        #user["Department"] = user_data["Department"]
+        
+        return self.grafana.users.update_user(user['id'], user)
+
+
+    def add_to_team(self, user_data: dict, user: User) -> None:
         ''' Add Grafana user to team(s) '''
         try:
             for team_item in user_data['Group'].split(','):
