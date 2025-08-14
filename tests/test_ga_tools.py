@@ -35,14 +35,16 @@ def generate_namespace(logfile: str) -> argparse.Namespace:
     return ns
 
 
-def get_cluster_info(ns: argparse.Namespace, info_file: str) -> object:
+#def get_cluster_info(ns: argparse.Namespace, info_file: str) -> object:
+def get_cluster_info(info_file: str) -> object:
     """
     Get the YAML object representation of a cluster info file.
     :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
     :param info_file: [str] Name of info file, e.g., 'cluster_info.yaml'
     :return: [argparse.Namespace] The populated Namespace (args) object.
     """
-    with open(os.path.join(ns.path_infrastructure_info, info_file), "r") as stream:
+    #with open(os.path.join(ns.path_infrastructure_info, info_file), "r") as stream:
+    with open(info_file, "r") as stream:
         try:
             cluster_info = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -50,14 +52,16 @@ def get_cluster_info(ns: argparse.Namespace, info_file: str) -> object:
     return cluster_info
 
 
-def get_fixed_params(ns: argparse.Namespace, fp_file: str) -> object:
+#def get_fixed_params(ns: argparse.Namespace, fp_file: str) -> object:
+def get_fixed_params(fp_file: str) -> object:
     """
     Get the YAML object representation of the fixed parameters file.
     :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
     :param fp_file: [str] Name of fixed params file, e.g., 'cluster_info.yaml'
     :return: [argparse.Namespace] The populated Namespace (args) object.
     """
-    with open(os.path.join(ns.path_infrastructure_info, fp_file), "r") as stream:
+    #with open(os.path.join(ns.path_infrastructure_info, fp_file), "r") as stream:
+    with open(fp_file, "r") as stream:
         try:
             fixed_params = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -104,8 +108,8 @@ def test_extract_data():
     """   
     logfile = "tests/testdata/one_line_sacct_output.txt"
     #ns = generate_namespace('one_line_sacct_output.txt')
-    ns = generate_namespace("tests/testdata/one_line_sacct_output.txt")
-    cluster_info = get_cluster_info(ns, 'cluster_info.yaml')
+    #ns = generate_namespace("tests/testdata/one_line_sacct_output.txt")
+    cluster_info = get_cluster_info('docs/templates/cluster_info.yaml')
     config_data = {}
     config_data['useCustomLogs'] = logfile
     df = extract_data(config_data, True, cluster_info)
@@ -122,7 +126,7 @@ def test_extract_data():
 
 
     # Load fixed parameters
-    fixed_params = get_fixed_params(ns, 'fixed_parameters.yaml')
+    fixed_params = get_fixed_params('ga_dashboard/data/fixed_parameters.yaml')
 
     GA = GA_tools(cluster_info, fixed_params)
     
