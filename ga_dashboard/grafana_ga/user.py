@@ -146,6 +146,7 @@ class GrafanaGAUser(GrafanaGABase):
         user["OrgId"] = user_data['org_id']    
         
         # This will update the user's password even if they are currently logged in to grafana.
+        # (Just trying to update the password by adding it to the dictionary doesn't work.)
         if not self.grafana.admin.change_user_password(user['id'], user_data['GrafanaPassword']):
             logger.error(f"ERROR unable to change password for user {user_data['User']}")
             exit(1)
