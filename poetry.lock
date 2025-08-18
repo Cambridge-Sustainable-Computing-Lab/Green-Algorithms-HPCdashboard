@@ -1086,5 +1086,5 @@ certifi = {version = "*", markers = "python_full_version < \"3.7.10\" or platfor
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.13"
-content-hash = "20ad3f033169830268008ef0ac6e6dceef290d70ce4160de715b205febf5097c"
+python-versions = ">=3.13,<4.0"
+content-hash = "0a7ecdef1978cac662a79aefe61ae55a4c1283c3f0bb98290c4c729e277f9098"
