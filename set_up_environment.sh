@@ -30,6 +30,7 @@ function get_miniconda() {
         mkdir -p /opt/miniforge3
         wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"  -O /opt/miniforge3/miniforge.sh
 
+	chmod +x /opt/miniforge3/miniforge.sh
 	/opt/miniforge3/miniforge.sh -b -u -p /opt/miniforge3
 	if  [ "$?" -ne "0" ]
         then
