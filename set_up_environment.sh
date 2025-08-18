@@ -79,7 +79,7 @@ function download_packages() {
 	# We loop over each package so we continue if a package fails to install.
 	# It would be good if we could keep track of which ones don't get installed, and
 	# tell the user at the end
-	for PKG in wget postgresql git
+	for PKG in wget postgresql git build-essential
 	do
 		echo "Downloading $PKG"
 		apt-get install -y $PKG
