@@ -45,13 +45,13 @@ def test_main_backend():
 
     config_data['startDay'] = '2022-01-01'
     config_data['endDay'] = '2023-06-30'
-    config_data['useCustomLogs'] = "ga_dashboard/samples/sacct_output_single_user.txt"  #useCustomLogs="", #"sacct_output_loic1.txt",
+    config_data['useCustomLogs'] = "tests/testdata/sacct_output_single_user.txt"
     config_data['use_mock_agg_data'] = False
     config_data['reportBug'] = False
     config_data['reportBugHere'] = False
     config_data['path_infrastructure_info'] = "ga_dashboard/samples"
-    config_data['fixed_params_file'] = "tests/testdata/fixed_parameters.yaml"
-    config_data['cluster_info_file'] = "tests/testdata/cluster_info.yaml"
+    config_data['fixed_params_file'] = "ga_dashboard/data/fixed_parameters.yaml"
+    config_data['cluster_info_file'] = "docs/templates/cluster_info.yaml"
     config_data['dashboard_users_file'] = "docs/templates/sample_user_list.csv"
 
     main_backend(config_data) 
