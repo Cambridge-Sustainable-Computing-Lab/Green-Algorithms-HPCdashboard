@@ -35,63 +35,30 @@ def generate_namespace(logfile: str) -> argparse.Namespace:
     return ns
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-def get_yaml_object(infile: str) -> object:
-=======
+
 def get_cluster_info(ns: argparse.Namespace, info_file: str) -> object:
->>>>>>> parent of 223b2db (Removed duplicate files.)
-=======
-#def get_cluster_info(ns: argparse.Namespace, info_file: str) -> object:
-def get_cluster_info(info_file: str) -> object:
->>>>>>> parent of f8520a5 (Replace 2 similar functions with 1.)
     """
     Get the YAML object representation of a cluster info file.
     :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
     :param info_file: [str] Name of info file, e.g., 'cluster_info.yaml'
     :return: [argparse.Namespace] The populated Namespace (args) object.
     """
-<<<<<<< HEAD
-<<<<<<< HEAD
-    with open(infile, "r") as stream:
-=======
     with open(os.path.join(ns.path_infrastructure_info, info_file), "r") as stream:
->>>>>>> parent of 223b2db (Removed duplicate files.)
-=======
-    #with open(os.path.join(ns.path_infrastructure_info, info_file), "r") as stream:
-    with open(info_file, "r") as stream:
->>>>>>> parent of f8520a5 (Replace 2 similar functions with 1.)
         try:
             cluster_info = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
-<<<<<<< HEAD
-<<<<<<< HEAD
-    return object_rep    
-=======
     return cluster_info
 
 
-def get_fixed_params(ns: argparse.Namespace, fp_file: str) -> object:
-=======
-    return cluster_info
-
-
-#def get_fixed_params(ns: argparse.Namespace, fp_file: str) -> object:
 def get_fixed_params(fp_file: str) -> object:
->>>>>>> parent of f8520a5 (Replace 2 similar functions with 1.)
     """
     Get the YAML object representation of the fixed parameters file.
     :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
     :param fp_file: [str] Name of fixed params file, e.g., 'cluster_info.yaml'
     :return: [argparse.Namespace] The populated Namespace (args) object.
     """
-<<<<<<< HEAD
     with open(os.path.join(ns.path_infrastructure_info, fp_file), "r") as stream:
-=======
-    #with open(os.path.join(ns.path_infrastructure_info, fp_file), "r") as stream:
-    with open(fp_file, "r") as stream:
->>>>>>> parent of f8520a5 (Replace 2 similar functions with 1.)
         try:
             fixed_params = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -113,11 +80,6 @@ def get_fixed_params(fp_file: str) -> object:
 #        #    raise ValueError("No user data available.")
 #        users_df = None
 #    return users_df
-<<<<<<< HEAD
->>>>>>> parent of 223b2db (Removed duplicate files.)
-=======
->>>>>>> parent of f8520a5 (Replace 2 similar functions with 1.)
-
 
 
 def get_users_df(user_list_file: str) -> pd.DataFrame:
@@ -142,19 +104,11 @@ def test_extract_data():
     """   
     logfile = "tests/testdata/one_line_sacct_output.txt"
     #ns = generate_namespace('one_line_sacct_output.txt')
-<<<<<<< HEAD
-    #ns = generate_namespace("tests/testdata/one_line_sacct_output.txt")
-<<<<<<< HEAD
-
     cluster_info = get_yaml_object('docs/templates/cluster_info.yaml')
 
-=======
     ns = generate_namespace("tests/testdata/one_line_sacct_output.txt")
     cluster_info = get_cluster_info(ns, 'cluster_info.yaml')
->>>>>>> parent of 223b2db (Removed duplicate files.)
-=======
-    cluster_info = get_cluster_info('docs/templates/cluster_info.yaml')
->>>>>>> parent of f8520a5 (Replace 2 similar functions with 1.)
+
     config_data = {}
     config_data['useCustomLogs'] = logfile
     df = extract_data(config_data, True, cluster_info)
@@ -171,15 +125,7 @@ def test_extract_data():
 
 
     # Load fixed parameters
-<<<<<<< HEAD
-<<<<<<< HEAD
-    fixed_params = get_yaml_object('ga_dashboard/data/fixed_parameters.yaml')
-=======
     fixed_params = get_fixed_params(ns, 'fixed_parameters.yaml')
->>>>>>> parent of 223b2db (Removed duplicate files.)
-=======
-    fixed_params = get_fixed_params('ga_dashboard/data/fixed_parameters.yaml')
->>>>>>> parent of f8520a5 (Replace 2 similar functions with 1.)
 
     GA = GA_tools(cluster_info, fixed_params)
     
