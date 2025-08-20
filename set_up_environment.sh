@@ -27,20 +27,22 @@ function get_miniconda() {
 
 	echo "Miniconda not found. Downloading miniconda..."
 
-        mkdir -p /opt/miniforge3
-        wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"  -O /opt/miniforge3/miniforge.sh
+	mkdir -p /opt/miniforge3
+    	wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"  -O /opt/miniforge3/miniforge.sh
 
+	chmod +x /opt/miniforge3/miniforge.sh
 	/opt/miniforge3/miniforge.sh -b -u -p /opt/miniforge3
+	
 	if  [ "$?" -ne "0" ]
         then
 		echo "Permissions error. Please try running script again."
 		exit 1
 	fi
 
-        chgrp -R anaconda /opt/miniforge3/
-        chmod 770 -R /opt/miniforge3/
+    	chgrp -R anaconda /opt/miniforge3/
+    	chmod 770 -R /opt/miniforge3/
 
-        /opt/miniforge3/bin/conda init
+    	/opt/miniforge3/bin/conda init
 
         # We need to close and re-open the shell for changes to take effect.
 	# How to continue the script? -> touch/delete a file
@@ -79,7 +81,7 @@ function download_packages() {
 	# We loop over each package so we continue if a package fails to install.
 	# It would be good if we could keep track of which ones don't get installed, and
 	# tell the user at the end
-	for PKG in wget postgresql git build-essential
+	for PKG in wget postgresql git build-essential nano
 	do
 		echo "Downloading $PKG"
 		apt-get install -y $PKG
