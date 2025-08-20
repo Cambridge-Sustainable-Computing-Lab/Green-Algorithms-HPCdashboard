@@ -13,7 +13,7 @@ This script allows multiple users to be imported into Grafana, without using the
 
 Example user list in CSV format:
 
-User,UID,Name,Email,Group,Department,Password
+User,UID,Name,Email,Group,Department,GrafanaPassword
 uid_1,11111,John Smith,user1@example.com,group_1,Dept_3,*0IK^I^&UpO$2aX
 uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3,yGg=kA-6v**7BS)
 uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3,ibVvlpo$r7b0u
@@ -53,9 +53,6 @@ def main():
         logger.error("File '" + input_file + "' can't be found")
         exit(1)
 
-    # Set up password generator
-    #PWG = initialise_strict_password_generator()
-
     # current_grafana_user is the person corresponding to the Grafana admin/whoever is running this script.
     current_grafana_user = GrafanaGAUser(login, password, grafana_url, ga_dashboard_folder_name)
 
@@ -65,15 +62,35 @@ def main():
 
             # Create team (if needed)
             if "Group" in row:
-                current_grafana_user.create_team(row['Group'])
+                current_grafana_user.create_team(row['Group']) # FIXME check team not exist first
             else:
                 logger.error("No Group in users file!")
                 exit(1)
              
             # Create Grafana user (if needed)
             row['org_id'] = 1 # Default organisation
-            if (current_grafana_user.create_user(row)):
-                logger.info(f"** Added dashboard user {row['User']} to Grafana. **")
+
+            # Check if user exists, using both User and Email values
+            user = current_grafana_user.check_existing_user(row["Email"])
+            if not user:
+                user = current_grafana_user.check_existing_user(row["User"])
+
+            # If user exists, update it.
+            # Else create it
+            if user:
+                logger.info("user exists")
+                if current_grafana_user.update_user(user, row): # NB It doesn't update the password
+                    logger.info(f"** Updated dashboard user {row['User']} on Grafana. **")
+                else:
+                    logger.error(f"** ERROR: unable to update dashboard user {row['User']} on Grafana. **")
+                    exit(1) ## ?
+            else:
+                logger.info("user NOT exist")
+                if (current_grafana_user.create_user(row)):
+                    logger.info(f"** Added dashboard user {row['User']} to Grafana. **")
+                else:
+                    logger.error(f"** ERROR: unable to create dashboard user {row['User']} on Grafana. **")
+                    exit(1)
 
     # Folder
     grafana_folder = GrafanaGAFolder(login, password, grafana_url, ga_dashboard_folder_name)
