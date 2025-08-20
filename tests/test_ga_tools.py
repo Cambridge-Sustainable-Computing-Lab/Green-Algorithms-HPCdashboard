@@ -35,18 +35,61 @@ def generate_namespace(logfile: str) -> argparse.Namespace:
     return ns
 
 
+<<<<<<< HEAD
 def get_yaml_object(infile: str) -> object:
+=======
+def get_cluster_info(ns: argparse.Namespace, info_file: str) -> object:
+>>>>>>> parent of 223b2db (Removed duplicate files.)
     """
     Get the YAML object representation of a .yaml file.
     :param infile: [str] Name of input file, e.g., 'cluster_info.yaml' or 'fixed_parameters.yaml'
     :return: [object] The object representation.
     """
+<<<<<<< HEAD
     with open(infile, "r") as stream:
+=======
+    with open(os.path.join(ns.path_infrastructure_info, info_file), "r") as stream:
+>>>>>>> parent of 223b2db (Removed duplicate files.)
         try:
             object_rep = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
+<<<<<<< HEAD
     return object_rep    
+=======
+    return cluster_info
+
+
+def get_fixed_params(ns: argparse.Namespace, fp_file: str) -> object:
+    """
+    Get the YAML object representation of the fixed parameters file.
+    :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
+    :param fp_file: [str] Name of fixed params file, e.g., 'cluster_info.yaml'
+    :return: [argparse.Namespace] The populated Namespace (args) object.
+    """
+    with open(os.path.join(ns.path_infrastructure_info, fp_file), "r") as stream:
+        try:
+            fixed_params = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+    return fixed_params
+
+
+#def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
+#    """
+#    Get the Pandas DataFrame representing the HPC users in user_list_file.
+#    :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
+#    :param user_list_file: [str] Name of users file, e.g., 'sample_user_list.csv'
+#    :return: [pd.DataFrame] The data frame object.
+#    """
+#    try:
+#        users_df = pd.read_csv(os.path.join(ns.path_infrastructure_info, user_list_file))
+#    except FileNotFoundError:
+#        #if has_slurmAdmin:
+#        #    raise ValueError("No user data available.")
+#        users_df = None
+#    return users_df
+>>>>>>> parent of 223b2db (Removed duplicate files.)
 
 
 
@@ -72,10 +115,15 @@ def test_extract_data():
     """   
     logfile = "tests/testdata/one_line_sacct_output.txt"
     #ns = generate_namespace('one_line_sacct_output.txt')
+<<<<<<< HEAD
     #ns = generate_namespace("tests/testdata/one_line_sacct_output.txt")
 
     cluster_info = get_yaml_object('docs/templates/cluster_info.yaml')
 
+=======
+    ns = generate_namespace("tests/testdata/one_line_sacct_output.txt")
+    cluster_info = get_cluster_info(ns, 'cluster_info.yaml')
+>>>>>>> parent of 223b2db (Removed duplicate files.)
     config_data = {}
     config_data['useCustomLogs'] = logfile
     df = extract_data(config_data, True, cluster_info)
@@ -92,7 +140,11 @@ def test_extract_data():
 
 
     # Load fixed parameters
+<<<<<<< HEAD
     fixed_params = get_yaml_object('ga_dashboard/data/fixed_parameters.yaml')
+=======
+    fixed_params = get_fixed_params(ns, 'fixed_parameters.yaml')
+>>>>>>> parent of 223b2db (Removed duplicate files.)
 
     GA = GA_tools(cluster_info, fixed_params)
     
