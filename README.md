@@ -180,9 +180,9 @@ $ python scripts/run_green_algorithms_on_historical_logs.py --config <your_confi
 ```
 This will collect all the logs available by default (if no `startDay` / `endDay` are defined in the configuration file).
 
-**Note:** we have tested the software successfully with a `sacct`-output data file of more than one million entries (actually 1,072,406 lines of data, including the header, which must be present). At the moment, all the data is read into memory for processing, before being written to the Postgres database. On a Mac, running the `run_green_algorithms_on_historical_logs.py` script on this data took 11m 42s, and the peak memory usage (measured with `mprof`) was around 4.7 GB. We intend to update the code so that it only processes data (and writes it to the dataabse) in chunks, otherwise it won't be able to handle huge datasets.
+**Note:** we have tested the software successfully with a `sacct`-output data file of more than one million entries (actually 1,072,406 lines of data, including the header, which must be present). On a Mac, running the `run_green_algorithms_on_historical_logs.py` script on this data took 11m 42s, and the peak memory usage (measured with `mprof`) was around 4.7 GB. (Another run showed that the overhead due to `mprof` only made a small difference). This was an optimised situation; `sacct` had been run previously (and generated the file of results to use), and the files and Python scripts, Postgres database, and Grafana server were all running on the same local machine.
 
-Our intention is to update the software so that it can safely handle much more than this.
+At the moment, all the data is read into memory for processing, before being written to the Postgres database.  We intend to update the code so that it only processes data (and writes it to the dataabse) in chunks, so that it can safely handle much more than this.
 
 For a scheduled execution (e.g. a `cron` job), the command to run is:
 ```
