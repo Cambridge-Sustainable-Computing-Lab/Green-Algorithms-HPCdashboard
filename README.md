@@ -233,16 +233,16 @@ $ ./bin/grafana server
 Alternatively, you might need to use these steps to run the Grafana server after installation:
 
 ```
-$ sudo bin/systemctl daemon-reload
-$ sudo bin/systemctl enable grafana-server
-$ sudo bin/systemctl start grafana-server
+$ sudo /bin/systemctl daemon-reload
+$ sudo /bin/systemctl enable grafana-server
+$ sudo /bin/systemctl start grafana-server
 ```
 
 #### Stop server
 In the former case above, you can just CTRL-C the server. In the latter, you might have to do:
 
 ```
-$ sudo bin/systemctl stop grafana-server
+$ sudo /bin/systemctl stop grafana-server
 ```
 
 The `systemctl` command might be elsewhere on a Linux system, e.g., `/usr/bin/systemctl`.
