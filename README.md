@@ -55,13 +55,24 @@ $ conda env list
 ```
 
 
-### Install the `ga_dashboard` python package
+### Install the `ga_dashboard` python package and its dependencies
 
 In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory), type:
+
+```
+$ pip install -r requirements.txt
+```
+or
+```
+$ poetry install
+```
+based on which tool (`pip` or `poetry`) you prefer to use.
+
+To install the `ga_dashboard` software package specifically, type:
 ```
 $ python -m pip install .
 ```
-(Note the period character at the end). This should install the `ga_dashboard` package on your local machine. if you want to be able to 
+(Note the period character at the end). This should install the `ga_dashboard` package on your local machine. If you want to be able to 
 edit it and still use it, use the `-e` option:
 ```
 $ python -m pip install -e .
