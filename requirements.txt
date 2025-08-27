@@ -47,12 +47,11 @@ psycopg-binary==3.2.6
 pycparser==2.22
 Pygments==2.19.1
 pynput==1.8.1
-# These are for a Mac install
-# pyobjc-core==11.1
-# pyobjc-framework-ApplicationServices==11.1
-# pyobjc-framework-Cocoa==11.1
-# pyobjc-framework-CoreText==11.1
-# pyobjc-framework-Quartz==11.1
+pyobjc-core==11.1
+pyobjc-framework-ApplicationServices==11.1
+pyobjc-framework-Cocoa==11.1
+pyobjc-framework-CoreText==11.1
+pyobjc-framework-Quartz==11.1
 pyproject_hooks==1.2.0
 pytest==8.3.5
 python-dateutil==2.9.0.post0
