@@ -29,8 +29,8 @@ class GADashboardInstall:
     3 - Setup Grafana:
         > Create datasource (link database to Grafana)
         > Create Grafana folder "Green Algorithms"
-        > Import Grafana dashboards (in the Green Algorithms" folder)
-        > Import dashboard users and teams into Grafana (and generate users passwords)
+        > Import Grafana dashboards (in the "Green Algorithms" folder)
+        > Import dashboard users and teams into Grafana
         > Setup Grafana folder permissions for the teams
     """
 
