@@ -74,7 +74,7 @@ def test_extract_data():
     #ns = generate_namespace('one_line_sacct_output.txt')
     #ns = generate_namespace("tests/testdata/one_line_sacct_output.txt")
 
-    cluster_info = get_yaml_object('docs/templates/cluster_info.yaml')
+    cluster_info = get_yaml_object('configuration/examples/cluster_info__demo.yaml')
 
     config_data = {}
     config_data['useCustomLogs'] = logfile
@@ -103,7 +103,7 @@ def test_extract_data():
     # etc ... all should be the same
     series2 = None
 
-    users_df = get_users_df('docs/templates/sample_user_list.csv')
+    users_df = get_users_df('configuration/examples/user_list__demo.csv')
     df2 = enrich_data(df, fixed_params, users_df, GA)
     assert len(df2) == 1
     series2 = df2.squeeze(axis=0) 
