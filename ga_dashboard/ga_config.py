@@ -178,8 +178,10 @@ class GAConfig:
             conn.close()
             print("  >> Database connection parameters look OK")
         except psycopg.OperationalError as err:
-            print(f"\n  ERROR: Problem connecting to the database {self.config_values['db_name']}: {err}")
-            exit(1)
+            print(f"\n  WARNING: Problem connecting to the database {self.config_values['db_name']}: either the database doesn't exist yet or the script can't access the database")
+            if 'debug' in self.config_values.keys():
+                if self.config_values['debug']:
+                    print(f"\n  ERROR message: {err}")
 
 
     def _get_db_password(self) -> None:
