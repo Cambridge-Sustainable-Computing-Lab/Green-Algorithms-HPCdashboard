@@ -26,9 +26,9 @@ The system is composed of:
 
 Files required to deploy the dashboard (you will need your own versions of these):
 
-* [Scripts configuration file](#configuration-files): template `config_templates.txt` (in `docs/templates/`) to copy and edit.
-* [Cluster config file](#configuration-files): `cluster_info.yaml` (in `docs/templates/`)
-* [Dashboard users file](#list-of-users) `sample_user_list.csv` (in `docs/templates/`)
+* [Scripts configuration file](#configuration-files): template `config.txt` (in `configuration/templates/`) to copy and edit.
+* [Cluster config file](#configuration-files): `cluster_info.yaml` (in `configuration/templates/`)
+* [Dashboard users file](#list-of-users) `user_list.csv` (in `configuration/templates/`)
 * [Fixed parameters file](#configuration-files). Example: `ga_dashboard/data/fixed_parameters.yaml`
 
 
@@ -95,10 +95,12 @@ A number of config files are required by the system (e.g., to calculate the carb
 ### System configuration files
 As well as a list of dashboard users, the system needs:
 * A **scripts configuration file** with all the required parameters (database connection, paths to the others configurations files, ...). You can:
-  * Copy the template provided in `docs/templates/config_templates.txt` (e.g., to `<your_config_file.txt>`)
+  * Copy the template provided in `configuration/templates/config.txt` (e.g., to `<your_config_file.txt>`)
   * Replace all the parameters surrounded by the `< >` characters
   * Uncomment the optional parameters you want to use.
-* **Information about your HPC cluster**. Example: `docs/templates/cluster_info.yaml`. 
+* **Information about your HPC cluster**.
+  * Example: `configuration/examples/cluster_info__demo.yaml`.
+  * Template: `configuration/templates/cluster_info.yaml`.
   * You will need to acquire the information about your own cluster, and present it in the same YAML format as the example file. Each partition (a set of computing nodes with a dedicated queue) will need information for `type` (CPU or GPU), `model` and `TDP`. This last you may have to find from data sheets on the internet. For partitions of `type` GPU, you will also need values for `model_CPU` and `TDP_CPU`. 
   * Note also that you will need values for the other items in the file: `institution`, `cluster_name`, `granularity_memory_request`, `PUE`, etc.
 * **Fixed parameters file**. Example: `ga_dashboard/data/fixed_parameters.yaml`. We suggest you use this example file for now.
@@ -118,7 +120,7 @@ The users file should be a comma-separated file combining these columns:
 * **Department name**: Name of the user department/unit (e.g. Dept 3)
 * **GrafanaPassword**: Password required by this user for Grafana. By default, users only have view access.
 
-For example in `docs/templates/sample_user_list.csv`:
+For example in `configuration/examples/user_list__demo.csv`:
 ```
 User,UID,Name,Email,Group,Department,GrafanaPassword
 uid_1,11111,John Smith,user1@example.com,group_1,Dept_3,*0IK^I^&UpO$2aX

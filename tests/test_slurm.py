@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 FIXED_PARAMS_FILE = "ga_dashboard/data/fixed_parameters.yaml"
-CLUSTER_INFO_FILE = "docs/templates/cluster_info.yaml"
+CLUSTER_INFO_FILE = "configuration/examples/cluster_info__demo.yaml"
 SINGLE_USER_SACCT_FILE = "tests/testdata/sacct_output_single_user.txt"
 
 # Test Helpers_WM.convert_to_GB()
