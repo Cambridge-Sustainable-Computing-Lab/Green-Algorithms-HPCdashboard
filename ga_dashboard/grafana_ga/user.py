@@ -77,12 +77,10 @@ class GrafanaGAUser(GrafanaGABase):
                 logger.warning(f"User '{user_login_or_email}' is already in Grafana (and in team(s) '{', '.join(user_teams)}')")
             else:
                 logger.warning(f"User '{user_login_or_email}' is already in Grafana but is not member of a team")
-            return False
         else:
             if (self.set_new_user(user_data)):
                 return True
-            else:
-                return False
+        return False
             
 
     def check_existing_user(self, user_login_or_email:str) -> User:
