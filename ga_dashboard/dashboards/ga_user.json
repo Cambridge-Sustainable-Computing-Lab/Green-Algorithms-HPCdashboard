@@ -9,57 +9,6 @@
       "pluginName": "PostgreSQL"
     }
   ],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "barchart",
-      "name": "Bar chart",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "12.0.0"
-    },
-    {
-      "type": "datasource",
-      "id": "grafana-postgresql-datasource",
-      "name": "PostgreSQL",
-      "version": "12.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "piechart",
-      "name": "Pie chart",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "text",
-      "name": "Text",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -79,11 +28,15 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 2,
   "links": [],
   "panels": [
     {
       "description": "Introductory panel.",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 13,
         "w": 24,
@@ -100,7 +53,8 @@
         "content": "# <span style=\"color:#73BF69\">**Institution Activity**</span>\n\nOverall activity at institution in the date range specified (see date panel above).\n\nComputing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess, then reduce, the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at the institution.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org) and the following assumptions:\n\n|Type|Value|\n|----|-----|\n|CPU |5.9 - 9.4 W/core|\n|GPU |NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)|\n|Memory power | 0.3725 W/GB|\n|Power usage effectiveness| 1.15|\n|Carbon intensity |231.12 gCO<sub>2</sub> e/kWh|\n|Energy cost| £0.34/kWh|\n\n\nWe built this tool in the hope of raising awareness of computing usage, highlighting resource waste, and fostering good computing practices. This\nis intended to be a lightweight carbon footprint calculator, not a cluster monitoring system.\n",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
+      "title": "",
       "type": "text"
     },
     {
@@ -120,7 +74,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -171,7 +126,7 @@
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -222,7 +177,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -273,7 +229,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -322,7 +278,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -360,7 +317,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -409,7 +366,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -447,9 +405,13 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
@@ -471,10 +433,6 @@
               }
             ],
             "limit": 50
-          },
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           }
         }
       ],
@@ -496,7 +454,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -535,7 +494,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -619,7 +578,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -663,7 +623,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -771,7 +731,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -815,7 +776,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -923,7 +884,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -954,7 +916,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -1063,7 +1025,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -1107,7 +1070,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -1167,6 +1130,10 @@
       "type": "timeseries"
     },
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 3,
         "w": 24,
@@ -1183,7 +1150,8 @@
         "content": "## Departments\n\nCarbon footprint of all departments in the time range selected (see date panel at top).\n",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
+      "title": "",
       "type": "text"
     },
     {
@@ -1223,7 +1191,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -1281,7 +1250,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -1291,7 +1260,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT department, SUM(carbonfootprint) FROM (select u.user_name, u.department, d.carbonfootprint from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(submitdate)) GROUP BY department ORDER BY SUM(carbonfootprint) DESC;",
+          "rawSql": "SELECT a.department, SUM(a.carbonfootprint) FROM (select u.user_name, u.department, d.carbonfootprint from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(d.submitdate)) AS a GROUP BY a.department ORDER BY SUM(a.carbonfootprint) DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1363,7 +1332,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -1407,7 +1377,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -1417,7 +1387,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"Carbon footprint of\", department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name)\nGROUP BY\nsubmitdate, department;",
+          "rawSql": "SELECT a.submitdate, SUM(a.carbonfootprint) AS \"Carbon footprint of\", a.department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name) AS a\nGROUP BY\na.submitdate, a.department;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1472,7 +1442,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -1502,7 +1473,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -1512,7 +1483,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT department AS \"Department\", to_char(SUM(carbonfootprint)/1000, '99999') AS \"Carbon footprint (kgCO2e)\", to_char(SUM(cost), '9999999') as \"Cost(£)\" FROM (select u.user_name, u.department, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(submitdate)) GROUP BY department ORDER BY department ASC;\n",
+          "rawSql": "SELECT a.department AS \"Department\", to_char(SUM(a.carbonfootprint)/1000, '99999') AS \"Carbon footprint (kgCO2e)\", to_char(SUM(a.cost), '9999999') as \"Cost(£)\" \nFROM (select u.user_name, u.department, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(d.submitdate)) AS a GROUP BY a.department ORDER BY a.department ASC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1533,10 +1504,15 @@
           }
         }
       ],
+      "title": "",
       "type": "table"
     },
     {
       "description": "",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 3,
         "w": 24,
@@ -1553,7 +1529,8 @@
         "content": "## Efficiency metrics: Failed jobs <span style=\"color:#73BF69\">**(all institution)**</span>\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
+      "title": "",
       "type": "text"
     },
     {
@@ -1578,7 +1555,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -1622,7 +1600,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -1706,7 +1684,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -1753,7 +1732,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -1840,7 +1819,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "green",
@@ -1878,7 +1858,7 @@
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -1994,7 +1974,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -2029,6 +2009,10 @@
       "type": "piechart"
     },
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 3,
         "w": 24,
@@ -2045,7 +2029,8 @@
         "content": "## Memory efficiency <span style=\"color:#73BF69\">**(all institution)**</span>\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all jobs in the time period chosen (see date panel at top).",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
+      "title": "",
       "type": "text"
     },
     {
@@ -2084,7 +2069,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -2126,7 +2112,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -2161,6 +2147,10 @@
       "type": "barchart"
     },
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 3,
         "w": 24,
@@ -2177,7 +2167,8 @@
         "content": "# User's personal report: <span style=\"color:#5794F2\">**${__user.login}**</span>\n\nFind out your carbon footprint for the time period selected (see date panel at top).",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
+      "title": "",
       "type": "text"
     },
     {
@@ -2196,7 +2187,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -2247,7 +2239,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -2297,7 +2289,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -2348,7 +2341,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -2398,7 +2391,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -2436,7 +2430,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -2486,7 +2480,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -2524,9 +2519,13 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
@@ -2548,10 +2547,6 @@
               }
             ],
             "limit": 50
-          },
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           }
         }
       ],
@@ -2574,7 +2569,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -2613,7 +2609,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -2696,7 +2692,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue"
+                "color": "blue",
+                "value": 0
               },
               {
                 "color": "red",
@@ -2740,7 +2737,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -2750,7 +2747,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint) FROM (SELECT d.submitdate, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.user_name = '${__user.login}') GROUP BY submitdate ORDER BY submitdate ASC",
+          "rawSql": "SELECT a.submitdate, SUM(a.carbonfootprint) FROM (SELECT d.submitdate, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.user_name = '${__user.login}') AS a GROUP BY a.submitdate ORDER BY a.submitdate ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2823,7 +2820,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -2854,7 +2852,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -2937,7 +2935,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -2968,7 +2967,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -3051,7 +3050,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -3095,7 +3095,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -3130,6 +3130,10 @@
       "type": "timeseries"
     },
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 3,
         "w": 24,
@@ -3146,7 +3150,8 @@
         "content": "## Efficiency metrics for user <span style=\"color:#5794F2\">**${__user.login}**</span>: Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
+      "title": "",
       "type": "text"
     },
     {
@@ -3171,7 +3176,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -3215,7 +3221,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -3298,7 +3304,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -3345,7 +3352,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -3395,7 +3402,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "blue",
@@ -3433,7 +3441,7 @@
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -3549,7 +3557,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -3584,6 +3592,10 @@
       "type": "piechart"
     },
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 4,
         "w": 24,
@@ -3600,7 +3612,8 @@
         "content": "## Memory efficiency (user <span style=\"color:#5794F2\">**${__user.login}**</span>)\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all this user's jobs in the period chosen (see date panel at top).",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
+      "title": "",
       "type": "text"
     },
     {
@@ -3640,7 +3653,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -3680,7 +3694,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -3715,6 +3729,10 @@
       "type": "barchart"
     },
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 3,
         "w": 24,
@@ -3731,7 +3749,8 @@
         "content": "## Groups in your department ($department)\nCarbon footprint of all groups in your department in the time range specified (see date panel at top).",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
+      "title": "",
       "type": "text"
     },
     {
@@ -3782,7 +3801,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -3826,7 +3846,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -3836,7 +3856,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"Carbon footprint of\", group_name\nFROM\n(SELECT d.submitdate, u.group_name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.department = '$department')\nGROUP BY\nsubmitdate, group_name;",
+          "rawSql": "SELECT a.submitdate, SUM(a.carbonfootprint) AS \"Carbon footprint of\", a.group_name\nFROM\n(SELECT d.submitdate, u.group_name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.department = '$department') AS a\nGROUP BY\na.submitdate, a.group_name;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3890,7 +3910,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -3920,7 +3941,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -3930,7 +3951,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT group_name AS \"Group\", to_char(SUM(carbonfootprint)/1000, '99999') AS \"Carbon footprint (kgCO2e)\", to_char(SUM(cost), '99999') as \"Cost(£)\"\nFROM\n(SELECT u.user_name, u.group_name, d.carbonfootprint, d.cost FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE department = '$department' AND $__timeFilter(submitdate))\nGROUP BY group_name \nORDER BY group_name ASC;",
+          "rawSql": "SELECT a.group_name AS \"Group\", to_char(SUM(a.carbonfootprint)/1000, '99999') AS \"Carbon footprint (kgCO2e)\", to_char(SUM(a.cost), '99999') as \"Cost(£)\"\nFROM\n(SELECT u.user_name, u.group_name, d.carbonfootprint, d.cost FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.department = '$department' AND $__timeFilter(d.submitdate)) AS a\nGROUP BY a.group_name \nORDER BY a.group_name ASC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3955,6 +3976,10 @@
       "type": "table"
     },
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 3,
         "w": 24,
@@ -3971,7 +3996,8 @@
         "content": "## Users in your group ($group_name)\nCarbon footprint of all users in your group ($group_name) in the time range specified.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
+      "title": "",
       "type": "text"
     },
     {
@@ -4022,7 +4048,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -4066,7 +4093,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -4076,7 +4103,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT submitdate, SUM(carbonfootprint) AS \"Carbon footprint of\", name\nFROM\n(SELECT d.submitdate, u.name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$group_name')\nGROUP BY\nsubmitdate, name;",
+          "rawSql": "SELECT a.submitdate, SUM(a.carbonfootprint) AS \"Carbon footprint of\", a.name\nFROM\n(SELECT d.submitdate, u.name, d.carbonfootprint FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$group_name') AS a\nGROUP BY\na.submitdate, a.name;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4130,7 +4157,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -4160,7 +4188,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "datasource": {
@@ -4170,7 +4198,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT user_name AS \"Username\", name AS \"Name\", to_char(SUM(carbonfootprint)/1000, '9999999') AS \"Carbon footprint (kgCO2e)\", to_char(SUM(cost), '9999') AS \"Cost (£)\"\nFROM\n(SELECT u.user_name, u.name, d.carbonfootprint, d.cost FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$group_name' AND $__timeFilter(submitdate))\nGROUP BY user_name, name\nORDER BY user_name;",
+          "rawSql": "SELECT a.user_name AS \"Username\", a.name AS \"Name\", to_char(SUM(carbonfootprint)/1000, '9999999') AS \"Carbon footprint (kgCO2e)\", to_char(SUM(a.cost), '9999') AS \"Cost (£)\"\nFROM\n(SELECT u.user_name, u.name, d.carbonfootprint, d.cost FROM ga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name WHERE u.group_name = '$group_name' AND $__timeFilter(d.submitdate)) AS a\nGROUP BY a.user_name, a.name\nORDER BY a.user_name;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4195,6 +4223,7 @@
       "type": "table"
     }
   ],
+  "preload": false,
   "refresh": "",
   "schemaVersion": 41,
   "tags": [],
@@ -4202,39 +4231,9 @@
     "list": [
       {
         "current": {
-          "text": "100",
-          "value": "100"
+          "text": "",
+          "value": ""
         },
-        "description": "Fill opacity: degree of shading opacity on a time series graph (sets value of fillOpacity)",
-        "label": "Fill opacity",
-        "name": "FILL_OPACITY",
-        "options": [
-          {
-            "selected": false,
-            "text": "10",
-            "value": "10"
-          },
-          {
-            "selected": false,
-            "text": "20",
-            "value": "20"
-          },
-          {
-            "selected": false,
-            "text": "50",
-            "value": "50"
-          },
-          {
-            "selected": true,
-            "text": "100",
-            "value": "100"
-          }
-        ],
-        "query": "10,20,50,100",
-        "type": "custom"
-      },
-      {
-        "current": {},
         "definition": "SELECT department FROM ga_user WHERE user_name = '${__user.login}'",
         "name": "department",
         "options": [],
@@ -4244,7 +4243,10 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "text": "",
+          "value": ""
+        },
         "definition": "SELECT group_name FROM ga_user WHERE user_name = '${__user.login}'",
         "name": "group_name",
         "options": [],
@@ -4263,7 +4265,5 @@
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 90,
-  "weekStart": ""
+  "version": 2
 }
-
