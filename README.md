@@ -155,13 +155,10 @@ The passwords in the above example adhere to the [Grafana password policy](https
 Make sure the passwords don't contain a comma character (`','`), otherwise this will affect the CSV file parsing.
 
 
-### Using the same file for both
-You may wish to have, as just described, one file of Grafana users and one of HPC users. For simplicity, you can use one file to combine both, provided all necessary fields are present. An example is available at `ga_dashboard/samples/sample_user_list.csv`.
-
 Currently, the required fields are:
 
 ```
-User,UID,Name,Email,Group,Department
+User,UID,Name,Email,Group,Department,GrafanaPassword
 ```
 ---
 ## Install Green Algorithms dashboard
@@ -282,6 +279,8 @@ If you click the little arrow to the left of "Green Algorithms", you should see 
 > The data you see will depend on (1) which data you loaded into the PostgreSQL database, and (2) the time range you select (which you can either do with the panel near the top-right of the dashboard, or by manually selecting a time range from one of the time series plots.)
 
 For this to work, it assumes you have the PostgreSQL database set up as a "data source" in Grafana (this is done for you automatically by the installation script).
+
+If you log in as an administrator, there are many other functions (e.g. delete users, add dashboards, add data sources). Full details may be made available later, perhaps as a tutorial.
 
 
 
