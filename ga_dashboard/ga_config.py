@@ -12,7 +12,7 @@ class GAConfig:
         'admin_login': { 'expected_type': 'string' },
         'cluster_info_file': { 'expected_type': 'path' },
         'dashboard_folder_name': { 'expected_type': 'string' },
-        'dashboard_users_file': { 'expected_type': 'string' },
+        'dashboard_users_file': { 'expected_type': 'path' },
         'db_host': { 'expected_type': 'string' },
         'db_name': { 'expected_type': 'string' },
         'db_port': { 'expected_type': 'numeric' },
@@ -21,14 +21,14 @@ class GAConfig:
         'fixed_params_file': { 'expected_type': 'path' },
         'input_dir': { 'expected_type': 'path' },
         'name': { 'expected_type': 'string' },
-        'outFile': { 'expected_type': 'string' }, # Path doesn't exist yet
         'pg_version': { 'expected_type': 'numeric' },
         'url': { 'expected_type': 'string' }
     }
 
     extra_attr = {
         'startDay': { 'expected_type': 'date (YYYY-MM-DD)' },
-        'endDay': { 'expected_type': 'date (YYYY-MM-DD)' }
+        'endDay': { 'expected_type': 'date (YYYY-MM-DD)' },
+        'outFile': { 'expected_type': 'string' } # Path doesn't exist yet
     }
 
     def __init__(self, config_file:str):
@@ -155,7 +155,7 @@ class GAConfig:
                     if not os.path.exists(os.path.join(os.getcwd(),value)):
                         is_valid = False
             case 'date (YYYY-MM-DD)':
-                if not re.match('^\d{4}-\d{2}-\d{2}$',value):
+                if not re.match(r'^\d{4}-\d{2}-\d{2}$',value):
                     is_valid = False
             case _:
                 print(f"  The attribute {conf_param} expected type ({expected_type}) is not a recognised type in the config module")
