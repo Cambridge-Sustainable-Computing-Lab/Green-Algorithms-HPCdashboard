@@ -11,7 +11,7 @@ Script to add users in a file to the ga_user table in Postgres.
 
 Example: 
 python scripts/database/add_users_to_database.py --db_name ga_db --db_user postgres --db_password mypassword 
-        --db_port 5432 --db_host localhost --dashboard_users_file docs/templates/sample_user_list.csv
+        --db_port 5432 --db_host localhost --dashboard_users_file configuration/examples/user_list__demo.csv
 
 TODO I want to move this into a proper database wrapper class, which is used for all interaction with Postgres. It would be
 database-agnostic:

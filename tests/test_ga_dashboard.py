@@ -23,7 +23,7 @@ def test_check_slurm_data_file(): # To test check_slurm_data_file()
 # Just placeholders for now
 
 FIXED_PARAMS_FILE = "ga_dashboard/data/fixed_parameters.yaml"
-CLUSTER_INFO_FILE = "docs/templates/cluster_info.yaml"
+CLUSTER_INFO_FILE = "configuration/examples/cluster_info__demo.yaml"
 
 
 # parse_string_to_number()
@@ -51,8 +51,8 @@ def test_main_backend():
     config_data['reportBugHere'] = False
     config_data['path_infrastructure_info'] = "ga_dashboard/samples"
     config_data['fixed_params_file'] = "ga_dashboard/data/fixed_parameters.yaml"
-    config_data['cluster_info_file'] = "docs/templates/cluster_info.yaml"
-    config_data['dashboard_users_file'] = "docs/templates/sample_user_list.csv"
+    config_data['cluster_info_file'] = "configuration/examples/cluster_info__demo.yaml"
+    config_data['dashboard_users_file'] = "configuration/examples/user_list__demo.csv"
 
     main_backend(config_data) 
 
