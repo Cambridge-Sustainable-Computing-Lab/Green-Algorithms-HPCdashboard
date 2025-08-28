@@ -10,7 +10,7 @@ echo "Script is $GA_SCRIPT"  #, path is $GA_PATH"
 #exit 0
 
 # We use this file to tell us if we are starting the script vs continuing after shell restart
-FILE="/opt/miniforge3_installed.txt"
+FILE="~/miniforge3_installed.txt"
 
 # Download and install miniconda if we don't have it.
 function get_miniconda() {
@@ -49,7 +49,8 @@ function get_miniconda() {
 	touch "$FILE"
 
 	echo "Restarting shell to pick up changes..."
-	exec "$SHELL"
+	#exec "$SHELL"
+	. ~/.bashrc
 }
 
 
