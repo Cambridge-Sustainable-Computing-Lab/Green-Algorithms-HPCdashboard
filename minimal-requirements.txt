@@ -1,0 +1,12 @@
+grafana-client==4.3.2
+maskpass==0.3.7
+niquests==3.14.0
+numpy==2.2.4
+pandas==2.2.3
+poetry==2.1.2
+poetry-core==2.1.2
+psycopg==3.2.6
+psycopg-binary==3.2.6
+pytest==8.3.5
+python-dateutil==2.9.0.post0
+PyYAML==6.0.2
