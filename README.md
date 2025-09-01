@@ -77,7 +77,7 @@ edit it and still use it, use the `-e` option:
 ```
 $ python -m pip install -e .
 ```
-
+This option allows you to install the software package, but also allow you to edit and change it if necessary. This is probably needed only by the package maintainers.
 
 ### Database server - PostgreSQL
 Install PostgreSQL locally or have access to a PostgreSQL server.
