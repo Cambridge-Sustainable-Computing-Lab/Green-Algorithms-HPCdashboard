@@ -25,11 +25,19 @@ class GAConfig:
         'url': { 'expected_type': 'string' }
     }
 
+    # Optional parameters
     extra_attr = {
         'startDay': { 'expected_type': 'date (YYYY-MM-DD)' },
         'endDay': { 'expected_type': 'date (YYYY-MM-DD)' },
-        'outFile': { 'expected_type': 'string' } # Path doesn't exist yet
+        'outFile': { 'expected_type': 'string' },
+        'useCustomLogs': { 'expected_type': 'path' }
     }
+
+    # List of parameters that can't be used together
+    exclusion_attr = [
+        ['outFile', 'useCustomLogs']
+    ]
+
 
     def __init__(self, config_file:str):
         self.config_file = config_file
@@ -81,6 +89,17 @@ class GAConfig:
         self._validate_db_conn()
 
 
+    def _isSubset(self, main_array:list, sub_array:list) -> bool:
+
+        # Check that each element of sub_array is in main_array
+        for item in sub_array:
+            if item not in main_array:
+                return False
+
+        # If all elements of sub_array are found in the main_array
+        return True
+
+
     def _check_config_values(self) -> None:
         '''
         Check the configuration parameters.
@@ -88,6 +107,13 @@ class GAConfig:
         user_config_items = self.config_values.keys()
         invalid_items = {}
         missing_items = []
+
+        # Check for incompatible parameters
+        for attrs in self.exclusion_attr:
+            if self._isSubset(user_config_items,attrs):
+                print(f"  ERROR: the parameters `{'` and `'.join(attrs)}` can't be both set in the config file: only one of them is allowed.")
+                exit(1)
+
         # Check mandatory parameters
         for conf_param in self.config_attr.keys():
             if conf_param not in user_config_items:
