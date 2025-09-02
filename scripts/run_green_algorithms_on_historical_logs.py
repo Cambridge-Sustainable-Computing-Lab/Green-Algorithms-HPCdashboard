@@ -5,8 +5,11 @@ from datetime import timedelta
 from ga_dashboard.backend.ga_tools import main_backend
 from ga_dashboard.ga_config import GAConfig
 
+import datetime
 
 if __name__ == "__main__":
+
+    print("START: ", datetime.datetime.now())
 
     argparser = argparse.ArgumentParser(description="Script used to calculate Green Algorithms from historical HPC logs.",
                                         epilog="Requires a config file.")
@@ -34,3 +37,5 @@ if __name__ == "__main__":
 
     ### Run backend to get data
     extracted_data = main_backend(ga_config.config_values)
+
+    print("FINISH: ", datetime.datetime.now())

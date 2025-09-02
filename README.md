@@ -55,18 +55,29 @@ $ conda env list
 ```
 
 
-### Install the `ga_dashboard` python package
+### Install the `ga_dashboard` python package and its dependencies
 
 In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory), type:
+
+```
+$ pip install -r requirements.txt
+```
+or
+```
+$ poetry install
+```
+based on which tool (`pip` or `poetry`) you prefer to use.
+
+To install the `ga_dashboard` software package specifically, type:
 ```
 $ python -m pip install .
 ```
-(Note the period character at the end). This should install the `ga_dashboard` package on your local machine. if you want to be able to 
+(Note the period character at the end). This should install the `ga_dashboard` package on your local machine. If you want to be able to 
 edit it and still use it, use the `-e` option:
 ```
 $ python -m pip install -e .
 ```
-
+This option allows you to install the software package, but also allow you to edit and change it if necessary. This is probably needed only by the package maintainers.
 
 ### Database server - PostgreSQL
 Install PostgreSQL locally or have access to a PostgreSQL server.
@@ -179,7 +190,11 @@ $ python scripts/run_green_algorithms_on_historical_logs.py --config <your_confi
 ```
 This will collect all the logs available by default (if no `startDay` / `endDay` are defined in the configuration file).
 
-**Note:** we have tested the software successfully with a `sacct`-output data file of more than one million entries. Our intention is to update the software so that it can safely handle much more than this.
+**Note:** we have tested the software successfully on up to 1M jobs' log files (i.e. the `sacct` command returns one million entries). On a Mac, running the `scripts/run_green_algorithms_on_historical_logs.py` script on this data took 11m 42s **without the `sacct` runtime**, and the peak memory usage (measured with `mprof`) was around 4.7 GB.  This was an optimised situation; `sacct` had been run previously (and generated the file of results to use), and the files and Python scripts, Postgres database, and Grafana server were all running on the same local machine.
+
+For the beta testing, you may want to restrict the dates to a few months to not have more than a few million jobs returned (until we have tested scalability in more details).
+
+At the moment, all the data is read into memory for processing, before being written to the Postgres database.  We intend to update the code so that it only processes data (and writes it to the dataabse) in chunks, so that it can safely handle much more than this.
 
 For a scheduled execution (e.g. a `cron` job), the command to run is:
 ```
