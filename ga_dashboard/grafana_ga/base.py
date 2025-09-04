@@ -27,9 +27,6 @@ class GrafanaGABase:
         ''' Check that Grafana is setup correctly. '''
         try:
             res = self.grafana.health.check()
-            if res["database"] != "ok":
-                raise Exception("Grafana is not UP!")
-                exit(1)
         except ConnectionError as e:
             logger.error(f"Grafana is not ON!\n{e}")
             exit(1)

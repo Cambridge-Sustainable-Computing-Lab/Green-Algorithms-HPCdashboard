@@ -9,13 +9,16 @@ license = {text = "CC-BY-4.0"}
 readme = "README.md"
 requires-python = ">=3.13,<4.0"
 dependencies = [
-    "grafana-client (>=4.3.1)",
-    "numpy (>=2.2.3)",
-    "pandas (>=2.2.3)",
-    "psycopg[binary] (>=3.2.5)",
-    "pyyaml (>=6.0.2)",
-    "random-password-generator (>=2.2.0,<3.0.0)",
-    "maskpass (>=0.3.7,<0.4.0)"
+    "grafana-client (==5.0.1)",
+    "pandas (==2.3.2)",
+    "psycopg (==3.2.9)",
+    "pyyaml (==6.0.2)",
+    "random-password-generator (==2.2.0)",
+    "maskpass (==0.3.7)",
+    "poetry (==2.1.4)",
+    "poetry-core (==2.1.3)",
+    "psycopg-binary (==3.2.9)",
+    "pytest (==8.4.1)"
 ]
 
 
