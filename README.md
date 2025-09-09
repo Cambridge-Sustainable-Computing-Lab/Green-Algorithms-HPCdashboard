@@ -45,39 +45,31 @@ Then, once installed, you can create an environment for a suitable version of py
 $ conda create -n py313 python=3.13 -c conda-forge
 $ conda activate py313
 ```
-To leave the environment, type:
-```
-$ conda deactivate
-```
-To see your list of environments, type:
-```
-$ conda env list
-```
+
+For more information about `conda` and its [list of commands](https://docs.conda.io/projects/conda/en/latest/user-guide/cheatsheet.html), please go to the [conda documentation website](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html).
 
 
 ### Install the `ga_dashboard` python package and its dependencies
 
-In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory), type:
+1. In the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory), type:
+    ```
+    $ pip install -r requirements.txt
+    ```
+    or
+    ```
+    $ poetry install
+    ```
+    based on which tool (`pip` or `poetry`) you prefer to use.
 
-```
-$ pip install -r requirements.txt
-```
-or
-```
-$ poetry install
-```
-based on which tool (`pip` or `poetry`) you prefer to use.
-
-To install the `ga_dashboard` software package specifically, type:
-```
-$ python -m pip install .
-```
-(Note the period character at the end). This should install the `ga_dashboard` package on your local machine. If you want to be able to 
-edit it and still use it, use the `-e` option:
-```
-$ python -m pip install -e .
-```
-This option allows you to install the software package, but also allow you to edit and change it if necessary. This is probably needed only by the package maintainers.
+2. To install the `ga_dashboard` software package, type:
+    ```
+    $ python -m pip install .
+    ```
+    (Note the period character at the end). This should install the `ga_dashboard` package on your local machine. If you want to be able to edit it and still use it, use the `-e` option:
+    ```
+    $ python -m pip install -e .
+    ```
+    This option allows you to install the software package, but also allow you to edit and change it if necessary. This is probably needed only by the package maintainers.
 
 ### Database server - PostgreSQL
 Install PostgreSQL locally or have access to a PostgreSQL server.
@@ -163,19 +155,19 @@ User,UID,Name,Email,Group,Department,GrafanaPassword
 ---
 ## Install Green Algorithms dashboard
 
-After the creation of your scripts configuration file (cf. [Configuration files](#configuration-files)), you can run the script below to:
-* Create the database (empty).
-* Insert the list of dashboard users into this database.
+After the creation of your configuration files (cf. [Configuration files](#configuration-files)), you can run the script below to:
+* Create an empty PostgreSQL database.
+* Parse and insert the list of dashboard users into this database.
 * Setup Grafana:
-  * Link the database to Grafana
-  * Create the Green Algorithms folder (on Grafana) and import the dashboard(s) into it.
+  * Link the database to Grafana (as "data source")
+  * Create the `Green Algorithms` folder (on Grafana) and import the dashboard(s) into it.
   * Add the dashboard users to Grafana.
   * Setup Grafana folder permissions for the users.
 
 ```
 $ python scripts/install_GAdashboard.py --config <your_config_file.txt>
 ```
-This will prompt you to enter the Grafana admin password and the PostgreSQL user password.
+This will prompt you to enter the PostgreSQL user password and then the Grafana admin password.
 
 
 ---
@@ -190,11 +182,13 @@ $ python scripts/run_green_algorithms_on_historical_logs.py --config <your_confi
 ```
 This will collect all the logs available by default (if no `startDay` / `endDay` are defined in the configuration file).
 
-**Note:** we have tested the software successfully on up to 1M jobs' log files (i.e. the `sacct` command returns one million entries). On a Mac, running the `scripts/run_green_algorithms_on_historical_logs.py` script on this data took 11m 42s **without the `sacct` runtime**, and the peak memory usage (measured with `mprof`) was around 4.7 GB.  This was an optimised situation; `sacct` had been run previously (and generated the file of results to use), and the files and Python scripts, Postgres database, and Grafana server were all running on the same local machine.
+> [!NOTE]
+> We have tested the software successfully on up to 1M jobs' log files (i.e. the `sacct` command returns one million entries). On a Mac, running the `scripts/run_green_algorithms_on_historical_logs.py` script on this data took 11m 42s **without the `sacct` runtime**, and the peak memory usage (measured with `mprof`) was around 4.7 GB.  This was an optimised situation; `sacct` had been run previously (and generated the file of results to use), and the files and Python scripts, Postgres database, and Grafana server were all running on the same local machine.
 
-For the beta testing, you may want to restrict the dates to a few months to not have more than a few million jobs returned (until we have tested scalability in more details).
+> [!TIP]
+> For the beta testing, you may want to restrict the dates to a few months to not have more than a few million jobs returned (until we have tested scalability in more details).
 
-At the moment, all the data is read into memory for processing, before being written to the Postgres database.  We intend to update the code so that it only processes data (and writes it to the dataabse) in chunks, so that it can safely handle much more than this.
+At the moment, all the data is read into memory for processing, before being written to the PostgreSQL database.  We intend to update the code so that it only processes data (and writes it to the dataabse) in chunks, so that it can safely handle much more than this.
 
 For a scheduled execution (e.g. a `cron` job), the command to run is:
 ```
