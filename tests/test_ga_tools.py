@@ -9,8 +9,6 @@ from ga_dashboard.backend.ga_tools import GA_tools, extract_data, enrich_data, s
 
 # NB We assume the tests are run from the top-level GA4HPCdashboard directory.
 
-#def run_extract_data(logfile: str, clusterfile: str) -> pd.DataFrame:
-#    pass
 
 def generate_namespace(logfile: str) -> argparse.Namespace:
     """
