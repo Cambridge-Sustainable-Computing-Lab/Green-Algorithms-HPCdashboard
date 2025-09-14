@@ -6,7 +6,6 @@ import os
 from ga_dashboard.grafana_ga.dashboard import GrafanaGADashboard
 from ga_dashboard.grafana_ga.datasource import GrafanaGADataSource
 from ga_dashboard.grafana_ga.folder import GrafanaGAFolder
-from ga_dashboard.grafana_ga.password_gen import initialise_strict_password_generator
 from ga_dashboard.grafana_ga.user import GrafanaGAUser
 
 
@@ -26,8 +25,8 @@ Combines the usage of several of the scripts:
 
 # Example usage (run from top-level directory of repo):
 #
-# % python scripts/frontend/run_dashboard.py --admin_password <grafana_admin_password> \
-#        --input_file ga_dashboard/samples/grafana_users_list.csv \
+# % python scripts/frontend/setup_frontend.py --admin_password <grafana_admin_password> \
+#        --dashboard_users_file configuration/examples/user_list__demo.csv \
 #        --db_name ga_db --db_user postgres --db_password <db_password> \
 #        --input_dir ga_dashboard/dashboards
 #        --name <name of your datasource>   <-- If not set, uses "grafana-postgresql-ga_db" 
@@ -61,12 +60,10 @@ Combines the usage of several of the scripts:
 
 def main():
 
-    script_path = os.path.dirname(os.path.realpath(__file__))
-
     # Choose as appropriate
-    default_grafana_users_file = 'ga_dashboard/samples/grafana_users_list.csv'
+    default_dashboard_users_file = 'configuration/examples/user_list__demo.csv'
 
-    argparser = argparse.ArgumentParser()
+    argparser = argparse.ArgumentParser(description="On Grafana: adds data source, folder, dashboards and users, then updates folder permissions.")
     argparser.add_argument("--name", "-n", help='Data source name', required=False, metavar='DS_NAME', default='grafana-postgresql-ga_db', dest='name')
     argparser.add_argument("--url", help='Grafana URL', required=False, metavar='URL', default='localhost:3000')
     argparser.add_argument("--admin_login", "-l", help='Grafana admin name', required=False, metavar='ADMIN_NAME', default='admin', dest='login')
@@ -77,11 +74,11 @@ def main():
     argparser.add_argument("--db_host", "-o", help='Database host', required=False, dest='db_host', default='localhost')
     argparser.add_argument("--db_port", help='Database port', required=False, default=5432)
     argparser.add_argument("--pg_version", help='PostgreSQL version', required=False, default=13)
-    argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder on Grafana', required=False, dest='dashboard_folder_name', default='Green Algorithms Demo')
+    argparser.add_argument("--dashboard_folder_name", "-f", help='Name of the dashboard folder on Grafana', required=False, dest='dashboard_folder_name', default='Green Algorithms')
     argparser.add_argument("--input_dir", "-r", help='Dashboard JSON files directory, on disk', required=False, default = 'ga_dashboard/dashboards', metavar='INPUT_DIR', dest='input_dir')
-    argparser.add_argument("--input_file", "-i", help='User list in CSV format', required=False, default=default_grafana_users_file, metavar='INPUT_FILE', dest='input_file')
+    argparser.add_argument("--dashboard_users_file", "-i", help='User list in CSV format', required=False, default=default_dashboard_users_file, metavar='INPUT_FILE', dest='dashboard_users_file')
     argparser.add_argument("--debug", help='Debug mode', required=False, action='store_true')
-
+    
     args = argparser.parse_args()
 
     datasource_name = args.name
@@ -96,8 +93,9 @@ def main():
     pg_version = args.pg_version
     ga_dashboard_folder_name = args.dashboard_folder_name
     ga_dashboard_input_dir = args.input_dir # Where the dashboard JSON files are located, on disk.
-    input_file = args.input_file
+    input_file = args.dashboard_users_file
     debug = args.debug
+ 
 
     logging_level = logging.DEBUG if debug else logging.INFO
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging_level)
@@ -106,13 +104,14 @@ def main():
     if not os.path.isdir(ga_dashboard_input_dir):
         logger.error("Directory '" + ga_dashboard_input_dir + "' can't be found")
         exit(1)
-
+    logger.info('')
     logger.info('###############')
     logger.info('# Data source #')
     logger.info('###############')
     ga_data_source = GrafanaGADataSource(login, password, grafana_url, db_name, db_user, db_password, db_host, db_port, pg_version, datasource_name)
     ga_data_source.create_datasource()
 
+    logger.info('')
     logger.info('##################')
     logger.info('# Grafana folder #')
     logger.info('##################')
@@ -120,6 +119,7 @@ def main():
     ga_folder_import.get_folder()
 
     # Loop over dashboard files
+    logger.info('')
     logger.info('########################')
     logger.info('# Grafana dashboard(s) #')
     logger.info('########################')
@@ -127,32 +127,30 @@ def main():
         if dashboard_filename.endswith('.json'):
             ga_dashboard = GrafanaGADashboard(login, password, grafana_url, ga_dashboard_input_dir, dashboard_filename, ga_folder_import.folder_uid)
             ga_dashboard.import_dashboard()
-    
 
+    logger.info('')
     logger.info('###########################')
     logger.info('# Grafana users and teams #')
     logger.info('###########################')
     grafana_user = GrafanaGAUser(login, password, grafana_url, ga_dashboard_folder_name)
-
-    # Set up password generator
-    PWG = initialise_strict_password_generator()
 
     with open(input_file, encoding='utf-8-sig', newline='') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
         for row in reader:
             # Create team (if needed)
             grafana_user.create_team(row['Group'])   #grafana_user.create_team(row['Team name'])
-
-            # Generate password. It's up to you to decide what to do with it.
-            grafana_password = PWG.generate()
-            row['GrafanaPassword'] = grafana_password
-
+        
             # Create user (if needed)
             row['org_id'] = 1 # Default organisation
+
+            # We only output (and optionally write to file) password if it's a *new* Grafana user.
+            # Otherwise, we simply discard the password just generated above.
             if (grafana_user.create_user(row)):
-                logger.info(f"** Grafana password for user {row['User']} is {grafana_password} **")
+                logger.info(f"** Created Grafana account for user {row['User']} **")
+                
 
     # Folder
+    logger.info('')
     logger.info('##############################')
     logger.info('# Grafana folder permissions #')
     logger.info('##############################')
@@ -160,7 +158,6 @@ def main():
     if not grafana_folder.find_ga_folder():
         grafana_folder.get_folder()
     grafana_folder.add_ga_folder_permissions(grafana_user.teams)
-
 
 
 if __name__ == "__main__":

@@ -27,7 +27,9 @@ e.g., in rows like this:
 
 Laurent managed to save the JSON with a second existing datasource (just editing 1 chart). He saved it by switching on the Export dashboard to use in another instance:
 
-![Image showing how to export a dashboard](exporting_dashboard.png?raw=true "Exporting dashboard")
+![Image showing how to export a dashboard](images/exporting_dashboard.png?raw=true "Exporting dashboard")
+
+(If Grafana gives you an error at this point, see [instructions on how to deal with Grafana bug](./grafana_bug_workaround.md).)
 
 Then the JSON looks like this:
 

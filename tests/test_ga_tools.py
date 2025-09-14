@@ -24,7 +24,7 @@ def generate_namespace(logfile: str) -> argparse.Namespace:
     cwd = os.getcwd()
     print("cwd is " + cwd) # Hopefully the GA4HPCdashboard dir
 
-    # Get path to samples/subdir
+    # Get path to testdata/ subdir
     ns.path_infrastructure_info = os.path.join(cwd, 'tests/testdata')
     #ns.useCustomLogs = os.path.join(ns.path_infrastructure_info, 'sacct_output_single_user.txt')
     ns.useCustomLogs = os.path.join(ns.path_infrastructure_info, logfile)
@@ -33,45 +33,29 @@ def generate_namespace(logfile: str) -> argparse.Namespace:
     return ns
 
 
-def get_cluster_info(ns: argparse.Namespace, info_file: str) -> object:
+def get_yaml_object(infile: str) -> object:
     """
-    Get the YAML object representation of a cluster info file.
-    :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
-    :param info_file: [str] Name of info file, e.g., 'cluster_info.yaml'
-    :return: [argparse.Namespace] The populated Namespace (args) object.
+    Get the YAML object representation of a .yaml file.
+    :param infile: [str] Name of input file, e.g., 'cluster_info.yaml' or 'fixed_parameters.yaml'
+    :return: [object] The object representation.
     """
-    with open(os.path.join(ns.path_infrastructure_info, info_file), "r") as stream:
+    with open(infile, "r") as stream:
         try:
-            cluster_info = yaml.safe_load(stream)
+            object_rep = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
-    return cluster_info
+    return object_rep    
 
 
-def get_fixed_params(ns: argparse.Namespace, fp_file: str) -> object:
-    """
-    Get the YAML object representation of the fixed parameters file.
-    :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
-    :param fp_file: [str] Name of fixed params file, e.g., 'cluster_info.yaml'
-    :return: [argparse.Namespace] The populated Namespace (args) object.
-    """
-    with open(os.path.join(ns.path_infrastructure_info, fp_file), "r") as stream:
-        try:
-            fixed_params = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-    return fixed_params
 
-
-def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
+def get_users_df(user_list_file: str) -> pd.DataFrame:
     """
     Get the Pandas DataFrame representing the HPC users in user_list_file.
-    :param ns: [argparse.Namespace] Namespace representing the command-line arguments.
-    :param user_list_file: [str] Name of HPC users file, e.g., 'hpc_users_list.csv'
+    :param user_list_file: [str] Name of users file, e.g., 'sample_user_list.csv'
     :return: [pd.DataFrame] The data frame object.
     """
     try:
-        users_df = pd.read_csv(os.path.join(ns.path_infrastructure_info, user_list_file))
+        users_df = pd.read_csv(user_list_file)
     except FileNotFoundError:
         #if has_slurmAdmin:
         #    raise ValueError("No user data available.")
@@ -79,13 +63,20 @@ def get_users_df(ns: argparse.Namespace, user_list_file: str) -> pd.DataFrame:
     return users_df
 
 
+
 def test_extract_data():
     """
     Test the extract_data() function and dataframe
     """   
-    ns = generate_namespace('one_line_sacct_output.txt')
-    cluster_info = get_cluster_info(ns, 'cluster_info.yaml')
-    df = extract_data(ns, True, cluster_info)
+    logfile = "tests/testdata/one_line_sacct_output.txt"
+    #ns = generate_namespace('one_line_sacct_output.txt')
+    #ns = generate_namespace("tests/testdata/one_line_sacct_output.txt")
+
+    cluster_info = get_yaml_object('configuration/examples/cluster_info__demo.yaml')
+
+    config_data = {}
+    config_data['useCustomLogs'] = logfile
+    df = extract_data(config_data, True, cluster_info)
 
     assert len(df) == 1  # Only 1 job ran
     myseries = df.squeeze(axis=0) # Convert the one-item dataframe into a pandas series
@@ -99,7 +90,7 @@ def test_extract_data():
 
 
     # Load fixed parameters
-    fixed_params = get_fixed_params(ns, 'fixed_parameters.yaml')
+    fixed_params = get_yaml_object('ga_dashboard/data/fixed_parameters.yaml')
 
     GA = GA_tools(cluster_info, fixed_params)
     
@@ -110,7 +101,7 @@ def test_extract_data():
     # etc ... all should be the same
     series2 = None
 
-    users_df = get_users_df(ns, 'hpc_users_list.csv')
+    users_df = get_users_df('configuration/examples/user_list__demo.csv')
     df2 = enrich_data(df, fixed_params, users_df, GA)
     assert len(df2) == 1
     series2 = df2.squeeze(axis=0) 
@@ -121,7 +112,7 @@ def test_extract_data():
     #assert series2.carbonFootprint == 
     # (row.energy_CPUs +  row.energy_GPUs + row[f'energy_memory{suffix}']) * self.cluster_info['PUE'] # in kWh
 
-    summary_stats = summarise_data(df2, ns)
+    summary_stats = summarise_data(df2)
     print("SUMMARY STATS")
     print(summary_stats["groupActivity"])
 

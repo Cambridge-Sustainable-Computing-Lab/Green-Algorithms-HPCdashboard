@@ -1,5 +1,6 @@
-import os,json
+import json
 import logging
+import os
 from grafana_client.client import GrafanaClientError
 from .base import GrafanaGABase
 
@@ -48,7 +49,7 @@ class GrafanaGADashboard(GrafanaGABase):
                 datasource_label = self.dash_content['__inputs'][0]['label']  # e.g., 'grafana-postgresql-ga_db'
                 datasource = self.grafana.datasource.find_datasource(datasource_label)
                 #logger.info(f"datasource: {datasource}")
-                if not 'id' in datasource.keys():
+                if 'id' not in datasource.keys():
                     logger.error(f"Can't find the data source '{datasource_label}'")
                     exit(1)
                 datasource_uid = datasource['uid']

@@ -2,11 +2,13 @@
 
 [Top level README](../README.md)
 
-[Set-up](./SETUP.md)
+[Outdated set-up instructions (retained for reference)](./outdated_setup.md)
 
 [Grafana tips](./GrafanaTips.md)
 
 [Running the scripts](../scripts/RunningScripts.md)
+
+[End-to-end demo](./end-to-end.md)
 
 [Worked Example](./WorkedExample.md)
 

@@ -13,9 +13,21 @@ def create_arguments():
     Command line arguments for the tool.
     :return: argparse object
     """
-    parser = argparse.ArgumentParser(description='Calculate your carbon footprint on the server.')
+    #parser = argparse.ArgumentParser(description='Calculate your carbon footprint on the server.')
+    parser = argparse.ArgumentParser(
+        description='Calculate your carbon footprint on the server.',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
 
     default_endDay = datetime.date.today().strftime("%Y-%m-%d")  # today
+
+    default_cluster_info = "configuration/examples/cluster_info__demo.yaml"
+    default_db = "ga_db"
+    default_db_host = "localhost"
+    default_db_port = "5432"
+    default_db_user = "postgres"
+    default_fixed_params_file = "ga_dashboard/data/fixed_parameters.yaml"
+    default_dashboard_users_file = "configuration/examples/user_list__demo.csv"
 
     ## Timeframe
     # NB These two arguments aren't needed if --useCustomLogs is used.
@@ -57,13 +69,16 @@ def create_arguments():
     #                              2-letter and full-length codes. Full list of job states: \
     #                              https://slurm.schedmd.com/squeue.html#SECTION_JOB-STATE-CODES")
     # Required settings if the generated/aggregated data is to be imported into a database
-    parser.add_argument('--db_name', type=str, help='Database name')
-    parser.add_argument('--db_user', type=str, help='Database user name')
+    parser.add_argument('--db_name', type=str, help='Database name.', default=default_db)
+    parser.add_argument('--db_user', type=str, help='Database user name.', default=default_db_user)
     parser.add_argument('--db_password', type=str, help='Database user password')
-    parser.add_argument('--db_port', type=int, help='Database port', default=5432)
-    parser.add_argument('--db_host', type=str, help='Database server host', default='localhost')
+    parser.add_argument('--db_port', type=int, help='Database port.', default=default_db_port)
+    parser.add_argument('--db_host', type=str, help='Database server host.', default=default_db_host)
 
-    parser.add_argument('--fixed_params_file', type=str, help='The fixed parameters file to use')
+    parser.add_argument('--fixed_params_file', type=str, help='The fixed parameters file to use.',
+                         default=default_fixed_params_file)
+    parser.add_argument('--cluster_info_file', type=str, help='The cluster info file to use.', default=default_cluster_info)
+    parser.add_argument('--dashboard_users_file', type=str, help='File with details of dashboard users.', default=default_dashboard_users_file)
 
     ## Reporting bugs
     group1 = parser.add_mutually_exclusive_group()
@@ -80,7 +95,7 @@ def create_arguments():
     group2.add_argument('--useCustomLogs', type=str, default='',
                         help='This bypasses the workload manager, and enables you to input a custom log file of your jobs. \
                                  This is mostly meant for debugging, but can be useful in some situations. '
-                             'An example of the expected file can be found at `backend/example_files/example_sacctOutput_raw.txt`.')
+                             'Examples of the expected file format can be found in the sacct output files in `tests/testdata`.')
     # Arguments for debugging only (not visible to users)
     # To use arbitrary folder for the infrastructure information and user info.
     parser.add_argument('--useOtherInfrastructureInfo', type=str, default='', help=argparse.SUPPRESS)

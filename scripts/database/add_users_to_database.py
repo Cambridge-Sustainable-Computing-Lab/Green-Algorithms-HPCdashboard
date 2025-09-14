@@ -1,5 +1,7 @@
-import os, argparse, csv
+import argparse 
+import csv
 import logging
+import os
 import psycopg
 
 logger = logging.getLogger(__name__)
@@ -8,8 +10,8 @@ logger = logging.getLogger(__name__)
 Script to add users in a file to the ga_user table in Postgres.
 
 Example: 
-python scripts/backend/add_users_to_database.py --db_name ga_db --db_user postgres --db_password mypassword 
-        --db_port 5432 --db_host localhost --input_file ga_dashboard/samples/hpc_users_list.csv
+python scripts/database/add_users_to_database.py --db_name ga_db --db_user postgres --db_password mypassword 
+        --db_port 5432 --db_host localhost --dashboard_users_file configuration/examples/user_list__demo.csv
 
 TODO I want to move this into a proper database wrapper class, which is used for all interaction with Postgres. It would be
 database-agnostic:
@@ -77,7 +79,7 @@ def create_arguments():
     Command line arguments for the script.
     :return: argparse object
     """
-    parser = argparse.ArgumentParser(description=f'Add/update users to ga_user table in database.')
+    parser = argparse.ArgumentParser(description='Add/update users to ga_user table in database.')
    
     # Required settings for the user data to be imported into a database
     parser.add_argument('--db_name', type=str, required=True, help='Database name')
@@ -85,11 +87,11 @@ def create_arguments():
     parser.add_argument('--db_password', type=str, required=True, help='Database user password')
     parser.add_argument('--db_port', type=int, required=True, help='Database port', default=5432)
     parser.add_argument('--db_host', type=str, required=True, help='Database server host', default='localhost')
-    parser.add_argument('--input_file', type=str, required=True, help='CSV file of user data')
+    parser.add_argument('--dashboard_users_file', type=str, required=True, help='Dashboard users datafile (CSV format)')
 
     args = parser.parse_args()
 
-    input_file = args.input_file
+    input_file = args.dashboard_users_file
     if not os.path.isfile(input_file):
         logger.error("File '" + input_file + "' can't be found")
         exit(1)
@@ -102,7 +104,7 @@ def parse_file(input_file: str) -> list:
     Extracts user data from the CSV file. Returns it as a list of User objects 
 
     Args:
-        input_file (str: Path to input CSV file.
+        input_file (str): Path to input CSV file.
 
     Returns:
         list: The list of User objects.
@@ -125,7 +127,7 @@ if __name__ == "__main__":
     logging_level = logging.DEBUG
     
     args = create_arguments()
-    user_objects = parse_file(args.input_file)
+    user_objects = parse_file(args.dashboard_users_file)
     
     # TODO: move to a Database class
     try:
@@ -137,7 +139,7 @@ if __name__ == "__main__":
             port=args.db_port
         )
     except psycopg.OperationalError as err:
-        logger.error("Unable to connect to database: {err}")
+        logger.error(f"Unable to connect to database: {err}")
         exit(1)
     
     cur = conn.cursor()

@@ -24,5 +24,8 @@ def initialise_strict_password_generator() -> PasswordGenerator:
     # At least one special character
     strict_pwo.minschars = 1
 
+    # Don't include a comma in the password generated (else get issues with csv file!)
+    strict_pwo.excludeschars = "," 
+
     return strict_pwo
 
