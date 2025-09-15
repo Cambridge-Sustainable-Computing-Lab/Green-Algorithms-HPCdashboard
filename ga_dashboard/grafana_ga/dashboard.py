@@ -53,10 +53,14 @@ class GrafanaGADashboard(GrafanaGABase):
                     logger.error(f"Can't find the data source '{datasource_label}'")
                     exit(1)
                 datasource_uid = datasource['uid']
+
                 # Update dashboard content & variables with the data source uid
                 for panel in self.dash_content['panels']:
-                    if 'datasource' in panel.keys():
-                        panel['datasource']['uid'] = datasource_uid
+                    self.replace_datasource_uid_in_panel(panel,datasource_uid)
+                    if 'panels' in panel.keys():
+                        for subpanel in panel['panels']:
+                            self.replace_datasource_uid_in_panel(subpanel,datasource_uid)
+                # NOTE: not sure if the block below is still relevant
                 for variable in self.dash_content['templating']['list']:
                     if 'datasource' in variable.keys():
                         variable['datasource']['uid'] = datasource_uid
@@ -85,3 +89,21 @@ class GrafanaGADashboard(GrafanaGABase):
         else:
             logger.error("Can't find the file '{self.ga_dashboard_filepath}'")
             exit(1)
+
+
+    def replace_datasource_uid_in_panel(self, panel:dict, datasource_uid:str):
+        '''
+        Code used to replace the datasource variable (placeholded) by the datasource uid generated in the class GrafanaGADataSource
+
+        Parameters
+        ----------
+        panel : dict. Represent the JSON structure of a dashboard panel. It could contain panels itself
+        datasource_uid: str. Datasource unique ID generated in the class GrafanaGADataSource
+        '''
+        if 'datasource' in panel.keys():
+            # self.dash_content['panels'][panel_idx]['datasource']['uid'] = datasource_uid
+            panel['datasource']['uid'] = datasource_uid
+        if 'targets' in panel.keys():
+            for target in panel['targets']:
+                if 'datasource' in target.keys():
+                    target['datasource']['uid'] = datasource_uid
