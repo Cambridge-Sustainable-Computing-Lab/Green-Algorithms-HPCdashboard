@@ -6,8 +6,6 @@ import os
 from ga_dashboard.grafana_ga.dashboard import GrafanaGADashboard
 from ga_dashboard.grafana_ga.datasource import GrafanaGADataSource
 from ga_dashboard.grafana_ga.folder import GrafanaGAFolder
-from ga_dashboard.grafana_ga.organization import GrafanaGAOrganization
-from ga_dashboard.grafana_ga.password_gen import initialise_strict_password_generator
 from ga_dashboard.grafana_ga.user import GrafanaGAUser
 
 
