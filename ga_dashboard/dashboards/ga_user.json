@@ -544,7 +544,7 @@
           }
         }
       ],
-      "title": "✈️  Paris-London",
+      "title": "✈️  Paris - London",
       "type": "stat"
     },
     {
@@ -1284,7 +1284,7 @@
           }
         }
       ],
-      "title": "Cost of user's failed jobs.",
+      "title": "Cost of user's failed jobs",
       "type": "table"
     },
     {
@@ -1316,7 +1316,7 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 2,
+            "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
@@ -1431,7 +1431,7 @@
           }
         }
       ],
-      "title": "User's distribution of failed jobs.",
+      "title": "User's distribution of failed jobs",
       "type": "timeseries"
     },
     {
@@ -1520,7 +1520,7 @@
           }
         }
       ],
-      "title": "Number of jobs submitted by user.",
+      "title": "User's total number of jobs submitted",
       "type": "stat"
     },
     {
@@ -1644,7 +1644,7 @@
           }
         }
       ],
-      "title": "User's distribution of failed and successful jobs.",
+      "title": "User's distribution of failed and successful jobs",
       "type": "piechart"
     },
     {
@@ -1959,7 +1959,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 90
+            "y": 78
           },
           "id": 74,
           "options": {
@@ -2006,7 +2006,7 @@
               }
             }
           ],
-          "title": "Carbon footprints of users in group $group_name.",
+          "title": "Carbon footprints of users in your group ($group_name)",
           "transformations": [
             {
               "id": "prepareTimeSeries",
@@ -2080,7 +2080,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 90
+            "y": 78
           },
           "id": 75,
           "options": {
@@ -2127,7 +2127,7 @@
               }
             }
           ],
-          "title": "Contribution of users to the carbon footprint of your group ($group_name).",
+          "title": "Contribution of users to the carbon footprint of your group ($group_name)",
           "type": "table"
         },
         {
@@ -2139,7 +2139,7 @@
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 98
+            "y": 158
           },
           "id": 93,
           "options": {
@@ -2200,7 +2200,7 @@
             "h": 3,
             "w": 24,
             "x": 0,
-            "y": 77
+            "y": 317
           },
           "id": 70,
           "options": {
@@ -2294,7 +2294,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 80
+            "y": 320
           },
           "id": 71,
           "options": {
@@ -2403,7 +2403,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 80
+            "y": 320
           },
           "id": 72,
           "options": {
@@ -2461,7 +2461,7 @@
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 88
+            "y": 328
           },
           "id": 91,
           "options": {
@@ -2522,7 +2522,7 @@
             "h": 3,
             "w": 24,
             "x": 0,
-            "y": 115
+            "y": 79
           },
           "id": 82,
           "options": {
@@ -2580,7 +2580,7 @@
             "h": 6,
             "w": 4,
             "x": 0,
-            "y": 118
+            "y": 82
           },
           "id": 18,
           "options": {
@@ -2680,7 +2680,7 @@
             "h": 6,
             "w": 4,
             "x": 4,
-            "y": 118
+            "y": 82
           },
           "id": 19,
           "options": {
@@ -2765,7 +2765,7 @@
             "h": 6,
             "w": 5,
             "x": 8,
-            "y": 118
+            "y": 82
           },
           "id": 21,
           "options": {
@@ -2850,7 +2850,7 @@
             "h": 6,
             "w": 5,
             "x": 13,
-            "y": 118
+            "y": 82
           },
           "id": 77,
           "options": {
@@ -2904,7 +2904,7 @@
               }
             }
           ],
-          "title": "✈️  Paris-London",
+          "title": "✈️  Paris - London",
           "type": "stat"
         },
         {
@@ -2937,7 +2937,7 @@
             "h": 6,
             "w": 6,
             "x": 18,
-            "y": 118
+            "y": 82
           },
           "id": 20,
           "options": {
@@ -3077,7 +3077,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 124
+            "y": 88
           },
           "id": 1,
           "options": {
@@ -3245,7 +3245,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 124
+            "y": 88
           },
           "id": 2,
           "options": {
@@ -3401,7 +3401,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 132
+            "y": 96
           },
           "id": 4,
           "options": {
@@ -3562,7 +3562,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 132
+            "y": 96
           },
           "id": 5,
           "options": {
@@ -3646,7 +3646,7 @@
             "h": 2,
             "w": 24,
             "x": 0,
-            "y": 140
+            "y": 104
           },
           "id": 84,
           "options": {
@@ -3672,7 +3672,7 @@
             "h": 3,
             "w": 24,
             "x": 0,
-            "y": 142
+            "y": 106
           },
           "id": 7,
           "options": {
@@ -3755,7 +3755,7 @@
             "h": 13,
             "w": 12,
             "x": 0,
-            "y": 145
+            "y": 109
           },
           "id": 6,
           "options": {
@@ -3847,12 +3847,12 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 2,
+                "lineWidth": 1,
                 "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "showPoints": "auto",
+                "showPoints": "never",
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -3896,7 +3896,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 145
+            "y": 109
           },
           "id": 8,
           "options": {
@@ -3943,7 +3943,7 @@
               }
             }
           ],
-          "title": "Daily carbon footprint of departments.",
+          "title": "Daily carbon footprint of departments",
           "transformations": [
             {
               "id": "prepareTimeSeries",
@@ -4006,7 +4006,7 @@
             "h": 5,
             "w": 12,
             "x": 12,
-            "y": 153
+            "y": 117
           },
           "id": 10,
           "options": {
@@ -4064,7 +4064,7 @@
             "h": 2,
             "w": 24,
             "x": 0,
-            "y": 158
+            "y": 122
           },
           "id": 85,
           "options": {
@@ -4091,7 +4091,7 @@
             "h": 3,
             "w": 24,
             "x": 0,
-            "y": 160
+            "y": 124
           },
           "id": 11,
           "options": {
@@ -4190,7 +4190,7 @@
             "h": 4,
             "w": 12,
             "x": 0,
-            "y": 163
+            "y": 127
           },
           "id": 17,
           "options": {
@@ -4270,7 +4270,7 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 2,
+                "lineWidth": 1,
                 "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
@@ -4338,7 +4338,7 @@
             "h": 11,
             "w": 12,
             "x": 12,
-            "y": 163
+            "y": 127
           },
           "id": 53,
           "options": {
@@ -4467,7 +4467,7 @@
             "h": 7,
             "w": 7,
             "x": 0,
-            "y": 167
+            "y": 131
           },
           "id": 16,
           "options": {
@@ -4521,7 +4521,7 @@
               }
             }
           ],
-          "title": "Number of jobs submitted by entire institution.",
+          "title": "Number of jobs submitted by entire institution",
           "type": "stat"
         },
         {
@@ -4541,7 +4541,8 @@
                   "viz": false
                 }
               },
-              "mappings": []
+              "mappings": [],
+              "unit": "percent"
             },
             "overrides": [
               {
@@ -4588,7 +4589,7 @@
             "h": 7,
             "w": 5,
             "x": 7,
-            "y": 167
+            "y": 131
           },
           "id": 12,
           "options": {
@@ -4598,7 +4599,8 @@
             "legend": {
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": true,
+              "values": []
             },
             "pieType": "donut",
             "reduceOptions": {
@@ -4645,7 +4647,7 @@
               }
             }
           ],
-          "title": "Distribution of failed and successful jobs.",
+          "title": "Distribution of failed and successful jobs",
           "type": "piechart"
         },
         {
@@ -4657,7 +4659,7 @@
             "h": 2,
             "w": 24,
             "x": 0,
-            "y": 174
+            "y": 138
           },
           "id": 86,
           "options": {
@@ -4683,7 +4685,7 @@
             "h": 3,
             "w": 24,
             "x": 0,
-            "y": 176
+            "y": 140
           },
           "id": 14,
           "options": {
@@ -4765,12 +4767,12 @@
             "h": 8,
             "w": 13,
             "x": 0,
-            "y": 179
+            "y": 143
           },
           "id": 15,
           "options": {
             "barRadius": 0,
-            "barWidth": 1,
+            "barWidth": 0.97,
             "colorByField": "Memory efficiency (%)",
             "fullHighlight": false,
             "groupWidth": 0.7,
@@ -4901,13 +4903,13 @@
     ]
   },
   "time": {
-    "from": "2023-05-01T13:13:20.000Z",
-    "to": "2023-06-30T06:48:42.000Z"
+    "from": "now-90d",
+    "to": "now-1d/d"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "User",
   "uid": "deg7om9pg3ny8d",
-  "version": 1,
+  "version": 4,
   "weekStart": ""
 }
