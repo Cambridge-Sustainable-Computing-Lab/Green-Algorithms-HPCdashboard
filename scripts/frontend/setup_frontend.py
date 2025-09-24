@@ -147,7 +147,6 @@ def main():
             # Otherwise, we simply discard the password just generated above.
             if (grafana_user.create_user(row)):
                 logger.info(f"** Created Grafana account for user {row['User']} **")
-                
 
     # Folder
     logger.info('')
@@ -158,6 +157,14 @@ def main():
     if not grafana_folder.find_ga_folder():
         grafana_folder.get_folder()
     grafana_folder.add_ga_folder_permissions(grafana_user.teams)
+
+    # Change default theme
+    logger.info('')
+    logger.info('################################')
+    logger.info('# Grafana change default theme #')
+    logger.info('################################')
+    current_grafana_organization = GrafanaGAOrganization(login, password, grafana_url)
+    current_grafana_organization.change_theme()
 
 
 if __name__ == "__main__":
