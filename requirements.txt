@@ -3,8 +3,8 @@ maskpass==0.3.7
 pandas==2.3.2
 poetry==2.1.4
 poetry-core==2.1.3
-psycopg==3.2.9
-psycopg-binary==3.2.9
+psycopg==3.2.10
+psycopg-binary==3.2.10
 pytest==8.4.1
 PyYAML==6.0.2
 random-password-generator==2.2.0
