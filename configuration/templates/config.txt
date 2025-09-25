@@ -44,9 +44,6 @@ db_user = <db_user>
 # Uncomment the next line if you want to see debug output
 # debug = True
 
-# The last day to take into account by the sacct command on HPC (e.g. 2025-07-03).  
-endDay = <YYYY-MM-DD>
-
 # The fixed parameters YAML file to use (e.g. ga_dashboard/data/fixed_parameters.yaml).
 fixed_params_file = <fixed_params_file_path>
        
@@ -67,6 +64,9 @@ pg_version = <pg_version>
 
 # The start date passed to the `sacct` command (e.g. 2025-02-01).
 startDay = <YYYY-MM-DD>
+
+# The last day to take into account by the sacct command on HPC (e.g. 2025-07-03).
+endDay = <YYYY-MM-DD>
 
 # Grafana URL, including port (e.g. localhost:3000).
 url = <url:port>
