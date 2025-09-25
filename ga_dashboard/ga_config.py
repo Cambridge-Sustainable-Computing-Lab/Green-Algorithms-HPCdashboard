@@ -39,15 +39,19 @@ class GAConfig:
     ]
 
 
-    def __init__(self, config_file:str):
+    def __init__(self, config_file:str, db_pass:str=None, grafana_pass:str=None):
         self.config_file = config_file
         # Default value
         self.config_values = {
             'debug': False
         }
+        if db_pass:
+            self.config_values['db_password'] = db_pass
+        if grafana_pass:
+            self.config_values['admin_password'] = grafana_pass
 
 
-    def ingest_config_file(self) -> None:
+    def ingest_config_file(self,skip_passwords:bool=None) -> None:
         '''
         Parse the config file and obtain any parameter values.
 
@@ -82,11 +86,13 @@ class GAConfig:
             self.config_values[arg] = pieces[1].rstrip()  # Remove trailing whitespace and new line characters
 
         # Add database password
-        self._get_db_password()
+        if not skip_passwords:
+            self._get_db_password()
         # Check values
         self._check_config_values()
         # Check DB connection
-        self._validate_db_conn()
+        if not skip_passwords:
+            self._validate_db_conn()
 
 
     def _isSubset(self, main_array:list, sub_array:list) -> bool:

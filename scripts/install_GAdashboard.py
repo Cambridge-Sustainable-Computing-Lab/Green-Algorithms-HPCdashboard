@@ -34,7 +34,7 @@ class GADashboardInstall:
         > Setup Grafana folder permissions for the teams
     """
 
-    def __init__(self, config_file: str) -> None:
+    def __init__(self, config_file:str, db_pass:str=None, grafana_pass:str=None) -> None:
         """
         Initialise GADashboardInstall object.
         
@@ -64,13 +64,15 @@ class GADashboardInstall:
             }
         })
 
-        # We will only need to get these once at most per program operation.
-        self.got_db_password = False
-        self.got_grafana_admin_password = False
-
         # Fetch config file data
         self.config_file = config_file
+        self.db_pass = db_pass
+        self.grafana_pass = grafana_pass
         self.ingest_config_file()
+
+        # We will only need to get these once at most per program operation.
+        self.got_db_password = True if self.db_pass else False
+        self.got_grafana_admin_password = True if self.grafana_pass else False
 
 
     def get_command_components(self, client: str) -> list:
@@ -144,7 +146,7 @@ class GADashboardInstall:
         '''
         Parse the config file and obtain any parameter values set by user.
         '''
-        ga_config = GAConfig(self.config_file)
+        ga_config = GAConfig(self.config_file,self.db_pass,self.grafana_pass)
         ga_config.ingest_config_file()
         self.ga_config_values = ga_config.config_values
 
@@ -195,9 +197,15 @@ if __name__ == "__main__":
     
     argparser.add_argument("--config", help='Name of config file for your parameter values.', required=True, \
                             metavar='CONFIG_FILE', dest='config')
+    argparser.add_argument("--db_pass", help='Database password (optional, to avoid entering it in the prompt).', \
+                            metavar='DB_PASS', dest='db_pass')
+    argparser.add_argument("--grafana_pass", help='Grafana admin password (optional, to avoid entering it in the prompt).', \
+                            metavar='GRAFANA_PASS', dest='grafana_pass')
 
     args = argparser.parse_args()
     config_file = args.config
+    db_pass = args.db_pass
+    grafana_pass = args.grafana_pass
 
-    runner = GADashboardInstall(config_file)
+    runner = GADashboardInstall(config_file,db_pass,grafana_pass)
     runner.run_pipeline()

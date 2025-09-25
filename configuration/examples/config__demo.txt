@@ -44,9 +44,6 @@ db_user = postgres
 # Uncomment the next line if you want to see debug output
 # debug = True
 
-# The last day to take into account by the sacct command on HPC (e.g. 2025-07-03).  
-endDay = 2025-02-18
-
 # The fixed parameters YAML file to use (e.g. ga_dashboard/data/fixed_parameters.yaml).
 fixed_params_file = ga_dashboard/data/fixed_parameters.yaml
        
@@ -66,10 +63,16 @@ name = grafana-postgresql-ga_db
 pg_version = 13
 
 # The start date passed to the `sacct` command (e.g. 2025-02-01).
-startDay = 2025-02-14
+startDay = 2023-05-01
+
+# The last day to take into account by the sacct command on HPC (e.g. 2025-07-03).
+endDay = 2023-06-30
 
 # Grafana URL, including port (e.g. localhost:3000).
 url = localhost:3000
 
 # Bypass workload manager and input a custom log file of your jobs (e.g. ga_dashboard/backend/example_files/example_sacctOutput_raw.txt).
 # useCustomLogs = tests/testdata/sacct_output_single_user.txt
+
+# Flag only to be used for the demo
+use_mock_agg_data = True

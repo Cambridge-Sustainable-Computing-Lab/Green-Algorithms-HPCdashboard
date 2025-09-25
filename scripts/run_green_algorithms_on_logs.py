@@ -13,12 +13,16 @@ if __name__ == "__main__":
     
     argparser.add_argument("--config", help='Name of config file for your parameter values.', required=True, \
                             metavar='CONFIG_FILE', dest='config')
+    argparser.add_argument("--db_pass", help='Database password (optional, to avoid entering it in the prompt).', \
+                            metavar='DB_PASS', dest='db_pass')
 
     args = argparser.parse_args()
     config_file = args.config
+    db_pass = args.db_pass
+
 
     # Parse config file
-    ga_config = GAConfig(config_file)
+    ga_config = GAConfig(config_file,db_pass)
     ga_config.ingest_config_file()
 
     # Ask for the database password
