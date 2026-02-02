@@ -35,7 +35,7 @@ class Helpers_WM:
         """
         mem_raw, n_nodes, n_cores = x['ReqMem'], x['NNodes'], x['NCPUS']
 
-        if pd.isnull(mem_raw):
+        if pd.isnull(mem_raw) or mem_raw == '0':
             unit = 'G'
             memory = 0
         elif mem_raw[-1] == 'n':
@@ -159,7 +159,10 @@ class Helpers_WM:
 
     def calc_memory_overallocation(self, x):
         # This is in case ReqMem is wrong or too low
-        return 1. if x.ReqMemX < x.NeededMemX else x.ReqMemX / x.NeededMemX
+        # 1 means no over-allocation
+        if x.NeededMemX == 0:
+            return 1.0
+        return min(1.0, x.ReqMemX / x.NeededMemX)
 
     def calc_CPUusage2use(self, x):
         if x.TotalCPUtime_.total_seconds() == 0:
