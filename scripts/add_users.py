@@ -50,7 +50,7 @@ class GADashboardAddUsers (GADashboardInstall):
         self.ingest_config_file()
   
 
-# e.g. python scripts/add_users.py --config my_config.txt
+# e.g. python scripts/add_users.py --config my_config.yaml
 if __name__ == "__main__":
 
     argparser = argparse.ArgumentParser(description="Script to add users to the dashboard.")

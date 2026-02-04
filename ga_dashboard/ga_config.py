@@ -164,6 +164,7 @@ class GAConfig:
         expected_type: [str] Name of the expected data type (e.g. string)
         value: Value of the configuration parameter
         '''
+        is_valid = True
         match expected_type:
             case 'string':
                 is_valid = isinstance(value, str)
