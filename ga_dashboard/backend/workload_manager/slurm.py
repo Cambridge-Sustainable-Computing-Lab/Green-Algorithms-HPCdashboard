@@ -158,10 +158,17 @@ class Helpers_WM:
         return minimum_mem if x.ReqMemX < x.UsedMem2_ else min(x.ReqMemX, minimum_mem)
 
     def calc_memory_overallocation(self, x):
+        """
+        Calculate the overallocation factor, as the ratio between memory requested and memory needed.
+        
+        :param x: [pd.Series] one row of sacct output.
+        :return: [float] overallocation factor, with 1 meaning no overallocation.
+        """
         # This is in case ReqMem is wrong or too low
-        # 1 means no over-allocation
-        if x.NeededMemX == 0:
+        if x.NeededMemX == 0 and x.ReqMemX == 0:
             return 1.0
+        elif x.NeededMemX == 0: # Edge Case - needs revisiting
+            return 10.0  # Arbitrary high value to reflect the fact that there was a lot of overallocation.
         return min(1.0, x.ReqMemX / x.NeededMemX)
 
     def calc_CPUusage2use(self, x):
