@@ -146,3 +146,12 @@ def simulate_mock_jobs(): # DEBUGONLY
         df_list.append(data_frame)
 
     return pd.concat(df_list)
+
+def parse_string_to_number(s:str) -> int | float | str:
+    try:
+        return int(s)
+    except ValueError:
+        try:
+            return float(s)
+        except ValueError:
+            return s
