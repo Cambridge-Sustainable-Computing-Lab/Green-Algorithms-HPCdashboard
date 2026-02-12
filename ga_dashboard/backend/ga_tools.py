@@ -5,7 +5,7 @@ import yaml
 import ga_dashboard.backend.helpers.logging_utils as logging_utils
 import ga_dashboard.backend.helpers.utils as utils
 from ga_dashboard.backend.data_sql_import import DataSQLImport
-from ga_dashboard.backend.services.database import DBSettings
+from GA4HPCdashboard.ga_dashboard.backend.services.database_service import DBSettings
 from ga_dashboard.backend.workload_manager.slurm import WorkloadManager
 
 
@@ -88,16 +88,6 @@ class GA_tools:
 
     def calculate_carbonFootprint(self, df, col_energy):
         return df[col_energy] * self.cluster_info['CI']
-
-
-# def get_slurmAdmin(config_data: dict) -> bool:
-#     has_slurmAdmin = False
-#     if 'db_name' in config_data.keys():
-#         has_slurmAdmin = True
-#     elif 'slurmAdmin' in config_data.keys():
-#         if config_data['slurmAdmin']:
-#             has_slurmAdmin = True
-#     return has_slurmAdmin
 
 
 def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.DataFrame:

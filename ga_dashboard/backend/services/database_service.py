@@ -16,7 +16,7 @@ class DBSettings:
     host: str
     port: int = 5432  # PostgreSQL default
 
-class Database:
+class DatabaseService:
     """
     A reusable database helper for PostgreSQL operations via psycopg.
     Handles connection management and generic inserts with configurable conflict resolution.
