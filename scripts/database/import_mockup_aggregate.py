@@ -1,7 +1,9 @@
 import os
 import csv
-import psycopg
 import argparse
+
+from ga_dashboard.backend.services.database_service import DBSettings, DatabaseService
+from ga_dashboard.database.table_col_definitions import GA_DATA_AGGREGATE_COLUMNS, GA_USER_COLUMNS
  
 """
 From Laurent
@@ -105,110 +107,89 @@ def main():
     args = argparser.parse_args()
  
     input_file = args.input_log_file
-    db_name = args.db_name
-    db_user = args.db_user
-    db_password = args.db_password
-    db_host = args.db_host
-    db_port = args.db_port
+    db_settings = DBSettings(
+        db_name=args.db_name,
+        user=args.db_user,
+        password=args.db_password,
+        host=args.db_host,
+        port=args.db_port
+    )
  
     if not os.path.isfile(input_file):
-        print("File '" + input_file + "' can't be found")
+        print(f"File '{input_file}' can't be found")
         exit(1)
  
     # Prepare DB column names from the ones in the input file:
     raw_column_names = get_columns(input_file)
     db_column_names_mapping = map_column_names(raw_column_names)
-    #print("db col names mapping is: " + str(db_column_names_mapping))
-    db_column_names = db_column_names_mapping.values()
+    db_column_names = list(db_column_names_mapping.values())
 
     # Now do the same for the user's institutional information:
     #raw_column_names = get_columns(input_file)
     user_db_column_names_mapping = map_column_names(raw_column_names, user_data=True)
-    #print("user db col names mapping is: " + str(user_db_column_names_mapping))
-    user_db_column_names = user_db_column_names_mapping.values()
-    #print("user db column names: " + str(user_db_column_names)) # user db column names: dict_values(['user_name', 'uid', 'name', 'group', 'department'])
- 
-    #exit()
+    user_db_column_names = list(user_db_column_names_mapping.values())
 
-    data = []
-    user_data = []
+    data_rows = []
+    user_rows = []
  
     with open(input_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile, delimiter='\t', quotechar='"')
- 
-        # count = 0
         for row in reader:
-
+            # Aggregate data
             data_row = {}
             for col in raw_column_names:
-
                 if col in ['UID', 'Name', 'Group', 'Department']:
                     continue
-
                 db_col = db_column_names_mapping[col]
                 value = row[col]
                 new_value = parse_string_to_number(value)
                 if new_value is not None:
                     value = new_value
-                if db_col in ['state_x']:
+                if db_col == 'state_x':
                     value = True if value == 1 else False
                 data_row[db_col] = value
-            values = get_sql_command(data_row, db_column_names)
-            data.append(values)
+            data_rows.append(data_row)
 
             # Now extract the user data
             # user db col names mapping is: 
             # {'User': 'user_name', 'UID': 'uid', 'Name': 'name', 'Group': 'group', 'Department': 'department'}
             user_data_row = {}
             for col in raw_column_names:
-
                 if col not in ['User', 'UID', 'Name', 'Group', 'Department']:
                     continue
-
                 db_col = user_db_column_names_mapping[col]
-                #print("db_col: " + db_col)
                 value = row[col]
                 new_value = parse_string_to_number(value)
                 if new_value is not None:
                     value = new_value
                 user_data_row[db_col] = value
-            values = get_sql_command(user_data_row, user_db_column_names)
-            user_data.append(values)
+            user_rows.append(user_data_row)
 
-        #print(values)
+    # Use DatabaseService for bulk inserts
+    with DatabaseService(db_settings) as db:
+        if not db._conn or db._conn.closed:
+            print("DB connection error")
+            exit(1)
 
-        #exit()
-   
-    # Connect to an existing database
-    conn = psycopg.connect(
-        dbname=db_name,
-        user=db_user,
-        password=db_password,
-        host=db_host,
-        port=db_port
-    )
-    # Open a cursor to perform database operations
-    cur = conn.cursor()
- 
-    # Prepare SQL command with multiple sets of values
-    # INSERT INTO ga_data_aggregate (user_name, submitdate, n_jobs,...) VALUES (a,b,c,...),(d,e,f,...),(g,h,i,...),...,(x,y,z,...)
-    sql = f"INSERT INTO ga_data_aggregate ({','.join(db_column_names)}) VALUES ({'),('.join(data)}) ON CONFLICT DO NOTHING;"
-    #print(sql)
-    cur.execute(sql)
+        # Insert aggregate data in batches
+        db.bulk_insert_data(
+            table_name="ga_data_aggregate",
+            columns=db_column_names,
+            rows=data_rows,
+            on_conflict="DO NOTHING",
+            batch_size=1000
+        )
 
-    # Insert the user into the database if he/she isn't in there already.
-    sql = f"INSERT INTO ga_user ({','.join(user_db_column_names)}) VALUES ({'),('.join(user_data)}) ON CONFLICT DO NOTHING;"
-    #print(sql)
-    cur.execute(sql)
+        # Insert user data in batches
+        db.bulk_insert_data(
+            table_name="ga_user",
+            columns=user_db_column_names,
+            rows=user_rows,
+            on_conflict="DO NOTHING",
+            batch_size=500
+        )
 
-    # Make the changes to the database persistent
-    conn.commit()
- 
-    # Close communication with the database
-    cur.close()
-    conn.close()
-
-    print ("Script completed successfully.")
+    print("Script completed successfully.")
  
 if __name__ == '__main__':
     main()

@@ -1,7 +1,6 @@
 import datetime
 import pandas
-import psycopg
-from GA4HPCdashboard.ga_dashboard.backend.services.database_service import DBSettings, DatabaseService
+from ga_dashboard.backend.services.database_service import DBSettings, DatabaseService
 from ga_dashboard.database.table_col_definitions import GA_DATA_AGGREGATE_COLUMNS
 import ga_dashboard.backend.helpers.utils as utils
 
@@ -66,7 +65,7 @@ class DataSQLImport:
 
         print('> Parsing - end')
 
-        print('> DB insertion - start')
+        print('> DB insertion into ga_data_aggregate - start')
         with DatabaseService(self.db_params) as database:
             database.insert_data(
                 table_name='ga_data_aggregate',
@@ -74,5 +73,5 @@ class DataSQLImport:
                 rows=data,
                 on_conflict='DO NOTHING'
             )
-        print('> DB insertion - end')
+        print('> DB insertion into ga_data_aggregate - end')
 

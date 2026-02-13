@@ -2,7 +2,10 @@ import argparse
 import csv
 import logging
 import os
-import psycopg
+from datetime import datetime, timezone
+
+from ga_dashboard.backend.services.database_service import DBSettings, DatabaseService
+from ga_dashboard.database.table_col_definitions import GA_USER_COLUMNS
 
 logger = logging.getLogger(__name__)
 
@@ -12,16 +15,6 @@ Script to add users in a file to the ga_user table in Postgres.
 Example: 
 python scripts/database/add_users_to_database.py --db_name ga_db --db_user postgres --db_password mypassword 
         --db_port 5432 --db_host localhost --dashboard_users_file configuration/examples/user_list__demo.csv
-
-TODO I want to move this into a proper database wrapper class, which is used for all interaction with Postgres. It would be
-database-agnostic:
-
-DB = Database(...)
-DB.connect()
-DB.add_users()
-DB.disconnect()
-
-So it can be changed from postgres if desired.
 
 """
 
@@ -128,37 +121,42 @@ if __name__ == "__main__":
     
     args = create_arguments()
     user_objects = parse_file(args.dashboard_users_file)
-    
-    # TODO: move to a Database class
-    try:
-        conn = psycopg.connect(
-            dbname=args.db_name,
-            user=args.db_user,
-            password=args.db_password,
-            host=args.db_host,
-            port=args.db_port
-        )
-    except psycopg.OperationalError as err:
-        logger.error(f"Unable to connect to database: {err}")
-        exit(1)
-    
-    cur = conn.cursor()
 
-    # We assume the information we send is what we want, so we will overwrite existing data if
-    # there's a conflict.
-    sql = "INSERT INTO ga_user (user_name, uid, name, group_name, department, updated) VALUES (%s, %s, %s, %s, %s, now()) "
-    sql += "ON CONFLICT (user_name) DO UPDATE SET uid = EXCLUDED.uid, name = EXCLUDED.name, "
-    sql += "group_name = EXCLUDED.group_name, department = EXCLUDED.department, updated = EXCLUDED.updated"
+    db_settings = DBSettings(
+        db_name=args.db_name,
+        user=args.db_user,
+        password=args.db_password,
+        host=args.db_host,
+        port=args.db_port,
+    )
+
+    # Prepare rows as list[dict]
+    rows = []
 
     for uobj in user_objects:
-        data = uobj.to_tuple()
-        cur.execute(sql, data)
+        values = uobj.to_tuple()
+        row_dict = dict(zip(GA_USER_COLUMNS[:-1], values))
+        row_dict["updated"] = datetime.now(timezone.utc)
+        rows.append(row_dict)
 
-    # Make the changes to the database persistent
-    conn.commit()
- 
-    # Close communication with the database
-    cur.close()
-    conn.close()
+    print('> DB insertion into ga_user - start')
 
-    print ("Script completed successfully.")
+    with DatabaseService(db_settings) as db:
+        if not db._conn or db._conn.closed:
+            print('DB connection error')
+            exit(1)
+
+        db.insert_data(
+            table_name="ga_user",
+            columns=GA_USER_COLUMNS,
+            rows=rows,
+            on_conflict="DO UPDATE",
+            conflict_target=["user_name"],
+            update_columns=GA_USER_COLUMNS[1:],  # skips user_name, updates everything else including updated
+        )
+
+    print('> DB insertion into ga_user - end')
+    print("Script completed successfully.")
+
+
+

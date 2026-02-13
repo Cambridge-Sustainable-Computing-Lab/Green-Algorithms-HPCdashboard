@@ -102,6 +102,10 @@ class DatabaseService:
         if not self._conn or self._conn.closed:
             logger.error("No active database connection. Call connect() first.")
             return
+        
+        if not rows:
+            logger.debug("No rows to insert.")
+            return
 
         #conflict clause
         if on_conflict == "DO NOTHING":
@@ -132,6 +136,69 @@ class DatabaseService:
         except Exception as e:
             logger.error(f"Unexpected error inserting into '{table_name}': {e}")
             self._conn.rollback()
+        finally:
+            cur.close()
+
+    def bulk_insert_data(
+        self,
+        table_name: str,
+        columns: list[str],
+        rows: list[dict],
+        on_conflict: str = "DO NOTHING",
+        conflict_target: list[str] | None = None,
+        update_columns: list[str] | None = None,
+        batch_size: int = 1000
+    ) -> None:
+        """
+        Bulk insert rows in batches using psycopg's executemany().
+        
+        Args:
+            table_name: Target table.
+            columns: List of column names.
+            rows: List of dicts mapping column -> value.
+            on_conflict: 'DO NOTHING' or 'DO UPDATE'.
+            conflict_target: Required if on_conflict='DO UPDATE'.
+            update_columns: Required if on_conflict='DO UPDATE'.
+            batch_size: Number of rows per batch insert.
+        """
+        if not self._conn or self._conn.closed:
+            logger.error("No active database connection. Call connect() first.")
+            return
+
+        if not rows:
+            logger.debug("No rows to insert.")
+            return
+
+        # Build conflict clause
+        if on_conflict == "DO NOTHING":
+            conflict_clause = "ON CONFLICT DO NOTHING"
+        elif on_conflict == "DO UPDATE":
+            if not conflict_target or not update_columns:
+                raise ValueError("DO UPDATE requires conflict_target and update_columns")
+            target = ", ".join(conflict_target)
+            updates = ", ".join(f"{col} = EXCLUDED.{col}" for col in update_columns)
+            conflict_clause = f"ON CONFLICT ({target}) DO UPDATE SET {updates}"
+        else:
+            raise ValueError("Unsupported on_conflict value")
+
+        # Build SQL with placeholders
+        col_list = ", ".join(columns)
+        placeholders = ", ".join(["%s"] * len(columns))
+        sql = f"INSERT INTO {table_name} ({col_list}) VALUES ({placeholders}) {conflict_clause}"
+
+        cur = self._conn.cursor()
+        try:
+            # Process in batches
+            for i in range(0, len(rows), batch_size):
+                batch = rows[i:i+batch_size]
+                values = [tuple(row.get(col) for col in columns) for row in batch]
+                cur.executemany(sql, values)
+            self._conn.commit()
+            logger.debug(f"Bulk inserted {len(rows)} rows into '{table_name}' in batches of {batch_size}")
+        except Exception as e:
+            logger.error(f"Bulk insert failed for '{table_name}': {e}")
+            self._conn.rollback()
+            raise
         finally:
             cur.close()
 

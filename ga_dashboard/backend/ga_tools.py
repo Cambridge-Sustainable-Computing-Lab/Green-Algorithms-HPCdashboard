@@ -5,7 +5,7 @@ import yaml
 import ga_dashboard.backend.helpers.logging_utils as logging_utils
 import ga_dashboard.backend.helpers.utils as utils
 from ga_dashboard.backend.data_sql_import import DataSQLImport
-from GA4HPCdashboard.ga_dashboard.backend.services.database_service import DBSettings
+from ga_dashboard.backend.services.database_service import DBSettings
 from ga_dashboard.backend.workload_manager.slurm import WorkloadManager
 
 
