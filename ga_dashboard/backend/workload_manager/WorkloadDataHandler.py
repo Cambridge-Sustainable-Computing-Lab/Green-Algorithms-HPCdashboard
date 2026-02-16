@@ -2,8 +2,12 @@ import datetime
 import pandas as pd
 import numpy as np
 
-class WMHelpers:
-
+class WorkloadDataHandler:
+    """
+    A utility class for processing and analyzing workload data from HPC cluster job schedulers. 
+    Handles data transformation, parsing, cleaning, and metric calculations to support 
+    cluster resource management and performance analysis.
+    """
     def __init__(self, cluster_info):
         self.cluster_info = cluster_info
 

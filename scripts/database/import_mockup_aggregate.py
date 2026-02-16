@@ -167,7 +167,7 @@ def main():
 
     # Use DatabaseService for bulk inserts
     with DatabaseService(db_settings) as db:
-        if not db._conn or db._conn.closed:
+        if not db.is_conn_ok():
             print("DB connection error")
             exit(1)
 

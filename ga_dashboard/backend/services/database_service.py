@@ -64,6 +64,11 @@ class DatabaseService:
             logger.error(f"Exception during DB operation: {exc_val}")
         self.disconnect()
         return False  # don't suppress exceptions
+    
+    def is_conn_ok(self):
+        if not self._conn or self._conn.closed:
+            return False
+        return True
 
     def insert_data(
         self,

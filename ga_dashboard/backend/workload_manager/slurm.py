@@ -4,9 +4,9 @@ import pandas as pd
 from io import BytesIO
 
 from ga_dashboard.backend.services.sacct_service import SacctService
-from ga_dashboard.backend.workload_manager.wm_helpers import WMHelpers
+from ga_dashboard.backend.workload_manager.WorkloadDataHandler import WorkloadDataHandler
 
-class WorkloadManager(WMHelpers):
+class WorkloadManager(WorkloadDataHandler):
 
     def __init__(self, config_data:dict, cluster_info):
         """
