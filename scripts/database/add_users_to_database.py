@@ -141,12 +141,12 @@ if __name__ == "__main__":
 
     print('> DB insertion into ga_user - start')
 
-    with DatabaseService(db_settings) as db:
-        if not db.is_conn_ok():
-            print('DB connection error')
+    with DatabaseService(db_settings) as database:
+        if not database.is_conn_ok():
+            print('DB connection error. Exiting...')
             exit(1)
 
-        db.insert_data(
+        database.insert_data(
             table_name="ga_user",
             columns=GA_USER_COLUMNS,
             rows=rows,

@@ -1,10 +1,11 @@
 import datetime
+import logging
 import pandas
 from ga_dashboard.backend.services.database_service import DBSettings, DatabaseService
 from ga_dashboard.database.table_col_definitions import GA_DATA_AGGREGATE_COLUMNS
 import ga_dashboard.backend.helpers.utils as utils
 
-# TODO: From Laurent's PR code review: "It's good for now, but in the future it might make more sense to use the logging package, like in the grafana_ga modules."
+logger = logging.getLogger(__name__)
 
 class DataSQLImport:
 
@@ -50,28 +51,31 @@ class DataSQLImport:
     def insert_data_into_db(self) -> None:
         raw_column_names = self.dict_users_data.columns # Pandas columns
         db_column_names_mapping = self.map_column_names(raw_column_names)
-
         data = []
-        print('> Parsing - start')
-
+        
+        logger.info('Parsing data - start')
         # Converting Datatypes for each row and column
-        for index, row in self.dict_users_data.iterrows(): # Row by row
+        for index, row in self.dict_users_data.iterrows():  # Row by row
             data_row = {}
             for col in raw_column_names:  # Column by column
                 db_col_name = db_column_names_mapping[col]
-                value = self.convert_data_type(row[col],db_col_name)
+                value = self.convert_data_type(row[col], db_col_name)
                 data_row[db_col_name] = value
-                data.append(data_row)
-
-        print('> Parsing - end')
-
-        print('> DB insertion into ga_data_aggregate - start')
+            data.append(data_row)
+        
+        logger.info('Parsing data - end')
+        logger.info('DB insertion into ga_data_aggregate - start')
+        
         with DatabaseService(self.db_params) as database:
+            if not database.is_conn_ok():
+                print('DB connection error. Exiting...')
+                exit(1)
+
             database.insert_data(
                 table_name='ga_data_aggregate',
                 columns=GA_DATA_AGGREGATE_COLUMNS,
                 rows=data,
                 on_conflict='DO NOTHING'
             )
-        print('> DB insertion into ga_data_aggregate - end')
+        logger.info('DB insertion into ga_data_aggregate - end')
 

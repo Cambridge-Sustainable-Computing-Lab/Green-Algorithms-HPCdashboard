@@ -166,13 +166,13 @@ def main():
             user_rows.append(user_data_row)
 
     # Use DatabaseService for bulk inserts
-    with DatabaseService(db_settings) as db:
-        if not db.is_conn_ok():
-            print("DB connection error")
+    with DatabaseService(db_settings) as database:
+        if not database.is_conn_ok():
+            print('DB connection error. Exiting...')
             exit(1)
 
         # Insert aggregate data in batches
-        db.bulk_insert_data(
+        database.bulk_insert_data(
             table_name="ga_data_aggregate",
             columns=db_column_names,
             rows=data_rows,
@@ -181,7 +181,7 @@ def main():
         )
 
         # Insert user data in batches
-        db.bulk_insert_data(
+        database.bulk_insert_data(
             table_name="ga_user",
             columns=user_db_column_names,
             rows=user_rows,
