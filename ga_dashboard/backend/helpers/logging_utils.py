@@ -4,6 +4,13 @@ import os
 from ga_dashboard.backend.workload_manager.slurm import WorkloadManager
 
 def report_bugs(config_data, WM: WorkloadManager) -> None:
+    """
+    Save SLURM job logs to a CSV file for debugging purposes.
+
+    Parameters:
+        config_data (dict): Configuration dictionary containing keys like 'reportBug' or 'reportBugHere'.
+        WM (WorkloadManager): An instance of the WorkloadManager that holds SLURM logs in `logs_raw`.
+    """
     if 'reportBug' in config_data.keys() or 'reportBugHere' in config_data.keys():
         log_name = str(datetime.datetime.now().timestamp()).replace(".", "_")
 
