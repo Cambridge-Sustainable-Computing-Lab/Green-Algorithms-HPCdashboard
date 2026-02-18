@@ -1,3 +1,7 @@
+# ------------------------------------------------------------------
+# Database reader/writer service (add database interaction code here)
+# ------------------------------------------------------------------
+
 import logging
 import psycopg
 import pandas as pd

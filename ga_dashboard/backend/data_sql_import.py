@@ -1,3 +1,7 @@
+# ------------------------------------------------------------------
+# Bridge betweem main_backend in ga_tools.py and DatabaseService
+# ------------------------------------------------------------------
+
 import datetime
 import logging
 import pandas

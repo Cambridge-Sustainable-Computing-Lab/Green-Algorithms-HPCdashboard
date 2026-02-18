@@ -1,12 +1,15 @@
+# ------------------------------------------------------------------
+# Main tools to extract, enrich and summarise data for the GA4HPC dashboard.
+# ------------------------------------------------------------------
+
 import numpy as np
 import pandas as pd
 import yaml
 
-import ga_dashboard.backend.helpers.logging_utils as logging_utils
 import ga_dashboard.backend.helpers.utils as utils
 from ga_dashboard.backend.data_sql_import import DataSQLImport
 from ga_dashboard.backend.services.database_service import DBSettings
-from ga_dashboard.backend.workload_manager.slurm import WorkloadManager
+from ga_dashboard.backend.workload_manager.slurm.slurm_workload_manager import SlurmWorkloadManager
 
 
 agg_functions_from_raw = {
@@ -111,11 +114,11 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
 
 
     ### Pull usage statistics from the workload manager
-    WM = WorkloadManager(config_data, cluster_info)
+    WM = SlurmWorkloadManager(config_data, cluster_info)
     WM.pull_logs()
 
     ### Log the output for debugging
-    logging_utils.report_bugs(config_data, WM)
+    utils.save_slurm_logs(config_data, WM)
 
 
     ###### Here we can fetch running jobs from the DB and check if they are completed. 

@@ -4,9 +4,9 @@ import pandas as pd
 from io import BytesIO
 
 from ga_dashboard.backend.services.sacct_service import SacctService
-from ga_dashboard.backend.workload_manager.WorkloadDataHandler import WorkloadDataHandler
+from ga_dashboard.backend.workload_manager.slurm.slurm_data_handler import SlurmDataHandler
 
-class WorkloadManager(WorkloadDataHandler):
+class SlurmWorkloadManager(SlurmDataHandler):
 
     def __init__(self, config_data:dict, cluster_info):
         """
@@ -70,7 +70,7 @@ class WorkloadManager(WorkloadDataHandler):
         """
         Convert raw logs output into a pandas dataframe - calling the static method convert2dataframe
         """
-        self.logs_df = WorkloadManager.convert2dataframe(self.logs_raw)
+        self.logs_df = SlurmWorkloadManager.convert2dataframe(self.logs_raw)
 
 
     def clean_logs_df(self):

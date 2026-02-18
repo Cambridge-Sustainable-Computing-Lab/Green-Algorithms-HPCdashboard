@@ -2,7 +2,7 @@ import datetime
 import pandas as pd
 import numpy as np
 
-class WorkloadDataHandler:
+class SlurmDataHandler:
     """
     A utility class for processing and analyzing workload data from HPC cluster job schedulers. 
     Handles data transformation, parsing, cleaning, and metric calculations to support 

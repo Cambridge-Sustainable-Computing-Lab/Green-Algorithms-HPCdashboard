@@ -2,6 +2,7 @@ import os
 import csv
 import argparse
 
+import ga_dashboard.backend.helpers.utils as utils
 from ga_dashboard.backend.services.database_service import DBSettings, DatabaseService
 from ga_dashboard.database.table_col_definitions import GA_DATA_AGGREGATE_COLUMNS, GA_USER_COLUMNS
  
@@ -84,14 +85,6 @@ def get_sql_command(data, columns):
     return ','.join(values)
  
 
-def parse_string_to_number(s):
-    try:
-        return int(s)
-    except ValueError:
-        try:
-            return float(s)
-        except ValueError:
-            return None
  
 
 def main():
@@ -142,7 +135,7 @@ def main():
                     continue
                 db_col = db_column_names_mapping[col]
                 value = row[col]
-                new_value = parse_string_to_number(value)
+                new_value = utils.parse_string_to_number(value)
                 if new_value is not None:
                     value = new_value
                 if db_col == 'state_x':
@@ -159,7 +152,7 @@ def main():
                     continue
                 db_col = user_db_column_names_mapping[col]
                 value = row[col]
-                new_value = parse_string_to_number(value)
+                new_value = utils.parse_string_to_number(value)
                 if new_value is not None:
                     value = new_value
                 user_data_row[db_col] = value

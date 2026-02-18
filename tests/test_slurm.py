@@ -1,7 +1,7 @@
 #import argparse
 #import datetime
 #from io import BytesIO
-from ga_dashboard.backend.workload_manager.slurm import Helpers_WM   #, WorkloadManager
+from ga_dashboard.backend.workload_manager.slurm.slurm_workload_manager import Helpers_WM   #, SlurmWorkloadManager
 import pandas as pd
 import pytest
 
