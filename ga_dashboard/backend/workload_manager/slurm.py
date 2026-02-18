@@ -35,7 +35,7 @@ class Helpers_WM:
         """
         mem_raw, n_nodes, n_cores = x['ReqMem'], x['NNodes'], x['NCPUS']
 
-        if pd.isnull(mem_raw):
+        if pd.isnull(mem_raw) or mem_raw == '0':
             unit = 'G'
             memory = 0
         elif mem_raw[-1] == 'n':
@@ -158,8 +158,18 @@ class Helpers_WM:
         return minimum_mem if x.ReqMemX < x.UsedMem2_ else min(x.ReqMemX, minimum_mem)
 
     def calc_memory_overallocation(self, x):
+        """
+        Calculate the overallocation factor, as the ratio between memory requested and memory needed.
+        
+        :param x: [pd.Series] one row of sacct output.
+        :return: [float] overallocation factor, with 1 meaning no overallocation.
+        """
         # This is in case ReqMem is wrong or too low
-        return 1. if x.ReqMemX < x.NeededMemX else x.ReqMemX / x.NeededMemX
+        if x.NeededMemX == 0 and x.ReqMemX == 0:
+            return 1.0
+        elif x.NeededMemX == 0: # Edge Case - needs revisiting
+            return 10.0  # Arbitrary high value to reflect the fact that there was a lot of overallocation.
+        return min(1.0, x.ReqMemX / x.NeededMemX)
 
     def calc_CPUusage2use(self, x):
         if x.TotalCPUtime_.total_seconds() == 0:
