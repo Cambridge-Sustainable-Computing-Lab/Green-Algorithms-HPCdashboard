@@ -9,7 +9,7 @@ import yaml
 import ga_dashboard.backend.helpers.utils as utils
 from ga_dashboard.backend.data_sql_import import DataSQLImport
 from ga_dashboard.backend.services.database_service import DBSettings
-from ga_dashboard.backend.workload_manager.slurm.slurm_workload_manager import SlurmWorkloadManager
+from ga_dashboard.backend.workload_manager.slurm import SlurmManager
 
 
 agg_functions_from_raw = {
@@ -114,7 +114,7 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
 
 
     ### Pull usage statistics from the workload manager
-    WM = SlurmWorkloadManager(config_data, cluster_info)
+    WM = SlurmManager(config_data, cluster_info)
     WM.pull_logs()
 
     ### Log the output for debugging

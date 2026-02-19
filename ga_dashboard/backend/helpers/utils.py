@@ -78,7 +78,7 @@ def save_slurm_logs(config_data, WM) -> None: # DEBUGONLY
         config_data (dict): Configuration dictionary that may contain keys like 'saveSlurmLogs' or 'saveSlurmLogsHere'.
             If 'saveSlurmLogs' exists, logs are saved in a default error_logs directory.
             If 'saveSlurmLogsHere' exists, logs are saved in the user's current working directory.
-        WM (SlurmWorkloadManager): Instance of SlurmWorkloadManager containing SLURM logs in `logs_raw`.
+        WM (SlurmManager): Instance of SlurmManager containing SLURM logs in `logs_raw`.
     """
     if 'saveSlurmLogs' in config_data or 'saveSlurmLogsHere' in config_data:
         # Generate unique filename using timestamp
