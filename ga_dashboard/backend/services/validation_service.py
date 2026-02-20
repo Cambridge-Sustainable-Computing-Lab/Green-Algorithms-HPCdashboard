@@ -8,9 +8,6 @@ class validate_args:
     """
     Class used to validate all the arguments provided.
     """
-    # TODO add validation
-    # TODO test these
-
     def _validate_dates(self, args):
         """
         Validates that `startDay` and `endDay` are in the right format and in the right order.
