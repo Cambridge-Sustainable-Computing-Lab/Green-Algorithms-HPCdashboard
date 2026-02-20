@@ -33,7 +33,7 @@ You must prepare the following files before running any scripts:
   - Describes HPC hardware (CPU/GPU models, TDP, PUE, etc.)
 - **Dashboard users file** (CSV)
   - Copy from `configuration/templates/user_list.csv`
-  - Lists all users to be created in the database and Grafana
+ - Lists all users to be created in the database and Grafana (these are the users of the HPC).
 - **Fixed parameters file** (YAML)
   - Example: `ga_dashboard/data/fixed_parameters.yaml`
 
