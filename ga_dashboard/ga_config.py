@@ -63,7 +63,7 @@ class GAConfig:
 
         with open(self.config_file, "r") as infile:
             if self.config_file.endswith('.txt'):
-                print("ERROR: TXT config files are no longer supported, please convert to YAML format. Example provided in configuration/examples/config_demo.yaml")
+                print("ERROR: TXT config files are not supported, please convert to YAML format. Find template in `configuration/templates/config.yaml`")
                 exit(1)
             data = yaml.safe_load(infile)
 
