@@ -4,7 +4,7 @@ import datetime
 import sys
 sys.path.append('../..')
 
-from ga_dashboard.backend.utils import validate_args
+from ga_dashboard.backend.services.validation_service import validate_args
 from ga_dashboard.backend.ga_tools import main_backend
 
 

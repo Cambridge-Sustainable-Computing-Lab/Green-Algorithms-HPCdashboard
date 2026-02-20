@@ -1,13 +1,16 @@
-import datetime
-import os
+# ------------------------------------------------------------------
+# Main tools to extract, enrich and summarise data for the GA4HPC dashboard.
+# ------------------------------------------------------------------
 
 import numpy as np
 import pandas as pd
 import yaml
 
+import ga_dashboard.backend.helpers.utils as utils
 from ga_dashboard.backend.data_sql_import import DataSQLImport
-from ga_dashboard.backend.workload_manager.slurm import WorkloadManager
-from ga_dashboard.backend.utils import check_empty_results  # , simulate_mock_jobs
+from ga_dashboard.backend.services.database_service import DBSettings
+from ga_dashboard.backend.workload_manager.slurm import SlurmManager
+
 
 agg_functions_from_raw = {
         'n_jobs': ('UserX', 'count'),
@@ -90,16 +93,6 @@ class GA_tools:
         return df[col_energy] * self.cluster_info['CI']
 
 
-# def get_slurmAdmin(config_data: dict) -> bool:
-#     has_slurmAdmin = False
-#     if 'db_name' in config_data.keys():
-#         has_slurmAdmin = True
-#     elif 'slurmAdmin' in config_data.keys():
-#         if config_data['slurmAdmin']:
-#             has_slurmAdmin = True
-#     return has_slurmAdmin
-
-
 def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.DataFrame:
 
     if 'use_mock_agg_data' in config_data.keys(): # DEBUGONLY Create/use some mock jobs with different users
@@ -121,35 +114,27 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
 
 
     ### Pull usage statistics from the workload manager
-    WM = WorkloadManager(config_data, cluster_info)
+    WM = SlurmManager(config_data, cluster_info)
     WM.pull_logs()
 
     ### Log the output for debugging
-    if 'reportBug' in config_data.keys() | 'reportBugHere' in config_data.keys():
-        log_name = str(datetime.datetime.now().timestamp()).replace(".", "_")
+    utils.save_slurm_logs(config_data, WM)
 
-        scripts_dir = os.path.dirname(os.path.realpath(__file__))
 
-        if 'reportBug' in config_data.keys():
-            log_path = os.path.join(scripts_dir, '../error_logs', f'sacctOutput_{log_name}.csv')
-            # Logging into a separate dir to write-protect the main one (not in place for now)
-            # log_path = os.path.join(pathlib.Path(scripts_dir).parent.absolute(), 'GreenAlgorithms4HPC_errorLogs', f'sacctOutput_{log_name}.csv')
-        else:
-            # i.e. config_data['reportBugHere is True
-            log_path = f'{config_data['userCWD']}/sacctOutput_{log_name}.csv'
+    ###### Here we can fetch running jobs from the DB and check if they are completed. 
+    ###### If they are we can maybe create a different WM object with them and run convert2dataframe() command
 
-        os.makedirs(os.path.dirname(log_path), exist_ok=True) # Create error_logs dir if needed
-        with open(log_path, 'wb') as f:
-            f.write(WM.logs_raw)
-        print(f"\nSLURM statistics logged for debugging: {log_path}\n")
 
     ### Turn usage logs into DataFrame
     WM.convert2dataframe()
 
+    ###### Running jobs can be filtered and saved into the DB here. 
+    ###### Subsquently they can be removed from WM logs before proceeding with cleaning of logs.
+
     # And clean
     WM.clean_logs_df()
     # Check if there are any jobs during the period from this directory and with these jobIDs
-    check_empty_results(WM.df_agg, config_data)
+    utils.check_empty_results(WM.df_agg, config_data)
 
     # Check that there is only one user's data if no admin right
     if not has_slurmAdmin:
@@ -354,19 +339,22 @@ def main_backend(config_data: dict):
     # except Exception:
     #     dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
     if 'db_name' in dict_keys:
-        import_data_in_db(summary_stats, config_data)
+        process_and_store(summary_stats, config_data)
 
     return summary_stats
 
 
-def import_data_in_db(summary_stats:dict,config_data:dict) -> None:
+def process_and_store(summary_stats:dict,config_data:dict) -> None:
     # Import aggregated data into a database
+    db_params = DBSettings(
+        db_name=config_data['db_name'],
+        user=config_data['db_user'],
+        password=config_data['db_password'],
+        host=config_data['db_host'],
+        port=config_data['db_port']
+    )
     data2db = DataSQLImport(
                 summary_stats,
-                db_name=config_data['db_name'],
-                db_user=config_data['db_user'],
-                db_password=config_data['db_password'],
-                db_host=config_data['db_host'],
-                db_port=config_data['db_port']
+                db_params
             )
-    data2db.import_data()
+    data2db.insert_data_into_db()

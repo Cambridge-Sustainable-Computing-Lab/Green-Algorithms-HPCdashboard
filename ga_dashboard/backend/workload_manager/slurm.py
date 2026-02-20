@@ -1,13 +1,16 @@
 import datetime
-import numpy as np
 import os
 import pandas as pd
-import subprocess
-
 from io import BytesIO
 
-class Helpers_WM:
+from ga_dashboard.backend.services.sacct_service import SacctService
 
+class SlurmBase:
+    """
+    A utility class for processing and analyzing workload data from HPC cluster job schedulers. 
+    Handles data transformation, parsing, cleaning, and metric calculations to support 
+    cluster resource management and performance analysis.
+    """
     def __init__(self, cluster_info):
         self.cluster_info = cluster_info
 
@@ -234,8 +237,7 @@ class Helpers_WM:
         assert len(job_id_parts) <= 2, f"Can't parse the job ID: {x}"
         return job_id_parts[0]
 
-
-class WorkloadManager(Helpers_WM):
+class SlurmManager(SlurmBase):
 
     def __init__(self, config_data:dict, cluster_info):
         """
@@ -257,16 +259,16 @@ class WorkloadManager(Helpers_WM):
         self.df_agg = None
         self.df_agg_X = None
 
-
-    def use_as_admin(self) -> bool:
-        has_slurmAdmin = False
-        if 'db_name' in self.config_data.keys():
-            has_slurmAdmin = True
-        elif 'slurmAdmin' in self.config_data.keys():
-            if 'slurmAdmin' in self.config_data.keys():
-                has_slurmAdmin = True
-        return has_slurmAdmin
-
+    @staticmethod
+    def convert2dataframe(logs_raw):
+        """
+        Convert raw logs output into a pandas DataFrame.
+        Can be called independently with any raw logs.
+        """
+        logs_df = pd.read_csv(BytesIO(logs_raw), sep="|", dtype='str')
+        for x in ['NNodes', 'NCPUS']:
+            logs_df[x] = logs_df[x].astype('int64')
+        return logs_df
 
     def pull_logs(self):
         """
@@ -293,34 +295,13 @@ class WorkloadManager(Helpers_WM):
 
         # What we expect to be the usual case, where we run the sacct command.
         else:
-            bash_com = [
-                "sacct",
-                "--starttime",
-                self.config_data['startDay'], # format YYYY-MM-DD
-                "--endtime",
-                self.config_data['endDay'],  # format YYYY-MM-DD
-                "--format",
-                "UID,User,JobID,JobName,Submit,Elapsed,Partition,NNodes,NCPUS,TotalCPU,CPUTime,ReqMem,MaxRSS,WorkDir,State,Account,AllocTres",
-                "-P",
-                "-L"  # All clusters
-            ]
-
-            if self.use_as_admin():
-                bash_com.append('--allusers')
-
-            logs = subprocess.run(bash_com, capture_output=True)
-            self.logs_raw = logs.stdout                
-
-
-    def convert2dataframe(self):
+            self.logs_raw = SacctService.pull_logs_by_time(self.config_data['startDay'], self.config_data['endDay'])                
+    
+    def raw_logs_to_df(self):
         """
-        Convert raw logs output into a pandas dataframe.
+        Convert raw logs output into a pandas dataframe - calling the static method convert2dataframe
         """
-        logs_df = pd.read_csv(BytesIO(self.logs_raw), sep="|", dtype='str')
-        for x in ['NNodes', 'NCPUS']:
-            logs_df[x] = logs_df[x].astype('int64')
-
-        self.logs_df = logs_df
+        self.logs_df = SlurmManager.convert2dataframe(self.logs_raw)
 
 
     def clean_logs_df(self):

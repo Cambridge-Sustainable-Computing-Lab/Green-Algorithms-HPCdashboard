@@ -94,7 +94,7 @@ CREATE TABLE public.ga_user (
     name character varying(255),
     group_name character varying(255),
     department character varying(255),
-    updated TIMESTAMP
+    updated TIMESTAMP DEFAULT now()
 );
 
 
