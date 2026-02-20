@@ -65,7 +65,7 @@ def test_main_backend():
 # So for now, the backend can be tested two different ways:
 #
 # - By using a single users’ `sacct` output, e.g. Loïc’s: `tests/testdata/sacct_output_single_user.txt` which only bypasses the `sacct` call.
-# This is the equivalent of `WorkloadManager.logs_raw` .
+# This is the equivalent of `SlurmManager.logs_raw` .
 #
 # - By using a simulated aggregated output (equivalent to `df_agg_X` ) containing multiple users’ data. For example,
 # `tests/testdata/extracted_multi_users.csv` can be used for this.

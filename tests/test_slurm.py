@@ -1,7 +1,7 @@
 #import argparse
 #import datetime
 #from io import BytesIO
-from ga_dashboard.backend.workload_manager.slurm import Helpers_WM   #, WorkloadManager
+from ga_dashboard.backend.workload_manager.slurm import SlurmBase   #, SlurmManager
 import pandas as pd
 import pytest
 
@@ -17,7 +17,7 @@ SINGLE_USER_SACCT_FILE = "tests/testdata/sacct_output_single_user.txt"
         (1.2e9, 'K', 1.2e3)
     ],)  
 def test_convert_to_GB(memory, unit, expected):
-    HWM = Helpers_WM(None)
+    HWM = SlurmBase(None)
     assert HWM.convert_to_GB(memory, unit) == expected
 
 
@@ -69,7 +69,7 @@ def test_convert_to_GB(memory, unit, expected):
         ("0.0001Gc", 1, 3, 0.0003)
     ],) 
 def test_calc_ReqMem(reqmem, nnodes, ncpus, expected):
-    HWM = Helpers_WM(None)
+    HWM = SlurmBase(None)
     dictionary = {'ReqMem': reqmem, 'NNodes': nnodes, 'NCPUS': ncpus}
     myseries = pd.Series(dictionary)
     try:

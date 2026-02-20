@@ -1,16 +1,13 @@
+# ------------------------------------------------------------------
+# Service constaining the main backend validation logic (any new validation logic should be added here)
+# ------------------------------------------------------------------
+
 import datetime
-import sys
-import random
-import pandas as pd
-import numpy as np
 
 class validate_args:
     """
     Class used to validate all the arguments provided.
     """
-    # TODO add validation
-    # TODO test these
-
     def _validate_dates(self, args):
         """
         Validates that `startDay` and `endDay` are in the right format and in the right order.
@@ -95,54 +92,3 @@ class validate_args:
     def all_to_db(self, args):
         self._validate_dates(args)
         self._validate_db_conn(args)
-
-
-def check_empty_results(df, args):
-    """
-    This is to check whether any jobs have been run in the period, and stop the script if not.
-    :param df: [pd.DataFrame] Usage logs
-    :param args: [argStruct] Named tuple of arguments used.
-    """
-    if len(df) == 0:
-        if args.filterWD is not None:
-            addThat = f' from this directory ({args.filterWD})'
-        else:
-            addThat = ''
-        if args.filterJobIDs != 'all':
-            addThat += ' and with these jobIDs'
-        if args.filterAccount is not None:
-            addThat += ' charged under this account'
-
-        print(f'''
-
-    You haven't run any jobs in that period (from {args.startDay} to {args.endDay}){addThat}.
-
-        ''')
-        sys.exit()
-
-def simulate_mock_jobs(): # DEBUGONLY
-    df_list = []
-    for user in ['uid_1', 'uid_2', 'uid_3', 'uid_4', 'uid_5']:
-        n_jobs = random.randint(500,800)
-        data_dict = {
-            'WallclockTimeX':[datetime.timedelta(minutes=random.randint(50,700)) for _ in range(n_jobs)],
-            'ReqMemX':np.random.randint(4,130, size=n_jobs)*1.,
-            'PartitionX':['yew']*n_jobs,
-            'SubmitDatetimeX':[datetime.datetime(day=1,month=5,year=2023) + datetime.timedelta(days=random.randint(1,60)) for _ in range(n_jobs)],
-            'StateX':np.random.choice([1,0], p=[.8,.2], size=n_jobs),
-            'UIDX':['11111']*n_jobs,
-            'UserX':[user]*n_jobs,
-            'PartitionTypeX':['CPU']*n_jobs,
-            'TotalCPUtime2useX':[datetime.timedelta(minutes=random.randint(50,5000)) for _ in range(n_jobs)],
-            'TotalGPUtime2useX':[datetime.timedelta(seconds=0)]*n_jobs,
-        }
-
-        data_frame = pd.DataFrame(data_dict)
-        data_frame['CPUhoursChargedX'] = data_frame.TotalCPUtime2useX / np.timedelta64(1, 'h')
-        data_frame['GPUhoursChargedX'] = 0.
-        data_frame['NeededMemX'] = data_frame.ReqMemX * np.random.random(n_jobs)
-        data_frame['memOverallocationFactorX'] = data_frame.ReqMemX / data_frame.NeededMemX
-
-        df_list.append(data_frame)
-
-    return pd.concat(df_list)
