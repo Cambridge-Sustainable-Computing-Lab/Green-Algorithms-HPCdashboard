@@ -187,10 +187,11 @@ class GADashboardInstall:
             if ( command_components is None ):
                 print("Error in components")
             else:
+                command_components = [str(x) for x in command_components]
                 subprocess.run(command_components)
 
 
-# e.g. python scripts/install_GAdashboard.py --config my_config.txt
+# e.g. python scripts/install_GAdashboard.py --config my_config.yaml
 if __name__ == "__main__":
 
     argparser = argparse.ArgumentParser(description="Script to initialise the database storing the Green Algorithms data and setup Grafana.")

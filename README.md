@@ -26,7 +26,7 @@ The system is composed of:
 
 Files required to deploy the dashboard (you will need your own versions of these):
 
-* [Scripts configuration file](#configuration-files): template `config.txt` (in `configuration/templates/`) to copy and edit.
+* [Scripts configuration file](#configuration-files): template `config.yaml` (in `configuration/templates/`) to copy and edit.
 * [Cluster config file](#configuration-files): `cluster_info.yaml` (in `configuration/templates/`)
 * [Dashboard users file](#list-of-users) `user_list.csv` (in `configuration/templates/`)
 * [Fixed parameters file](#configuration-files). Example: `ga_dashboard/data/fixed_parameters.yaml`
@@ -98,7 +98,7 @@ A number of config files are required by the system (e.g., to calculate the carb
 ### System configuration files
 As well as a list of dashboard users, the system needs:
 * A **scripts configuration file** with all the required parameters (database connection, paths to the others configurations files, ...). You can:
-  * Copy the template provided in `configuration/templates/config.txt` (e.g., to `<your_config_file.txt>`)
+  * Copy the template provided in `configuration/templates/config.yaml` (e.g., to `<your_config_file.yaml>`)
   * Replace all the parameters surrounded by the `< >` characters
   * Uncomment the optional parameters you want to use.
 * **Information about your HPC cluster**.
@@ -165,7 +165,7 @@ After the creation of your configuration files (cf. [Configuration files](#confi
   * Setup Grafana folder permissions for the users.
 
 ```
-$ python scripts/install_GAdashboard.py --config <your_config_file.txt>
+$ python scripts/install_GAdashboard.py --config <your_config_file.yaml>
 ```
 This will prompt you to enter the PostgreSQL user password and then the Grafana admin password.
 
@@ -178,7 +178,7 @@ Each user will need to be added to Postgres.
 
 To run it for the first time, the command is:
 ```
-$ python scripts/run_green_algorithms_on_historical_logs.py --config <your_config_file.txt>
+$ python scripts/run_green_algorithms_on_historical_logs.py --config <your_config_file.yaml>
 ```
 This will collect all the logs available by default (if no `startDay` / `endDay` are defined in the configuration file).
 
@@ -192,7 +192,7 @@ At the moment, all the data is read into memory for processing, before being wri
 
 For a scheduled execution (e.g. a `cron` job), the command to run is:
 ```
-$ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.txt>
+$ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.yaml>
 ```
 By default, it will collect the logs from yesterday (if no `startDay` / `endDay` are defined in the configuration file).
 

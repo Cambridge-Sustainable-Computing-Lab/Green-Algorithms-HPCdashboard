@@ -2,6 +2,7 @@ import os
 import re
 import maskpass
 import psycopg
+import yaml
 
 
 class GAConfig:
@@ -60,30 +61,19 @@ class GAConfig:
         config_file : str. Name of the config file to use.
         '''
 
-        # Read the file into memory (it's not enormous).
-        with open(self.config_file, 'r') as infile:
-            content = infile.readlines()
+        with open(self.config_file, "r") as infile:
+            if self.config_file.endswith('.txt'):
+                print("ERROR: TXT config files are not supported, please convert to YAML format. Find template in `configuration/templates/config.yaml`")
+                exit(1)
+            data = yaml.safe_load(infile)
 
-        # Examine each line of the file.
-        for line in content:
-            # print(line, end="")
+        if not isinstance(data, dict):
+            print("ERROR: YAML config must define a mapping at top level")
+            exit(1)
 
-            # Skip over whitespace-only lines:
-            if line.isspace():
-                continue
-
-            # Skip over comments:
-            if line.startswith("#"):
-                continue 
-
-            # Line should be like: db_name = ga_db
-            # Or: test = This is a test.
-            pieces = line.split(sep=" = ")
-            if len(pieces) != 2:
-                print(f"ERROR: line is {line}")
-                continue
-            arg = pieces[0]
-            self.config_values[arg] = pieces[1].rstrip()  # Remove trailing whitespace and new line characters
+        # Merge YAML values into config_values
+        for key, value in data.items():
+            self.config_values[key] = value
 
         # Add database password
         if not skip_passwords:
@@ -177,20 +167,25 @@ class GAConfig:
         is_valid = True
         match expected_type:
             case 'string':
+                is_valid = isinstance(value, str)
+            case 'numeric':
+                is_valid = isinstance(value, int)
+            case 'path':
                 if not isinstance(value, str):
                     is_valid = False
-            case 'numeric':
-                if not value.isnumeric():
-                    is_valid = False
-            case 'path':
-                if not os.path.exists(value):
-                    if not os.path.exists(os.path.join(os.getcwd(),value)):
-                        is_valid = False
+                else:
+                    if not os.path.exists(value):
+                        if not os.path.exists(os.path.join(os.getcwd(), value)):
+                            is_valid = False
             case 'date (YYYY-MM-DD)':
-                if not re.match(r'^\d{4}-\d{2}-\d{2}$',value):
+                if not isinstance(value, str):
                     is_valid = False
+                else:
+                    if not re.match(r'^\d{4}-\d{2}-\d{2}$', value):
+                        is_valid = False
             case _:
                 print(f"  The attribute {conf_param} expected type ({expected_type}) is not a recognised type in the config module")
+                is_valid = False
         return is_valid
 
 
