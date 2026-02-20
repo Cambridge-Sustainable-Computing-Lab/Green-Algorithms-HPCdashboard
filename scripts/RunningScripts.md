@@ -9,7 +9,7 @@ This README reflects the **current and supported workflow**. Older wrapper-based
 
 The GA4HPCdashboard system consists of three main components:
 
-1. **Backend** – extracts HPC usage data (via SLURM `sacct`), enriches it with carbon footprint information, aggregates it, and stores it in a database.
+1. **Backend** – extracts HPC usage data (via SLURM `sacct`), enriches it with energy usage and carbon footprint information, aggregates it per user per day, and stores it in a database.
 2. **Database** – a PostgreSQL database that stores enriched and aggregated usage data.
 3. **Frontend** – Grafana dashboards that query the database and present usage and sustainability metrics.
 
