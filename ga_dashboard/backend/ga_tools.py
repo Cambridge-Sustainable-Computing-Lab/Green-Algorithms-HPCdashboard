@@ -126,7 +126,7 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
 
 
     ### Turn usage logs into DataFrame
-    WM.convert2dataframe()
+    WM.raw_logs_to_df()
 
     ###### Running jobs can be filtered and saved into the DB here. 
     ###### Subsquently they can be removed from WM logs before proceeding with cleaning of logs.

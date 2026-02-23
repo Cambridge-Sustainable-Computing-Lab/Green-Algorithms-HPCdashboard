@@ -40,6 +40,8 @@ DROP TABLE IF EXISTS public.ga_data_aggregate; -- Needed due to postgres caching
 CREATE TABLE public.ga_data_aggregate (
     user_name character varying(255),
     submitdate date,
+    startdate date,
+    enddate date,
     n_jobs integer,
     first_job_period date,
     last_job_period date,
