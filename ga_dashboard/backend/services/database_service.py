@@ -6,6 +6,7 @@ import logging
 import psycopg
 import pandas as pd
 from dataclasses import dataclass
+from psycopg import sql
 
 logger = logging.getLogger(__name__)
 
@@ -265,3 +266,36 @@ class DatabaseService:
             return pd.DataFrame()
         finally:
             cur.close()
+
+
+    def delete_by_column_values(conn, table_name: str, column_name: str, values: list) -> int:
+        """
+        Delete rows from a table where column_name matches any value in values.
+        Returns number of deleted rows.
+        """
+        if not values:
+            return 0
+
+        try:
+            with conn.cursor() as cur:
+                query = sql.SQL("""
+                    DELETE FROM {table}
+                    WHERE {column} = ANY(%s)
+                    """).format(
+                        table=sql.Identifier(table_name),
+                        column=sql.Identifier(column_name),
+                    )
+
+                cur.execute(query, (values,))
+                deleted = cur.rowcount
+
+            conn.commit()
+            return deleted
+
+        except Exception:
+            conn.rollback()
+            raise
+
+        finally:
+            if cur is not None:
+                cur.close()

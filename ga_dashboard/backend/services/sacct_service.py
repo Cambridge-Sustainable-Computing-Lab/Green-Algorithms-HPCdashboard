@@ -36,18 +36,21 @@ class SacctService:
         logs = subprocess.run(bash_com_full, capture_output=True)
         return logs.stdout      
 
-    # @classmethod
-    # def pull_logs_by_jobid(cls, unfinished_jobs_df: pd.DataFrame | None = None):
-    #     """
-    #     Pull SLURM usage logs for jobs using sacct command. Can optionally fetch only specific JobIDs from a DataFrame.
+    @classmethod
+    def pull_logs_by_jobid(cls, unfinished_jobs_df: pd.DataFrame | None = None):
+        """
+        Pull SLURM usage logs for jobs using sacct command. Can optionally fetch only specific JobIDs from a DataFrame.
         
-    #     Args:
-    #         unfinished_jobs_df: Optional DataFrame containing a column 'JobID'. If provided, only these jobs are fetched.
-    #     """
+        Args:
+            unfinished_jobs_df: Optional DataFrame containing a column 'JobID'. If provided, only these jobs are fetched.
+        """
 
-    #     if unfinished_jobs_df is not None and not unfinished_jobs_df.empty:
-    #         jobid_list = unfinished_jobs_df['JobID'].astype(str).tolist()
-    #         bash_com_full = cls.bash_com + ["--jobs", ",".join(jobid_list)]
+        if unfinished_jobs_df is not None and not unfinished_jobs_df.empty:
+            jobid_list = unfinished_jobs_df['JobID'].astype(str).tolist()
+            bash_com_full = cls.bash_com + ["--jobs", ",".join(jobid_list)]
         
-    #     logs = subprocess.run(bash_com_full, capture_output=True)
-    #     return logs.stdout
+            logs = subprocess.run(bash_com_full, capture_output=True)
+            return logs.stdout
+        # with open("tests/testdata/sacct_logs.raw", "rb") as f:
+        #     logs_bytes = f.read()
+        #     return logs_bytes

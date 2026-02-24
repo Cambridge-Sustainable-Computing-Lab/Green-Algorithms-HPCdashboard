@@ -16,4 +16,4 @@ GA_DATA_AGGREGATE_COLUMNS = [
 
 GA_USER_COLUMNS = ['user_name', 'uid', 'name', 'group_name', 'department', 'updated']
 
-RUNNING_JOBS_COLUMNS = ['job_id', 'submite_date']
+UNFINISHED_JOBS_COLUMNS = ['job_id', 'submit_date','state']

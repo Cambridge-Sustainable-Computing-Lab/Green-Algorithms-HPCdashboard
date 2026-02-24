@@ -1,9 +1,11 @@
 import datetime
 import os
 import pandas as pd
-from io import BytesIO
+import numpy as np
 
+from ga_dashboard.backend.helpers import utils
 from ga_dashboard.backend.services.sacct_service import SacctService
+from ga_dashboard.backend.services.unfinished_jobs_service import UnfinishedJobsService
 
 class SlurmBase:
     """
@@ -259,17 +261,6 @@ class SlurmManager(SlurmBase):
         self.df_agg = None
         self.df_agg_X = None
 
-    @staticmethod
-    def convert2dataframe(logs_raw):
-        """
-        Convert raw logs output into a pandas DataFrame.
-        Can be called independently with any raw logs.
-        """
-        logs_df = pd.read_csv(BytesIO(logs_raw), sep="|", dtype='str')
-        for x in ['NNodes', 'NCPUS']:
-            logs_df[x] = logs_df[x].astype('int64')
-        return logs_df
-
     def pull_logs(self):
         """
         Run the command line to pull usage from the workload manager.
@@ -301,7 +292,8 @@ class SlurmManager(SlurmBase):
         """
         Convert raw logs output into a pandas dataframe - calling the static method convert2dataframe
         """
-        self.logs_df = SlurmManager.convert2dataframe(self.logs_raw)
+        delimiter = "," if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '' else "|"
+        self.logs_df = utils.convert2dataframe(self.logs_raw, types = {'NNodes': 'int64', 'NCPUS': 'int64'}, delimiter=delimiter)
 
 
     def clean_logs_df(self):
@@ -407,13 +399,16 @@ class SlurmManager(SlurmBase):
             'Account_': 'first',
             'UIDX': 'first',
             'UserX': 'first',
+            'EndDatetimeX': lambda x: x.max() if x.notnull().all() else pd.NaT
         })
+
+        ## Handle running jobs; they get added to the database by UnfinishedJobsService
+        df_agg_running = self.df_agg_0.loc[self.df_agg_0.StateX == -2] # State is in running_codes
+        UnfinishedJobsService(config_data=self.config_data).handle_running_jobs(df_agg_running) #TODO
 
         ### Remove jobs that are still running or currently queued
         self.df_agg = self.df_agg_0.loc[self.df_agg_0.StateX != -2]
-
-        ### Turn StateX==-2 into 1
-        self.df_agg.loc[self.df_agg.StateX == -1, 'StateX'] = 1
+        self.df_agg.loc[self.df_agg.StateX == -1, 'StateX'] = 1 # Turn StateX==-1 into 1 (customSuccessStates are considered successful i.e. 1)
 
         ### Replace UsedMem_=-1 with memory requested (for when MaxRSS=NaN)
         self.df_agg['UsedMem2_'] = self.df_agg.apply(self.clean_UsedMem, axis=1)
@@ -477,3 +472,13 @@ class SlurmManager(SlurmBase):
                 self.df_agg = self.df_agg.loc[self.df_agg.Account_ == self.config_data['filterAccount']]
 
         self.df_agg_X = self.df_agg[[x for x in self.df_agg.columns if x[-1] == 'X']]
+
+    def concat_logs_df(self, new_logs_df):
+        """
+        Concatenate the existing logs dataframe with a new one, for example when we want to add finished jobs to previously-fetched logs.
+        :param new_logs_df: [pd.DataFrame] new logs dataframe to concatenate with the existing one.
+        """
+        if self.logs_df is None:
+            raise ValueError("logs_df is not initialised. Run pull_logs() and raw_logs_to_df() first.")
+        
+        self.logs_df = pd.concat([self.logs_df, new_logs_df], ignore_index=True)

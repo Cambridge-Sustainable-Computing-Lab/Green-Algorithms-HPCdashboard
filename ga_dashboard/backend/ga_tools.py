@@ -9,6 +9,7 @@ import yaml
 import ga_dashboard.backend.helpers.utils as utils
 from ga_dashboard.backend.data_sql_import import DataSQLImport
 from ga_dashboard.backend.services.database_service import DBSettings
+from ga_dashboard.backend.services.unfinished_jobs_service import UnfinishedJobsService
 from ga_dashboard.backend.workload_manager.slurm import SlurmManager
 
 
@@ -120,14 +121,13 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
     ### Log the output for debugging
     utils.save_slurm_logs(config_data, WM)
 
-
-    ###### Here we can fetch running jobs from the DB and check if they are completed. 
-    ###### If they are we can maybe create a different WM object with them and run convert2dataframe() command
-
+    unfin_jobs_service = UnfinishedJobsService(config_data)
 
     ### Turn usage logs into DataFrame
     WM.raw_logs_to_df()
 
+    finished_jobs_df = unfin_jobs_service.sync_unfinished_jobs() #Adding finished jobs to WM before cleaning and processing 
+    WM.concat_logs_df(finished_jobs_df) 
     ###### Running jobs can be filtered and saved into the DB here. 
     ###### Subsquently they can be removed from WM logs before proceeding with cleaning of logs.
 
