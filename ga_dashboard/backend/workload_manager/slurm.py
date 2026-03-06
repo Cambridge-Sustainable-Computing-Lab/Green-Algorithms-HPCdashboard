@@ -338,17 +338,6 @@ class SlurmManager(SlurmBase):
         self.logs_df['SubmitDatetimeX'] = self.logs_df.Submit.apply(
             lambda x: datetime.datetime.strptime(x, "%Y-%m-%dT%H:%M:%S"))
         
-        self.logs_df['StartDatetimeX'] = pd.to_datetime(
-            self.logs_df['Start'],
-            format="%Y-%m-%dT%H:%M:%S",
-            errors="coerce"   # invalid parses -> NaT
-        )
-
-        self.logs_df['EndDatetimeX'] = pd.to_datetime(
-            self.logs_df['End'],
-            format="%Y-%m-%dT%H:%M:%S",
-            errors="coerce"   # invalid parses -> NaT
-        )
         ### Number of CPUs
         # e.g. here there is no cleaning necessary, so I just standardise the column name
         self.logs_df['NCPUS_'] = self.logs_df.NCPUS
@@ -398,8 +387,7 @@ class SlurmManager(SlurmBase):
             'StateX': 'min',
             'Account_': 'first',
             'UIDX': 'first',
-            'UserX': 'first',
-            'EndDatetimeX': lambda x: x.max() if x.notnull().all() else pd.NaT
+            'UserX': 'first'
         })
 
         ### Remove jobs that are still running or currently queued
