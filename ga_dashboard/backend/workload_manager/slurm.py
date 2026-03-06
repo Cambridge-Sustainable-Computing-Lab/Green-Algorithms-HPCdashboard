@@ -212,7 +212,6 @@ class SlurmBase:
         # Codes are found here: https://slurm.schedmd.com/squeue.html#SECTION_JOB-STATE-CODES
         # self.args.customSuccessStates = 'TO,TIMEOUT'
         success_codes = ['CD', 'COMPLETED']
-        running_codes = ['PD', 'PENDING', 'R', 'RUNNING', 'RQ', 'REQUEUED']
         if x in success_codes:
             codeState = 1
         elif x in customSuccessStates_list:
@@ -221,11 +220,6 @@ class SlurmBase:
             codeState = -1
         else:
             codeState = 0
-
-        if x in running_codes:
-            # running jobs are the lowest to be removed all the time
-            # (if one of the subprocess is still running, the job gets ignored regardless of --customSuccessStates
-            codeState = -2
 
         return codeState
 
@@ -334,7 +328,7 @@ class SlurmManager(SlurmBase):
         # Make sure it's either a partition name, or a comma-separated list of partitions
         self.logs_df['PartitionX'] = self.logs_df.apply(self.clean_partition, axis=1)
 
-        ### Parse datetimes - Submit, Start, End
+        ### Parse datetimes - Submit
         self.logs_df['SubmitDatetimeX'] = self.logs_df.Submit.apply(
             lambda x: datetime.datetime.strptime(x, "%Y-%m-%dT%H:%M:%S"))
         
@@ -390,8 +384,6 @@ class SlurmManager(SlurmBase):
             'UserX': 'first'
         })
 
-        ### Remove jobs that are still running or currently queued
-        self.df_agg = self.df_agg_0.loc[self.df_agg_0.StateX != -2]
         self.df_agg.loc[self.df_agg.StateX == -1, 'StateX'] = 1 # Turn StateX==-1 into 1 (customSuccessStates are considered successful i.e. 1)
 
         ### Replace UsedMem_=-1 with memory requested (for when MaxRSS=NaN)
