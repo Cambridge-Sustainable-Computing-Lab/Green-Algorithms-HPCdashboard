@@ -402,10 +402,6 @@ class SlurmManager(SlurmBase):
             'EndDatetimeX': lambda x: x.max() if x.notnull().all() else pd.NaT
         })
 
-        ## Handle running jobs; they get added to the database by UnfinishedJobsService
-        df_agg_running = self.df_agg_0.loc[self.df_agg_0.StateX == -2] # State is in running_codes
-        UnfinishedJobsService(config_data=self.config_data).handle_running_jobs(df_agg_running) #TODO
-
         ### Remove jobs that are still running or currently queued
         self.df_agg = self.df_agg_0.loc[self.df_agg_0.StateX != -2]
         self.df_agg.loc[self.df_agg.StateX == -1, 'StateX'] = 1 # Turn StateX==-1 into 1 (customSuccessStates are considered successful i.e. 1)

@@ -268,34 +268,36 @@ class DatabaseService:
             cur.close()
 
 
-    def delete_by_column_values(conn, table_name: str, column_name: str, values: list) -> int:
+    def delete_by_column_values(self, table_name: str, column_name: str, values: list) -> int:
         """
         Delete rows from a table where column_name matches any value in values.
         Returns number of deleted rows.
         """
-        if not values:
+        if not self._conn or self._conn.closed:
+            logger.error("No active database connection. Call connect() first.")
             return 0
 
+        if not values:
+            logger.debug("No values provided for deletion.")
+            return 0
+
+        cur = self._conn.cursor()
         try:
-            with conn.cursor() as cur:
-                query = sql.SQL("""
-                    DELETE FROM {table}
-                    WHERE {column} = ANY(%s)
-                    """).format(
-                        table=sql.Identifier(table_name),
-                        column=sql.Identifier(column_name),
-                    )
-
-                cur.execute(query, (values,))
-                deleted = cur.rowcount
-
-            conn.commit()
+            query = sql.SQL("""
+                DELETE FROM {table}
+                WHERE {column} = ANY(%s)
+            """).format(
+                table=sql.Identifier(table_name),
+                column=sql.Identifier(column_name),
+            )
+            cur.execute(query, (values,))
+            deleted = cur.rowcount
+            self._conn.commit()
+            logger.debug(f"Deleted {deleted} rows from '{table_name}' where {column_name} in values.")
             return deleted
-
-        except Exception:
-            conn.rollback()
+        except Exception as e:
+            logger.error(f"Error deleting from '{table_name}': {e}")
+            self._conn.rollback()
             raise
-
         finally:
-            if cur is not None:
-                cur.close()
+            cur.close()

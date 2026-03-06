@@ -63,10 +63,13 @@ class UnfinishedJobsService:
         
         #Fetching unfinished job using sacct command
         raw_logs = SacctService.pull_logs_by_jobid(prev_unfinished_jobs_df) 
-        raw_logs_df = utils.convert2dataframe(raw_logs, types = {'NNodes': 'int64', 'NCPUS': 'int64'})
-        finished_jobs = self.filter_finished_jobs(raw_logs_df)
-
-        return finished_jobs
+        if raw_logs is not None:
+            raw_logs_df = utils.convert2dataframe(raw_logs, types = {'NNodes': 'int64', 'NCPUS': 'int64'})
+            finished_jobs = self.filter_finished_jobs(raw_logs_df)
+            #creating a list to track the finished jobs ids
+            self.finished_jobids = finished_jobs['JobID'].apply(lambda x: x.split('.')[0]).unique().tolist()
+            return finished_jobs
+        return None
 
     def save_unfinished_jobs(self, unfinished_jobs_df: pd.DataFrame):
         '''
@@ -98,16 +101,17 @@ class UnfinishedJobsService:
                 rows = unfinished_jobs_df.to_dict(orient='records'),
                 columns=UNFINISHED_JOBS_COLUMNS,
             )
-    
-    def delete_resolved_unfinished_jobs(self, finished_jobs_df: pd.DataFrame):
+
+    def delete_resolved_unfinished_jobs(self):
         '''
         Delete the jobs that were previously unfinished but have now finished from the 'unfinished_jobs' table in the database.
         '''
-        job_ids = finished_jobs_df['JobID'].tolist()
-
-        with DatabaseService(self.db_params) as database:
-            database.delete_by_column_values(
-                table_name='ga_unfinished_jobs',
-                column_name='jobid',
-                values=job_ids)
+        if hasattr(self, 'finished_jobids') and self.finished_jobids:
+            with DatabaseService(self.db_params) as database:
+                database.delete_by_column_values(
+                    table_name='ga_unfinished_jobs',
+                    column_name='job_id',
+                    values=self.finished_jobids)
+        else:
+            print("No finished jobs to delete from unfinished_jobs table.")
             

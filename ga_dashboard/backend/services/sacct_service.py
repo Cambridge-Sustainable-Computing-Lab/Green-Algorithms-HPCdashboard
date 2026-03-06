@@ -28,13 +28,18 @@ class SacctService:
         All Jobs started between the given start date and end date are pulled.
         More: https://slurm.schedmd.com/sacct.html
         """
-        bash_com_full = cls.bash_com + [
-            "--starttime", startDay,
-            "--endtime", endDay
-        ]
+        try:
+            bash_com_full = cls.bash_com + [
+                "--starttime", startDay,
+                "--endtime", endDay
+            ]
 
-        logs = subprocess.run(bash_com_full, capture_output=True)
-        return logs.stdout      
+            logs = subprocess.run(bash_com_full, capture_output=True)
+            return logs.stdout   
+        except Exception as e:
+            print(f"Error occurred while pulling logs by time using sacct: {e}")
+        finally:
+            return None 
 
     @classmethod
     def pull_logs_by_jobid(cls, unfinished_jobs_df: pd.DataFrame | None = None):
@@ -44,13 +49,14 @@ class SacctService:
         Args:
             unfinished_jobs_df: Optional DataFrame containing a column 'JobID'. If provided, only these jobs are fetched.
         """
-
-        if unfinished_jobs_df is not None and not unfinished_jobs_df.empty:
-            jobid_list = unfinished_jobs_df['jobid'].astype(str).tolist()
-            bash_com_full = cls.bash_com + ["--jobs", ",".join(jobid_list)]
-        
-            logs = subprocess.run(bash_com_full, capture_output=True)
-            return logs.stdout
-        # with open("tests/testdata/sacct_logs.raw", "rb") as f:
-        #     logs_bytes = f.read()
-        #     return logs_bytes
+        try: 
+            if unfinished_jobs_df is not None and not unfinished_jobs_df.empty:
+                jobid_list = unfinished_jobs_df['jobid'].astype(str).tolist()
+                bash_com_full = cls.bash_com + ["--jobs", ",".join(jobid_list)]
+            
+                logs = subprocess.run(bash_com_full, capture_output=True)
+                return logs.stdout
+        except Exception as e:
+            print(f"Error occurred while pulling logs by JobID using sacct: {e}")
+        finally:
+            return None
