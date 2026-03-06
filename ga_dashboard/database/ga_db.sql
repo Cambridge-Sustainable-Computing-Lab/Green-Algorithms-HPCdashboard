@@ -40,8 +40,6 @@ DROP TABLE IF EXISTS public.ga_data_aggregate; -- Needed due to postgres caching
 CREATE TABLE public.ga_data_aggregate (
     user_name character varying(255),
     submitdate date,
-    startdate date,
-    enddate date,
     n_jobs integer,
     first_job_period date,
     last_job_period date,
@@ -106,6 +104,28 @@ CREATE TABLE public.ga_user (
 
 ALTER TABLE ONLY public.ga_user
     ADD CONSTRAINT ga_user_pkey PRIMARY KEY (user_name);
+
+--
+-- Name: ga_unfinished_jobs; Type: TABLE; Schema: public; Owner: -
+--
+
+DROP TABLE IF EXISTS public.ga_unfinished_jobs; -- Needed due to postgres caching
+
+CREATE TABLE public.ga_unfinished_jobs (
+    job_id character varying(255),
+    user_name character varying(255),
+    submitdate date,
+    startdate date,
+    job_state character varying(255)
+);
+
+
+--
+-- Name: ga_data_aggregate ga_data_aggregate_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ga_unfinished_jobs
+    ADD CONSTRAINT ga_unfinished_jobs_pkey PRIMARY KEY (job_id);
 
 
 --

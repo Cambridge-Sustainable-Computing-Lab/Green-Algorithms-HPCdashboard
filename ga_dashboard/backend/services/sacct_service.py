@@ -46,7 +46,7 @@ class SacctService:
         """
 
         if unfinished_jobs_df is not None and not unfinished_jobs_df.empty:
-            jobid_list = unfinished_jobs_df['JobID'].astype(str).tolist()
+            jobid_list = unfinished_jobs_df['jobid'].astype(str).tolist()
             bash_com_full = cls.bash_com + ["--jobs", ",".join(jobid_list)]
         
             logs = subprocess.run(bash_com_full, capture_output=True)

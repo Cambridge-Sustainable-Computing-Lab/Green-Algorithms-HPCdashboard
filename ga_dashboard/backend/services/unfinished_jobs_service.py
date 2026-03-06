@@ -1,4 +1,5 @@
 import pandas as pd
+import datetime
 
 from ga_dashboard.backend.helpers import utils
 from ga_dashboard.backend.services.database_service import DBSettings, DatabaseService
@@ -14,6 +15,13 @@ UNFINISHED_STATES = ['PENDING','RUNNING','SUSPENDED','UNKNOWN','PREEMPTED']
 class UnfinishedJobsService:
     def __init__(self, config_data):
         self.config_data = config_data
+        self.db_params = DBSettings(
+                db_name=self.config_data['db_name'],
+                user=self.config_data['db_user'],
+                password=self.config_data['db_password'],
+                host=self.config_data['db_host'],
+                port=self.config_data['db_port']
+                )
 
     def filter_unfinished_jobs(self, logs_df: pd.DataFrame) -> pd.DataFrame:
         '''
@@ -21,17 +29,11 @@ class UnfinishedJobsService:
         Filter unfinished jobs from the logs dataframe using the 'State' column (if 'End' column is not available) or the 'End' column (if available).
         '''
         if 'End' in logs_df.columns:
-            mask = logs_df['End'].isna()
+            mask = logs_df['End'].isna() | (logs_df['End'] == 'Unknown')
         else:
             mask = logs_df['State'].isin(UNFINISHED_STATES)
         
-        return logs_df[mask].copy()
-    
-    def handle_running_jobs(self, logs_df: pd.DataFrame) -> pd.DataFrame:
-        ##Add running jobs to the database
-        return None
-
-
+        return logs_df[mask].copy(), logs_df[~mask].copy() # Return both unfinished and finished jobs for further processing
     
     def filter_finished_jobs(self, logs_df: pd.DataFrame) -> pd.DataFrame:
         '''
@@ -53,17 +55,9 @@ class UnfinishedJobsService:
         if use_mock:
             prev_unfinished_jobs_df = pd.read_csv(self.config_data['use_mock'])
         else:
-            db_params = DBSettings(
-                db_name=self.config_data['db_name'],
-                user=self.config_data['db_user'],
-                password=self.config_data['db_password'],
-                host=self.config_data['db_host'],
-                port=self.config_data['db_port']
-                )
-
-            with DatabaseService(db_params) as database:
+            with DatabaseService(self.db_params) as database:
                 prev_unfinished_jobs_df = database.fetch_data(
-                    table_name='unfinished_jobs',
+                    table_name='ga_unfinished_jobs',
                     columns=UNFINISHED_JOBS_COLUMNS
                 )
         
@@ -73,23 +67,47 @@ class UnfinishedJobsService:
         finished_jobs = self.filter_finished_jobs(raw_logs_df)
 
         return finished_jobs
+
+    def save_unfinished_jobs(self, unfinished_jobs_df: pd.DataFrame):
+        '''
+        Save the unfinished jobs to the 'unfinished_jobs' table in the database.
+        '''
+        unfinished_jobs_df = unfinished_jobs_df.rename(columns={
+            'User':   'user_name',
+            'JobID':  'job_id',
+            'Submit': 'submitdate',
+            'Start':  'startdate',
+            'State':  'job_state',
+        })
+
+        unfinished_jobs_df['submitdate'] = pd.to_datetime(
+            unfinished_jobs_df['submitdate'],
+            format="%Y-%m-%dT%H:%M:%S",
+            errors="coerce"   # invalid parses -> NaT
+        )
+        
+        unfinished_jobs_df['startdate'] = pd.to_datetime(
+            unfinished_jobs_df['startdate'],
+            format="%Y-%m-%dT%H:%M:%S",
+            errors="coerce"   # invalid parses -> NaT
+        )
+
+        with DatabaseService(self.db_params) as database:
+            database.insert_data(
+                table_name='ga_unfinished_jobs',
+                rows = unfinished_jobs_df.to_dict(orient='records'),
+                columns=UNFINISHED_JOBS_COLUMNS,
+            )
     
     def delete_resolved_unfinished_jobs(self, finished_jobs_df: pd.DataFrame):
         '''
         Delete the jobs that were previously unfinished but have now finished from the 'unfinished_jobs' table in the database.
         '''
-        db_params = DBSettings(
-            db_name=self.config_data['db_name'],
-            user=self.config_data['db_user'],
-            password=self.config_data['db_password'],
-            host=self.config_data['db_host'],
-            port=self.config_data['db_port']
-            )
         job_ids = finished_jobs_df['JobID'].tolist()
 
-        with DatabaseService(db_params) as database:
+        with DatabaseService(self.db_params) as database:
             database.delete_by_column_values(
-                table_name='unfinished_jobs',
-                column_name='job_id',
+                table_name='ga_unfinished_jobs',
+                column_name='jobid',
                 values=job_ids)
             

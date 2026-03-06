@@ -126,11 +126,13 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
     ### Turn usage logs into DataFrame
     WM.raw_logs_to_df()
 
-    finished_jobs_df = unfin_jobs_service.sync_unfinished_jobs() #Adding finished jobs to WM before cleaning and processing 
-    WM.concat_logs_df(finished_jobs_df) 
-    ###### Running jobs can be filtered and saved into the DB here. 
-    ###### Subsquently they can be removed from WM logs before proceeding with cleaning of logs.
+    # get unfinished jobs from db and pick those that have now finished using sacct command by job id
+    finished_jobs_df = unfin_jobs_service.sync_unfinished_jobs() 
+  
+    WM.filter_and_store_unfinished_jobs(unfin_jobs_service) # Filter unifinshed jobs from WM logs and store them in DB
 
+    WM.concat_logs_df(finished_jobs_df) #concat finished jobs (previously unfinished) with rest of the logs
+    ### TODO Delete the jobs that have finished from DB
     # And clean
     WM.clean_logs_df()
     # Check if there are any jobs during the period from this directory and with these jobIDs
@@ -228,7 +230,7 @@ def summarise_data(df: pd.DataFrame) -> dict:
             timeseries = data.groupby(agg_names2).agg(**agg_functions_from_raw)
         else:
             timeseries = data.groupby(agg_names2).agg(**agg_functions_further)
-
+ 
         timeseries.reset_index(inplace=True, drop=(agg_names is None))
         timeseries['success_rate'] = timeseries.n_success / timeseries.n_jobs
         timeseries['failure_rate'] = 1 - timeseries.success_rate
@@ -236,8 +238,7 @@ def summarise_data(df: pd.DataFrame) -> dict:
 
         return timeseries
 
-    df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit day
-
+    df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit date
     has_slurmAdmin = True # get_slurmAdmin(args) # We only assume we have admin access now
 
     if has_slurmAdmin:
@@ -262,6 +263,7 @@ def summarise_data(df: pd.DataFrame) -> dict:
 
         df_overallStats = agg_jobs(df_daily)
         dict_overallStats = df_overallStats.iloc[0, :].to_dict()
+
 
         ## And put everything in a dict
         output = {
