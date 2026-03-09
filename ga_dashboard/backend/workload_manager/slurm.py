@@ -365,7 +365,7 @@ class SlurmManager(SlurmBase):
             self.logs_df['Account_'] = ''
 
         ### Aggregate per jobID
-        self.df_agg_0 = self.logs_df.groupby('single_jobID').agg({
+        self.df_agg = self.logs_df.groupby('single_jobID').agg({
             'TotalCPUtime_': 'max',
             'CPUwallclocktime_': 'max',
             'WallclockTimeX': 'max',
