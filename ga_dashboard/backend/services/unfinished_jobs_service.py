@@ -13,7 +13,7 @@ FINISHED_STATES = ['BOOT_FAIL','CANCELLED','COMPLETED','DEADLINE','FAILED','NODE
 UNFINISHED_STATES = ['PENDING','RUNNING','SUSPENDED','UNKNOWN','PREEMPTED']
 
 class UnfinishedJobsService:
-    def __init__(self, config_data):
+    def __init__(self, config_data: dict):
         self.config_data = config_data
         self.db_params = DBSettings(
                 db_name=self.config_data['db_name'],

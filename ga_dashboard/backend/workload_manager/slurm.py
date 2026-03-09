@@ -449,7 +449,7 @@ class SlurmManager(SlurmBase):
 
         self.df_agg_X = self.df_agg[[x for x in self.df_agg.columns if x[-1] == 'X']]
 
-    def concat_logs_df(self, new_logs_df):
+    def concat_logs_df(self, new_logs_df: pd.DataFrame):
         """
         Concatenate the existing logs dataframe with a new one, for example when we want to add finished jobs to previously-fetched logs.
         :param new_logs_df: [pd.DataFrame] new logs dataframe to concatenate with the existing one.
@@ -472,7 +472,7 @@ class SlurmManager(SlurmBase):
 
         df = self.unfinished_jobs.copy()
 
-        def pick_unfinished_state(states):
+        def pick_unfinished_state(states: list):
             for state in states:
                 if state in UNFINISHED_STATES:
                     return state
