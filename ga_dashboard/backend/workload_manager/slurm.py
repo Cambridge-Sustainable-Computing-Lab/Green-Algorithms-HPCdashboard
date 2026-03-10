@@ -328,10 +328,16 @@ class SlurmManager(SlurmBase):
         # Make sure it's either a partition name, or a comma-separated list of partitions
         self.logs_df['PartitionX'] = self.logs_df.apply(self.clean_partition, axis=1)
 
-        ### Parse datetimes - Submit
+        ### Parse datetimes - Submit, Start, End
         self.logs_df['SubmitDatetimeX'] = self.logs_df.Submit.apply(
             lambda x: datetime.datetime.strptime(x, "%Y-%m-%dT%H:%M:%S"))
         
+        self.logs_df['StartDatetimeX'] = self.logs_df.Start.apply(
+            lambda x: datetime.datetime.strptime(x, "%Y-%m-%dT%H:%M:%S") if pd.notnull(x) else pd.NaT)
+        
+        self.logs_df['EndDatetimeX'] = self.logs_df.End.apply(
+            lambda x: datetime.datetime.strptime(x, "%Y-%m-%dT%H:%M:%S") if pd.notnull(x) else pd.NaT)
+
         ### Number of CPUs
         # e.g. here there is no cleaning necessary, so I just standardise the column name
         self.logs_df['NCPUS_'] = self.logs_df.NCPUS
@@ -365,7 +371,7 @@ class SlurmManager(SlurmBase):
             self.logs_df['Account_'] = ''
 
         ### Aggregate per jobID
-        self.df_agg_0 = self.logs_df.groupby('single_jobID').agg({
+        self.df_agg = self.logs_df.groupby('single_jobID').agg({
             'TotalCPUtime_': 'max',
             'CPUwallclocktime_': 'max',
             'WallclockTimeX': 'max',
@@ -377,6 +383,8 @@ class SlurmManager(SlurmBase):
             'PartitionX': lambda x: ''.join(x),
             'JobName_': 'first',
             'SubmitDatetimeX': 'min',
+            'StartDatetimeX': 'min',
+            'EndDatetimeX': 'min',
             'WorkingDir_': 'first',
             'StateX': 'min',
             'Account_': 'first',
