@@ -3,10 +3,12 @@
 # Carbon emission calculated here! 
 # ------------------------------------------------------------------
 
-from datetime import datetime, time, timedelta
+import pandas as pd
+from datetime import datetime, timedelta
 
 from ga_dashboard.backend.services.api_service import APIService
-import pandas as pd
+from ga_dashboard.backend.services.database_service import DBSettings, DatabaseService
+from ga_dashboard.database.table_col_definitions import CARBON_INTENSITY_DATA_COLUMNS
 
 class JobEmissionRecord:
     def __init__(self, date, energy_per_hr: float, hours_of_work: float, carbon_intensity: float):
@@ -20,8 +22,8 @@ class JobEmissionRecord:
         """
         Calculate the total carbon emission for a job across multiple daily records.
         Formula: (tot_job_energy / total_duration) * sum(hours_of_work_n * CI_n)
-        here (tot_job_energy / total_duration) = energy_per_hr
-        so, carbon emission = energy_per_hr * sum(hours_of_work_n * CI_n)
+        here (tot_job_energy / total_duration) is energy per unit of time (lets say energy_per_hr)
+        then, carbon emission = energy_per_hr * sum(hours_of_work_n * CI_n)
 
         :param records: list of JobEmissionRecord objects for the same job
         :return: carbon emission in gCO2
@@ -35,12 +37,13 @@ class JobEmissionRecord:
         return energy_per_hr * weighted_CI
 
 class CarbonIntensityService:
-    def __init__(self, postcode: str, base_url: str ="https://api.carbonintensity.org.uk/regional/intensity/", api_key: str = None):
+    def __init__(self, postcode: str, db_params: DBSettings, base_url: str ="https://api.carbonintensity.org.uk/regional/intensity/", api_key: str = None):
         self.api_service = APIService(base_url, api_key)
+        self.source = base_url.split('/')[2]
         self.postcode = postcode
-        # self.daily_avg_CI = None
+        self.db_params = db_params
 
-    def fetch_CI_data(self, from_date: datetime, to_date: datetime) -> list:
+    def fetch_CI_data(self, from_date: datetime, to_date: datetime) -> pd.DataFrame:
         """
         Fetch CI data in chunks of 7 days. Each chunk is fetched with a single API call. 
         
@@ -48,16 +51,15 @@ class CarbonIntensityService:
         :param to_date: end datetime
         :return: list of CI data points (30-min interval) between from_date and to_date for the cluster's postcode region
         """
-        if not self.postcode:
-            print("Postcode not found. Cannot fetch CI data.")
-            return []
-
         all_data = []
-        chunk_start = from_date
+ 
+        if not self.postcode:
+            raise ValueError("Postcode not found. Cannot fetch CI data.")
 
         try: 
             # Get CI data in 7-day chunks to avoid API limits
-            while chunk_start < to_date:
+            chunk_start = from_date
+            while chunk_start <= to_date:
                 chunk_end = min(chunk_start + timedelta(days=7), to_date)
 
                 # Formatting as 2026-02-20T00:00Z
@@ -73,13 +75,58 @@ class CarbonIntensityService:
                 else:
                     all_data.extend(response['data']['data'])
 
-                chunk_start = chunk_end
-
-            return all_data
+                chunk_start = chunk_end + timedelta(days=1)
         
         except Exception as e:
-            print(f"Exception occurred while fetching CI data: {e}.")
-            return []
+            raise ValueError("Postcode not found. Cannot fetch CI data.")
+        
+        if not all_data:
+            return pd.DataFrame()
+        
+        ci_df = pd.DataFrame(all_data)
+        ci_df['intensity_value'] = ci_df['intensity'].apply(
+            lambda x: x.get('forecast') # Regional carbon intensity API provides CI as forecast
+        )
+        ci_df['date'] = pd.to_datetime(ci_df['from']).dt.date ## NOTE: Works for now but if we need the 30 mins intervals then this must be changed
+
+        return ci_df[['date','intensity_value']]
+    
+    def store_average_CI_in_db(self, ci_data: pd.DataFrame):
+        """
+        Storing the daily average CI calculated from the CI values fetched from the API
+        :param ci_data: dataframe containing unique pairs of date, avg CI
+        """
+        today = datetime.now().strftime("%Y-%m-%d")
+        ci_data = ci_data[ci_data['ci_date'].astype(str) != today] # Skipping today's date to avoid storing unfinalised CI data, since the day hasn't ended
+        
+        if ci_data.empty:
+            return
+
+        ci_data['source'] = [self.source] * ci_data.shape[0]
+        with DatabaseService(self.db_params) as database:
+            database.insert_data(
+                table_name='carbon_intensity_data',
+                rows=ci_data.to_dict(orient='records'),
+                columns=CARBON_INTENSITY_DATA_COLUMNS,
+            )
+
+    def fetch_stored_average_CI(self, dates_list: list[datetime]) -> pd.DataFrame:
+        """
+        Fetch stored daily average CI values from DB
+        :param dates_list: list of dates
+        """
+        ci_data = pd.DataFrame()
+        try:
+            with DatabaseService(self.db_params) as database:
+                    ci_data = database.fetch_data(
+                        table_name='carbon_intensity_data',
+                        columns=['ci_date', 'ci_day_avg'],
+                        filters={'ci_date': dates_list}
+                    )
+        except Exception as e:
+            print("Error fetching data from DB", e)
+            
+        return ci_data
 
     def calc_day_average_CI(self, from_date: datetime, to_date: datetime) -> dict:
         """
@@ -87,20 +134,41 @@ class CarbonIntensityService:
         :param from_date: start datetime
         :param to_date: end datetime
         """
-        raw_data = self.fetch_CI_data(from_date, to_date) # API Call
+        dates_list = [
+                (from_date + timedelta(days=i)).strftime("%Y-%m-%d")
+                for i in range((to_date.date() - from_date.date()).days + 1)
+            ]
+        
+        ci_data_from_db = pd.DataFrame()
+        ci_data_from_api = pd.DataFrame()
 
-        if not raw_data:
-            print("No CI data available. Cannot calculate daily average CI. Falling back to default CI from cluster info.")
+        try:
+            # Trying to pick previously saved data from DB
+            ci_data_from_db = self.fetch_stored_average_CI(dates_list)
+
+            # Find dates for which data is not available in the DB
+            if not ci_data_from_db.empty:
+                db_dates = set(ci_data_from_db["ci_date"])
+                dates_list = sorted(set(dates_list) - db_dates)
+                
+            if dates_list :
+                # Fetch data from API (for missing dates)
+                ci_data_from_api = self.fetch_CI_data(    
+                    datetime.strptime(min(dates_list), "%Y-%m-%d"),
+                    datetime.strptime(max(dates_list), "%Y-%m-%d")
+                    )
+                if not ci_data_from_api.empty:
+                    # Average CI per day
+                    ci_data_from_api = (ci_data_from_api.groupby('date')['intensity_value'].mean().round(1).reset_index())
+                    ci_data_from_api = ci_data_from_api.rename(columns={'date': 'ci_date', 'intensity_value': 'ci_day_avg'})
+                    self.store_average_CI_in_db(ci_data_from_api)
+            
+            daily_avg = pd.concat([ci_data_from_db, ci_data_from_api]).reset_index(drop=True)
+            daily_avg['ci_date'] = pd.to_datetime(daily_avg['ci_date']).dt.strftime('%d-%m-%Y')
+            return dict(zip(daily_avg['ci_date'], daily_avg['ci_day_avg']))
+    
+        except Exception as e:
+            print("Error fetching data", e)
             return {}
 
-        df = pd.DataFrame(raw_data)
-
-        df['intensity_value'] = df['intensity'].apply(
-            lambda x: x.get('actual') or x.get('forecast')  # fallback to forecast if actual is missing
-        )
-        df['date'] = pd.to_datetime(df['from']).dt.date
-
-        # Average CI per day
-        daily_avg = (df.groupby('date')['intensity_value'].mean().round(1).reset_index())
-        return {row['date'].strftime('%d-%m-%Y'): row['intensity_value'] for _, row in daily_avg.iterrows()}
     

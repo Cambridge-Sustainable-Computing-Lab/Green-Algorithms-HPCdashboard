@@ -127,7 +127,7 @@ class GA_tools:
         return JobEmissionRecord.calc_carbon_emission(day_job_emissions, energy_per_hr)
 
 
-def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.DataFrame:
+def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info, db_params: DBSettings) -> pd.DataFrame:
 
     if 'use_mock_agg_data' in config_data.keys(): # DEBUGONLY Create/use some mock jobs with different users
 
@@ -154,7 +154,7 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
     ### Log the output for debugging
     utils.save_slurm_logs(config_data, WM)
 
-    unfin_jobs_service = UnfinishedJobsService(config_data)
+    unfin_jobs_service = UnfinishedJobsService(config_data, db_params)
 
     ### Turn usage logs into DataFrame
     WM.raw_logs_to_df()
@@ -182,7 +182,7 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
     return WM.df_agg_X, unfin_jobs_service
 
 
-def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA: GA_tools, cluster_info: dict) -> pd.DataFrame:
+def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA: GA_tools, cluster_info: dict, db_params: DBSettings) -> pd.DataFrame:
     """
     Adds data about the carbon footprint, etc.
     :param df: [pd.DataFrame] The existing data we've extracted.
@@ -203,8 +203,11 @@ def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA
     
     ### Fetching Carbon Intensity
     postcode = cluster_info.get('postcode', None)
-    ci_service = CarbonIntensityService(postcode)
-    ci_avg_data = ci_service.calc_day_average_CI(df.StartDatetimeX.min(), df.EndDatetimeX.max())
+    ci_avg_data = {}
+    if postcode:
+        postcode = postcode[:3] # Taking only the first three letters from the postcode
+        ci_service = CarbonIntensityService(postcode, db_params)
+        ci_avg_data = ci_service.calc_day_average_CI(df.StartDatetimeX.min(), df.EndDatetimeX.max())
 
     ### carbon footprint
     for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
@@ -363,6 +366,14 @@ def main_backend(config_data: dict):
         except yaml.YAMLError as exc:
             print(exc)
 
+    db_params = DBSettings(
+        db_name=config_data['db_name'],
+        user=config_data['db_user'],
+        password=config_data['db_password'],
+        host=config_data['db_host'],
+        port=config_data['db_port']
+    )
+
     # Get slurmAdmin data 
     has_slurmAdmin = True # get_slurmAdmin(args)
 
@@ -376,8 +387,8 @@ def main_backend(config_data: dict):
 
     GA = GA_tools(cluster_info, fixed_params)
 
-    df, finished_jobids = extract_data(config_data, has_slurmAdmin, cluster_info=cluster_info)
-    df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA, cluster_info=cluster_info)
+    df, finished_jobids = extract_data(config_data, has_slurmAdmin, cluster_info=cluster_info, db_params=db_params)
+    df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA, cluster_info=cluster_info, db_params=db_params)
     summary_stats = summarise_data(df2) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
     ## Store data into a database
@@ -387,19 +398,12 @@ def main_backend(config_data: dict):
     # except Exception:
     #     dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
     if 'db_name' in dict_keys:
-        process_and_store(summary_stats, config_data, finished_jobids)
+        process_and_store(summary_stats, db_params, finished_jobids)
     return summary_stats
 
 
-def process_and_store(summary_stats:dict,config_data:dict, unfin_jobs_service:UnfinishedJobsService) -> None:
+def process_and_store(summary_stats:dict, db_params: DBSettings, unfin_jobs_service:UnfinishedJobsService) -> None:
     # Import aggregated data into a database
-    db_params = DBSettings(
-        db_name=config_data['db_name'],
-        user=config_data['db_user'],
-        password=config_data['db_password'],
-        host=config_data['db_host'],
-        port=config_data['db_port']
-    )
     data2db = DataSQLImport(
                 summary_stats,
                 db_params

@@ -13,15 +13,9 @@ FINISHED_STATES = ['BOOT_FAIL','CANCELLED','COMPLETED','DEADLINE','FAILED','NODE
 UNFINISHED_STATES = ['PENDING','RUNNING','SUSPENDED','UNKNOWN','PREEMPTED']
 
 class UnfinishedJobsService:
-    def __init__(self, config_data: dict):
+    def __init__(self, config_data: dict, db_params: DBSettings):
         self.config_data = config_data
-        self.db_params = DBSettings(
-                db_name=self.config_data['db_name'],
-                user=self.config_data['db_user'],
-                password=self.config_data['db_password'],
-                host=self.config_data['db_host'],
-                port=self.config_data['db_port']
-                )
+        self.db_params = db_params
 
     def filter_unfinished_jobs(self, logs_df: pd.DataFrame) -> pd.DataFrame:
         '''
