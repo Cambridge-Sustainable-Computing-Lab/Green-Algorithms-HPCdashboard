@@ -20,13 +20,20 @@ class JobEmissionRecord:
     @staticmethod
     def calc_carbon_emission(records: list['JobEmissionRecord'], energy_per_hr: float) -> float:
         """
-        Calculate the total carbon emission for a job across multiple daily records.
-        Formula: (tot_job_energy / total_duration) * sum(hours_of_work_n * CI_n)
-        here (tot_job_energy / total_duration) is energy per unit of time (lets say energy_per_hr)
-        then, carbon emission = energy_per_hr * sum(hours_of_work_n * CI_n)
+        Calculate the total carbon emission for a job spanning multiple time periods.
 
-        :param records: list of JobEmissionRecord objects for the same job
-        :return: carbon emission in gCO2
+        A job is split into periods (e.g. daily, hourly).
+        For each period we know how long the job ran and the average CI for that period.
+
+        Since energy consumption is assumed constant throughout the job,
+        each period's emission is:
+            energy_per_hr * hours_in_period * CI_of_period
+
+        Summing across all periods gives the total carbon emission for the job.
+
+        :param records: time period slices of the job, each with duration and CI
+        :param energy_per_hr: energy consumed per hour (total_energy / total_duration)
+        :return: total carbon emission in gCO2
         """
         if not records:
             print("calc_carbon_emission(): No records provided.")
