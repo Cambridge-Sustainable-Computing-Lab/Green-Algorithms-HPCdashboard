@@ -31,7 +31,8 @@ class UnfinishedJobsService:
         if 'End' in logs_df.columns:
             mask = logs_df['End'].isna() | (logs_df['End'] == 'Unknown')
         else:
-            mask = logs_df['State'].isin(UNFINISHED_STATES)
+            ## NOTE: This is a temporary workaround for retrocompatibility since in earlier versions 'End' field was not fetched. Must be removed eventually.
+            mask = logs_df['State'].isin(UNFINISHED_STATES) 
         
         return logs_df[mask].copy(), logs_df[~mask].copy() # Return both unfinished and finished jobs for further processing
     
@@ -42,7 +43,8 @@ class UnfinishedJobsService:
         if 'End' in logs_df.columns:
             mask = logs_df['End'].notna() & (logs_df['End'] != "Unknown")
         else: 
-            mask = ~logs_df['State'].isin(UNFINISHED_STATES)
+            ## NOTE: This is a temporary workaround for retrocompatibility since in earlier versions 'End' field was not fetched. Must be removed eventually.
+            mask = ~logs_df['State'].isin(UNFINISHED_STATES) 
         
         return logs_df[mask].copy()
     
