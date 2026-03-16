@@ -402,7 +402,7 @@ def main_backend(config_data: dict):
     return summary_stats
 
 
-def process_and_store(summary_stats:dict,config_data:dict, unfinished_jobs_service:UnfinishedJobsService) -> None:
+def process_and_store(summary_stats:dict, db_params:DBSettings, unfinished_jobs_service:UnfinishedJobsService) -> None:
     # Import aggregated data into a database
     data2db = DataSQLImport(
                 summary_stats,
