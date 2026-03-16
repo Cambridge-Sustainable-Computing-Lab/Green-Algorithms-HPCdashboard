@@ -5,12 +5,14 @@
 import numpy as np
 import pandas as pd
 import yaml
+from datetime import datetime, time
 
+from ga_dashboard.backend.services.carbon_intensity_service import CarbonIntensityService, JobEmissionRecord
 import ga_dashboard.backend.helpers.utils as utils
+from ga_dashboard.backend.workload_manager.slurm import SlurmManager
 from ga_dashboard.backend.data_sql_import import DataSQLImport
 from ga_dashboard.backend.services.database_service import DBSettings
 from ga_dashboard.backend.services.unfinished_jobs_service import UnfinishedJobsService
-from ga_dashboard.backend.workload_manager.slurm import SlurmManager
 
 
 agg_functions_from_raw = {
@@ -90,11 +92,42 @@ class GA_tools:
 
         return row
 
-    def calculate_carbonFootprint(self, df, col_energy):
+    def calculate_carbonFootprint_default(self, df, col_energy):
         return df[col_energy] * self.cluster_info['CI']
+    
+    def calculate_carbonFootprint(self, row: pd.Series, suffix: str, daily_avg_CI: dict) -> pd.DataFrame:
+        """
+        Expand a job record (1 row) into per day records with energy usage on that day, hours of work on that day, and daily avg CI.
+        Calculate the total carbon emissions for the job.
+        :param row: a row from the job dataframe
+        :param suffix: suffix for energy column (e.g. '', '_memoryNeededOnly', '_failedJobs')
+        :param daily_avg_CI: dictionary mapping dates to their average carbon intensity values
+        """
+
+        start = row['StartDatetimeX']
+        end = row['EndDatetimeX']
+        energy = row[f'energy{suffix}']
+        tot_duration_hours = row['WallclockTimeX'].total_seconds() / 3600
+        # Assuming energy is consumed uniformly across the job duration
+        energy_per_hr = energy / tot_duration_hours if tot_duration_hours > 0 else 0 # Avoid division by zero
+
+        day_job_emissions = []
+        current_day = start
+
+        # Per day energy use, hours of work, and CI
+        while current_day.date() <= end.date():
+            day_start = max(current_day, datetime.combine(current_day.date(), time.min))
+            day_end = min(end, datetime.combine(current_day.date(), time.max))
+            hours = (day_end - day_start).total_seconds() / 3600
+            day_avg_CI = daily_avg_CI.get(current_day.strftime('%d-%m-%Y'), None)
+
+            day_job_emissions.append(JobEmissionRecord(current_day, energy_per_hr, hours, day_avg_CI))
+            current_day += pd.Timedelta(days=1)
+
+        return JobEmissionRecord.calc_carbon_emission(day_job_emissions, energy_per_hr)
 
 
-def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.DataFrame:
+def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info, db_params: DBSettings) -> pd.DataFrame:
 
     if 'use_mock_agg_data' in config_data.keys(): # DEBUGONLY Create/use some mock jobs with different users
 
@@ -149,7 +182,7 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
     return WM.df_agg_X, unfinished_jobs_service
 
 
-def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA: GA_tools) -> pd.DataFrame:
+def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA: GA_tools, cluster_info: dict, db_params: DBSettings) -> pd.DataFrame:
     """
     Adds data about the carbon footprint, etc.
     :param df: [pd.DataFrame] The existing data we've extracted.
@@ -167,13 +200,28 @@ def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA
         print(f"enrich_data(): AttributeError: {err}")
         # TODO Explain this error, and what to do about it.
         return None  # or should we exit?
+    
+    ### Fetching Carbon Intensity
+    postcode = cluster_info.get('postcode', None)
+    ci_avg_data = {}
+    if postcode:
+        postcode = postcode[:3] # Taking only the first three letters from the postcode
+        ci_service = CarbonIntensityService(postcode, db_params)
+        ci_avg_data = ci_service.calc_day_average_CI(df.StartDatetimeX.min(), df.EndDatetimeX.max())
 
     ### carbon footprint
     for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
-        df[f'carbonFootprint{suffix}'] = GA.calculate_carbonFootprint(df, f'energy{suffix}')
+        if ci_avg_data:
+            df[f'carbonFootprint{suffix}'] = df.apply(
+                lambda row: GA.calculate_carbonFootprint(row, suffix, ci_avg_data),
+                axis=1
+            )
+        else: #use default CI value from cluster yaml
+            df[f'carbonFootprint{suffix}'] = GA.calculate_carbonFootprint_default(df, f'energy{suffix}')
+
         # Context metrics (part 1)
         df[f'treeMonths{suffix}'] = df[f'carbonFootprint{suffix}'] / fixed_params['tree_month']
-        df[f'cost{suffix}'] = df[f'energy{suffix}'] * fixed_params['electricity_cost'] # TODO use realtime electricity costs
+        df[f'cost{suffix}'] = df[f'energy{suffix}'] * fixed_params['electricity_cost']
 
     ### Context metrics (part 2)
     df['driving'] = df.carbonFootprint / fixed_params['passengerCar_EU_perkm']
@@ -318,6 +366,14 @@ def main_backend(config_data: dict):
         except yaml.YAMLError as exc:
             print(exc)
 
+    db_params = DBSettings(
+        db_name=config_data['db_name'],
+        user=config_data['db_user'],
+        password=config_data['db_password'],
+        host=config_data['db_host'],
+        port=config_data['db_port']
+    )
+
     # Get slurmAdmin data 
     has_slurmAdmin = True # get_slurmAdmin(args)
 
@@ -331,8 +387,8 @@ def main_backend(config_data: dict):
 
     GA = GA_tools(cluster_info, fixed_params)
 
-    df, finished_jobids = extract_data(config_data, has_slurmAdmin, cluster_info=cluster_info)
-    df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA)
+    df, finished_jobids = extract_data(config_data, has_slurmAdmin, cluster_info=cluster_info, db_params=db_params)
+    df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA, cluster_info=cluster_info, db_params=db_params)
     summary_stats = summarise_data(df2) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
     ## Store data into a database
@@ -342,19 +398,12 @@ def main_backend(config_data: dict):
     # except Exception:
     #     dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
     if 'db_name' in dict_keys:
-        process_and_store(summary_stats, config_data, finished_jobids)
+        process_and_store(summary_stats, db_params, finished_jobids)
     return summary_stats
 
 
 def process_and_store(summary_stats:dict,config_data:dict, unfinished_jobs_service:UnfinishedJobsService) -> None:
     # Import aggregated data into a database
-    db_params = DBSettings(
-        db_name=config_data['db_name'],
-        user=config_data['db_user'],
-        password=config_data['db_password'],
-        host=config_data['db_host'],
-        port=config_data['db_port']
-    )
     data2db = DataSQLImport(
                 summary_stats,
                 db_params
