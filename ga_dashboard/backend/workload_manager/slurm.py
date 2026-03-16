@@ -497,10 +497,10 @@ class SlurmManager(SlurmBase):
 
         self.unfinished_jobs = grouped_by_job
 
-    def filter_and_store_unfinished_jobs(self, unfin_jobs_service: UnfinishedJobsService):
+    def filter_and_store_unfinished_jobs(self, unfinished_jobs_service: UnfinishedJobsService):
         '''
             Use the UnfinishedJobsService to filter out unfinished jobs from the logs dataframe, and store them in the database.
         '''
-        self.unfinished_jobs, self.logs_df = unfin_jobs_service.filter_unfinished_jobs(self.logs_df)
+        self.unfinished_jobs, self.logs_df = unfinished_jobs_service.filter_unfinished_jobs(self.logs_df)
         self.select_distinct_unfinished_jobs()
-        unfin_jobs_service.save_unfinished_jobs(self.unfinished_jobs)
+        unfinished_jobs_service.save_unfinished_jobs(self.unfinished_jobs)

@@ -154,15 +154,15 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info, db_param
     ### Log the output for debugging
     utils.save_slurm_logs(config_data, WM)
 
-    unfin_jobs_service = UnfinishedJobsService(config_data, db_params)
+    unfinished_jobs_service = UnfinishedJobsService(config_data)
 
     ### Turn usage logs into DataFrame
     WM.raw_logs_to_df()
 
     # get unfinished jobs from db and pick those that have now finished using sacct command by job id
-    finished_jobs_df = unfin_jobs_service.sync_unfinished_jobs() 
+    finished_jobs_df = unfinished_jobs_service.sync_unfinished_jobs() 
   
-    WM.filter_and_store_unfinished_jobs(unfin_jobs_service) # Filter unifinshed jobs from WM logs and store them in DB
+    WM.filter_and_store_unfinished_jobs(unfinished_jobs_service) # Filter unifinshed jobs from WM logs and store them in DB
 
     if finished_jobs_df is not None:
         WM.concat_logs_df(finished_jobs_df) #concat finished jobs (previously unfinished) with rest of the logs
@@ -179,7 +179,7 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info, db_param
 
     # WM.df_agg_X.to_pickle("testdata/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
 
-    return WM.df_agg_X, unfin_jobs_service
+    return WM.df_agg_X, unfinished_jobs_service
 
 
 def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA: GA_tools, cluster_info: dict, db_params: DBSettings) -> pd.DataFrame:
@@ -402,7 +402,7 @@ def main_backend(config_data: dict):
     return summary_stats
 
 
-def process_and_store(summary_stats:dict, db_params: DBSettings, unfin_jobs_service:UnfinishedJobsService) -> None:
+def process_and_store(summary_stats:dict,config_data:dict, unfinished_jobs_service:UnfinishedJobsService) -> None:
     # Import aggregated data into a database
     data2db = DataSQLImport(
                 summary_stats,
@@ -415,6 +415,6 @@ def process_and_store(summary_stats:dict, db_params: DBSettings, unfin_jobs_serv
         return
     
     #only delete the finished jobs from ga_unfinished_jobs table after the new data has been successfully inserted
-    unfin_jobs_service.delete_resolved_unfinished_jobs()
+    unfinished_jobs_service.delete_resolved_unfinished_jobs()
     
         

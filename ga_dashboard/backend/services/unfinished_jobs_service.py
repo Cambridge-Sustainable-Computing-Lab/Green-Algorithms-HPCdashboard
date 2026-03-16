@@ -25,7 +25,8 @@ class UnfinishedJobsService:
         if 'End' in logs_df.columns:
             mask = logs_df['End'].isna() | (logs_df['End'] == 'Unknown')
         else:
-            mask = logs_df['State'].isin(UNFINISHED_STATES)
+            ## NOTE: This is a temporary workaround for retrocompatibility since in earlier versions 'End' field was not fetched. Must be removed eventually.
+            mask = logs_df['State'].isin(UNFINISHED_STATES) 
         
         return logs_df[mask].copy(), logs_df[~mask].copy() # Return both unfinished and finished jobs for further processing
     
@@ -35,8 +36,9 @@ class UnfinishedJobsService:
         '''
         if 'End' in logs_df.columns:
             mask = logs_df['End'].notna() & (logs_df['End'] != "Unknown")
-        else:
-            mask = logs_df['State'].isin(FINISHED_STATES)
+        else: 
+            ## NOTE: This is a temporary workaround for retrocompatibility since in earlier versions 'End' field was not fetched. Must be removed eventually.
+            mask = ~logs_df['State'].isin(UNFINISHED_STATES) 
         
         return logs_df[mask].copy()
     
@@ -45,24 +47,23 @@ class UnfinishedJobsService:
         Get the list of unfinished jobs from the previous extraction (if any) to check if they are still unfinished or if they have finished in the meantime.
         Pull the jobs using sacct command on the basis of Job IDs
         '''
-        use_mock = True if 'use_mock' in self.config_data.keys() and self.config_data['use_mock'] else False
-        if use_mock:
-            prev_unfinished_jobs_df = pd.read_csv(self.config_data['use_mock'])
-        else:
+        try:
             with DatabaseService(self.db_params) as database:
                 prev_unfinished_jobs_df = database.fetch_data(
                     table_name='ga_unfinished_jobs',
                     columns=UNFINISHED_JOBS_COLUMNS
                 )
-        
-        #Fetching unfinished job using sacct command
-        raw_logs = SacctService.pull_logs_by_jobid(prev_unfinished_jobs_df) 
-        if raw_logs is not None:
-            raw_logs_df = utils.convert2dataframe(raw_logs, types = {'NNodes': 'int64', 'NCPUS': 'int64'})
-            finished_jobs = self.filter_finished_jobs(raw_logs_df)
-            #creating a list to track the finished jobs ids
-            self.finished_jobids = finished_jobs['JobID'].apply(lambda x: x.split('.')[0]).unique().tolist()
-            return finished_jobs
+            
+            #Fetching unfinished job using sacct command
+            raw_logs = SacctService.pull_logs_by_jobid(prev_unfinished_jobs_df) 
+            if raw_logs is not None:
+                raw_logs_df = utils.convert2dataframe(raw_logs, types = {'NNodes': 'int64', 'NCPUS': 'int64'})
+                finished_jobs = self.filter_finished_jobs(raw_logs_df)
+                #creating a list to track the finished jobs ids
+                self.finished_jobids = finished_jobs['JobID'].apply(lambda x: x.split('.')[0]).unique().tolist()
+                return finished_jobs
+        except Exception as e:
+            print(f"Error syncing unfinished jobs {e}")
         return None
 
     def save_unfinished_jobs(self, unfinished_jobs_df: pd.DataFrame):
