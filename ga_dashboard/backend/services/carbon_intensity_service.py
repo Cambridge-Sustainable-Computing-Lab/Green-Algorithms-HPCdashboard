@@ -64,10 +64,10 @@ class CarbonIntensityService:
             raise ValueError("Postcode not found. Cannot fetch CI data.")
 
         try: 
-            # Get CI data in 7-day chunks to avoid API limits
+            # Get CI data in 13-day chunks to avoid API limits (CI API limit is 14)
             chunk_start = from_date
             while chunk_start <= to_date:
-                chunk_end = min(chunk_start + timedelta(days=7), to_date)
+                chunk_end = min(chunk_start + timedelta(days=13), to_date)
 
                 # Formatting as 2026-02-20T00:00Z
                 start_str = chunk_start.replace(hour=0, minute=0).strftime('%Y-%m-%dT%H:%MZ')
@@ -85,7 +85,8 @@ class CarbonIntensityService:
                 chunk_start = chunk_end + timedelta(days=1)
         
         except Exception as e:
-            raise ValueError("Postcode not found. Cannot fetch CI data.")
+            print(f"Error occurred while calling CarbonIntenistyAPI: {e}")
+            return pd.DataFrame()
         
         if not all_data:
             return pd.DataFrame()

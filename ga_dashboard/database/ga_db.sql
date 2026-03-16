@@ -146,7 +146,7 @@ CREATE TABLE public.carbon_intensity_data (
 --
 
 ALTER TABLE ONLY public.carbon_intensity_data
-    ADD CONSTRAINT carbon_intensity_data_pkey PRIMARY KEY (ci_date, postcode);
+    ADD CONSTRAINT carbon_intensity_data_pkey PRIMARY KEY (ci_date);
 
 
 --
