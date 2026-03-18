@@ -48,7 +48,7 @@ class GADashboardInstall:
             "create_or_overwrite_database.py": {
                 "dir": "database", 
                 "title": "Create database",
-                "arg_list": ["db_name", "db_host", "db_port", "db_user", "db_password", "db_script"]
+                "arg_list": ["db_name", "db_host", "db_port", "db_user", "db_password", "db_script", "skip_if_db_exists"]
             },
             "add_users_to_database.py": {
                 "dir": "database",

@@ -31,7 +31,8 @@ class GAConfig:
         'startDay': { 'expected_type': 'date (YYYY-MM-DD)' },
         'endDay': { 'expected_type': 'date (YYYY-MM-DD)' },
         'outFile': { 'expected_type': 'string' },
-        'useCustomLogs': { 'expected_type': 'path' }
+        'useCustomLogs': { 'expected_type': 'path' },
+        'skip_if_db_exists': { 'expected_type': 'boolean'}
     }
 
     # List of parameters that can't be used together
@@ -183,6 +184,8 @@ class GAConfig:
                 else:
                     if not re.match(r'^\d{4}-\d{2}-\d{2}$', value):
                         is_valid = False
+            case 'boolean':
+                is_valid = isinstance(value, bool)
             case _:
                 print(f"  The attribute {conf_param} expected type ({expected_type}) is not a recognised type in the config module")
                 is_valid = False

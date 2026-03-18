@@ -68,6 +68,8 @@ endDay: "2023-06-30"
 # Grafana URL, including port (e.g. localhost:3000).
 url: "localhost:3000"
 
+skip_if_db_exists: False
+
 # Bypass workload manager and input a custom log file of your jobs
 # (e.g. ga_dashboard/backend/example_files/example_sacctOutput_raw.txt).
 # useCustomLogs: "<useCustomLogs_path>"
