@@ -52,7 +52,7 @@ class CarbonIntensityService:
 
     def fetch_CI_data(self, from_date: datetime, to_date: datetime) -> pd.DataFrame:
         """
-        Fetch CI data in chunks of 7 days. Each chunk is fetched with a single API call. 
+        Fetch CI data in chunks of 13 days. Each chunk is fetched with a single API call. 
         
         :param from_date: start datetime
         :param to_date: end datetime
@@ -76,6 +76,7 @@ class CarbonIntensityService:
                 endpoint = f'{start_str}/{end_str}/postcode/{self.postcode}'
 
                 response = self.api_service.get(endpoint=endpoint, params={})
+                # Find example of response at https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-to
 
                 if not response or 'data' not in response:
                     print(f"fetch_CI_data(): Failed to fetch CI data for {start_str} to {end_str}.")
