@@ -114,7 +114,7 @@ class GADashboardInstall:
                 continue
 
             # Value can't be None or "None", as that isn't very helpful
-            if ( value and value != "None" ):
+            if ( value and value != "None" ) or ( value == False ):
                 components.append(f"--{item}")  # <- Put the leading "--" needed for each parameter name, e.g., "--db_name". 
                 components.append(value)        # <- e.g., "ga_db"
             else:
