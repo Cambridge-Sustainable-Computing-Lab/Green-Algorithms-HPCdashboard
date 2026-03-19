@@ -6,6 +6,7 @@ import logging
 import psycopg
 import pandas as pd
 from dataclasses import dataclass
+from psycopg import sql
 
 logger = logging.getLogger(__name__)
 
@@ -263,5 +264,40 @@ class DatabaseService:
         except Exception as e:
             logger.error(f"Error fetching data from '{table_name}': {e}")
             return pd.DataFrame()
+        finally:
+            cur.close()
+
+
+    def delete_by_column_values(self, table_name: str, column_name: str, values: list) -> int:
+        """
+        Delete rows from a table where column_name matches any value in values.
+        Returns number of deleted rows.
+        """
+        if not self._conn or self._conn.closed:
+            logger.error("No active database connection. Call connect() first.")
+            return 0
+
+        if not values:
+            logger.debug("No values provided for deletion.")
+            return 0
+
+        cur = self._conn.cursor()
+        try:
+            query = sql.SQL("""
+                DELETE FROM {table}
+                WHERE {column} = ANY(%s)
+            """).format(
+                table=sql.Identifier(table_name),
+                column=sql.Identifier(column_name),
+            )
+            cur.execute(query, (values,))
+            deleted = cur.rowcount
+            self._conn.commit()
+            logger.debug(f"Deleted {deleted} rows from '{table_name}' where {column_name} in values.")
+            return deleted
+        except Exception as e:
+            logger.error(f"Error deleting from '{table_name}': {e}")
+            self._conn.rollback()
+            raise
         finally:
             cur.close()

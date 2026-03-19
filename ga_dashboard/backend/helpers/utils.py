@@ -3,6 +3,7 @@
 # ------------------------------------------------------------------
 
 import datetime
+from io import BytesIO
 import os
 import sys
 import random
@@ -99,5 +100,37 @@ def save_slurm_logs(config_data, WM) -> None: # DEBUGONLY
             f.write(WM.logs_raw)
 
         print(f"\nSLURM statistics saved for inspection: {log_path}\n")
+
+
+def convert2dataframe(df_raw: bytes, types: dict | None = None, delimiter="|"):
+    """
+    Convert raw logs output into a pandas DataFrame.
+    Parameters:
+        df_raw : Raw logs output as bytes.
+        types : column names and their desired data types. E.g., {'NNodes': 'int64', 'NCPUS': 'int64'}
+        delimiter : Delimiter used in the raw logs.
+    Returns:
+        pd.DataFrame: DataFrame containing the parsed logs with specified data types.
+    """
+    df = pd.read_csv(BytesIO(df_raw), sep=delimiter, dtype='str')
+
+    # Convert specified columns to appropriate data types 
+    if types:
+        for c, t in types.items():
+            if c in df.columns:
+                df[c] = df[c].astype(t)
+    return df
+
+##DEBUGONLY 
+def quick_inspect(df: pd.DataFrame, name: str = "DataFrame") -> None:
+    """
+    Utility function to quickly inspect a DataFrame by printing its shape, columns, datatypes, and head.
+    """
+    print(f"--- Quick Inspection of {name} ---")
+    print("Shape:", df.shape)
+    print("Columns:", df.columns.tolist())
+    print("Dtypes:\n", df.dtypes)
+    print("Head:\n", df.head())
+    print(f"--- End of {name} Inspection ---\n")
 
 

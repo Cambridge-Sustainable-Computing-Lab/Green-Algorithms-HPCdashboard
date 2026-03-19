@@ -9,6 +9,7 @@ import yaml
 import ga_dashboard.backend.helpers.utils as utils
 from ga_dashboard.backend.data_sql_import import DataSQLImport
 from ga_dashboard.backend.services.database_service import DBSettings
+from ga_dashboard.backend.services.unfinished_jobs_service import UnfinishedJobsService
 from ga_dashboard.backend.workload_manager.slurm import SlurmManager
 
 
@@ -120,16 +121,18 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
     ### Log the output for debugging
     utils.save_slurm_logs(config_data, WM)
 
-
-    ###### Here we can fetch running jobs from the DB and check if they are completed. 
-    ###### If they are we can maybe create a different WM object with them and run convert2dataframe() command
-
+    unfinished_jobs_service = UnfinishedJobsService(config_data)
 
     ### Turn usage logs into DataFrame
-    WM.convert2dataframe()
+    WM.raw_logs_to_df()
 
-    ###### Running jobs can be filtered and saved into the DB here. 
-    ###### Subsquently they can be removed from WM logs before proceeding with cleaning of logs.
+    # get unfinished jobs from db and pick those that have now finished using sacct command by job id
+    finished_jobs_df = unfinished_jobs_service.sync_unfinished_jobs() 
+  
+    WM.filter_and_store_unfinished_jobs(unfinished_jobs_service) # Filter unifinshed jobs from WM logs and store them in DB
+
+    if finished_jobs_df is not None:
+        WM.concat_logs_df(finished_jobs_df) #concat finished jobs (previously unfinished) with rest of the logs
 
     # And clean
     WM.clean_logs_df()
@@ -143,7 +146,7 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
 
     # WM.df_agg_X.to_pickle("testdata/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
 
-    return WM.df_agg_X
+    return WM.df_agg_X, unfinished_jobs_service
 
 
 def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA: GA_tools) -> pd.DataFrame:
@@ -228,7 +231,7 @@ def summarise_data(df: pd.DataFrame) -> dict:
             timeseries = data.groupby(agg_names2).agg(**agg_functions_from_raw)
         else:
             timeseries = data.groupby(agg_names2).agg(**agg_functions_further)
-
+ 
         timeseries.reset_index(inplace=True, drop=(agg_names is None))
         timeseries['success_rate'] = timeseries.n_success / timeseries.n_jobs
         timeseries['failure_rate'] = 1 - timeseries.success_rate
@@ -236,8 +239,7 @@ def summarise_data(df: pd.DataFrame) -> dict:
 
         return timeseries
 
-    df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit day
-
+    df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit date
     has_slurmAdmin = True # get_slurmAdmin(args) # We only assume we have admin access now
 
     if has_slurmAdmin:
@@ -262,6 +264,7 @@ def summarise_data(df: pd.DataFrame) -> dict:
 
         df_overallStats = agg_jobs(df_daily)
         dict_overallStats = df_overallStats.iloc[0, :].to_dict()
+
 
         ## And put everything in a dict
         output = {
@@ -328,7 +331,7 @@ def main_backend(config_data: dict):
 
     GA = GA_tools(cluster_info, fixed_params)
 
-    df = extract_data(config_data, has_slurmAdmin, cluster_info=cluster_info)
+    df, finished_jobids = extract_data(config_data, has_slurmAdmin, cluster_info=cluster_info)
     df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA)
     summary_stats = summarise_data(df2) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
 
@@ -339,12 +342,11 @@ def main_backend(config_data: dict):
     # except Exception:
     #     dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
     if 'db_name' in dict_keys:
-        process_and_store(summary_stats, config_data)
-
+        process_and_store(summary_stats, config_data, finished_jobids)
     return summary_stats
 
 
-def process_and_store(summary_stats:dict,config_data:dict) -> None:
+def process_and_store(summary_stats:dict,config_data:dict, unfinished_jobs_service:UnfinishedJobsService) -> None:
     # Import aggregated data into a database
     db_params = DBSettings(
         db_name=config_data['db_name'],
@@ -357,4 +359,13 @@ def process_and_store(summary_stats:dict,config_data:dict) -> None:
                 summary_stats,
                 db_params
             )
-    data2db.insert_data_into_db()
+    try: 
+        data2db.insert_data_into_db()
+    except Exception as e:
+        print(f"Error occurred while inserting data into database: {e}")
+        return
+    
+    #only delete the finished jobs from ga_unfinished_jobs table after the new data has been successfully inserted
+    unfinished_jobs_service.delete_resolved_unfinished_jobs()
+    
+        

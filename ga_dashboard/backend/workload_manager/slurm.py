@@ -1,9 +1,11 @@
 import datetime
 import os
 import pandas as pd
-from io import BytesIO
+import numpy as np
 
+from ga_dashboard.backend.helpers import utils
 from ga_dashboard.backend.services.sacct_service import SacctService
+from ga_dashboard.backend.services.unfinished_jobs_service import UNFINISHED_STATES, UnfinishedJobsService
 
 class SlurmBase:
     """
@@ -210,7 +212,6 @@ class SlurmBase:
         # Codes are found here: https://slurm.schedmd.com/squeue.html#SECTION_JOB-STATE-CODES
         # self.args.customSuccessStates = 'TO,TIMEOUT'
         success_codes = ['CD', 'COMPLETED']
-        running_codes = ['PD', 'PENDING', 'R', 'RUNNING', 'RQ', 'REQUEUED']
         if x in success_codes:
             codeState = 1
         elif x in customSuccessStates_list:
@@ -219,11 +220,6 @@ class SlurmBase:
             codeState = -1
         else:
             codeState = 0
-
-        if x in running_codes:
-            # running jobs are the lowest to be removed all the time
-            # (if one of the subprocess is still running, the job gets ignored regardless of --customSuccessStates
-            codeState = -2
 
         return codeState
 
@@ -259,17 +255,6 @@ class SlurmManager(SlurmBase):
         self.df_agg = None
         self.df_agg_X = None
 
-    @staticmethod
-    def convert2dataframe(logs_raw):
-        """
-        Convert raw logs output into a pandas DataFrame.
-        Can be called independently with any raw logs.
-        """
-        logs_df = pd.read_csv(BytesIO(logs_raw), sep="|", dtype='str')
-        for x in ['NNodes', 'NCPUS']:
-            logs_df[x] = logs_df[x].astype('int64')
-        return logs_df
-
     def pull_logs(self):
         """
         Run the command line to pull usage from the workload manager.
@@ -301,7 +286,8 @@ class SlurmManager(SlurmBase):
         """
         Convert raw logs output into a pandas dataframe - calling the static method convert2dataframe
         """
-        self.logs_df = SlurmManager.convert2dataframe(self.logs_raw)
+        delimiter = "," if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '' else "|"
+        self.logs_df = utils.convert2dataframe(self.logs_raw, types = {'NNodes': 'int64', 'NCPUS': 'int64'}, delimiter=delimiter)
 
 
     def clean_logs_df(self):
@@ -342,10 +328,10 @@ class SlurmManager(SlurmBase):
         # Make sure it's either a partition name, or a comma-separated list of partitions
         self.logs_df['PartitionX'] = self.logs_df.apply(self.clean_partition, axis=1)
 
-        ### Parse submit datetime
+        ### Parse datetimes - Submit
         self.logs_df['SubmitDatetimeX'] = self.logs_df.Submit.apply(
             lambda x: datetime.datetime.strptime(x, "%Y-%m-%dT%H:%M:%S"))
-
+        
         ### Number of CPUs
         # e.g. here there is no cleaning necessary, so I just standardise the column name
         self.logs_df['NCPUS_'] = self.logs_df.NCPUS
@@ -395,14 +381,10 @@ class SlurmManager(SlurmBase):
             'StateX': 'min',
             'Account_': 'first',
             'UIDX': 'first',
-            'UserX': 'first',
+            'UserX': 'first'
         })
 
-        ### Remove jobs that are still running or currently queued
-        self.df_agg = self.df_agg_0.loc[self.df_agg_0.StateX != -2]
-
-        ### Turn StateX==-2 into 1
-        self.df_agg.loc[self.df_agg.StateX == -1, 'StateX'] = 1
+        self.df_agg.loc[self.df_agg.StateX == -1, 'StateX'] = 1 # Turn StateX==-1 into 1 (customSuccessStates are considered successful i.e. 1)
 
         ### Replace UsedMem_=-1 with memory requested (for when MaxRSS=NaN)
         self.df_agg['UsedMem2_'] = self.df_agg.apply(self.clean_UsedMem, axis=1)
@@ -466,3 +448,51 @@ class SlurmManager(SlurmBase):
                 self.df_agg = self.df_agg.loc[self.df_agg.Account_ == self.config_data['filterAccount']]
 
         self.df_agg_X = self.df_agg[[x for x in self.df_agg.columns if x[-1] == 'X']]
+
+    def concat_logs_df(self, new_logs_df: pd.DataFrame):
+        """
+        Concatenate the existing logs dataframe with a new one, for example when we want to add finished jobs to previously-fetched logs.
+        :param new_logs_df: [pd.DataFrame] new logs dataframe to concatenate with the existing one.
+        """
+        if self.logs_df is None:
+            raise ValueError("logs_df is not initialised. Run pull_logs() and raw_logs_to_df() first.")
+        
+        self.logs_df = pd.concat([self.logs_df, new_logs_df], ignore_index=True)
+
+    def select_distinct_unfinished_jobs(self):
+        '''
+        Select distinct unfinished jobs, to avoid duplicates in the database.
+        For jobs with multiple rows (subprocesses), picks:
+        - oldest Start date
+        - Submit date (should be the same across rows)
+        - State that is unfinished (if any subprocess is unfinished, the job is unfinished)
+        '''
+        if self.unfinished_jobs is None:
+            raise ValueError("unfinished_jobs is not initialised. Run filter_and_store_unfinished_jobs() first.")
+
+        df = self.unfinished_jobs.copy()
+
+        def pick_unfinished_state(states: list):
+            for state in states:
+                if state in UNFINISHED_STATES:
+                    return state
+            return states.iloc[0]
+
+        df['JobID_base'] = df['JobID'].astype(str).str.split('.').str[0]
+
+        grouped_by_job = df.groupby('JobID_base').agg(
+            User=('User', 'first'),
+            Start=('Start', 'min'),
+            Submit=('Submit', 'first'),
+            State=('State', pick_unfinished_state), # picking the unfinished state if there are multiple rows for the same job.
+        ).reset_index().rename(columns={'JobID_base': 'JobID'})
+
+        self.unfinished_jobs = grouped_by_job
+
+    def filter_and_store_unfinished_jobs(self, unfinished_jobs_service: UnfinishedJobsService):
+        '''
+            Use the UnfinishedJobsService to filter out unfinished jobs from the logs dataframe, and store them in the database.
+        '''
+        self.unfinished_jobs, self.logs_df = unfinished_jobs_service.filter_unfinished_jobs(self.logs_df)
+        self.select_distinct_unfinished_jobs()
+        unfinished_jobs_service.save_unfinished_jobs(self.unfinished_jobs)
