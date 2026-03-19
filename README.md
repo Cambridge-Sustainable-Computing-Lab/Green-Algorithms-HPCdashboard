@@ -81,6 +81,7 @@ Later, it may be necessary to get a version of Postgres for your platform which 
 Choose a username and password for the Postgres admin user. The former is usually `postgres` (although you can choose what you want). Do not record this sensitive password in a file! In these instructions, we assume that the admin user name is `postgres`. (If you forget the password at any point, try [these steps](https://stackoverflow.com/questions/14588212/postgresql-resetting-password-of-postgresql-on-ubuntu).)
 
 Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
+.023
 
 
 ### Dashboard platform - Grafana
@@ -108,7 +109,8 @@ As well as a list of dashboard users, the system needs:
   * Note also that you will need values for the other items in the file: `institution`, `cluster_name`, `granularity_memory_request`, `PUE`, etc.
 * **Fixed parameters file**. Example: `ga_dashboard/data/fixed_parameters.yaml`. We suggest you use this example file for now.
 
-
+> [!NOTE]
+> (Relevant to using Docker container to deploy this software) - Restarting the docker container can lead to the database being deleted and re-created, to avoid this, set ```skip_if_db_exists``` to True in `config.yaml`.
 
 ### List of users
 
