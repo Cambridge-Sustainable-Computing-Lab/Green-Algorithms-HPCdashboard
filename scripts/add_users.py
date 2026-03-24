@@ -1,4 +1,5 @@
 # Python script to add Dashboard users to the Postgres database and Grafana instance.
+# NOTE: Grafana must be running for this script to successfully run.
 
 # Note: we assume that the scripts (including this one) are invoked from the top-level directory
 # in the repository (i.e. the parent directory of scripts/).
@@ -29,7 +30,7 @@ class GADashboardAddUsers (GADashboardInstall):
         """
 
         # Calling parent to set up self.config_file, self.db_pass, self.grafana_pass, self.got_db_password, self.got_grafana_admin_password
-        super().init(config_file, db_pass, grafana_pass)
+        super().__init__(config_file, db_pass, grafana_pass)
 
         # Scripts variables/config
         self.scripts = OrderedDict({
