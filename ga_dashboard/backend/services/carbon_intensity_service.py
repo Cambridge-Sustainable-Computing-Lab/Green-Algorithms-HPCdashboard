@@ -11,7 +11,17 @@ from ga_dashboard.backend.services.database_service import DBSettings, DatabaseS
 from ga_dashboard.database.table_col_definitions import CARBON_INTENSITY_DATA_COLUMNS
 
 class JobEmissionRecord:
+    """
+    Represents a single job's emission record for a specific date.
+    Includes a method to calculate total carbon emissions for the job (gCO₂).
+    """
     def __init__(self, date, energy_per_hr: float, hours_of_work: float, carbon_intensity: float):
+        """
+        :param date: The date on which the job ran.
+        :param energy: Total energy consumed (kWh), computed as energy_per_hr x hours_of_work.
+        :param hours_of_work: Duration the job ran in hours.
+        :param carbon_intensity: Carbon intensity of the energy source (gCO₂/kWh).
+        """
         self.date = date
         self.energy = energy_per_hr * hours_of_work
         self.hours_of_work = hours_of_work
@@ -44,7 +54,19 @@ class JobEmissionRecord:
         return energy_per_hr * weighted_CI
 
 class CarbonIntensityService:
+    """
+    Fetches, processes, and stores daily average carbon intensity (CI) data for a given postcode region.
+
+    NOTE: This class is designed for the UK Carbon Intensity API. UK-specific logic includes
+    the postcode based regional lookup and fetch_CI_data().
+    """
     def __init__(self, postcode: str, db_params: DBSettings, base_url: str ="https://api.carbonintensity.org.uk/regional/intensity/", api_key: str = None):
+        """
+        :param postcode: UK postcode 
+        :param db_params: Database connection settings 
+        :param base_url: Base URL for the carbon intensity API
+        :param api_key: Optional API key. Not required for the UK Carbon Intensity API.
+        """
         self.api_service = APIService(base_url, api_key)
         self.source = base_url.split('/')[2]
         self.postcode = postcode
@@ -53,6 +75,8 @@ class CarbonIntensityService:
     def fetch_CI_data(self, from_date: datetime, to_date: datetime) -> pd.DataFrame:
         """
         Fetch CI data in chunks of 13 days. Each chunk is fetched with a single API call. 
+
+        This is 'api.carbonintensity.org.uk' specific, to adapt for a different API, update the endpoint format, chunk size, and response parsing.
         
         :param from_date: start datetime
         :param to_date: end datetime
@@ -103,6 +127,7 @@ class CarbonIntensityService:
     def store_average_CI_in_db(self, ci_data: pd.DataFrame):
         """
         Storing the daily average CI calculated from the CI values fetched from the API
+
         :param ci_data: dataframe containing unique pairs of date, avg CI
         """
         today = datetime.now().strftime("%Y-%m-%d")
@@ -122,6 +147,7 @@ class CarbonIntensityService:
     def fetch_stored_average_CI(self, dates_list: list[datetime]) -> pd.DataFrame:
         """
         Fetch stored daily average CI values from DB
+        
         :param dates_list: list of dates
         """
         ci_data = pd.DataFrame()
@@ -139,9 +165,12 @@ class CarbonIntensityService:
 
     def calc_day_average_CI(self, from_date: datetime, to_date: datetime) -> dict:
         """
-        Fetch 30-min interval CI data and average per day.
+        Returns daily average CI values for the given date range, pulling from DB where
+        available and falling back to the API for any missing dates.
+
         :param from_date: start datetime
         :param to_date: end datetime
+        :return: dict mapping date strings (DD-MM-YYYY) to daily average CI values (gCO₂/kWh)
         """
         dates_list = [
                 (from_date + timedelta(days=i)).strftime("%Y-%m-%d")
