@@ -93,7 +93,6 @@ def main():
         else:
             print("\n*** Setting up empty Postgres database: ***\n")
             print("NB Have you configured the values you want in this script?")    
-            print("\n** WARNING: this will delete any existing data in the database. **")
             print("\n** Use CTRL-C to stop script. **")
 
             # Make user confirm this potentially drastic action!
