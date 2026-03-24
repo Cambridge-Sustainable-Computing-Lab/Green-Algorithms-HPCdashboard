@@ -45,7 +45,7 @@ def main():
     argparser.add_argument("--db_user", help='Name of database admin user', required=False, metavar='DB_USER', default='postgres', dest='db_user')
     argparser.add_argument("--db_password", help='Password of database admin user', required=True, metavar='DB_PASS', dest='db_password')
     argparser.add_argument("--db_script", help='Path to database setup script', required=False, metavar='DB_SCRIPT', default='ga_dashboard/database/ga_db.sql', dest='db_script')
-    argparser.add_argument("--skip_if_db_exists", help='Skip drop/recreate if the database already exists', required=False, metavar='SKIP_IF_DB_EXISTS', default='False', dest='skip_if_db_exists')
+    argparser.add_argument("--skip_db_overwrite", help='Skip drop/recreate if the database already exists', required=False, metavar='SKIP_DB_OVERWRITE', default='False', dest='skip_db_overwrite')
     # argparser.add_argument("--pg_version", help='Version of PostgreSQL being used', required=False, metavar='PG_VERSION', default='13', dest='pg_version')
 
     #argparser.add_argument("--debug", "-d", help='Debug mode', required=False, dest='debug', action='store_true')
@@ -58,7 +58,7 @@ def main():
     db_user = args.db_user
     db_password = args.db_password
     db_script = args.db_script
-    skip_if_db_exists = args.skip_if_db_exists
+    skip_db_overwrite = args.skip_db_overwrite
 
     #debug = args.debug
 
@@ -82,7 +82,7 @@ def main():
     db_found = database_exists(db_name, db_host, db_port, db_user)
     if db_found:
         print(f"\n[Info] Database '{db_name}' was found on {db_host}:{db_port}.")
-        if skip_if_db_exists.lower() == 'true':
+        if skip_db_overwrite.lower() == 'true':
             print(
                 f"[Info] 'skip_if_exists' is enabled in the configuration.\n"
                 f"       Skipping drop/recreate of '{db_name}'. Nothing was changed.\n"
