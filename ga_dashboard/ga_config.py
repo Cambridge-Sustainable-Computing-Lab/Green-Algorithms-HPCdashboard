@@ -32,7 +32,7 @@ class GAConfig:
         'endDay': { 'expected_type': 'date (YYYY-MM-DD)' },
         'outFile': { 'expected_type': 'string' },
         'useCustomLogs': { 'expected_type': 'path' },
-        'skip_if_db_exists': { 'expected_type': 'boolean'}
+        'skip_db_overwrite': { 'expected_type': 'boolean'}
     }
 
     # List of parameters that can't be used together
