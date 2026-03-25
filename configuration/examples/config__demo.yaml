@@ -68,9 +68,9 @@ endDay: "2023-06-30"
 # Grafana URL, including port (e.g. localhost:3000).
 url: "localhost:3000"
 
-# Set 'skip_db_overwrite' True to stop overwriting the Database (if found) during Dashboard Installation
-# This is for cases when Database exists and is already configured to GA Dashboard's needs (i.e. contains the appropriate tables and user information)
-# Moreover, if using Docker container, this must be set to True to avoid deletion/recreation of DB every time the Container starts.
+# Set 'skip_db_overwrite: True' to stop overwriting the Database (if found) during Dashboard installation.
+# This is for cases when the database exists and is already configured (i.e. contains the appropriate tables and user information), but the installation script needs to be run again for some reason.
+# If using a Docker container, this must be set to True to avoid deletion/recreation of the database every time the Container starts.
 skip_db_overwrite: False 
 
 # Bypass workload manager and input a custom log file of your jobs
