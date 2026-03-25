@@ -236,7 +236,7 @@ class DatabaseService:
             df = db.fetch_data('ga_data_aggregate', columns=['user_name', 'energy'])
 
             # Fetch with a filter
-            df = db.fetch_data('ga_user', filters={'user_name': 'alice'})
+            df = db.fetch_data('ga_user', filters={'user_name': ['alice','jane']})
 
             # Combine both
             df = db.fetch_data('ga_data_aggregate', columns=['user_name', 'energy'], filters={'user_name': 'alice'})
@@ -250,9 +250,17 @@ class DatabaseService:
 
         values = []
         if filters:
-            where_clauses = " AND ".join(f"{col} = %s" for col in filters)
-            sql += f" WHERE {where_clauses}"
-            values = list(filters.values())
+            clauses = []
+            for col, val in filters.items():
+                if isinstance(val, (list, tuple)):
+                    placeholders = ", ".join(["%s"] * len(val))
+                    clauses.append(f"{col} IN ({placeholders})")
+                    values.extend(val)
+                else:
+                    clauses.append(f"{col} = %s")
+                    values.append(val)
+
+            sql += " WHERE " + " AND ".join(clauses)
 
         cur = self._conn.cursor()
         try:

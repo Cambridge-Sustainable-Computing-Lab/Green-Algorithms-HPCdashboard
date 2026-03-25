@@ -54,6 +54,12 @@ CI: 231.12 # carbon intensity, in gCO2e/kWh
 energy_cost:
   cost: 0.34 # in currency/kWh
   currency: "£"
+
+# postcode below has to be compatible with the Carbon Intensity API used. 
+# For now, only compatible with UK postcodes (first 3 letters). 
+# If data centre is based outside of UK, leave postcode empty (CI key above will be used instead).
+postcode: "CB1" # [str] Postcode of the data centre
+
 #
 # Below are optional parameters if the html output is used.
 # HTML tags can be used

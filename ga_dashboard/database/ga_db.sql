@@ -121,11 +121,32 @@ CREATE TABLE public.ga_unfinished_jobs (
 
 
 --
--- Name: ga_data_aggregate ga_data_aggregate_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: ga_unfinished_jobs ga_unfinished_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ga_unfinished_jobs
     ADD CONSTRAINT ga_unfinished_jobs_pkey PRIMARY KEY (job_id);
+
+--
+-- Name: carbon_intensity_data; Type: TABLE; Schema: public; Owner: -
+--
+
+DROP TABLE IF EXISTS public.carbon_intensity_data; -- Needed due to postgres caching
+
+CREATE TABLE public.carbon_intensity_data (
+    ci_date date,
+    ci_day_avg double precision,
+    source character varying(255),
+    updated TIMESTAMP DEFAULT now()
+);
+
+
+--
+-- Name: carbon_intensity_data carbon_intensity_data_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.carbon_intensity_data
+    ADD CONSTRAINT carbon_intensity_data_pkey PRIMARY KEY (ci_date);
 
 
 --

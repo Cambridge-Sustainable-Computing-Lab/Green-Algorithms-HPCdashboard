@@ -17,3 +17,5 @@ GA_DATA_AGGREGATE_COLUMNS = [
 GA_USER_COLUMNS = ['user_name', 'uid', 'name', 'group_name', 'department', 'updated']
 
 UNFINISHED_JOBS_COLUMNS = ['job_id', 'user_name', 'submitdate', 'startdate', 'job_state']
+
+CARBON_INTENSITY_DATA_COLUMNS = ['ci_date', 'ci_day_avg', 'source']

@@ -24,6 +24,11 @@ CI: <467> # [number] average carbon intensity of the geographic location, in gCO
 energy_cost:
   cost: <0.34> # [number] in currency/kWh
   currency: "<£>" # [str]
+
+# postcode below has to be compatible with the Carbon Intensity API used. 
+# For now, only compatible with UK postcodes (first 3 letters). 
+# If data centre is based outside of UK, leave postcode empty (CI key above will be used instead).
+postcode: <Postcode> # [str] Postcode of the data centre
 #
 # Below are optional parameters if the html output is used.
 # HTML tags can be used
