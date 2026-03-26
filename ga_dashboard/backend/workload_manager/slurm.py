@@ -276,7 +276,7 @@ class SlurmManager(SlurmBase):
             if not foundIt:
                 raise FileNotFoundError(f"Couldn't find {self.config_data['useCustomLogs']} \n "
                                         f"It should be either be in the testData/ or error_logs/ subdirectories, or the full path should be provided by --useCustomLogs.")
-            print(message)
+            #print(message)
 
         # What we expect to be the usual case, where we run the sacct command.
         else:

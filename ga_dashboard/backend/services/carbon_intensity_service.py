@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from ga_dashboard.backend.services.api_service import APIService
 from ga_dashboard.backend.services.database_service import DBSettings, DatabaseService
 from ga_dashboard.database.table_col_definitions import CARBON_INTENSITY_DATA_COLUMNS
+from ga_dashboard.backend.helpers import utils
 
 class JobEmissionRecord:
     """
@@ -201,7 +202,8 @@ class CarbonIntensityService:
                     ci_data_from_api = ci_data_from_api.rename(columns={'date': 'ci_date', 'intensity_value': 'ci_day_avg'})
                     self.store_average_CI_in_db(ci_data_from_api)
             
-            daily_avg = pd.concat([ci_data_from_db, ci_data_from_api]).reset_index(drop=True)
+            daily_avg = utils.concat_dataframes([ci_data_from_db, ci_data_from_api])
+
             daily_avg['ci_date'] = pd.to_datetime(daily_avg['ci_date']).dt.strftime('%d-%m-%Y')
             return dict(zip(daily_avg['ci_date'], daily_avg['ci_day_avg']))
     

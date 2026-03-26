@@ -106,7 +106,5 @@ class UnfinishedJobsService:
                 database.delete_by_column_values(
                     table_name='ga_unfinished_jobs',
                     column_name='job_id',
-                    values=self.finished_jobids)
-        else:
-            print("No finished jobs to delete from unfinished_jobs table.")
+                    values=self.finished_jobids)   
             

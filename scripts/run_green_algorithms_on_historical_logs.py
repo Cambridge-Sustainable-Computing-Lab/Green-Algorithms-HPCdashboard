@@ -2,9 +2,8 @@ import argparse
 import maskpass  # to hide the passwords
 from datetime import date
 from datetime import timedelta
-from ga_dashboard.backend.ga_tools import main_backend
+from ga_dashboard.backend.ga_tools import LogsDataProcessor
 from ga_dashboard.ga_config import GAConfig
-from ga_dashboard.backend.helpers import utils
 
 import datetime
 
@@ -37,16 +36,10 @@ if __name__ == "__main__":
         ga_config.config_values["startDay"] = "2000-01-01"
     # End date (Yesterday)
     if 'endDay' not in  ga_config.config_values.keys():
-        ga_config.config_values["endDay"] = date.today() - timedelta(days = 1)
-
-    date_batches = utils.generate_date_batches(start = ga_config.config_values["startDay"], 
-                                               end = ga_config.config_values["endDay"], 
-                                               batch_size = 30
-                                               )
+        ga_config.config_values["endDay"] = date.today() - timedelta(days = 1)                                          
 
     ### Run backend to get data
-    extracted_data = main_backend(config_data = ga_config.config_values, 
-                                  batches = date_batches
-                                  )
+    data_processor = LogsDataProcessor(ga_config.config_values)
+    extracted_data = data_processor.batch_run(batch_size = 30)
 
     print("FINISH: ", datetime.datetime.now())

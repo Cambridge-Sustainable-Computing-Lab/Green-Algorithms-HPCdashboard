@@ -122,7 +122,7 @@ def convert2dataframe(df_raw: bytes, types: dict | None = None, delimiter="|"):
                 df[c] = df[c].astype(t)
     return df
 
-def generate_date_batches(start: str | datetime.date, end: str | datetime.date, batch_size: int = 30) -> list:
+def generate_batches_by_dates(start: str | datetime.date, end: str | datetime.date, batch_size: int = 30) -> list:
     """
     Generates date ranges (start and end pairs) that divide a larger time period into batches.
 
@@ -148,6 +148,19 @@ def generate_date_batches(start: str | datetime.date, end: str | datetime.date, 
         current_start = current_end + timedelta(days=1)
 
     return batches
+
+def concat_dataframes(dfs: list[pd.DataFrame]) -> pd.DataFrame:
+    """
+    Concatenate DataFrames after filtering out empty or all-NaN inputs.
+
+    This ensures consistent dtype inference and avoids future incompatibilities with pandas, 
+    where concatenation behavior with empty or all-NaN DataFrames is changing (FutureWarning).
+    """
+
+    # Keep only DataFrames that are not empty and not entirely NaN
+    dfs = [df for df in dfs if not df.empty and not df.isna().all().all()]
+    
+    return pd.concat(dfs, ignore_index=True)
 
 ##DEBUGONLY 
 def quick_inspect(df: pd.DataFrame, name: str = "DataFrame") -> None:
