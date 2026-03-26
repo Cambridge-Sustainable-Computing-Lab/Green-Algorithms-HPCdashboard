@@ -154,7 +154,7 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info, db_param
     ### Log the output for debugging
     utils.save_slurm_logs(config_data, WM)
 
-    unfinished_jobs_service = UnfinishedJobsService(config_data)
+    unfinished_jobs_service = UnfinishedJobsService(config_data, db_params)
 
     ### Turn usage logs into DataFrame
     WM.raw_logs_to_df()
