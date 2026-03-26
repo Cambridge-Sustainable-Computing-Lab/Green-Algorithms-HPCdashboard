@@ -38,4 +38,6 @@ if __name__ == "__main__":
         ga_config.config_values["endDay"] = yesterday
 
     ### Run backend to get data
-    extracted_data = main_backend(ga_config.config_values)
+    extracted_data = main_backend(config_data = ga_config.config_values, 
+                                  batches = [(ga_config.config_values["startDay"], ga_config.config_values["endDay"])] # Single batch for daily runs
+                                  )

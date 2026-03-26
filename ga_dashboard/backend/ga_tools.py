@@ -346,10 +346,10 @@ def summarise_data(df: pd.DataFrame) -> dict:
     return output
 
 
-def main_backend(config_data: dict):
+def main_backend(config_data: dict, batches: list = None):
     '''
-
     :param config_data: dict
+    :param batches: list containing pairs of start and end dates for each batch
     :return:
     '''
     ### Load cluster-specific info
@@ -386,20 +386,22 @@ def main_backend(config_data: dict):
         users_df = None
 
     GA = GA_tools(cluster_info, fixed_params)
+    summary_stats_all = {}
 
-    df, finished_jobids = extract_data(config_data, has_slurmAdmin, cluster_info=cluster_info, db_params=db_params)
-    df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA, cluster_info=cluster_info, db_params=db_params)
-    summary_stats = summarise_data(df2) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
+    # Processing data in date-wise batches - particularly useful when pulling historical logs
+    for dates_pair in batches:
 
-    ## Store data into a database
-    dict_keys = config_data.keys() # This is when using command line arguments (Namespace)
-    # try:
-    #     dict_keys = args.__dict__.keys() # This is when using command line arguments (Namespace)
-    # except Exception:
-    #     dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
-    if 'db_name' in dict_keys:
-        process_and_store(summary_stats, db_params, finished_jobids)
-    return summary_stats
+        config_data['startDay'] = dates_pair[0] # Start date in current batch
+        config_data['endDay'] = dates_pair[1] # End date in current batch
+
+        df, unfinished_jobs_service = extract_data(config_data, has_slurmAdmin, cluster_info=cluster_info, db_params=db_params)
+        df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA, cluster_info=cluster_info, db_params=db_params)
+        summary_stats = summarise_data(df2) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
+        process_and_store(summary_stats, db_params, unfinished_jobs_service)
+
+        summary_stats_all = summary_stats_all | summary_stats
+
+    return summary_stats_all
 
 
 def process_and_store(summary_stats:dict, db_params:DBSettings, unfinished_jobs_service:UnfinishedJobsService) -> None:

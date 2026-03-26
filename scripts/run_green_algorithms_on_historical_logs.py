@@ -4,6 +4,7 @@ from datetime import date
 from datetime import timedelta
 from ga_dashboard.backend.ga_tools import main_backend
 from ga_dashboard.ga_config import GAConfig
+from ga_dashboard.backend.helpers import utils
 
 import datetime
 
@@ -38,7 +39,14 @@ if __name__ == "__main__":
     if 'endDay' not in  ga_config.config_values.keys():
         ga_config.config_values["endDay"] = date.today() - timedelta(days = 1)
 
+    date_batches = utils.generate_date_batches(start = ga_config.config_values["startDay"], 
+                                               end = ga_config.config_values["endDay"], 
+                                               batch_size = 30
+                                               )
+
     ### Run backend to get data
-    extracted_data = main_backend(ga_config.config_values)
+    extracted_data = main_backend(config_data = ga_config.config_values, 
+                                  batches = date_batches
+                                  )
 
     print("FINISH: ", datetime.datetime.now())
