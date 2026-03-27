@@ -21,13 +21,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "12.1.1"
+      "version": "12.3.3"
     },
     {
       "type": "datasource",
       "id": "grafana-postgresql-datasource",
       "name": "PostgreSQL",
-      "version": "12.1.1"
+      "version": "12.3.3"
     },
     {
       "type": "panel",
@@ -100,51 +100,75 @@
         "content": "# 🌱 Green Algorithms Dashboard\n---\n\n",
         "mode": "markdown"
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "transparent": true,
       "type": "text"
     },
     {
-      "description": "Introductory panel.",
-      "gridPos": {
-        "h": 11,
-        "w": 24,
-        "x": 0,
-        "y": 2
-      },
-      "id": 92,
-      "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        },
-        "content": "Computing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess, then reduce, the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at the institution.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by [Green Algorithms](https://www.green-algorithms.org) and the following assumptions:\n\n|Type|Value|\n|----|-----|\n|CPU |5.9 - 9.4 W/core|\n|GPU |NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)|\n|Memory power | 0.3725 W/GB|\n|Power usage effectiveness| 1.15|\n|Carbon intensity |231.12 gCO<sub>2</sub> e/kWh|\n|Energy cost| £0.34/kWh|\n\n\nWe built this tool in the hope of raising awareness of computing usage, highlighting resource waste, and fostering good computing practices. This\nis intended to be a lightweight carbon footprint calculator, not a cluster monitoring system.\n",
-        "mode": "markdown"
-      },
-      "pluginVersion": "12.1.1",
-      "type": "text"
-    },
-    {
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 2
       },
-      "id": 83,
-      "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
+      "id": 101,
+      "panels": [
+        {
+          "description": "Introductory panel.",
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 24,
+            "x": 0,
+            "y": 3
+          },
+          "id": 92,
+          "options": {
+            "code": {
+              "language": "plaintext",
+              "showLineNumbers": false,
+              "showMiniMap": false
+            },
+            "content": "<div style=\"margin: 10px; line-height: 1.6; font-size:12pt\">\n\n  <p>Computing is a major contributor to energy consumption, and thus is one of the main sources of the carbon emission of our research. In the\ncontext of the global climate crisis, it is imperative that individuals and organizations find ways to assess, then reduce, the carbon footprint of their\nwork.\nThis page aims to represent the carbon footprint that we are, collectively and individually, responsible for at the institution.\n SLURM jobs\nsubmitted to High Performance Clusters are logged automatically (including information such as resource requested, run time, memory\nefficiency, etc.), and the corresponding carbon footprint was calculated using the framework proposed by <a href='https://www.green-algorithms.org'>Green Algorithms</a>.\n</br>\n</br>\nWe built this tool in the hope of raising awareness of computing usage, highlighting resource waste, and fostering good computing practices. This\nis intended to be a lightweight carbon footprint calculator, not a cluster monitoring system.\n</p>\n</div>",
+            "mode": "html"
+          },
+          "pluginVersion": "12.3.3",
+          "title": "",
+          "type": "text"
         },
-        "content": "",
-        "mode": "markdown"
-      },
-      "pluginVersion": "12.1.1",
-      "transparent": true,
-      "type": "text"
+        {
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 91
+          },
+          "id": 106,
+          "options": {
+            "code": {
+              "language": "plaintext",
+              "showLineNumbers": false,
+              "showMiniMap": false
+            },
+            "content": "",
+            "mode": "markdown"
+          },
+          "pluginVersion": "12.3.3",
+          "title": "",
+          "transparent": true,
+          "type": "text"
+        }
+      ],
+      "title": "About Green Algorithms Dashboard",
+      "type": "row"
     },
     {
       "collapsed": false,
@@ -152,7 +176,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 3
       },
       "id": 79,
       "panels": [],
@@ -164,7 +188,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 4
       },
       "id": 54,
       "options": {
@@ -173,10 +197,10 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Report for user <span style=\"color:#5794F2\">$user_name</span>\n\nFind out your carbon footprint for the time period selected (see date panel at top).",
-        "mode": "markdown"
+        "content": "<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h1>Report for user <span style=\"color:#3274D9\">$user_name</span></h1>\n  <p>Find out <b>your</b> carbon footprint for the time period selected (see date panel at top).\n</div>",
+        "mode": "html"
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "type": "text"
     },
     {
@@ -188,7 +212,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
+            "fixedColor": "#3274D9",
             "mode": "fixed"
           },
           "mappings": [],
@@ -218,10 +242,10 @@
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 4,
+        "h": 4,
+        "w": 5,
         "x": 0,
-        "y": 18
+        "y": 7
       },
       "id": 55,
       "options": {
@@ -239,12 +263,12 @@
         },
         "showPercentChange": false,
         "text": {
-          "valueSize": 50
+          "valueSize": 40
         },
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -287,7 +311,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
+            "fixedColor": "#3274D9",
             "mode": "fixed"
           },
           "mappings": [],
@@ -317,10 +341,10 @@
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 4,
-        "y": 18
+        "h": 4,
+        "w": 5,
+        "x": 5,
+        "y": 7
       },
       "id": 56,
       "options": {
@@ -338,12 +362,12 @@
         },
         "showPercentChange": false,
         "text": {
-          "valueSize": 50
+          "valueSize": 40
         },
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -402,10 +426,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 4,
         "w": 5,
-        "x": 8,
-        "y": 18
+        "x": 10,
+        "y": 7
       },
       "id": 57,
       "options": {
@@ -423,12 +447,12 @@
         },
         "showPercentChange": false,
         "text": {
-          "valueSize": 50
+          "valueSize": 40
         },
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -487,10 +511,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 5,
-        "x": 13,
-        "y": 18
+        "h": 4,
+        "w": 4,
+        "x": 15,
+        "y": 7
       },
       "id": 76,
       "options": {
@@ -508,12 +532,12 @@
         },
         "showPercentChange": false,
         "text": {
-          "valueSize": 50
+          "valueSize": 40
         },
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -574,10 +598,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 18,
-        "y": 18
+        "h": 4,
+        "w": 5,
+        "x": 19,
+        "y": 7
       },
       "id": 58,
       "options": {
@@ -595,12 +619,12 @@
         },
         "showPercentChange": false,
         "text": {
-          "valueSize": 50
+          "valueSize": 40
         },
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -643,7 +667,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "#5794F2",
+            "fixedColor": "#715e80",
             "mode": "fixed"
           },
           "custom": {
@@ -652,10 +676,11 @@
             "axisColorMode": "text",
             "axisLabel": "Total daily carbon footprint (CO2e)",
             "axisPlacement": "auto",
+            "axisSoftMin": 0,
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 50,
+            "fillOpacity": 54,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -664,12 +689,13 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 1,
+            "lineWidth": 1.5,
             "pointSize": 1,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -710,10 +736,10 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 11
       },
       "id": 59,
       "options": {
@@ -729,7 +755,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -771,19 +797,19 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "Number of jobs submitted",
+            "axisLabel": "",
             "axisPlacement": "auto",
+            "axisSoftMin": 0,
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 50,
+            "fillOpacity": 55,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -792,12 +818,13 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 1,
+            "lineWidth": 1.5,
+            "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -820,17 +847,34 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "kwatt"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#d9ba49",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 12,
-        "y": 26
+        "y": 11
       },
-      "id": 60,
+      "id": 104,
       "options": {
         "legend": {
           "calcs": [],
@@ -840,21 +884,18 @@
         },
         "tooltip": {
           "hideZeros": false,
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
+          "dataset": "ga_db",
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT n_jobs, submitdate FROM ga_data_aggregate WHERE user_name = '${__user.login}' ORDER BY submitdate ASC;",
+          "rawSql": "--SELECT submitdate, SUM(energy) as \"Total\" FROM ga_data_aggregate WHERE user_name = '${__user.login}' GROUP BY submitdate ORDER BY submitdate ASC;\nSELECT submitdate, SUM(energy_cpus+energy) as \"Total\" FROM ga_data_aggregate WHERE user_name = '${__user.login}' GROUP BY submitdate ORDER BY submitdate ASC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -872,10 +913,14 @@
               }
             ],
             "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           }
         }
       ],
-      "title": "Daily total number of jobs submitted by user",
+      "title": "⚡ Daily energy usage",
       "type": "timeseries"
     },
     {
@@ -886,7 +931,393 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "unit": "kwatt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPUS"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#5069af",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GPUS"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#3791a0",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Other"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#4c4d5c",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#d0701f",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 9,
+        "x": 0,
+        "y": 20
+      },
+      "id": 102,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.3",
+      "targets": [
+        {
+          "dataset": "ga_db",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(energy_cpus) as \"CPUS\", SUM(energy_gpus) as \"GPUS\", SUM(energy_memory) as \"Memory\", SUM(energy-(energy_cpus+energy_gpus+energy_memory)) as \"Other\" FROM ga_data_aggregate WHERE user_name = '${__user.login}'AND $__timeFilter(submitdate) ORDER BY SUM(energy_cpus) ;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "⚡ Energy distribution",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMin": 0,
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 2.5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPUS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#5069af",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.gradientMode",
+                "value": "none"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GPUS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#3791a0",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#d0701f",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Other"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6e6f83",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 15,
+        "x": 9,
+        "y": 20
+      },
+      "id": 103,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.92,
+        "fullHighlight": false,
+        "groupWidth": 0.65,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "normal",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        },
+        "xField": "submitdate",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 100
+      },
+      "pluginVersion": "12.3.3",
+      "targets": [
+        {
+          "dataset": "ga_db",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT submitdate, SUM(energy_cpus) as \"CPUS\", SUM(energy_gpus) as \"GPUS\", SUM(energy_memory) as \"Memory\", SUM(energy-(energy_cpus+energy_gpus+energy_memory)) as \"Other\" FROM ga_data_aggregate WHERE user_name = '${__user.login}' AND $__timeFilter(submitdate) GROUP BY submitdate ORDER BY submitdate ASC ;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          }
+        }
+      ],
+      "title": "⚡ Daily energy usage distribution",
+      "type": "barchart"
+    },
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 114,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "",
+        "mode": "markdown"
+      },
+      "pluginVersion": "12.3.3",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 105,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h3>Resource usage</h3>\n  <p>The charts below show the resource use over the selected period.  (see date panel at top).</p>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "12.3.3",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5069af",
             "mode": "fixed"
           },
           "custom": {
@@ -895,10 +1326,11 @@
             "axisColorMode": "text",
             "axisLabel": "Core-hours",
             "axisPlacement": "auto",
+            "axisSoftMin": 0,
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 50,
+            "fillOpacity": 54,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -907,12 +1339,13 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 1,
+            "lineWidth": 1.5,
             "pointSize": 1,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -943,7 +1376,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 34
+        "y": 33
       },
       "id": 61,
       "options": {
@@ -959,7 +1392,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -998,22 +1431,24 @@
         "type": "grafana-postgresql-datasource",
         "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
+            "fixedColor": "#3791a0",
             "mode": "fixed"
           },
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "Memory requested",
+            "axisLabel": "Core-hours",
             "axisPlacement": "auto",
+            "axisSoftMin": 0,
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 50,
+            "fillOpacity": 54,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1022,12 +1457,130 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 1,
+            "lineWidth": 1.5,
             "pointSize": 1,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 33
+      },
+      "id": 99,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT submitdate, SUM(gpuhourscharged) FROM ga_data_aggregate WHERE user_name = '${__user.login}' GROUP BY submitdate ORDER BY submitdate ASC ;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "User's GPU core-hours",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#d0701f",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Memory requested",
+            "axisPlacement": "auto",
+            "axisSoftMin": 0,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 54,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1.5,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1070,8 +1623,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
-        "y": 34
+        "x": 0,
+        "y": 41
       },
       "id": 62,
       "options": {
@@ -1087,7 +1640,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -1122,11 +1675,128 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#4c4d5c",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Number of jobs submitted",
+            "axisPlacement": "auto",
+            "axisSoftMin": 0,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 54,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1.5,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 2,
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 41
+      },
+      "id": 60,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT n_jobs, submitdate FROM ga_data_aggregate WHERE user_name = '${__user.login}' ORDER BY submitdate ASC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Daily total number of jobs submitted by user",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": {
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 49
       },
       "id": 88,
       "options": {
@@ -1138,16 +1808,16 @@
         "content": "",
         "mode": "markdown"
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "transparent": true,
       "type": "text"
     },
     {
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 50
       },
       "id": 63,
       "options": {
@@ -1156,11 +1826,100 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "### # Efficiency metrics: Failed jobs (user <span style=\"color:#5794F2\">$user_name</span>)\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
-        "mode": "markdown"
+        "content": "\n<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h3>Successful vs Failed Jobs (user <span style=\"color:#3274D9\">$user_name</span>)</h3>\n  <p>Because any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).</p>\n</div>\n\n",
+        "mode": "html"
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "description": "Number of jobs submitted by user in time period selected (see date panel at top).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "#3274D9",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 9,
+        "x": 0,
+        "y": 54
+      },
+      "id": 69,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 40
+        },
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(n_jobs) AS \"Number of jobs for user ${__user.login}\" \nFROM ga_data_aggregate\nWHERE user_name = '${__user.login}' AND $__timeFilter(submitdate);",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "User's total number of jobs submitted",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1176,6 +1935,9 @@
             "align": "auto",
             "cellOptions": {
               "type": "auto"
+            },
+            "footer": {
+              "reducers": []
             },
             "inspect": false
           },
@@ -1228,6 +1990,10 @@
               {
                 "id": "unit",
                 "value": "currencyGBP"
+              },
+              {
+                "id": "custom.width",
+                "value": 163
               }
             ]
           }
@@ -1235,25 +2001,22 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 12,
-        "x": 0,
-        "y": 47
+        "w": 15,
+        "x": 9,
+        "y": 54
       },
       "id": 64,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "% of failed jobs"
+          }
+        ]
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -1295,242 +2058,6 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "green",
-            "mode": "fixed"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "% of failed jobs",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 50,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Failed jobs"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "red",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Successful jobs"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 12,
-        "x": 12,
-        "y": 47
-      },
-      "id": 66,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.1.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT submitdate, (SUM(n_jobs-n_success)::float/SUM(n_jobs))*100 AS \"Failed jobs\",  (SUM(n_success)::float/SUM(n_jobs))*100 AS \"Successful jobs\" FROM ga_data_aggregate WHERE user_name = '${__user.login}' GROUP BY submitdate ORDER BY submitdate ASC;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "User's distribution of failed jobs",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-      },
-      "description": "Number of jobs submitted by user in time period selected (see date panel at top).",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "blue",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 0,
-        "y": 51
-      },
-      "id": 69,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "text": {
-          "valueSize": 50
-        },
-        "textMode": "value",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.1.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT SUM(n_jobs) AS \"Number of jobs for user ${__user.login}\" \nFROM ga_data_aggregate\nWHERE user_name = '${__user.login}' AND $__timeFilter(submitdate);",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "User's total number of jobs submitted",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
             "mode": "palette-classic"
           },
           "custom": {
@@ -1552,7 +2079,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "red",
+                  "fixedColor": "#c45454",
                   "mode": "fixed"
                 }
               },
@@ -1571,7 +2098,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "green",
+                  "fixedColor": "#50a073",
                   "mode": "fixed"
                 }
               },
@@ -1584,10 +2111,10 @@
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 6,
-        "y": 51
+        "h": 11,
+        "w": 9,
+        "x": 0,
+        "y": 58
       },
       "id": 65,
       "options": {
@@ -1599,7 +2126,7 @@
           "placement": "bottom",
           "showLegend": true
         },
-        "pieType": "donut",
+        "pieType": "pie",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -1607,13 +2134,14 @@
           "fields": "",
           "values": false
         },
+        "sort": "desc",
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -1648,11 +2176,155 @@
       "type": "piechart"
     },
     {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#50a073",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "% of failed jobs",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 75,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1.5,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failed jobs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#c45454",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Successful jobs"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
-        "h": 2,
+        "h": 11,
+        "w": 15,
+        "x": 9,
+        "y": 58
+      },
+      "id": 66,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT submitdate, (SUM(n_jobs-n_success)::float/SUM(n_jobs))*100 AS \"Failed jobs\",  (SUM(n_success)::float/SUM(n_jobs))*100 AS \"Successful jobs\" FROM ga_data_aggregate WHERE user_name = '${__user.login}' GROUP BY submitdate ORDER BY submitdate ASC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "User's distribution of failed jobs",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": {
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 59
+        "y": 69
       },
       "id": 89,
       "options": {
@@ -1664,16 +2336,16 @@
         "content": "",
         "mode": "markdown"
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "transparent": true,
       "type": "text"
     },
     {
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 24,
         "x": 0,
-        "y": 61
+        "y": 70
       },
       "id": 67,
       "options": {
@@ -1682,10 +2354,10 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "### # Memory efficiency (user <span style=\"color:#5794F2\">$user_name</span>)\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all this user's jobs in the period chosen (see date panel at top).",
-        "mode": "markdown"
+        "content": "<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h3>Memory efficiency (user <span style=\"color:#3274D9\">$user_name</span>)</h3>\n  <p>Memory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all this user's jobs in the period chosen (see date panel at top)..</p>\n</div>\n\n\n",
+        "mode": "html"
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "type": "text"
     },
     {
@@ -1696,7 +2368,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
+            "fixedColor": "#6e82a0",
             "mode": "fixed"
           },
           "custom": {
@@ -1705,7 +2377,7 @@
             "axisColorMode": "text",
             "axisLabel": "Number of jobs",
             "axisPlacement": "auto",
-            "fillOpacity": 80,
+            "fillOpacity": 75,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1736,13 +2408,21 @@
           },
           "unit": "locale"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 13,
+        "h": 12,
+        "w": 16,
         "x": 0,
-        "y": 64
+        "y": 74
       },
       "id": 68,
       "options": {
@@ -1770,7 +2450,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -1809,7 +2489,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 72
+        "y": 86
       },
       "id": 90,
       "options": {
@@ -1821,28 +2501,7 @@
         "content": "",
         "mode": "markdown"
       },
-      "pluginVersion": "12.1.1",
-      "transparent": true,
-      "type": "text"
-    },
-    {
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 73
-      },
-      "id": 95,
-      "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        },
-        "content": "",
-        "mode": "markdown"
-      },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.3.3",
       "transparent": true,
       "type": "text"
     },
@@ -1852,7 +2511,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 74
+        "y": 87
       },
       "id": 78,
       "panels": [
@@ -1865,7 +2524,7 @@
             "h": 3,
             "w": 24,
             "x": 0,
-            "y": 75
+            "y": 171
           },
           "id": 73,
           "options": {
@@ -1874,10 +2533,10 @@
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "## Carbon footprint for the users in your group ($group_name)\nCarbon footprint of all users in your group ($group_name) in the time range specified.",
-            "mode": "markdown"
+            "content": "<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h3>Carbon footprint for the users in your group ($group_name)</h3>\n  <p>\n    Carbon footprint of all users in your group ($group_name) in the time range specified. \n  </p>\n</div>\n\n\n",
+            "mode": "html"
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "title": "",
           "type": "text"
         },
@@ -1910,12 +2569,13 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 1,
+                "lineWidth": 2,
+                "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -1956,10 +2616,10 @@
             ]
           },
           "gridPos": {
-            "h": 8,
-            "w": 12,
+            "h": 11,
+            "w": 15,
             "x": 0,
-            "y": 78
+            "y": 403
           },
           "id": 74,
           "options": {
@@ -1975,7 +2635,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -2032,7 +2692,11 @@
                 "cellOptions": {
                   "type": "auto"
                 },
-                "inspect": false
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "minWidth": 70
               },
               "mappings": [],
               "thresholds": {
@@ -2073,30 +2737,51 @@
                     "value": "currencyGBP"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Username"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 91
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 107
+                  }
+                ]
               }
             ]
           },
           "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 78
+            "h": 11,
+            "w": 9,
+            "x": 15,
+            "y": 403
           },
           "id": 75,
           "options": {
             "cellHeight": "sm",
-            "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
             "showHeader": true,
-            "sortBy": []
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Cost"
+              }
+            ]
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -2139,7 +2824,7 @@
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 158
+            "y": 414
           },
           "id": 93,
           "options": {
@@ -2151,7 +2836,7 @@
             "content": "",
             "mode": "markdown"
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "title": "",
           "transparent": true,
           "type": "text"
@@ -2161,33 +2846,12 @@
       "type": "row"
     },
     {
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 75
-      },
-      "id": 97,
-      "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        },
-        "content": "",
-        "mode": "markdown"
-      },
-      "pluginVersion": "12.1.1",
-      "transparent": true,
-      "type": "text"
-    },
-    {
       "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 76
+        "y": 88
       },
       "id": 81,
       "panels": [
@@ -2200,7 +2864,7 @@
             "h": 3,
             "w": 24,
             "x": 0,
-            "y": 317
+            "y": 89
           },
           "id": 70,
           "options": {
@@ -2209,10 +2873,10 @@
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "## Carbon footprint for the groups in your department ($department)\nCarbon footprint of all groups in your department in the time range specified (see date panel at top).",
+            "content": "<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h3>Carbon footprint for the groups in your department ($department)</h3>\n  <p>\n    Carbon footprint of all groups in your department in the time range specified (see date panel at top).\n  </p>\n</div>\n\n\n",
             "mode": "markdown"
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "title": "",
           "type": "text"
         },
@@ -2245,12 +2909,13 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 1,
+                "lineWidth": 2,
+                "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -2291,10 +2956,10 @@
             ]
           },
           "gridPos": {
-            "h": 8,
-            "w": 12,
+            "h": 11,
+            "w": 14,
             "x": 0,
-            "y": 320
+            "y": 92
           },
           "id": 71,
           "options": {
@@ -2310,7 +2975,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -2367,6 +3032,9 @@
                 "cellOptions": {
                   "type": "auto"
                 },
+                "footer": {
+                  "reducers": []
+                },
                 "inspect": false
               },
               "mappings": [],
@@ -2396,29 +3064,51 @@
                     "value": "currencyGBP"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Group"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 95
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Carbon footprint (kgCO2e)"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 227
+                  }
+                ]
               }
             ]
           },
           "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 320
+            "h": 11,
+            "w": 10,
+            "x": 14,
+            "y": 92
           },
           "id": 72,
           "options": {
             "cellHeight": "sm",
-            "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
-            "showHeader": true
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Cost"
+              }
+            ]
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -2461,7 +3151,7 @@
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 328
+            "y": 103
           },
           "id": 91,
           "options": {
@@ -2473,7 +3163,7 @@
             "content": "",
             "mode": "markdown"
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "title": "",
           "transparent": true,
           "type": "text"
@@ -2483,33 +3173,12 @@
       "type": "row"
     },
     {
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 77
-      },
-      "id": 96,
-      "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        },
-        "content": "",
-        "mode": "markdown"
-      },
-      "pluginVersion": "12.1.1",
-      "transparent": true,
-      "type": "text"
-    },
-    {
       "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 89
       },
       "id": 80,
       "panels": [
@@ -2522,7 +3191,7 @@
             "h": 3,
             "w": 24,
             "x": 0,
-            "y": 79
+            "y": 90
           },
           "id": 82,
           "options": {
@@ -2531,10 +3200,10 @@
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "## Institution\n\nOverall activity at institution in the date range specified (see date panel above).",
+            "content": "<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h2>Institution</h2>\n  <p>\n    Overall activity at institution in the date range specified (see date panel above).\n  </p>\n</div>\n\n\n",
             "mode": "markdown"
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "title": "",
           "type": "text"
         },
@@ -2547,7 +3216,7 @@
           "fieldConfig": {
             "defaults": {
               "color": {
-                "fixedColor": "light-green",
+                "fixedColor": "#3274d9",
                 "mode": "fixed"
               },
               "mappings": [],
@@ -2577,10 +3246,10 @@
             ]
           },
           "gridPos": {
-            "h": 6,
-            "w": 4,
+            "h": 4,
+            "w": 5,
             "x": 0,
-            "y": 82
+            "y": 93
           },
           "id": 18,
           "options": {
@@ -2598,12 +3267,12 @@
             },
             "showPercentChange": false,
             "text": {
-              "valueSize": 50
+              "valueSize": 40
             },
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -2647,7 +3316,7 @@
           "fieldConfig": {
             "defaults": {
               "color": {
-                "fixedColor": "light-green",
+                "fixedColor": "blue",
                 "mode": "fixed"
               },
               "mappings": [],
@@ -2677,10 +3346,10 @@
             ]
           },
           "gridPos": {
-            "h": 6,
-            "w": 4,
-            "x": 4,
-            "y": 82
+            "h": 4,
+            "w": 5,
+            "x": 5,
+            "y": 93
           },
           "id": 19,
           "options": {
@@ -2698,12 +3367,12 @@
             },
             "showPercentChange": false,
             "text": {
-              "valueSize": 50
+              "valueSize": 40
             },
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -2745,7 +3414,7 @@
           "fieldConfig": {
             "defaults": {
               "color": {
-                "fixedColor": "light-green",
+                "fixedColor": "blue",
                 "mode": "fixed"
               },
               "mappings": [],
@@ -2762,10 +3431,10 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
+            "h": 4,
             "w": 5,
-            "x": 8,
-            "y": 82
+            "x": 10,
+            "y": 93
           },
           "id": 21,
           "options": {
@@ -2783,12 +3452,12 @@
             },
             "showPercentChange": false,
             "text": {
-              "valueSize": 50
+              "valueSize": 40
             },
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -2830,7 +3499,7 @@
           "fieldConfig": {
             "defaults": {
               "color": {
-                "fixedColor": "light-green",
+                "fixedColor": "blue",
                 "mode": "fixed"
               },
               "mappings": [],
@@ -2847,10 +3516,10 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
-            "w": 5,
-            "x": 13,
-            "y": 82
+            "h": 4,
+            "w": 4,
+            "x": 15,
+            "y": 93
           },
           "id": 77,
           "options": {
@@ -2868,12 +3537,12 @@
             },
             "showPercentChange": false,
             "text": {
-              "valueSize": 50
+              "valueSize": 40
             },
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -2916,7 +3585,7 @@
           "fieldConfig": {
             "defaults": {
               "color": {
-                "fixedColor": "light-green",
+                "fixedColor": "blue",
                 "mode": "fixed"
               },
               "mappings": [],
@@ -2934,10 +3603,10 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
-            "w": 6,
-            "x": 18,
-            "y": 82
+            "h": 4,
+            "w": 5,
+            "x": 19,
+            "y": 93
           },
           "id": 20,
           "options": {
@@ -2955,12 +3624,12 @@
             },
             "showPercentChange": false,
             "text": {
-              "valueSize": 50
+              "valueSize": 40
             },
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -3002,7 +3671,7 @@
           "fieldConfig": {
             "defaults": {
               "color": {
-                "fixedColor": "green",
+                "fixedColor": "#715e80",
                 "mode": "fixed"
               },
               "custom": {
@@ -3014,7 +3683,7 @@
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 50,
+                "fillOpacity": 55,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -3023,12 +3692,13 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 1,
+                "lineWidth": 1.5,
                 "pointSize": 1,
                 "scaleDistribution": {
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -3065,7 +3735,7 @@
                   {
                     "id": "color",
                     "value": {
-                      "fixedColor": "green",
+                      "fixedColor": "#715e80",
                       "mode": "fixed"
                     }
                   }
@@ -3074,10 +3744,10 @@
             ]
           },
           "gridPos": {
-            "h": 8,
+            "h": 9,
             "w": 12,
             "x": 0,
-            "y": 88
+            "y": 97
           },
           "id": 1,
           "options": {
@@ -3093,7 +3763,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -3166,12 +3836,13 @@
                 "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
-                "axisLabel": "Number submitted",
+                "axisLabel": "",
                 "axisPlacement": "auto",
+                "axisSoftMin": 0,
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 50,
+                "fillOpacity": 55,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -3180,12 +3851,13 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 1,
+                "lineWidth": 1.5,
                 "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -3196,7 +3868,543 @@
                 }
               },
               "mappings": [],
-              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "kwatt"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Total"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#d9ba49",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 97
+          },
+          "id": 111,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.3",
+          "targets": [
+            {
+              "dataset": "ga_db",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "-- SELECT submitdate, SUM(energy) as \"Total\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC;\nSELECT submitdate, SUM(energy+energy_cpus) as \"Total\" FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              },
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+              }
+            }
+          ],
+          "title": "⚡ Daily energy usage",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "fieldMinMax": false,
+              "mappings": [],
+              "unit": "kwatt"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "CPUS"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kwatt"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#5069af",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "GPUS"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kwatt"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#3791a0",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Memory"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kwatt"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#d0701f",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Other"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kwatt"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#4c4d5c",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 9,
+            "x": 0,
+            "y": 106
+          },
+          "id": 108,
+          "options": {
+            "displayLabels": [
+              "percent"
+            ],
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true,
+              "values": [
+                "value"
+              ]
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "sort": "desc",
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.3",
+          "targets": [
+            {
+              "dataset": "ga_db",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT SUM(energy_cpus) as \"CPUS\", SUM(energy_gpus) as \"GPUS\", SUM(energy_memory) as \"Memory\", SUM(energy-(energy_cpus+energy_gpus+energy_memory)) as \"Other\" FROM ga_data_aggregate WHERE $__timeFilter(submitdate) ORDER BY SUM(energy_cpus) ;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              },
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+              }
+            }
+          ],
+          "title": "⚡ Energy distribution",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "fixed"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "axisSoftMin": 0,
+                "fillOpacity": 100,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineWidth": 2.5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "kwatt"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "CPUS"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#5069af",
+                      "mode": "fixed"
+                    }
+                  },
+                  {
+                    "id": "custom.gradientMode",
+                    "value": "none"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "GPUS"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#3791a0",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Memory"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#d0701f",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Other"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#6e6f83",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 15,
+            "x": 9,
+            "y": 106
+          },
+          "id": 109,
+          "options": {
+            "barRadius": 0,
+            "barWidth": 0.92,
+            "fullHighlight": false,
+            "groupWidth": 0.65,
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "orientation": "auto",
+            "showValue": "auto",
+            "stacking": "normal",
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            },
+            "xField": "submitdate",
+            "xTickLabelRotation": 0,
+            "xTickLabelSpacing": 100
+          },
+          "pluginVersion": "12.3.3",
+          "targets": [
+            {
+              "dataset": "ga_db",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT submitdate, SUM(energy_cpus) as \"CPUS\", SUM(energy_gpus) as \"GPUS\", SUM(energy_memory) as \"Memory\", SUM(energy-(energy_cpus+energy_gpus+energy_memory)) as \"Other\" FROM ga_data_aggregate WHERE $__timeFilter(submitdate) GROUP BY submitdate ORDER BY submitdate ASC ;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              },
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+              }
+            }
+          ],
+          "title": "⚡ Daily energy usage distribution",
+          "type": "barchart"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 115
+          },
+          "id": 84,
+          "options": {
+            "code": {
+              "language": "plaintext",
+              "showLineNumbers": false,
+              "showMiniMap": false
+            },
+            "content": "",
+            "mode": "markdown"
+          },
+          "pluginVersion": "12.3.3",
+          "title": "",
+          "transparent": true,
+          "type": "text"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 24,
+            "x": 0,
+            "y": 116
+          },
+          "id": 7,
+          "options": {
+            "code": {
+              "language": "plaintext",
+              "showLineNumbers": false,
+              "showMiniMap": false
+            },
+            "content": "<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h3>Carbon footprint by department</h3>\n  <p>\n    Carbon footprint of all departments in the time range selected (see date panel at top).\n  </p>\n</div>\n\n\n",
+            "mode": "markdown"
+          },
+          "pluginVersion": "12.3.3",
+          "title": "",
+          "type": "text"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "description": "Unit: gCO2e or kgCO2e",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Carbon footprint (CO2e)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "always",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
@@ -3215,45 +4423,30 @@
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "submitdate"
+                  "options": "Carbon footprint of"
                 },
                 "properties": [
                   {
                     "id": "unit",
-                    "value": "time: DD.MM.YYYY"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "sum"
-                },
-                "properties": [
-                  {
-                    "id": "color",
-                    "value": {
-                      "fixedColor": "green",
-                      "mode": "fixed"
-                    }
+                    "value": "massg"
                   }
                 ]
               }
             ]
           },
           "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 88
+            "h": 11,
+            "w": 15,
+            "x": 0,
+            "y": 119
           },
-          "id": 2,
+          "id": 8,
           "options": {
             "legend": {
               "calcs": [],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": false
+              "showLegend": true
             },
             "tooltip": {
               "hideZeros": false,
@@ -3261,7 +4454,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -3271,54 +4464,346 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT submitdate, SUM(n_jobs) FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC;",
+              "rawSql": "SELECT a.submitdate, SUM(a.carbonfootprint) AS \"Carbon footprint of\", a.department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name) AS a\nGROUP BY\na.submitdate, a.department;",
               "refId": "A",
               "sql": {
                 "columns": [
                   {
-                    "parameters": [
-                      {
-                        "name": "submitdate",
-                        "type": "functionParameter"
-                      }
-                    ],
-                    "type": "function"
-                  },
-                  {
-                    "name": "SUM",
-                    "parameters": [
-                      {
-                        "name": "n_jobs",
-                        "type": "functionParameter"
-                      }
-                    ],
+                    "parameters": [],
                     "type": "function"
                   }
                 ],
                 "groupBy": [
                   {
                     "property": {
-                      "name": "submitdate",
                       "type": "string"
                     },
                     "type": "groupBy"
                   }
                 ],
-                "orderBy": {
-                  "property": {
-                    "name": [
-                      "submitdate"
-                    ],
-                    "type": "string"
-                  },
-                  "type": "property"
-                }
-              },
-              "table": "ga_data_aggregate"
+                "limit": 50
+              }
             }
           ],
-          "title": "Daily total number of jobs submitted (all departments combined)",
+          "title": "Daily carbon footprint of departments",
+          "transformations": [
+            {
+              "id": "prepareTimeSeries",
+              "options": {
+                "format": "multi"
+              }
+            }
+          ],
           "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "minWidth": 50
+              },
+              "fieldMinMax": false,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Cost"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "currencyGBP"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Department"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 144
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Carbon footprint (kgCO2e)"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 204
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 11,
+            "w": 9,
+            "x": 15,
+            "y": 119
+          },
+          "id": 10,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "Department"
+              }
+            ]
+          },
+          "pluginVersion": "12.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT a.department AS \"Department\", to_char(SUM(a.carbonfootprint)/1000, '99999') AS \"Carbon footprint (kgCO2e)\", to_char(SUM(a.cost), '9999999') as \"Cost\" \nFROM (select u.user_name, u.department, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(d.submitdate)) AS a GROUP BY a.department ORDER BY a.department ASC;\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "description": "Carbon footprint of all departments in the time period selected (see date panel at top).\nUnit: gCO2e, kgCO2e or TCO2e",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "#715e80",
+                "mode": "fixed"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Carbon footprint (CO2e)",
+                "axisPlacement": "auto",
+                "fillOpacity": 75,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineWidth": 1,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "masskg"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "sum"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "massg"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 15,
+            "x": 0,
+            "y": 130
+          },
+          "id": 6,
+          "options": {
+            "barRadius": 0,
+            "barWidth": 0.97,
+            "fullHighlight": false,
+            "groupWidth": 0.7,
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "orientation": "auto",
+            "showValue": "always",
+            "stacking": "none",
+            "text": {
+              "valueSize": 16
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            },
+            "xField": "department",
+            "xTickLabelRotation": 0,
+            "xTickLabelSpacing": 0
+          },
+          "pluginVersion": "12.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT a.department, SUM(a.carbonfootprint) FROM (select u.user_name, u.department, d.carbonfootprint from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(d.submitdate)) AS a GROUP BY a.department ORDER BY SUM(a.carbonfootprint) DESC;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Main contributors to the total carbon footprint",
+          "type": "barchart"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 140
+          },
+          "id": 110,
+          "options": {
+            "code": {
+              "language": "plaintext",
+              "showLineNumbers": false,
+              "showMiniMap": false
+            },
+            "content": "",
+            "mode": "markdown"
+          },
+          "pluginVersion": "12.3.3",
+          "title": "",
+          "transparent": true,
+          "type": "text"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 24,
+            "x": 0,
+            "y": 141
+          },
+          "id": 112,
+          "options": {
+            "code": {
+              "language": "plaintext",
+              "showLineNumbers": false,
+              "showMiniMap": false
+            },
+            "content": "<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h3>Resource usage</h3>\n  <p>\n    The charts below show the resource use over the selected period.  (see date panel at top).\n  </p>\n</div>\n\n\n",
+            "mode": "html"
+          },
+          "pluginVersion": "12.3.3",
+          "title": "",
+          "type": "text"
         },
         {
           "datasource": {
@@ -3339,7 +4824,7 @@
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 50,
+                "fillOpacity": 55,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -3348,12 +4833,13 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 1,
+                "lineWidth": 1.5,
                 "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -3389,7 +4875,7 @@
                   {
                     "id": "color",
                     "value": {
-                      "fixedColor": "green",
+                      "fixedColor": "#5069af",
                       "mode": "fixed"
                     }
                   }
@@ -3401,7 +4887,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 96
+            "y": 144
           },
           "id": 4,
           "options": {
@@ -3417,7 +4903,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -3491,12 +4977,12 @@
                 "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
-                "axisLabel": "Memory requested",
+                "axisLabel": "Core-hours",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 50,
+                "fillOpacity": 55,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -3505,12 +4991,171 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 1,
+                "lineWidth": 1.5,
                 "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "sum"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#3791a0",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 144
+          },
+          "id": 113,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT submitdate, SUM(gpuhourscharged) FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC ",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [
+                      {
+                        "name": "submitdate",
+                        "type": "functionParameter"
+                      }
+                    ],
+                    "type": "function"
+                  },
+                  {
+                    "name": "SUM",
+                    "parameters": [
+                      {
+                        "name": "cpuhourscharged",
+                        "type": "functionParameter"
+                      }
+                    ],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "name": "submitdate",
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "orderBy": {
+                  "property": {
+                    "name": [
+                      "submitdate"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "property"
+                },
+                "orderByDirection": "ASC"
+              },
+              "table": "ga_data_aggregate"
+            }
+          ],
+          "title": "GPU core-hours (all departments combined)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Memory requested",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 55,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1.5,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -3550,7 +5195,7 @@
                   {
                     "id": "color",
                     "value": {
-                      "fixedColor": "green",
+                      "fixedColor": "#d0701f",
                       "mode": "fixed"
                     }
                   }
@@ -3561,8 +5206,8 @@
           "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 96
+            "x": 0,
+            "y": 152
           },
           "id": 5,
           "options": {
@@ -3578,7 +5223,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -3638,62 +5283,10 @@
           "type": "timeseries"
         },
         {
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 2,
-            "w": 24,
-            "x": 0,
-            "y": 104
-          },
-          "id": 84,
-          "options": {
-            "code": {
-              "language": "plaintext",
-              "showLineNumbers": false,
-              "showMiniMap": false
-            },
-            "content": "",
-            "mode": "markdown"
-          },
-          "pluginVersion": "12.1.1",
-          "title": "",
-          "transparent": true,
-          "type": "text"
-        },
-        {
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 24,
-            "x": 0,
-            "y": 106
-          },
-          "id": 7,
-          "options": {
-            "code": {
-              "language": "plaintext",
-              "showLineNumbers": false,
-              "showMiniMap": false
-            },
-            "content": "### # Carbon footprint by department\n\nCarbon footprint of all departments in the time range selected (see date panel at top).",
-            "mode": "markdown"
-          },
-          "pluginVersion": "12.1.1",
-          "title": "",
-          "type": "text"
-        },
-        {
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
-          "description": "Carbon footprint of all departments in the time period selected (see date panel at top).\nUnit: gCO2e, kgCO2e or TCO2e",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -3703,142 +5296,12 @@
                 "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
-                "axisLabel": "Carbon footprint (CO2e)",
-                "axisPlacement": "auto",
-                "fillOpacity": 80,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineWidth": 1,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "masskg"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "sum"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "massg"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 13,
-            "w": 12,
-            "x": 0,
-            "y": 109
-          },
-          "id": 6,
-          "options": {
-            "barRadius": 0,
-            "barWidth": 0.97,
-            "fullHighlight": false,
-            "groupWidth": 0.7,
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom",
-              "showLegend": false
-            },
-            "orientation": "auto",
-            "showValue": "always",
-            "stacking": "none",
-            "text": {
-              "valueSize": 16
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "single",
-              "sort": "none"
-            },
-            "xField": "department",
-            "xTickLabelRotation": 0,
-            "xTickLabelSpacing": 0
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "grafana-postgresql-datasource",
-                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-              },
-              "editorMode": "code",
-              "format": "table",
-              "rawQuery": true,
-              "rawSql": "SELECT a.department, SUM(a.carbonfootprint) FROM (select u.user_name, u.department, d.carbonfootprint from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(d.submitdate)) AS a GROUP BY a.department ORDER BY SUM(a.carbonfootprint) DESC;",
-              "refId": "A",
-              "sql": {
-                "columns": [
-                  {
-                    "parameters": [],
-                    "type": "function"
-                  }
-                ],
-                "groupBy": [
-                  {
-                    "property": {
-                      "type": "string"
-                    },
-                    "type": "groupBy"
-                  }
-                ],
-                "limit": 50
-              }
-            }
-          ],
-          "title": "Main contributors to the total carbon footprint",
-          "type": "barchart"
-        },
-        {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
-          "description": "Unit: gCO2e or kgCO2e",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "Carbon footprint (CO2e)",
+                "axisLabel": "Number submitted",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 0,
+                "fillOpacity": 55,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -3847,12 +5310,13 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 1,
+                "lineWidth": 1.5,
                 "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -3863,6 +5327,7 @@
                 }
               },
               "mappings": [],
+              "min": 0,
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
@@ -3881,12 +5346,27 @@
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Carbon footprint of"
+                  "options": "submitdate"
                 },
                 "properties": [
                   {
                     "id": "unit",
-                    "value": "massg"
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "sum"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#4c4d5c",
+                      "mode": "fixed"
+                    }
                   }
                 ]
               }
@@ -3896,15 +5376,15 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 109
+            "y": 152
           },
-          "id": 8,
+          "id": 2,
           "options": {
             "legend": {
               "calcs": [],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": false
             },
             "tooltip": {
               "hideZeros": false,
@@ -3912,7 +5392,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -3922,138 +5402,54 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT a.submitdate, SUM(a.carbonfootprint) AS \"Carbon footprint of\", a.department \nFROM\n\t(SELECT d.submitdate, u.department, d.carbonfootprint \n\tFROM\n\tga_user u INNER JOIN ga_data_aggregate d ON u.user_name = d.user_name) AS a\nGROUP BY\na.submitdate, a.department;",
+              "rawSql": "SELECT submitdate, SUM(n_jobs) FROM ga_data_aggregate GROUP BY submitdate ORDER BY submitdate ASC;",
               "refId": "A",
               "sql": {
                 "columns": [
                   {
-                    "parameters": [],
+                    "parameters": [
+                      {
+                        "name": "submitdate",
+                        "type": "functionParameter"
+                      }
+                    ],
                     "type": "function"
-                  }
-                ],
-                "groupBy": [
-                  {
-                    "property": {
-                      "type": "string"
-                    },
-                    "type": "groupBy"
-                  }
-                ],
-                "limit": 50
-              }
-            }
-          ],
-          "title": "Daily carbon footprint of departments",
-          "transformations": [
-            {
-              "id": "prepareTimeSeries",
-              "options": {
-                "format": "multi"
-              }
-            }
-          ],
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {
-                "align": "auto",
-                "cellOptions": {
-                  "type": "auto"
-                },
-                "inspect": false
-              },
-              "fieldMinMax": false,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
                   },
                   {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Cost"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "currencyGBP"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 5,
-            "w": 12,
-            "x": 12,
-            "y": 117
-          },
-          "id": 10,
-          "options": {
-            "cellHeight": "sm",
-            "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
-            "showHeader": true
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "grafana-postgresql-datasource",
-                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-              },
-              "editorMode": "code",
-              "format": "table",
-              "rawQuery": true,
-              "rawSql": "SELECT a.department AS \"Department\", to_char(SUM(a.carbonfootprint)/1000, '99999') AS \"Carbon footprint (kgCO2e)\", to_char(SUM(a.cost), '9999999') as \"Cost\" \nFROM (select u.user_name, u.department, d.carbonfootprint, d.cost from ga_user u INNER JOIN ga_data_aggregate d on u.user_name = d.user_name WHERE $__timeFilter(d.submitdate)) AS a GROUP BY a.department ORDER BY a.department ASC;\n",
-              "refId": "A",
-              "sql": {
-                "columns": [
-                  {
-                    "parameters": [],
+                    "name": "SUM",
+                    "parameters": [
+                      {
+                        "name": "n_jobs",
+                        "type": "functionParameter"
+                      }
+                    ],
                     "type": "function"
                   }
                 ],
                 "groupBy": [
                   {
                     "property": {
+                      "name": "submitdate",
                       "type": "string"
                     },
                     "type": "groupBy"
                   }
                 ],
-                "limit": 50
-              }
+                "orderBy": {
+                  "property": {
+                    "name": [
+                      "submitdate"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "property"
+                }
+              },
+              "table": "ga_data_aggregate"
             }
           ],
-          "title": "",
-          "type": "table"
+          "title": "Daily total number of jobs submitted (all departments combined)",
+          "type": "timeseries"
         },
         {
           "fieldConfig": {
@@ -4061,10 +5457,10 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 2,
+            "h": 1,
             "w": 24,
             "x": 0,
-            "y": 122
+            "y": 160
           },
           "id": 85,
           "options": {
@@ -4076,7 +5472,7 @@
             "content": "",
             "mode": "markdown"
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "title": "",
           "transparent": true,
           "type": "text"
@@ -4088,10 +5484,10 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 3,
+            "h": 4,
             "w": 24,
             "x": 0,
-            "y": 124
+            "y": 161
           },
           "id": 11,
           "options": {
@@ -4100,12 +5496,111 @@
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "### # Efficiency metrics: Failed jobs\nBecause any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n\n",
+            "content": "<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h3>Successful vs Failed Jobs</h3>\n  <p>\n    Because any resource spent on a job is wasted if the job fails, it is important to test scripts and pipelines on small datasets. The chart below\nshows the daily success and failure rates of jobs that completed in the time period selected (see date panel at top).\n  </p>\n</div>\n\n\n\n\n",
             "mode": "markdown"
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "title": "",
           "type": "text"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
+          "description": "Number of jobs (all institution) submitted by entire institution in time period selected (see date panel at top).",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "#3274d9",
+                "mode": "fixed"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Number of jobs"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "locale"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 9,
+            "x": 0,
+            "y": 165
+          },
+          "id": 16,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "text": {
+              "valueSize": 40
+            },
+            "textMode": "value",
+            "wideLayout": true
+          },
+          "pluginVersion": "12.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT SUM(n_jobs) AS \"Number of jobs\" from ga_data_aggregate WHERE $__timeFilter(submitdate);",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Number of jobs submitted by entire institution",
+          "type": "stat"
         },
         {
           "datasource": {
@@ -4121,6 +5616,9 @@
                 "align": "center",
                 "cellOptions": {
                   "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
                 },
                 "inspect": false
               },
@@ -4148,7 +5646,7 @@
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 235
+                    "value": 231
                   }
                 ]
               },
@@ -4164,7 +5662,7 @@
                   },
                   {
                     "id": "custom.width",
-                    "value": 165
+                    "value": 208
                   }
                 ]
               },
@@ -4180,7 +5678,7 @@
                   },
                   {
                     "id": "custom.width",
-                    "value": 152
+                    "value": 228
                   }
                 ]
               }
@@ -4188,25 +5686,22 @@
           },
           "gridPos": {
             "h": 4,
-            "w": 12,
-            "x": 0,
-            "y": 127
+            "w": 15,
+            "x": 9,
+            "y": 165
           },
           "id": 17,
           "options": {
             "cellHeight": "sm",
-            "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
             "showHeader": true,
-            "sortBy": []
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "No. of jobs submitted"
+              }
+            ]
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -4245,11 +5740,138 @@
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
           },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": [],
+              "unit": "percent"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Failed jobs"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#c45454",
+                      "mode": "fixed"
+                    }
+                  },
+                  {
+                    "id": "unit",
+                    "value": "locale"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Successful jobs"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#50a073",
+                      "mode": "fixed"
+                    }
+                  },
+                  {
+                    "id": "unit",
+                    "value": "locale"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 9,
+            "x": 0,
+            "y": 169
+          },
+          "id": 12,
+          "options": {
+            "displayLabels": [
+              "percent"
+            ],
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true,
+              "values": []
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "sort": "desc",
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT SUM(n_jobs-n_success) AS \"Failed jobs\", SUM(n_success) AS \"Successful jobs\" FROM ga_data_aggregate WHERE $__timeFilter(submitdate) ORDER BY SUM(n_jobs-n_success) ASC ;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Distribution of failed and successful jobs",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
               "color": {
-                "fixedColor": "green",
+                "fixedColor": "#50a073",
                 "mode": "fixed"
               },
               "custom": {
@@ -4261,7 +5883,7 @@
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 50,
+                "fillOpacity": 75,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -4270,12 +5892,13 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 1,
+                "lineWidth": 1.5,
                 "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
                 "showPoints": "never",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -4310,7 +5933,7 @@
                   {
                     "id": "color",
                     "value": {
-                      "fixedColor": "semi-dark-red",
+                      "fixedColor": "#c45454",
                       "mode": "fixed"
                     }
                   },
@@ -4335,10 +5958,10 @@
             ]
           },
           "gridPos": {
-            "h": 11,
-            "w": 12,
-            "x": 12,
-            "y": 127
+            "h": 10,
+            "w": 15,
+            "x": 9,
+            "y": 169
           },
           "id": 53,
           "options": {
@@ -4354,7 +5977,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -4426,240 +6049,15 @@
           "type": "timeseries"
         },
         {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
-          "description": "Number of jobs (all institution) submitted by entire institution in time period selected (see date panel at top).",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "fixedColor": "light-green",
-                "mode": "fixed"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  }
-                ]
-              }
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Number of jobs"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "locale"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 7,
-            "x": 0,
-            "y": 131
-          },
-          "id": 16,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "percentChangeColorMode": "standard",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showPercentChange": false,
-            "text": {
-              "valueSize": 50
-            },
-            "textMode": "value",
-            "wideLayout": true
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "grafana-postgresql-datasource",
-                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-              },
-              "editorMode": "code",
-              "format": "table",
-              "rawQuery": true,
-              "rawSql": "SELECT SUM(n_jobs) AS \"Number of jobs\" from ga_data_aggregate WHERE $__timeFilter(submitdate);",
-              "refId": "A",
-              "sql": {
-                "columns": [
-                  {
-                    "parameters": [],
-                    "type": "function"
-                  }
-                ],
-                "groupBy": [
-                  {
-                    "property": {
-                      "type": "string"
-                    },
-                    "type": "groupBy"
-                  }
-                ],
-                "limit": 50
-              }
-            }
-          ],
-          "title": "Number of jobs submitted by entire institution",
-          "type": "stat"
-        },
-        {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                }
-              },
-              "mappings": [],
-              "unit": "percent"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Failed jobs"
-                },
-                "properties": [
-                  {
-                    "id": "color",
-                    "value": {
-                      "fixedColor": "semi-dark-red",
-                      "mode": "fixed"
-                    }
-                  },
-                  {
-                    "id": "unit",
-                    "value": "locale"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Successful jobs"
-                },
-                "properties": [
-                  {
-                    "id": "color",
-                    "value": {
-                      "fixedColor": "green",
-                      "mode": "fixed"
-                    }
-                  },
-                  {
-                    "id": "unit",
-                    "value": "locale"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 5,
-            "x": 7,
-            "y": 131
-          },
-          "id": 12,
-          "options": {
-            "displayLabels": [
-              "percent"
-            ],
-            "legend": {
-              "displayMode": "list",
-              "placement": "bottom",
-              "showLegend": true,
-              "values": []
-            },
-            "pieType": "donut",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "grafana-postgresql-datasource",
-                "uid": "${DS_GRAFANA-POSTGRESQL-GA_DB}"
-              },
-              "editorMode": "code",
-              "format": "table",
-              "rawQuery": true,
-              "rawSql": "SELECT SUM(n_jobs-n_success) AS \"Failed jobs\", SUM(n_success) AS \"Successful jobs\" FROM ga_data_aggregate WHERE $__timeFilter(submitdate) ORDER BY SUM(n_jobs-n_success) ASC ;",
-              "refId": "A",
-              "sql": {
-                "columns": [
-                  {
-                    "parameters": [],
-                    "type": "function"
-                  }
-                ],
-                "groupBy": [
-                  {
-                    "property": {
-                      "type": "string"
-                    },
-                    "type": "groupBy"
-                  }
-                ],
-                "limit": 50
-              }
-            }
-          ],
-          "title": "Distribution of failed and successful jobs",
-          "type": "piechart"
-        },
-        {
           "fieldConfig": {
             "defaults": {},
             "overrides": []
           },
           "gridPos": {
-            "h": 2,
+            "h": 1,
             "w": 24,
             "x": 0,
-            "y": 138
+            "y": 179
           },
           "id": 86,
           "options": {
@@ -4671,7 +6069,7 @@
             "content": "",
             "mode": "markdown"
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "title": "",
           "transparent": true,
           "type": "text"
@@ -4682,10 +6080,10 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 3,
+            "h": 4,
             "w": 24,
             "x": 0,
-            "y": 140
+            "y": 180
           },
           "id": 14,
           "options": {
@@ -4694,10 +6092,10 @@
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "### # Memory efficiency\n\nMemory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all jobs in the time period chosen (see date panel at top).",
-            "mode": "markdown"
+            "content": "<div style=\"margin: 10px; line-height: 1.6; font-size: 12pt\">\n  <h3>Memory efficiency</h3>\n  <p>\n    Memory can be a significant source of waste, because the power draw from memory mainly depends on the memory available, not on the actual\nmemory used. The chart below shows the distribution of the memory efficiency (the closer to 100% the better) collected from all jobs in the time period chosen (see date panel at top).\n  </p>\n</div>\n\n\n\n\n",
+            "mode": "html"
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "title": "",
           "type": "text"
         },
@@ -4709,7 +6107,8 @@
           "fieldConfig": {
             "defaults": {
               "color": {
-                "mode": "palette-classic"
+                "fixedColor": "#6e82a0",
+                "mode": "fixed"
               },
               "custom": {
                 "axisBorderShow": false,
@@ -4717,7 +6116,7 @@
                 "axisColorMode": "text",
                 "axisLabel": "Number of jobs",
                 "axisPlacement": "left",
-                "fillOpacity": 80,
+                "fillOpacity": 75,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -4764,10 +6163,10 @@
             ]
           },
           "gridPos": {
-            "h": 8,
-            "w": 13,
+            "h": 12,
+            "w": 16,
             "x": 0,
-            "y": 143
+            "y": 184
           },
           "id": 15,
           "options": {
@@ -4797,7 +6196,7 @@
             "xTickLabelRotation": 0,
             "xTickLabelSpacing": 0
           },
-          "pluginVersion": "12.1.1",
+          "pluginVersion": "12.3.3",
           "targets": [
             {
               "datasource": {
@@ -4830,35 +6229,41 @@
           ],
           "title": "Distribution of % memory efficiency (all institution)",
           "type": "barchart"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 196
+          },
+          "id": 98,
+          "options": {
+            "code": {
+              "language": "plaintext",
+              "showLineNumbers": false,
+              "showMiniMap": false
+            },
+            "content": "",
+            "mode": "markdown"
+          },
+          "pluginVersion": "12.3.3",
+          "title": "",
+          "transparent": true,
+          "type": "text"
         }
       ],
       "title": "Entire institution activity",
       "type": "row"
-    },
-    {
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 79
-      },
-      "id": 98,
-      "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        },
-        "content": "",
-        "mode": "markdown"
-      },
-      "pluginVersion": "12.1.1",
-      "transparent": true,
-      "type": "text"
     }
   ],
+  "preload": false,
   "refresh": "",
-  "schemaVersion": 41,
+  "schemaVersion": 42,
   "tags": [],
   "templating": {
     "list": [
@@ -4909,7 +6314,7 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "User",
-  "uid": "deg7om9pg3ny8d",
-  "version": 4,
+  "uid": "ffae7a869929",
+  "version": 7,
   "weekStart": ""
 }
