@@ -111,7 +111,7 @@ def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info) -> pd.Da
         else:
             pickled_test_data = 'tests/testdata/df_agg_X_1.pkl'
         print(f"Overriding df_agg with `{pickled_test_data}`")
-        return pd.read_pickle(pickled_test_data)
+        return pd.read_pickle(pickled_test_data), UnfinishedJobsService(config_data)
 
 
     ### Pull usage statistics from the workload manager
