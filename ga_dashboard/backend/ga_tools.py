@@ -5,6 +5,8 @@
 import numpy as np
 import pandas as pd
 import yaml
+import time as time_module
+import gc
 from tqdm import tqdm
 from datetime import datetime, time
 
@@ -128,7 +130,16 @@ class GA_tools:
         return JobEmissionRecord.calc_carbon_emission(day_job_emissions, energy_per_hr)
 
 class LogsDataProcessor:
+    """
+    Data processor class to load settings, extract, process, and store logs.
+    """
     def __init__(self, config_data: dict):
+        """
+        Loads cluster information, fixed parameters file, database settings, and users information using config data.
+        Initialses Green Algorithms Tools (GA_tools) object - used for processing logs.
+
+        :param config_data: dict containing configurations from config file
+        """
         # Load cluster info
         with open(config_data['cluster_info_file'], 'r') as f:
             self.cluster_info = yaml.safe_load(f)
@@ -174,7 +185,7 @@ class LogsDataProcessor:
             else:
                 pickled_test_data = 'tests/testdata/df_agg_X_1.pkl'
             #print(f"Overriding df_agg with `{pickled_test_data}`")
-            return pd.read_pickle(pickled_test_data)
+            return pd.read_pickle(pickled_test_data), UnfinishedJobsService(self.config_data, self.db_params)
         
         ### Pull usage statistics from the workload manager
         WM = SlurmManager(self.config_data, self.cluster_info)
@@ -394,31 +405,67 @@ class LogsDataProcessor:
         """
         df, unfinished_jobs_service = self.extract_data()
         df2 = self.enrich_data(df)
+
+        del df # df is potentially large and no longer needed 
+
         summary_stats = self.summarise_data(df2)
+
+        del df2 # df2 is potentially large and no longer needed 
+        gc.collect()
+
         self.process_and_store(summary_stats, unfinished_jobs_service)
 
         return summary_stats
     
-    def batch_run(self, batch_size: int = 30) -> pd.DataFrame:
+    def batch_run(self, batch_size: int = 30) -> dict:
         """
-        Create batches of dates (default = 30 days per batch) between startDay and endDay provided in config_data.
+        Create batches of dates (default = 30 days per batch) between startDay and endDay.
         Run processing pipeline for each batch.
-
         :param batch_size: size of batch in number of days
-        :return: pandas Dataframe containing processed data for all batches
+        :return: dict containing summary stats for all batches
         """
-        batches = utils.generate_batches_by_dates(start = self.config_values["startDay"], 
-                                                  end = self.config_values["endDay"], 
-                                                  batch_size = batch_size
-                                                 )
-        summary_stats_all = {}
+        batches = utils.generate_batches_by_dates(
+            start=self.config_data["startDay"],
+            end=self.config_data["endDay"],
+            batch_size=batch_size,
+        )
+        n = len(batches)
+        failed = []
+        t_run = time_module.perf_counter()
+
+        print(f"\nBatch size: {batch_size} days")
+        print(f"Number of batches: {n} \n")
+
         batch_iter = tqdm(batches, desc="Processing batches", unit="batch")
+        summary_stats_all = {}
 
-        for dates_pair in batch_iter:
-            self.config_data['startDay'] = dates_pair[0]
-            self.config_data['endDay'] = dates_pair[1]
+        for i, dates_pair in enumerate(batch_iter, 1):
+            start_date, end_date = dates_pair[0], dates_pair[1]
+            t_batch = time_module.perf_counter()
 
-            summary_stats = self.run() # Run processing pipeline
-            summary_stats_all = summary_stats_all | summary_stats
+            batch_iter.set_postfix(current=f"{start_date} to {end_date}")
+
+            try:
+                self.config_data['startDay'] = start_date
+                self.config_data['endDay']   = end_date
+                summary_stats = self.run() # Run data processing pipeline
+                summary_stats_all |= summary_stats
+
+                del summary_stats # summary_stats contains multiple dfs, potentially large and no longer needed
+                gc.collect()
+
+                elapsed = time_module.perf_counter() - t_batch
+                tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  {elapsed:.1f}s")
+
+            except Exception as e:
+                tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  failed: {e}")
+                failed.append((start_date, end_date))
+
+        elapsed_total = time_module.perf_counter() - t_run
+        status = f"({len(failed)} failed)" if failed else "(0 failed)"
+        print(f"\n{n - len(failed)} of {n} batches completed in {elapsed_total:.1f}s  {status}")
+        if failed:
+            for f in failed:
+                print(f"  {f[0]} to {f[1]}")
 
         return summary_stats_all
