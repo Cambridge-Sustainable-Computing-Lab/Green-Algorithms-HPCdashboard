@@ -171,21 +171,7 @@ class LogsDataProcessor:
 
     def extract_data(self):
         if 'use_mock_agg_data' in self.config_data.keys(): # DEBUGONLY Create/use some mock jobs with different users
-
-            # Steps done in pickle_it.py script:
-            # df2 = simulate_mock_jobs()
-            # df2.to_pickle("testdata/df_agg_X_mockMultiUsers_1.pkl")
-            # NB the data generated is different each time.
-
-            # foo = 'testdata/df_agg_test_3.pkl'
-            # foo = 'testdata/df_agg_X_1.pkl'
-            
-            if self.has_slurmAdmin: # TODO remove `has_slurmAdmin` as it's not needed in the dashboard anymore
-                pickled_test_data = 'tests/testdata/df_agg_X_mockMultiUsers_1.pkl'
-            else:
-                pickled_test_data = 'tests/testdata/df_agg_X_1.pkl'
-            #print(f"Overriding df_agg with `{pickled_test_data}`")
-            return pd.read_pickle(pickled_test_data), UnfinishedJobsService(self.config_data, self.db_params)
+            return utils.get_mock_agg_data(), UnfinishedJobsService(self.config_data, self.db_params) # Returining empty UnfinishedJobsService to avoid errors later, but it's not used.
         
         ### Pull usage statistics from the workload manager
         WM = SlurmManager(self.config_data, self.cluster_info)

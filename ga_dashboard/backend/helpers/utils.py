@@ -3,13 +3,12 @@
 # ------------------------------------------------------------------
 
 import datetime
+from io import BytesIO
 import os
 import sys
 import random
 import pandas as pd
 import numpy as np
-from datetime import timedelta
-from io import BytesIO
 
 def check_empty_results(df, args):
     """
@@ -43,7 +42,27 @@ def parse_string_to_number(s:str) -> int | float | str:
         except ValueError:
             return s
 
-def simulate_mock_jobs(): # DEBUGONLY
+def convert2dataframe(df_raw: bytes, types: dict | None = None, delimiter="|"):
+    """
+    Convert raw logs output into a pandas DataFrame.
+    Parameters:
+        df_raw : Raw logs output as bytes.
+        types : column names and their desired data types. E.g., {'NNodes': 'int64', 'NCPUS': 'int64'}
+        delimiter : Delimiter used in the raw logs.
+    Returns:
+        pd.DataFrame: DataFrame containing the parsed logs with specified data types.
+    """
+    df = pd.read_csv(BytesIO(df_raw), sep=delimiter, dtype='str')
+
+    # Convert specified columns to appropriate data types 
+    if types:
+        for c, t in types.items():
+            if c in df.columns:
+                df[c] = df[c].astype(t)
+    return df
+
+##DEBUGONLY 
+def simulate_mock_jobs():
     df_list = []
     for user in ['uid_1', 'uid_2', 'uid_3', 'uid_4', 'uid_5']:
         n_jobs = random.randint(500,800)
@@ -70,8 +89,8 @@ def simulate_mock_jobs(): # DEBUGONLY
 
     return pd.concat(df_list)
 
-
-def save_slurm_logs(config_data, WM) -> None: # DEBUGONLY
+##DEBUGONLY 
+def save_slurm_logs(config_data, WM) -> None:
     """
     Save raw SLURM logs to a CSV file for later inspection.
     legacy from GA4HPC - gives an option to export the logs to test the code on them in cases where we cannot see others' logs.
@@ -102,66 +121,6 @@ def save_slurm_logs(config_data, WM) -> None: # DEBUGONLY
 
         print(f"\nSLURM statistics saved for inspection: {log_path}\n")
 
-
-def convert2dataframe(df_raw: bytes, types: dict | None = None, delimiter="|"):
-    """
-    Convert raw logs output into a pandas DataFrame.
-    Parameters:
-        df_raw : Raw logs output as bytes.
-        types : column names and their desired data types. E.g., {'NNodes': 'int64', 'NCPUS': 'int64'}
-        delimiter : Delimiter used in the raw logs.
-    Returns:
-        pd.DataFrame: DataFrame containing the parsed logs with specified data types.
-    """
-    df = pd.read_csv(BytesIO(df_raw), sep=delimiter, dtype='str')
-
-    # Convert specified columns to appropriate data types 
-    if types:
-        for c, t in types.items():
-            if c in df.columns:
-                df[c] = df[c].astype(t)
-    return df
-
-def generate_batches_by_dates(start: str | datetime.date, end: str | datetime.date, batch_size: int = 30) -> list:
-    """
-    Generates date ranges (start and end pairs) that divide a larger time period into batches.
-
-    Parameters:
-        start : date to start batching from
-        end : date when batching ends
-        batch_size : number of days in a batch
-    
-    Returns:
-        List of tuples where each tuple is a pair of two dates.
-    """
-    if isinstance(start, str):
-        start = datetime.datetime.strptime(start, "%Y-%m-%d").date()
-    if isinstance(end, str):
-        end = datetime.datetime.strptime(end, "%Y-%m-%d").date()
-
-    batches = []
-    current_start = start
-
-    while current_start <= end:
-        current_end = min(current_start + timedelta(days=batch_size - 1), end)
-        batches.append((current_start, current_end))
-        current_start = current_end + timedelta(days=1)
-
-    return batches
-
-def concat_dataframes(dfs: list[pd.DataFrame]) -> pd.DataFrame:
-    """
-    Concatenate DataFrames after filtering out empty or all-NaN inputs.
-
-    This ensures consistent dtype inference and avoids future incompatibilities with pandas, 
-    where concatenation behavior with empty or all-NaN DataFrames is changing (FutureWarning).
-    """
-
-    # Keep only DataFrames that are not empty and not entirely NaN
-    dfs = [df for df in dfs if not df.empty and not df.isna().all().all()]
-    
-    return pd.concat(dfs, ignore_index=True)
-
 ##DEBUGONLY 
 def quick_inspect(df: pd.DataFrame, name: str = "DataFrame") -> None:
     """
@@ -173,5 +132,26 @@ def quick_inspect(df: pd.DataFrame, name: str = "DataFrame") -> None:
     print("Dtypes:\n", df.dtypes)
     print("Head:\n", df.head())
     print(f"--- End of {name} Inspection ---\n")
+
+##DEBUGONLY 
+def get_mock_agg_data() -> pd.DataFrame:
+    """
+    Read and return mock aggregated data from a pickled file. Mock data generated using 'simulate_mock_jobs()' function.
+    """
+    # Steps done in pickle_it.py script:
+    # df2 = simulate_mock_jobs()
+    # df2.to_pickle("testdata/df_agg_X_mockMultiUsers_1.pkl")
+    # NB the data generated is different each time.
+
+    # foo = 'testdata/df_agg_test_3.pkl'
+    # foo = 'testdata/df_agg_X_1.pkl'
+
+    has_slurmAdmin = True
+    if has_slurmAdmin: # TODO remove `has_slurmAdmin` as it's not needed in the dashboard anymore
+        pickled_test_data = 'tests/testdata/df_agg_X_mockMultiUsers_1.pkl'
+    else:
+        pickled_test_data = 'tests/testdata/df_agg_X_1.pkl'
+    print(f"Overriding df_agg with `{pickled_test_data}`")
+    return pd.read_pickle(pickled_test_data)
 
 
