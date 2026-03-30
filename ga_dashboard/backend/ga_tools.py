@@ -8,7 +8,7 @@ import yaml
 import time as time_module
 import gc
 from tqdm import tqdm
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
 from ga_dashboard.backend.services.carbon_intensity_service import CarbonIntensityService, JobEmissionRecord
 import ga_dashboard.backend.helpers.utils as utils
@@ -125,7 +125,9 @@ class GA_tools:
             day_avg_CI = daily_avg_CI.get(current_day.strftime('%d-%m-%Y'), None)
 
             day_job_emissions.append(JobEmissionRecord(current_day, energy_per_hr, hours, day_avg_CI))
-            current_day += pd.Timedelta(days=1)
+            
+            # Advance to midnight of next day
+            current_day = datetime.combine(current_day.date() + timedelta(days=1), time.min)
 
         return JobEmissionRecord.calc_carbon_emission(day_job_emissions, energy_per_hr)
 
