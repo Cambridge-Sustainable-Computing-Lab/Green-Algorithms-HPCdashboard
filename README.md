@@ -108,7 +108,8 @@ As well as a list of dashboard users, the system needs:
   * Note also that you will need values for the other items in the file: `institution`, `cluster_name`, `granularity_memory_request`, `PUE`, etc.
 * **Fixed parameters file**. Example: `ga_dashboard/data/fixed_parameters.yaml`. We suggest you use this example file for now.
 
-
+> [!NOTE]
+> (Relevant to using Docker container to deploy this software) - Restarting the docker container can lead to the database being deleted and re-created, to avoid this, set ```skip_db_overwrite``` to True in `config.yaml`.
 
 ### List of users
 

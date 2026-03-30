@@ -42,7 +42,7 @@ echo "\n*** Setup Grafana: ***\n" # This step will fail if Grafana is not runnin
 python $repo_root_dir/scripts/install_GAdashboard.py --config $config_file --db_pass $db_password --grafana_pass $grafana_password
 echo "\n* Done! *\n"
 
-echo "\n*** Imnport log data: ***\n"
+echo "\n*** Import log data: ***\n"
 python $repo_root_dir/scripts/run_green_algorithms_on_historical_logs.py --config $config_file --db_pass $db_password
 echo "\n* Done! *\n"
 
