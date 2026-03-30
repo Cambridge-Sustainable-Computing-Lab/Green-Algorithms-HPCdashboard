@@ -81,26 +81,24 @@ def main():
 
     db_found = database_exists(db_name, db_host, db_port, db_user)
     if db_found:
-        print(f"\n[Info] Database '{db_name}' was found on {db_host}:{db_port}.")
+        print(f"\n[Info] Database '{db_name}' was found on {db_host}:{db_port}.\n")
         if skip_db_overwrite.lower() == 'true':
             print(
-                f"[Info] 'skip_if_exists' is enabled in the configuration.\n"
+                f"[Info] 'skip_db_overwrite'  is enabled in the configuration.\n"
                 f"       Skipping drop/recreate of '{db_name}'. Nothing was changed.\n"
             )
             os.environ["PGPASSWORD"] = ""
             print(" ******* create_or_overwrite_database script completed (skipped). *******\n")
             sys.exit(0)
         else:
-            print("\n*** Setting up empty Postgres database: ***\n")
-            print("\n** Use CTRL-C to stop script. **")
-
             # Make user confirm this potentially drastic action!
             print(f"\nWARNING! This will delete database '{db_name}'! Are you sure you wish to continue?")
             answer = input("Type YES to continue, else script will abort. > ")
             print()
             if answer not in ["YES","yes"]:
-                sys.exit(2)                                               
+                sys.exit(2) 
 
+            print("\n*** Setting up empty Postgres database: ***\n")
             # delete existing db, create new, and set it up
             # psql -c 'drop database if exists ga_db; ' -U postgres -h $db_host -p $db_port
             # psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
