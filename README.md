@@ -3,7 +3,7 @@
 Repository used to set up the Green Algorithms dashboards, using [Grafana](https://grafana.com/) and a database. This allows you to examine HPC usage over time, with helpful graphs, charts, etc.
 
 The system is composed of:
-* A backend, which obtains usage data from the HPC system (using the `sacct` command), aggregates it (to one row per user per day), and enriches it (adds carbon footprint data).
+* A backend, which obtains usage data from the HPC system (using the `sacct` command), aggregates it (to one row per user per day), and enriches it (adds estimated energy usage and carbon footprint data).
 * A PostgreSQL database to store the HPC usage calculated by the backend
 * A frontend, which uses Grafana to query the database and display the data through graphs and charts.
 
@@ -82,6 +82,8 @@ Choose a username and password for the Postgres admin user. The former is usuall
 
 Check that your `$PATH` allows you to access the PostgreSQL `psql` utility program.
 
+> [!NOTE]
+> Grafana users must be given only SELECT permission to the Database.
 
 ### Dashboard platform - Grafana
 
