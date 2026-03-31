@@ -11,7 +11,7 @@ if __name__ == "__main__":
     
     t_start = datetime.datetime.now()
     print(f"Running Green Algorithms on historical Logs")
-    print(f"Backfill started {t_start.strftime('%Y-%m-%d %H:%M:%S')}\n")
+    print(f"Historical logs processing started {t_start.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
     argparser = argparse.ArgumentParser(description="Script used to calculate Green Algorithms from historical HPC logs.",
                                         epilog="Requires a config file.")
@@ -20,13 +20,18 @@ if __name__ == "__main__":
                             metavar='CONFIG_FILE', dest='config')
     argparser.add_argument("--db_pass", help='Database password (optional, to avoid entering it in the prompt).', \
                             metavar='DB_PASS', dest='db_pass')
-    argparser.add_argument("--batch_size", help='Batch size in number of days. Default size is 30 days', default=30,\
+    argparser.add_argument("--batch_size", help='Batch size in number of days. Default size is 30 days',\
                             metavar='Batch_SIZE', dest='batch_size')
 
     args = argparser.parse_args()
     config_file = args.config
     db_pass = args.db_pass
-    batch_size = int(args.batch_size)
+    
+    if args.batch_size is None:
+        print("WARNING: No batch size provided. Defaulting to 30 days.")
+        batch_size = 30 # Defaulting to 30 days
+    else:
+        batch_size = int(args.batch_size)
 
     # Parse config file
     ga_config = GAConfig(config_file,db_pass)
@@ -48,4 +53,4 @@ if __name__ == "__main__":
     extracted_data = data_processor.batch_run(batch_size = batch_size)
 
     t_end = datetime.datetime.now()
-    print(f"\nBackfill completed {t_end.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"\nHistorical logs processing completed {t_end.strftime('%Y-%m-%d %H:%M:%S')}")
