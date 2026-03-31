@@ -15,7 +15,6 @@ import ga_dashboard.backend.helpers.utils as utils
 from ga_dashboard.backend.workload_manager.slurm import SlurmManager
 from ga_dashboard.backend.data_sql_import import DataSQLImport
 from ga_dashboard.backend.services.database_service import DBSettings
-from ga_dashboard.backend.services.unfinished_jobs_service import UnfinishedJobsService
 
 
 agg_functions_from_raw = {
@@ -173,7 +172,7 @@ class LogsDataProcessor:
 
     def extract_data(self):
         if 'use_mock_agg_data' in self.config_data.keys(): # DEBUGONLY Create/use some mock jobs with different users
-            return utils.get_mock_agg_data(), UnfinishedJobsService(self.config_data, self.db_params) # Returining empty UnfinishedJobsService to avoid errors later, but it's not used.
+            return utils.get_mock_agg_data()
         
         ### Pull usage statistics from the workload manager
         WM = SlurmManager(self.config_data, self.cluster_info)
@@ -182,18 +181,8 @@ class LogsDataProcessor:
         ### Log the output for debugging
         utils.save_slurm_logs(self.config_data, WM)
 
-        unfinished_jobs_service = UnfinishedJobsService(self.config_data, self.db_params)
-
         ### Turn usage logs into DataFrame
         WM.raw_logs_to_df()
-
-        # get unfinished jobs from db and pick those that have now finished using sacct command by job id
-        finished_jobs_df = unfinished_jobs_service.sync_unfinished_jobs() 
-    
-        WM.filter_and_store_unfinished_jobs(unfinished_jobs_service) # Filter unifinshed jobs from WM logs and store them in DB
-
-        if finished_jobs_df is not None:
-            WM.concat_logs_df(finished_jobs_df) #concat finished jobs (previously unfinished) with rest of the logs
 
         # And clean
         WM.clean_logs_df()
@@ -207,7 +196,7 @@ class LogsDataProcessor:
 
         # WM.df_agg_X.to_pickle("testdata/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
 
-        return WM.df_agg_X, unfinished_jobs_service
+        return WM.df_agg_X
     
     def enrich_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -328,7 +317,7 @@ class LogsDataProcessor:
 
         return output
     
-    def process_and_store(self, summary_stats:dict, unfinished_jobs_service:UnfinishedJobsService) -> None:
+    def process_and_store(self, summary_stats:dict) -> None:
         # Import aggregated data into a database
         data2db = DataSQLImport(
                     summary_stats,
@@ -340,8 +329,6 @@ class LogsDataProcessor:
             print(f"Error occurred while inserting data into database: {e}")
             return
         
-        #only delete the finished jobs from ga_unfinished_jobs table after the new data has been successfully inserted
-        unfinished_jobs_service.delete_resolved_unfinished_jobs()
 
     def run(self) -> pd.DataFrame:
         """
@@ -349,7 +336,7 @@ class LogsDataProcessor:
 
         :return: pandas Dataframe containing processed data
         """
-        df, unfinished_jobs_service = self.extract_data()
+        df = self.extract_data()
         df2 = self.enrich_data(df)
 
         del df # df is potentially large and no longer needed 
@@ -359,7 +346,7 @@ class LogsDataProcessor:
         del df2 # df2 is potentially large and no longer needed 
         gc.collect()
 
-        self.process_and_store(summary_stats, unfinished_jobs_service)
+        self.process_and_store(summary_stats)
 
         return summary_stats
     
