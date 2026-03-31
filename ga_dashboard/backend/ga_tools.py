@@ -315,51 +315,9 @@ class LogsDataProcessor:
         has_slurmAdmin = True # get_slurmAdmin(args) # We only assume we have admin access now
 
         if has_slurmAdmin:
-            ## We aggregate hierarchically to avoid duplicating efforts
             # With daily figures
             df_userdaily = agg_jobs(df, ['User', 'UID', 'Name', 'Group', 'Department', 'SubmitDate'])
-            df_groupdaily = agg_jobs(df_userdaily, ['Group', 'Department', 'SubmitDate'])
-            df_deptdaily = agg_jobs(df_groupdaily, ['Department', 'SubmitDate'])
-
-            df_daily = agg_jobs(df_deptdaily, ['SubmitDate'])
-
-            # Overall stats
-            df_userActivity = agg_jobs(df_userdaily, ['User', 'UID', 'Name', 'Group', 'Department'])
-            dict_userActivity = df_userActivity.set_index(["User"]).to_dict('index')
-
-            df_groupActivity = agg_jobs(df_userActivity, ['Group', 'Department'])
-            dict_groupActivity = df_groupActivity.groupby('Department').apply(lambda x: x.set_index('Group').to_dict(orient='index'), include_groups=False).to_dict()
-
-            df_deptActivity = agg_jobs(df_groupActivity, ['Department'])
-            dict_deptActivity = df_deptActivity.set_index(["Department"]).to_dict('index')
-
-            df_overallStats = agg_jobs(df_daily)
-            dict_overallStats = df_overallStats.iloc[0, :].to_dict()
-
-
-            ## And put everything in a dict
-            output = {
-                "userDaily": df_userdaily,
-                "groupDaily": df_groupdaily,
-                "deptDaily": df_deptdaily,
-                "daily": df_daily,
-                "deptActivity": dict_deptActivity,
-                "groupActivity": dict_groupActivity,
-                'userActivity': dict_userActivity,
-                "overallActivity": dict_overallStats,
-            }
-
-        else:
-            df_userdaily = agg_jobs(df, ['SubmitDate'])
-            df_overallStats = agg_jobs(df_userdaily)
-            dict_overallStats = df_overallStats.iloc[0, :].to_dict()
-            userID = df.UserX[0]
-
-            output = {
-                "userDaily": df_userdaily,
-                'userActivity': {userID: dict_overallStats},
-                "user": userID
-            }
+            output = {'userDaily': df_userdaily}
 
         # Some job-level statistics to plot distributions
         memoryOverallocationFactors = df.groupby('UserX')['memOverallocationFactorX'].apply(list).to_dict()
