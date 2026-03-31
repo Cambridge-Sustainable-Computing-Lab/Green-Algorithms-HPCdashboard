@@ -84,7 +84,9 @@ def generate_batches_by_dates(start: str | datetime.date, end: str | datetime.da
 
     while current_start <= end:
         current_end = min(current_start + timedelta(days=batch_size - 1), end)
-        batches.append((current_start, current_end))
+        start_ts = f"{current_start}T00:00:00"
+        end_ts = f"{current_end}T23:59:59"
+        batches.append((start_ts, end_ts))
         current_start = current_end + timedelta(days=1)
 
     return batches
