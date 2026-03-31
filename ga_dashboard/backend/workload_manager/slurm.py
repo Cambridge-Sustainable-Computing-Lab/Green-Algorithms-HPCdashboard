@@ -6,9 +6,6 @@ import numpy as np
 from ga_dashboard.backend.helpers import utils
 from ga_dashboard.backend.services.sacct_service import SacctService
 
-## States from SLURM documentation: https://slurm.schedmd.com/job_state_codes.html (as of 10 Feb 2026)
-UNFINISHED_STATES = ['PENDING','RUNNING','SUSPENDED','UNKNOWN','PREEMPTED']
-
 class SlurmBase:
     """
     A utility class for processing and analyzing workload data from HPC cluster job schedulers. 
@@ -17,6 +14,7 @@ class SlurmBase:
     """
     def __init__(self, cluster_info):
         self.cluster_info = cluster_info
+        self.unfinished_states = ['PENDING','RUNNING','SUSPENDED','UNKNOWN','PREEMPTED'] # States from SLURM documentation: https://slurm.schedmd.com/job_state_codes.html (as of 10 Feb 2026)
 
     def convert_to_GB(self, memory, unit):
         """
@@ -479,7 +477,7 @@ class SlurmManager(SlurmBase):
             mask = self.logs_df['End'].notna() & (self.logs_df['End'] != "Unknown")
         else: 
             ## NOTE: This is a temporary workaround for retrocompatibility since in earlier versions 'End' field was not fetched. Must be removed eventually.
-            mask = ~self.logs_df['State'].isin(UNFINISHED_STATES) 
+            mask = ~self.logs_df['State'].isin(self.unfinished_states) 
         
         return self.logs_df[mask].copy()
         
