@@ -5,7 +5,6 @@ import numpy as np
 
 from ga_dashboard.backend.helpers import utils
 from ga_dashboard.backend.services.sacct_service import SacctService
-from ga_dashboard.backend.services.unfinished_jobs_service import UNFINISHED_STATES, UnfinishedJobsService
 
 class SlurmBase:
     """
@@ -15,6 +14,7 @@ class SlurmBase:
     """
     def __init__(self, cluster_info):
         self.cluster_info = cluster_info
+        self.unfinished_states = ['PENDING','RUNNING','SUSPENDED','UNKNOWN','PREEMPTED'] # States from SLURM documentation: https://slurm.schedmd.com/job_state_codes.html (as of 10 Feb 2026)
 
     def convert_to_GB(self, memory, unit):
         """
@@ -297,6 +297,8 @@ class SlurmManager(SlurmBase):
         """
         # self.logs_df_raw = self.logs_df.copy() # DEBUGONLY Save a copy of uncleaned raw for debugging mainly
 
+        self.logs_df = self.filter_finished_jobs() # Keep only those jobs that have finished - i.e. contains a valid End date/ finished state
+
         ### Calculate real memory usage
         self.logs_df['ReqMemX'] = self.logs_df.apply(self.calc_ReqMem, axis=1)
 
@@ -467,40 +469,15 @@ class SlurmManager(SlurmBase):
         
         self.logs_df = pd.concat([self.logs_df, new_logs_df], ignore_index=True)
 
-    def select_distinct_unfinished_jobs(self):
+    def filter_finished_jobs(self) -> pd.DataFrame:
         '''
-        Select distinct unfinished jobs, to avoid duplicates in the database.
-        For jobs with multiple rows (subprocesses), picks:
-        - oldest Start date
-        - Submit date (should be the same across rows)
-        - State that is unfinished (if any subprocess is unfinished, the job is unfinished)
+        Filter finished jobs from the logs dataframe using the 'End' column if available, else the 'State' column.
         '''
-        if self.unfinished_jobs is None:
-            raise ValueError("unfinished_jobs is not initialised. Run filter_and_store_unfinished_jobs() first.")
-
-        df = self.unfinished_jobs.copy()
-
-        def pick_unfinished_state(states: list):
-            for state in states:
-                if state in UNFINISHED_STATES:
-                    return state
-            return states.iloc[0]
-
-        df['JobID_base'] = df['JobID'].astype(str).str.split('.').str[0]
-
-        grouped_by_job = df.groupby('JobID_base').agg(
-            User=('User', 'first'),
-            Start=('Start', 'min'),
-            Submit=('Submit', 'first'),
-            State=('State', pick_unfinished_state), # picking the unfinished state if there are multiple rows for the same job.
-        ).reset_index().rename(columns={'JobID_base': 'JobID'})
-
-        self.unfinished_jobs = grouped_by_job
-
-    def filter_and_store_unfinished_jobs(self, unfinished_jobs_service: UnfinishedJobsService):
-        '''
-            Use the UnfinishedJobsService to filter out unfinished jobs from the logs dataframe, and store them in the database.
-        '''
-        self.unfinished_jobs, self.logs_df = unfinished_jobs_service.filter_unfinished_jobs(self.logs_df)
-        self.select_distinct_unfinished_jobs()
-        unfinished_jobs_service.save_unfinished_jobs(self.unfinished_jobs)
+        if 'End' in self.logs_df:
+            mask = self.logs_df['End'].notna() & (self.logs_df['End'] != "Unknown")
+        else: 
+            ## NOTE: This is a temporary workaround for retrocompatibility since in earlier versions 'End' field was not fetched. Must be removed eventually.
+            mask = ~self.logs_df['State'].isin(self.unfinished_states) 
+        
+        return self.logs_df[mask].copy()
+        
