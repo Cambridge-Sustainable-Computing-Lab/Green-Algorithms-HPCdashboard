@@ -1,8 +1,6 @@
 # Grafana Tips
 
 To change the datasource of an existing dashboard.
-Laurent: Two ways
-
 
 1  - via the web interface (but then I think you need to edit each chart of the dashboard with the new datasource)
 

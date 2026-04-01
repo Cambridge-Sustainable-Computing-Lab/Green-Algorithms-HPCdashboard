@@ -1,8 +1,7 @@
+
 # Scripts: Running and Managing GA4HPCdashboard
 
-This directory contains the executable scripts used to install, configure, and operate the Green Algorithms for HPC (GA4HPCdashboard) system. These scripts are designed to be run in a largely non-interactive manner, driven primarily by configuration files, and are intended for HPC administrators or platform teams.
-
-This README reflects the **current and supported workflow**. Older wrapper-based and menu-driven scripts are no longer used.
+The directory - `scripts/` - contains the executable scripts used to install, configure, and operate the Green Algorithms for HPC (GA4HPCdashboard) system. These scripts are designed to be run in a largely non-interactive manner, driven primarily by configuration files, and command line arguments. These are intended for HPC administrators or platform teams.
 
 ---
 ## Overview
@@ -18,7 +17,6 @@ The scripts in this directory support:
 - One-off historical data ingestion
 - Ongoing scheduled data ingestion (e.g. via `cron`)
 
----x
 ## Configuration model
 
 All scripts are driven by a **YAML configuration file** passed via the `--config` argument.
@@ -37,6 +35,7 @@ You must prepare the following files before running any scripts:
 - **Fixed parameters file** (YAML)
   - Example: `ga_dashboard/data/fixed_parameters.yaml`
 
+> !Note
 > Sensitive values such as **database and Grafana passwords must not be stored in configuration files**. They are provided interactively or via secure command-line mechanisms when required.
 
 ---
@@ -59,11 +58,12 @@ This script will:
   - Create Grafana users
   - Set folder permissions
 
-You will be prompted for:
+If not passed as arguments, you may be prompted for:
 - PostgreSQL admin password
 - Grafana admin password
 
 > ⚠️ This script will overwrite existing dashboard-related resources if re-run with the same configuration.
+> set `skip_db_overwrite : True` in `config.yaml` to skip this in case database is already configured.
 
 ---
 ## HPC usage data ingestion
@@ -78,6 +78,7 @@ python scripts/run_green_algorithms_on_historical_logs.py --config <your_config_
 
 This script:
 - Runs `sacct` (unless custom logs are configured)
+- Ingests data using `sacct` in batches (use `--batch_size` to define number of days per batch)
 - Enriches usage data with carbon footprint metrics
 - Aggregates data to one row per user per day
 - Writes results to the PostgreSQL database
@@ -101,9 +102,10 @@ By default, this processes logs from the previous day unless overridden in the c
 - The default workflow assumes the scripts are run on a system with access to SLURM and the `sacct` command.
 - All logs are currently loaded into memory before being written to the database.
   - This has been tested successfully with up to ~1 million jobs.
-  - Future versions will process logs in chunks for improved scalability.
+  - One off historical ingestion is performed in batches (use `--batch_size` to configure number of days per batch).
+  - Future versions may also include batching of daily jobs for improved scalability.
 
-If your architecture requires separating log extraction and database ingestion (e.g. different machines), this is not yet fully automated in the beta version. Contact the maintainers for guidance.
+If your architecture requires separating log extraction and database ingestion (e.g. different machines), this is not yet fully automated in the Gamma version. Contact the maintainers for guidance.
 
 ---
 ## Grafana
@@ -115,18 +117,6 @@ Once the Grafana server is running (default: http://localhost:3000), users creat
 By default:
 - Admin user: `admin`
 - You should change the admin password immediately after installation
-
----
-## Deprecated workflows
-
-The following are **no longer supported** and have been removed from this documentation:
-
-- Interactive wrapper scripts (e.g. `scripts/run.py`)
-- Text-based configuration files (e.g. `sample_config.txt`)
-- Menu-driven execution of individual steps
-- Manual per-script orchestration for standard workflows
-
-All supported operations are now driven through the YAML configuration file and the scripts documented above.
 
 ---
 ## Help and troubleshooting
@@ -144,4 +134,4 @@ Ensure that:
 - User lists and cluster configuration files are valid and complete
 
 
-[Back to Contents](../docs/Contents.md)
+[Back to Contents](./Contents.md)

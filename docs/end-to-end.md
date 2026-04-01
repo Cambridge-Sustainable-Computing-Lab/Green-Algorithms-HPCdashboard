@@ -54,8 +54,6 @@ Displayed as a table:
 | uid_2 | 22222 | User_2 |user2@example.com | group_1 | Dept_3     |
 | ...   | ...   | ...    |...               | ...     | ...        |
 
-The "teams" in the original dashboard version are the "Groups" in the end-to-end version.
-
 Note: none of the example data in this file have a space character. But tests show it all works OK with names like "Thomas Greene", groups like "Weston group", and departments like "Department of Time Travel".
 
 You will need to navigate to the "dashboards" menu on the Grafana server (in a web browser), and there select the Green Algorithms Demo dashboard.
