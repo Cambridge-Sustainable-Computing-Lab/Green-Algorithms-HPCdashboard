@@ -365,7 +365,7 @@ class LogsDataProcessor:
     
     def batch_run(self, batch_size: int = 30) -> dict:
         """
-        Create batches of dates (default = 30 days per batch) between startDay and endDay.
+        Create batches of dates between startDay and endDay.
         Run processing pipeline for each batch.
         :param batch_size: size of batch in number of days
         :return: dict containing summary stats for all batches

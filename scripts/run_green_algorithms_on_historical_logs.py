@@ -10,6 +10,8 @@ import datetime
 if __name__ == "__main__":
     
     t_start = datetime.datetime.now()
+    default_batch_size = 30
+    
     print(f"Running Green Algorithms on historical Logs")
     print(f"Historical logs processing started {t_start.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
@@ -20,7 +22,7 @@ if __name__ == "__main__":
                             metavar='CONFIG_FILE', dest='config')
     argparser.add_argument("--db_pass", help='Database password (optional, to avoid entering it in the prompt).', \
                             metavar='DB_PASS', dest='db_pass')
-    argparser.add_argument("--batch_size", help='Batch size in number of days. Default size is 30 days',\
+    argparser.add_argument("--batch_size", help=f'Batch size in number of days. Default size is {default_batch_size} days',\
                             metavar='Batch_SIZE', dest='batch_size')
 
     args = argparser.parse_args()
@@ -28,8 +30,8 @@ if __name__ == "__main__":
     db_pass = args.db_pass
     
     if args.batch_size is None:
-        print("WARNING: No batch size provided. Defaulting to 30 days.")
-        batch_size = 30 # Defaulting to 30 days
+        print(f"WARNING: No batch size provided. Defaulting to {default_batch_size} days.")
+        batch_size = default_batch_size 
     else:
         batch_size = int(args.batch_size)
 
