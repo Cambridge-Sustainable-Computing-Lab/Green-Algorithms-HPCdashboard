@@ -2,7 +2,7 @@ import argparse
 import maskpass  # to hide the passwords
 from datetime import date
 from datetime import timedelta
-from ga_dashboard.backend.ga_tools import main_backend
+from ga_dashboard.backend.ga_tools import LogsDataProcessor
 from ga_dashboard.ga_config import GAConfig
 
 
@@ -38,4 +38,5 @@ if __name__ == "__main__":
         ga_config.config_values["endDay"] = yesterday
 
     ### Run backend to get data
-    extracted_data = main_backend(ga_config.config_values)
+    data_processor = LogsDataProcessor(ga_config.config_values)
+    extracted_data = data_processor.run()

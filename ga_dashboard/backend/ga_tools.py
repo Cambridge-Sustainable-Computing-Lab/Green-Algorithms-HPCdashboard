@@ -5,6 +5,9 @@
 import numpy as np
 import pandas as pd
 import yaml
+import time as time_module
+import gc
+from tqdm import tqdm
 from datetime import datetime, time, timedelta
 
 from ga_dashboard.backend.services.carbon_intensity_service import CarbonIntensityService, JobEmissionRecord
@@ -128,295 +131,291 @@ class GA_tools:
 
         return JobEmissionRecord.calc_carbon_emission(day_job_emissions, energy_per_hr)
 
+class LogsDataProcessor:
+    """
+    Data processor class to load settings, extract, process, and store logs.
+    """
+    def __init__(self, config_data: dict):
+        """
+        Loads cluster information, fixed parameters file, database settings, and users information using config data.
+        Initialses Green Algorithms Tools (GA_tools) object - used for processing logs.
 
-def extract_data(config_data: dict, has_slurmAdmin: bool, cluster_info, db_params: DBSettings) -> pd.DataFrame:
+        :param config_data: dict containing configurations from config file
+        """
+        # Load cluster info
+        with open(config_data['cluster_info_file'], 'r') as f:
+            self.cluster_info = yaml.safe_load(f)
 
-    if 'use_mock_agg_data' in config_data.keys(): # DEBUGONLY Create/use some mock jobs with different users
+        # Load fixed params
+        with open(config_data['fixed_params_file'], 'r') as f:
+            self.fixed_params = yaml.safe_load(f)
 
-        # Steps done in pickle_it.py script:
-        # df2 = simulate_mock_jobs()
-        # df2.to_pickle("testdata/df_agg_X_mockMultiUsers_1.pkl")
-        # NB the data generated is different each time.
+        # DB settings
+        self.db_params = DBSettings(
+            db_name=config_data['db_name'],
+            user=config_data['db_user'],
+            password=config_data['db_password'],
+            host=config_data['db_host'],
+            port=config_data['db_port']
+        )
 
-        # foo = 'testdata/df_agg_test_3.pkl'
-        # foo = 'testdata/df_agg_X_1.pkl'
+        # Load users if available
+        try:
+            self.users_df = pd.read_csv(config_data['dashboard_users_file'])
+        except FileNotFoundError:
+            self.users_df = None
+
+        # GA_tools object
+        self.GA = GA_tools(self.cluster_info, self.fixed_params)
+
+        self.has_slurmAdmin = True
+        self.config_data = config_data
+
+    def extract_data(self):
+        if 'use_mock_agg_data' in self.config_data.keys(): # DEBUGONLY Create/use some mock jobs with different users
+            return utils.get_mock_agg_data(), UnfinishedJobsService(self.config_data, self.db_params) # Returining empty UnfinishedJobsService to avoid errors later, but it's not used.
         
-        if has_slurmAdmin: # TODO remove `has_slurmAdmin` as it's not needed in the dashboard anymore
-            pickled_test_data = 'tests/testdata/df_agg_X_mockMultiUsers_1.pkl'
-        else:
-            pickled_test_data = 'tests/testdata/df_agg_X_1.pkl'
-        print(f"Overriding df_agg with `{pickled_test_data}`")
-        return pd.read_pickle(pickled_test_data), UnfinishedJobsService(config_data)
+        ### Pull usage statistics from the workload manager
+        WM = SlurmManager(self.config_data, self.cluster_info)
+        WM.pull_logs()
 
+        ### Log the output for debugging
+        utils.save_slurm_logs(self.config_data, WM)
 
-    ### Pull usage statistics from the workload manager
-    WM = SlurmManager(config_data, cluster_info)
-    WM.pull_logs()
+        unfinished_jobs_service = UnfinishedJobsService(self.config_data, self.db_params)
 
-    ### Log the output for debugging
-    utils.save_slurm_logs(config_data, WM)
+        ### Turn usage logs into DataFrame
+        WM.raw_logs_to_df()
 
-    unfinished_jobs_service = UnfinishedJobsService(config_data, db_params)
-
-    ### Turn usage logs into DataFrame
-    WM.raw_logs_to_df()
-
-    # get unfinished jobs from db and pick those that have now finished using sacct command by job id
-    finished_jobs_df = unfinished_jobs_service.sync_unfinished_jobs() 
-  
-    WM.filter_and_store_unfinished_jobs(unfinished_jobs_service) # Filter unifinshed jobs from WM logs and store them in DB
-
-    if finished_jobs_df is not None:
-        WM.concat_logs_df(finished_jobs_df) #concat finished jobs (previously unfinished) with rest of the logs
-
-    # And clean
-    WM.clean_logs_df()
-    # Check if there are any jobs during the period from this directory and with these jobIDs
-    utils.check_empty_results(WM.df_agg, config_data)
-
-    # Check that there is only one user's data if no admin right
-    if not has_slurmAdmin:
-        if len(set(WM.df_agg_X.UserX)) > 1:
-            raise ValueError(f"More than one user's logs was included, despite --slurmAdmin not used: {set(WM.df_agg_X.UserX)}")
-
-    # WM.df_agg_X.to_pickle("testdata/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
-
-    return WM.df_agg_X, unfinished_jobs_service
-
-
-def enrich_data(df: pd.DataFrame, fixed_params: dict, users_df: pd.DataFrame, GA: GA_tools, cluster_info: dict, db_params: DBSettings) -> pd.DataFrame:
-    """
-    Adds data about the carbon footprint, etc.
-    :param df: [pd.DataFrame] The existing data we've extracted.
-    :param fixed_params: [dict] The fixed parameters used.
-    :param GA [GA_tools] A GA_tools object. 
-    :return: [pd.DataFrame] The enriched data.
-    """
+        # get unfinished jobs from db and pick those that have now finished using sacct command by job id
+        finished_jobs_df = unfinished_jobs_service.sync_unfinished_jobs() 
     
-    ### energy
-    df = df.apply(GA.calculate_energies, axis=1)
+        WM.filter_and_store_unfinished_jobs(unfinished_jobs_service) # Filter unifinshed jobs from WM logs and store them in DB
 
-    try:
-        df['energy_failedJobs'] = np.where(df.StateX == 0, df.energy, 0)
-    except AttributeError as err:
-        print(f"enrich_data(): AttributeError: {err}")
-        # TODO Explain this error, and what to do about it.
-        return None  # or should we exit?
+        if finished_jobs_df is not None:
+            WM.concat_logs_df(finished_jobs_df) #concat finished jobs (previously unfinished) with rest of the logs
+
+        # And clean
+        WM.clean_logs_df()
+        # Check if there are any jobs during the period from this directory and with these jobIDs
+        utils.check_empty_results(WM.df_agg, self.config_data)
+
+        # Check that there is only one user's data if no admin right
+        if not self.has_slurmAdmin:
+            if len(set(WM.df_agg_X.UserX)) > 1:
+                raise ValueError(f"More than one user's logs was included, despite --slurmAdmin not used: {set(WM.df_agg_X.UserX)}")
+
+        # WM.df_agg_X.to_pickle("testdata/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
+
+        return WM.df_agg_X, unfinished_jobs_service
     
-    ### Fetching Carbon Intensity
-    postcode = cluster_info.get('postcode', None)
-    ci_avg_data = {}
-    if postcode:
-        postcode = postcode[:3] # Taking only the first three letters from the postcode
-        ci_service = CarbonIntensityService(postcode, db_params)
-        ci_avg_data = ci_service.calc_day_average_CI(df.StartDatetimeX.min(), df.EndDatetimeX.max())
-
-    ### carbon footprint
-    for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
-        if ci_avg_data:
-            df[f'carbonFootprint{suffix}'] = df.apply(
-                lambda row: GA.calculate_carbonFootprint(row, suffix, ci_avg_data),
-                axis=1
-            )
-        else: #use default CI value from cluster yaml
-            df[f'carbonFootprint{suffix}'] = GA.calculate_carbonFootprint_default(df, f'energy{suffix}')
-
-        # Context metrics (part 1)
-        df[f'treeMonths{suffix}'] = df[f'carbonFootprint{suffix}'] / fixed_params['tree_month']
-        df[f'cost{suffix}'] = df[f'energy{suffix}'] * fixed_params['electricity_cost']
-
-    ### Context metrics (part 2)
-    df['driving'] = df.carbonFootprint / fixed_params['passengerCar_EU_perkm']
-    df['flying_NY_SF'] = df.carbonFootprint / fixed_params['flight_NY_SF']
-    df['flying_PAR_LON'] = df.carbonFootprint / fixed_params['flight_PAR_LON']
-    df['flying_NYC_MEL'] = df.carbonFootprint / fixed_params['flight_NYC_MEL']
-
-    ### Add user details to jobs
-    if users_df is None:
-        print("No user info to add.")
-        df2 = df
-    else:
-        df2 = pd.merge(df, users_df, left_on='UserX', right_on='User', how='inner')
-        if len(df2) != len(df):
-            # This basically raises an error if a user in the df isn't in the users_df,
-            # which is obtained from the file listing the HPC users.
-            raise ValueError("Not all users could be matched!")
-
-    return df2
-
-
-def summarise_data(df: pd.DataFrame) -> dict:
-
-    if df is None:
-        print("summarise_data(): df is None")
-        return None
-
-    # This is to aggregate already aggregated dataset (so names are a bit different)
-    agg_functions_further = agg_functions_from_raw.copy()
-    data2aggregate = {
-        'n_jobs':'sum',
-        'first_job_period':'min',
-        'last_job_period': 'max',
-        'cpuTime': 'sum',
-        'gpuTime': 'sum',
-        'wallclockTime': 'sum',
-        'CPUhoursCharged': 'sum',
-        'GPUhoursCharged': 'sum',
-        'memoryRequested': 'sum',
-        'memoryOverallocationFactor': 'mean', # NB: not strictly correct to do a mean of mean, but ok
-        'n_success': 'sum'
-    }
-    for agg_col, agg_method in data2aggregate.items():
-        agg_functions_further[agg_col] = (agg_col, agg_method)
-
-    def agg_jobs(data, agg_names=None):
+    def enrich_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-
-        :param data:
-        :param agg_names: if None, then the whole dataset is aggregated
-        :return:
+        Adds data about the carbon footprint, etc.
+        :param df: [pd.DataFrame] The existing data we've extracted.
+        :param fixed_params: [dict] The fixed parameters used.
+        :param GA [GA_tools] A GA_tools object. 
+        :return: [pd.DataFrame] The enriched data.
         """
-        agg_names2 = agg_names if agg_names else lambda _:True
-        if 'UserX' in data.columns:
-            timeseries = data.groupby(agg_names2).agg(**agg_functions_from_raw)
+        
+        ### energy
+        df = df.apply(self.GA.calculate_energies, axis=1)
+
+        try:
+            df['energy_failedJobs'] = np.where(df.StateX == 0, df.energy, 0)
+        except AttributeError as err:
+            print(f"enrich_data(): AttributeError: {err}")
+            # TODO Explain this error, and what to do about it.
+            return None  # or should we exit?
+        
+        ### Fetching Carbon Intensity
+        postcode = self.cluster_info.get('postcode', None)
+        ci_avg_data = {}
+        if postcode:
+            postcode = postcode[:3] # Taking only the first three letters from the postcode
+            ci_service = CarbonIntensityService(postcode, self.db_params)
+            ci_avg_data = ci_service.calc_day_average_CI(df.StartDatetimeX.min(), df.EndDatetimeX.max())
+
+        ### carbon footprint
+        for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
+            if ci_avg_data:
+                df[f'carbonFootprint{suffix}'] = df.apply(
+                    lambda row: self.GA.calculate_carbonFootprint(row, suffix, ci_avg_data),
+                    axis=1
+                )
+            else: #use default CI value from cluster yaml
+                df[f'carbonFootprint{suffix}'] = self.GA.calculate_carbonFootprint_default(df, f'energy{suffix}')
+
+            # Context metrics (part 1)
+            df[f'treeMonths{suffix}'] = df[f'carbonFootprint{suffix}'] / self.fixed_params['tree_month']
+            df[f'cost{suffix}'] = df[f'energy{suffix}'] * self.fixed_params['electricity_cost']
+
+        ### Context metrics (part 2)
+        df['driving'] = df.carbonFootprint / self.fixed_params['passengerCar_EU_perkm']
+        df['flying_NY_SF'] = df.carbonFootprint / self.fixed_params['flight_NY_SF']
+        df['flying_PAR_LON'] = df.carbonFootprint / self.fixed_params['flight_PAR_LON']
+        df['flying_NYC_MEL'] = df.carbonFootprint / self.fixed_params['flight_NYC_MEL']
+
+        ### Add user details to jobs
+        if self.users_df is None:
+            print("No user info to add.")
+            df2 = df
         else:
-            timeseries = data.groupby(agg_names2).agg(**agg_functions_further)
- 
-        timeseries.reset_index(inplace=True, drop=(agg_names is None))
-        timeseries['success_rate'] = timeseries.n_success / timeseries.n_jobs
-        timeseries['failure_rate'] = 1 - timeseries.success_rate
-        timeseries['share_carbonFootprint'] = timeseries.carbonFootprint / timeseries.carbonFootprint.sum()
+            df2 = pd.merge(df, self.users_df, left_on='UserX', right_on='User', how='inner')
+            if len(df2) != len(df):
+                # This basically raises an error if a user in the df isn't in the users_df,
+                # which is obtained from the file listing the HPC users.
+                raise ValueError("Not all users could be matched!")
 
-        return timeseries
+        return df2
+    
+    def summarise_data(self, df: pd.DataFrame) -> dict:
 
-    df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit date
-    has_slurmAdmin = True # get_slurmAdmin(args) # We only assume we have admin access now
+        if df is None:
+            print("summarise_data(): df is None")
+            return None
 
-    if has_slurmAdmin:
-        ## We aggregate hierarchically to avoid duplicating efforts
-        # With daily figures
-        df_userdaily = agg_jobs(df, ['User', 'UID', 'Name', 'Group', 'Department', 'SubmitDate'])
-        df_groupdaily = agg_jobs(df_userdaily, ['Group', 'Department', 'SubmitDate'])
-        df_deptdaily = agg_jobs(df_groupdaily, ['Department', 'SubmitDate'])
-
-        df_daily = agg_jobs(df_deptdaily, ['SubmitDate'])
-
-        # Overall stats
-        df_userActivity = agg_jobs(df_userdaily, ['User', 'UID', 'Name', 'Group', 'Department'])
-        dict_userActivity = df_userActivity.set_index(["User"]).to_dict('index')
-
-        df_groupActivity = agg_jobs(df_userActivity, ['Group', 'Department'])
-        dict_groupActivity = df_groupActivity.groupby('Department').apply(lambda x: x.set_index('Group').to_dict(orient='index')).to_dict()
-        # dict_groupActivity = df_groupActivity.groupby('Department').apply(lambda x: x.set_index('Group').to_dict(orient='index'), include_groups=False).to_dict()
-
-        df_deptActivity = agg_jobs(df_groupActivity, ['Department'])
-        dict_deptActivity = df_deptActivity.set_index(["Department"]).to_dict('index')
-
-        df_overallStats = agg_jobs(df_daily)
-        dict_overallStats = df_overallStats.iloc[0, :].to_dict()
-
-
-        ## And put everything in a dict
-        output = {
-            "userDaily": df_userdaily,
-            "groupDaily": df_groupdaily,
-            "deptDaily": df_deptdaily,
-            "daily": df_daily,
-            "deptActivity": dict_deptActivity,
-            "groupActivity": dict_groupActivity,
-            'userActivity': dict_userActivity,
-            "overallActivity": dict_overallStats,
+        # This is to aggregate already aggregated dataset (so names are a bit different)
+        agg_functions_further = agg_functions_from_raw.copy()
+        data2aggregate = {
+            'n_jobs':'sum',
+            'first_job_period':'min',
+            'last_job_period': 'max',
+            'cpuTime': 'sum',
+            'gpuTime': 'sum',
+            'wallclockTime': 'sum',
+            'CPUhoursCharged': 'sum',
+            'GPUhoursCharged': 'sum',
+            'memoryRequested': 'sum',
+            'memoryOverallocationFactor': 'mean', # NB: not strictly correct to do a mean of mean, but ok
+            'n_success': 'sum'
         }
+        for agg_col, agg_method in data2aggregate.items():
+            agg_functions_further[agg_col] = (agg_col, agg_method)
 
-    else:
-        df_userdaily = agg_jobs(df, ['SubmitDate'])
-        df_overallStats = agg_jobs(df_userdaily)
-        dict_overallStats = df_overallStats.iloc[0, :].to_dict()
-        userID = df.UserX[0]
+        def agg_jobs(data, agg_names=None):
+            """
 
-        output = {
-            "userDaily": df_userdaily,
-            'userActivity': {userID: dict_overallStats},
-            "user": userID
-        }
+            :param data:
+            :param agg_names: if None, then the whole dataset is aggregated
+            :return:
+            """
+            agg_names2 = agg_names if agg_names else lambda _:True
+            if 'UserX' in data.columns:
+                timeseries = data.groupby(agg_names2).agg(**agg_functions_from_raw)
+            else:
+                timeseries = data.groupby(agg_names2).agg(**agg_functions_further)
+    
+            timeseries.reset_index(inplace=True, drop=(agg_names is None))
+            timeseries['success_rate'] = timeseries.n_success / timeseries.n_jobs
+            timeseries['failure_rate'] = 1 - timeseries.success_rate
+            timeseries['share_carbonFootprint'] = timeseries.carbonFootprint / timeseries.carbonFootprint.sum()
 
-    # Some job-level statistics to plot distributions
-    memoryOverallocationFactors = df.groupby('UserX')['memOverallocationFactorX'].apply(list).to_dict()
-    memoryOverallocationFactors['overall'] = df.memOverallocationFactorX.to_numpy()
-    output['memoryOverallocationFactors'] = memoryOverallocationFactors
+            return timeseries
 
-    return output
+        df['SubmitDate'] = df.SubmitDatetimeX.dt.date
+        has_slurmAdmin = True # get_slurmAdmin(args) # Assuming we have admin access
 
-
-def main_backend(config_data: dict):
-    '''
-
-    :param config_data: dict
-    :return:
-    '''
-    ### Load cluster-specific info
-    with (open(config_data['cluster_info_file'], "r")) as stream:
-        try:
-            cluster_info = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-
-    ### Load fixed parameters
-    with open(config_data['fixed_params_file'], "r") as stream:
-        try:
-            fixed_params = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-
-    db_params = DBSettings(
-        db_name=config_data['db_name'],
-        user=config_data['db_user'],
-        password=config_data['db_password'],
-        host=config_data['db_host'],
-        port=config_data['db_port']
-    )
-
-    # Get slurmAdmin data 
-    has_slurmAdmin = True # get_slurmAdmin(args)
-
-    ### Load user-specific data (if available)
-    try:
-        users_df = pd.read_csv(config_data['dashboard_users_file'])
-    except FileNotFoundError:
         if has_slurmAdmin:
-            raise ValueError("No user data available.")
-        users_df = None
+            # With daily figures
+            df_userdaily = agg_jobs(df, ['User', 'UID', 'Name', 'Group', 'Department', 'SubmitDate'])
+            output = {'userDaily': df_userdaily}
 
-    GA = GA_tools(cluster_info, fixed_params)
+        # Some job-level statistics to plot distributions
+        memoryOverallocationFactors = df.groupby('UserX')['memOverallocationFactorX'].apply(list).to_dict()
+        memoryOverallocationFactors['overall'] = df.memOverallocationFactorX.to_numpy()
+        output['memoryOverallocationFactors'] = memoryOverallocationFactors
 
-    df, finished_jobids = extract_data(config_data, has_slurmAdmin, cluster_info=cluster_info, db_params=db_params)
-    df2 = enrich_data(df, fixed_params=fixed_params, users_df=users_df, GA=GA, cluster_info=cluster_info, db_params=db_params)
-    summary_stats = summarise_data(df2) # TODO export and save df_userdaily regularly (as a more manageable database than all individual jobs?)
-
-    ## Store data into a database
-    dict_keys = config_data.keys() # This is when using command line arguments (Namespace)
-    # try:
-    #     dict_keys = args.__dict__.keys() # This is when using command line arguments (Namespace)
-    # except Exception:
-    #     dict_keys = args._asdict().keys() # This is when using the debugging namedtuples TODO this a bit messy, should be cleaned up
-    if 'db_name' in dict_keys:
-        process_and_store(summary_stats, db_params, finished_jobids)
-    return summary_stats
-
-
-def process_and_store(summary_stats:dict, db_params:DBSettings, unfinished_jobs_service:UnfinishedJobsService) -> None:
-    # Import aggregated data into a database
-    data2db = DataSQLImport(
-                summary_stats,
-                db_params
-            )
-    try: 
-        data2db.insert_data_into_db()
-    except Exception as e:
-        print(f"Error occurred while inserting data into database: {e}")
-        return
+        return output
     
-    #only delete the finished jobs from ga_unfinished_jobs table after the new data has been successfully inserted
-    unfinished_jobs_service.delete_resolved_unfinished_jobs()
-    
+    def process_and_store(self, summary_stats:dict, unfinished_jobs_service:UnfinishedJobsService) -> None:
+        # Import aggregated data into a database
+        data2db = DataSQLImport(
+                    summary_stats,
+                    self.db_params
+                )
+        try: 
+            data2db.insert_data_into_db()
+        except Exception as e:
+            print(f"Error occurred while inserting data into database: {e}")
+            return
         
+        #only delete the finished jobs from ga_unfinished_jobs table after the new data has been successfully inserted
+        unfinished_jobs_service.delete_resolved_unfinished_jobs()
+
+    def run(self) -> pd.DataFrame:
+        """
+        Pipeline run that extracts logs, processes the data, summarises it, and stores in Database
+
+        :return: pandas Dataframe containing processed data
+        """
+        df, unfinished_jobs_service = self.extract_data()
+        df2 = self.enrich_data(df)
+
+        del df # df is potentially large and no longer needed 
+
+        summary_stats = self.summarise_data(df2)
+
+        del df2 # df2 is potentially large and no longer needed 
+        gc.collect()
+
+        self.process_and_store(summary_stats, unfinished_jobs_service)
+
+        return summary_stats
+    
+    def batch_run(self, batch_size: int = 30) -> dict:
+        """
+        Create batches of dates between startDay and endDay.
+        Run processing pipeline for each batch.
+        :param batch_size: size of batch in number of days
+        :return: dict containing summary stats for all batches
+        """
+        if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '':
+                print("useCustomLogs found in config. Skipping batch processing.")
+                return self.run()
+        
+        batches = utils.generate_batches_by_dates(
+            start=self.config_data["startDay"],
+            end=self.config_data["endDay"],
+            batch_size=batch_size,
+        )
+        n = len(batches)
+        failed = []
+        t_run = time_module.perf_counter()
+
+        print(f"\nBatch size: {batch_size} days")
+        print(f"Number of batches: {n} \n")
+
+        batch_iter = tqdm(batches, desc="Processing batches", unit="batch")
+        summary_stats_all = {}
+
+        for i, dates_pair in enumerate(batch_iter, 1):
+            start_date, end_date = dates_pair[0], dates_pair[1]
+            t_batch = time_module.perf_counter()
+
+            batch_iter.set_postfix(current=f"{start_date} to {end_date}")
+
+            try:
+                self.config_data['startDay'] = start_date
+                self.config_data['endDay']   = end_date
+                summary_stats = self.run() # Run data processing pipeline
+                summary_stats_all |= summary_stats
+
+                del summary_stats # summary_stats contains multiple dfs, potentially large and no longer needed
+                gc.collect()
+
+                elapsed = time_module.perf_counter() - t_batch
+                tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  {elapsed:.1f}s")
+
+            except Exception as e:
+                tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  failed: {e}")
+                failed.append((start_date, end_date))
+
+        elapsed_total = time_module.perf_counter() - t_run
+        status = f"({len(failed)} failed)" if failed else "(0 failed)"
+        print(f"\n{n - len(failed)} of {n} batches completed in {elapsed_total:.1f}s  {status}")
+        if failed:
+            for f in failed:
+                print(f"  {f[0]} to {f[1]}")
+
+        return summary_stats_all
