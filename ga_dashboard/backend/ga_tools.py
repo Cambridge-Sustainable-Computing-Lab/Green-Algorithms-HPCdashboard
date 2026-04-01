@@ -313,8 +313,8 @@ class LogsDataProcessor:
 
             return timeseries
 
-        df['SubmitDate'] = df.SubmitDatetimeX.dt.date  # TODO do it with real start time rather than submit date
-        has_slurmAdmin = True # get_slurmAdmin(args) # We only assume we have admin access now
+        df['SubmitDate'] = df.SubmitDatetimeX.dt.date
+        has_slurmAdmin = True # get_slurmAdmin(args) # Assuming we have admin access
 
         if has_slurmAdmin:
             # With daily figures

@@ -13,7 +13,7 @@ if __name__ == "__main__":
     default_batch_size = 30
     
     print(f"Running Green Algorithms on historical Logs")
-    print(f"Historical logs processing started {t_start.strftime('%Y-%m-%d %H:%M:%S')}\n")
+    print(f"Started on {t_start.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
     argparser = argparse.ArgumentParser(description="Script used to calculate Green Algorithms from historical HPC logs.",
                                         epilog="Requires a config file.")
@@ -55,4 +55,4 @@ if __name__ == "__main__":
     extracted_data = data_processor.batch_run(batch_size = batch_size)
 
     t_end = datetime.datetime.now()
-    print(f"\nHistorical logs processing completed {t_end.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"\nCompleted on {t_end.strftime('%Y-%m-%d %H:%M:%S')}")

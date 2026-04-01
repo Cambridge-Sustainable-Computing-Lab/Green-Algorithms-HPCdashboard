@@ -189,8 +189,8 @@ def get_mock_agg_data() -> pd.DataFrame:
     # foo = 'testdata/df_agg_test_3.pkl'
     # foo = 'testdata/df_agg_X_1.pkl'
 
-    has_slurmAdmin = True
-    if has_slurmAdmin: # TODO remove `has_slurmAdmin` as it's not needed in the dashboard anymore
+    has_slurmAdmin = True # Assuming we have admin access
+    if has_slurmAdmin: 
         pickled_test_data = 'tests/testdata/df_agg_X_mockMultiUsers_1.pkl'
     else:
         pickled_test_data = 'tests/testdata/df_agg_X_1.pkl'
