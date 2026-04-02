@@ -36,7 +36,6 @@ The system has three components:
   * [Logging in to Grafana](#logging-in-to-grafana)
 * [Getting help](#getting-help)
 * [Licence](#licence)
-* [Additional documentation](./docs/Contents.md)
 
 
 Files required to deploy the dashboard (you will need your own versions of these):
@@ -212,7 +211,7 @@ To collect and process all available historical logs, run:
 ```
 $ python scripts/run_green_algorithms_on_historical_logs.py --config <your_config_file.yaml>
 ```
-This will collect all the logs available by default. You can restrict the date range using `startDay` and `endDay` in `config.yaml` - recommended for large clusters until scalability has been tested more thoroughly.
+This will collect all the logs available by default. You can restrict the date range using `startDay` and `endDay` in `config.yaml`. The logs are pulled and processed in batches (use `--batch_size` to configure number of days per batch).
 
 ### Scheduled runs
 
