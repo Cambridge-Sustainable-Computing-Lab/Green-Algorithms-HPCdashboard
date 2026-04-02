@@ -51,7 +51,7 @@ Files required to deploy the dashboard (you will need your own versions of these
 
 ### 1. Python environment (Miniforge)
 
- First, set up a Python environment (Python 3.13+ recommended) using [Miniforge](https://conda-forge.org/download/$0) (recommended). Follow the instructions for your platform (see also the [Miniforge GitHub repository](https://github.com/conda-forge/miniforge$0) if needed).
+ First, set up a Python environment (Python 3.13+ recommended) using [Miniforge](https://conda-forge.org/download/) (recommended). Follow the instructions for your platform (see also the [Miniforge GitHub repository](https://github.com/conda-forge/miniforge) if needed).
 
 Once installed, you can create an environment. For example:
 ```
@@ -132,7 +132,7 @@ For clusters outside the UK, you can provide a fixed carbon intensity value dire
 3. **Custom API integration**
 If you would like to use a different carbon intensity API for your region, you can implement your own integration using the `APIService` class in `ga_dashboard/backend/services/api_service.py`. Get in touch if you need guidance on this.
 
-### 2. Cluster information file (`cluster_info.yaml')
+### 2. Cluster information file (`cluster_info.yaml`)
 Copy the template provided in `configuration/templates/cluster_info.yaml` and edit it with information about your HPC cluster. See `configuration/examples/cluster_info__demo.yaml` for a worked example.
 
 For each partition (a set of computing nodes with a dedicated queue) you will need:
@@ -151,7 +151,7 @@ This file lists the users who will have access to the dashboard. Copy the templa
 
 The users file should be a comma-separated file combining these columns:
 * **User name**: Company/Institute user name (e.g. tg1)
-* **User unique identifier (UID)** (UID): Numeric user unique identifier (e.g. 11111)
+* **User unique identifier (UID)**: Numeric user unique identifier (e.g. 11111)
 * **Name**: Full user name (e.g. Thomas Greene)
 * **Email**: email address of user
 * **Group name**: Name of the user group/team (e.g. group 1)
@@ -178,7 +178,7 @@ Displayed as a table:
 
 
 > [!IMPORTANT]
-> Passwords must not contain a comma character (`','`), as this will break CSV parsing. Passwords should also adhere to the [Grafana password policy](https://grafana.com/docs/grafana/next/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy), should you decide to enforce it.
+> Passwords must not contain a comma character (`','`), as this will break CSV parsing.
 
 ##
 
