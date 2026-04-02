@@ -357,8 +357,7 @@ class LogsDataProcessor:
         :param batch_size: size of batch in number of days
         :return: dict containing summary stats for all batches
         """
-        if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '':
-                print("useCustomLogs found in config. Skipping batch processing.")
+        if self.config_data.get('useCustomLogs', '') != '' or self.config_data.get('use_mock_agg_data', '') != '':
                 return self.run()
         
         batches = utils.generate_batches_by_dates(
