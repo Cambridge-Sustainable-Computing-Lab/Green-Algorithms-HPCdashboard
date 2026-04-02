@@ -121,7 +121,7 @@ Before running the dashboard, you will need to prepare four configuration files.
 Copy the template provided in `configuration/templates/config.yaml` to a location of your choice and edit it, replacing all values surrounded by `< >` characters. This file contains the core parameters needed to run the dashboard, including database connection details and paths to the other configuration files. You can uncomment the optional parameters you want to use.
 
 > [!NOTE]
-> If you choose to run the dashboard inside a Docker container, set `skip_db_overwrite: True` in `config.yaml` to prevent the database from being deleted and re-created on container restart.
+> If you choose to run the dashboard inside a Docker container, note that restarting the container can cause the database to be deleted and re-created. To prevent this, set `skip_db_overwrite: True` in `config.yaml`, but only after the first run, as the initial installation requires the database to be created.
 
 #### Carbon intensity (CI)
 The dashboard uses carbon intensity (CI) data to estimate the carbon footprint of your HPC usage. There are three ways to configure this:
@@ -178,8 +178,8 @@ Displayed as a table:
 | ...   | ...   | ...           | ...     | ...  | ...      | ... |
 
 
-[!IMPORTANT]
-Passwords must not contain a comma character (`','`), as this will break CSV parsing. Passwords should also adhere to the [Grafana password policy](https://grafana.com/docs/grafana/next/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy), should you decide to enforce it.
+> [!IMPORTANT]
+> Passwords must not contain a comma character (`','`), as this will break CSV parsing. Passwords should also adhere to the [Grafana password policy](https://grafana.com/docs/grafana/next/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy), should you decide to enforce it.
 
 ##
 
@@ -229,7 +229,7 @@ The 2 scripts proceed to:
 * Write the data to the database
 
 > [!NOTE]
-> Indicative benchmarks: > We have tested the software successfully on up to 1M jobs' log files (i.e. the `sacct` command returns one million entries). On a Mac, running the `scripts/run_green_algorithms_on_historical_logs.py` script on this data took 11m 42s **without the `sacct` runtime**, and the peak memory usage (measured with `mprof`) was around 4.7 GB.  This was an optimised situation; `sacct` had been run previously (and generated the file of results to use), and the files and Python scripts, Postgres database, and Grafana server were all running on the same local machine.
+> Indicative benchmarks: We have tested the software successfully on up to 1M jobs' log files (i.e. the `sacct` command returns one million entries). On a Mac, running the `scripts/run_green_algorithms_on_historical_logs.py` script on this data took 11m 42s **without the `sacct` runtime**, and the peak memory usage (measured with `mprof`) was around 4.7 GB.  This was an optimised situation; `sacct` had been run previously (and generated the file of results to use), and the files and Python scripts, Postgres database, and Grafana server were all running on the same local machine.
 
 > [!NOTE]
 > The scripts above have the same admin user run the SLURM `sacct` command to download all the logs, process these logs, and add the processed data to the Postgres database. In some cases, it may not be suitable, e.g., if you want to run the `sacct` command on one machine, transfer the data to another one hosting the database and the two can't communicate directly. We haven't developed this alternative pipeline in the beta version quite yet, but if this is your case, do get in touch, we can walk you through separating the two parts of the code. 
