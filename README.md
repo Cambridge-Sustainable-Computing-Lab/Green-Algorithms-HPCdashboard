@@ -18,18 +18,24 @@ The system has three components:
 
 ### Contents
 * [Prerequisites](#prerequisites)
-  * [Python environment](#python-environment-miniforge)
-  * [`ga_dashboard` python package](#install-the-ga_dashboard-python-package)
-  * [Database server](#database---postgresql)
-  * [Dashboard platform - Grafana](#dashboard-platform---grafana)
+  * [1. Python environment (Miniforge)](#1-python-environment-miniforge)
+  * [2. Install python packages and dependencies](#2-install-python-packages-and-dependencies)
+  * [3. PostgreSQL Database server](#3-postgresql-database-server)
+  * [4. Grafana Dashboard Server](#4-grafana-dashboard-server)
 * [Configuration files](#configuration-files)
-  * [System configuration files](#system-configuration-files)
-  * [Dashboard users file](#list-of-users)
+  * [1. Scripts configuration file](#1-scripts-configuration-file-configyaml)
+  * [2. Cluster information file](#2-cluster-information-file-cluster_infoyaml)
+  * [3. Fixed parameters file](#3-fixed-parameters-file-fixed_parametersyaml)
+  * [4. Dashboard users file](#4-dashboard-users-file-user_listcsv)
 * [Install Green Algorithms dashboard](#install-green-algorithms-dashboard)
 * [HPC usage data collection](#hpc-usage-data-collection)
+  * [First run (historical data)](#first-run-historical-data)
+  * [Scheduled runs](#scheduled-runs)
 * [Green Algorithms dashboards](#green-algorithms-dashboards)
   * [Run Grafana server](#run-grafana-server)
-  * [Logging in to Grafana](#logging-in-to-Grafana)
+  * [Logging in to Grafana](#logging-in-to-grafana)
+* [Getting help](#getting-help)
+* [Licence](#licence)
 * [Additional documentation](./docs/Contents.md)
 
 
@@ -138,7 +144,7 @@ For each partition (a set of computing nodes with a dedicated queue) you will ne
 
 You will also need values for `institution`, `cluster_name`,`granularity_memory_request`, `PUE`, and other fields listed in the template.
 
-### 3. Fixed paramters file (`fixed_parameters.yaml`) 
+### 3. Fixed parameters file (`fixed_parameters.yaml`) 
 Use the provided file at `ga_dashboard/data/fixed_parameters.yaml` without modification for now.
 
 ### 4. Dashboard users file (`user_list.csv`)
@@ -146,7 +152,7 @@ This file lists the users who will have access to the dashboard. Copy the templa
 
 The users file should be a comma-separated file combining these columns:
 * **User name**: Company/Institute user name (e.g. tg1)
-* **User unique identifier (UID)** (UID): Numeric user unique idendifier (e.g. 11111)
+* **User unique identifier (UID)** (UID): Numeric user unique identifier (e.g. 11111)
 * **Name**: Full user name (e.g. Thomas Greene)
 * **Email**: email address of user
 * **Group name**: Name of the user group/team (e.g. group 1)
