@@ -191,9 +191,8 @@ def get_mock_agg_data() -> pd.DataFrame:
 
     has_slurmAdmin = True # Assuming we have admin access
     if has_slurmAdmin: 
-        pickled_test_data = 'tests/testdata/df_agg_X_mockMultiUsers_1.pkl'
-    else:
-        pickled_test_data = 'tests/testdata/df_agg_X_1.pkl'
+        pickled_test_data = 'tests/testdata/df_agg_X_mockMultiUsers_2.pkl'
+        
     print(f"Overriding df_agg with `{pickled_test_data}`")
     return pd.read_pickle(pickled_test_data)
 
