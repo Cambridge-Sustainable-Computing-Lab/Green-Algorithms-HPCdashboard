@@ -1,6 +1,8 @@
 # Green Algorithms HPC Dashboard: Deployment notes
 
-The Green Algorithms HPC Dashboard helps HPC sysadmins and researchers track the energy use and carbon footprint of their cluster over time, using [Green Algorithms](https://doi.org/10.1002/advs.202100707). It combines a data collection backend, a PostgreSQL database, and a Grafana server that queries the database and visualises the results.
+![Version: Gamma (pre-release)](https://img.shields.io/badge/version-Gamma_(pre--release)-orange)
+
+The Green Algorithms HPC Dashboard helps HPC sysadmins and researchers track the energy use and carbon footprint of their cluster over time, using [Green Algorithms](https://www.green-algorithms.org). It combines a data collection backend, a PostgreSQL database, and a Grafana server that queries the database and visualises the results.
 
 By the end of this guide, you will have:
 
@@ -301,7 +303,11 @@ If you log in as an administrator, there are many other functions (e.g. delete u
 If you have questions, run into issues, or want to share feedback, please open a thread in [GitHub Discussions](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-HPCdashboard/discussions). This is the best place to get support from the development team and the wider community.
 
 ---
+## Licence
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+This work is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0).
+
 
 
