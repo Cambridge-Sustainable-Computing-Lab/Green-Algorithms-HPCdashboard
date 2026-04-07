@@ -4,6 +4,11 @@
 
 The Green Algorithms HPC Dashboard helps users of Research Computing Infrastructure track the energy use and carbon footprint of their computing jobs over time, using the [Green Algorithms](https://www.green-algorithms.org) methodology. The only data used are the SLURM logs of individual jobs. It combines a data collection backend, a PostgreSQL database, and a Grafana server that queries the database and visualises the results. The backend should be configured as a daily cron job to pull and process the previous day's logs, keeping the dashboard up to date.
 
+> Have a quick look at the [Green Algorithms Dashboard demo](https://dashboard.green-algorithms.org/)!
+> 
+> Log in using Username: uid_1 | Password: user1
+> This is set up with mock data for visualising a running dashboard.
+> Set the date range between May - June 2023 to see the data
 
 By the end of this guide, you will have:
 
