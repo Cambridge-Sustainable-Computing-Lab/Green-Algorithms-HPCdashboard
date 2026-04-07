@@ -2,7 +2,7 @@
 
 ![Version: Gamma (pre-release)](https://img.shields.io/badge/version-Gamma_(pre--release)-orange)
 
-The Green Algorithms HPC Dashboard helps users of Research Computing Infrastructure track the energy use and carbon footprint of their computing jobs over time, using the [Green Algorithms](https://www.green-algorithms.org) methodology. The only data used are the SLURM logs of individual jobs. It combines a data collection backend, a PostgreSQL database, and a Grafana server that queries the database and visualises the results.
+The Green Algorithms HPC Dashboard helps users of Research Computing Infrastructure track the energy use and carbon footprint of their computing jobs over time, using the [Green Algorithms](https://www.green-algorithms.org) methodology. The only data used are the SLURM logs of individual jobs. It combines a data collection backend, a PostgreSQL database, and a Grafana server that queries the database and visualises the results. The backend should be configured as a daily cron job to pull and process the previous day's logs, keeping the dashboard up to date.
 
 
 By the end of this guide, you will have:
@@ -115,13 +115,13 @@ By default, the superuser credential is id: `admin`, password: `admin`. You shou
 ---
 ## Configuration files
 
-Before running the dashboard, you will need to prepare four configuration files. Templates and examples for all of them are provided in the `configuration/templates/` and `configuration/examples/` directories respectively.
+Before running the dashboard, you will need to prepare three configuration files. Templates and examples for all of them are provided in the `configuration/templates/` and `configuration/examples/` directories respectively.
 
 ### 1. Scripts configuration file (`config.yaml`)
 Copy the template provided in `configuration/templates/config.yaml` to a location of your choice and edit it, replacing all values surrounded by `< >` characters. This file contains the core parameters needed to run the dashboard, including database connection details and paths to the other configuration files. You can uncomment the optional parameters you want to use.
 
 > [!NOTE]
-> If you choose to run the dashboard inside a Docker container, note that restarting the container can cause the database to be deleted and re-created. To prevent this, set `skip_db_overwrite: True` in `config.yaml`, but only after the first run, as the initial installation requires the database to be created.
+> If you choose to run the dashboard inside a Docker container, note that restarting the container can cause the database to be deleted and re-created. To prevent this, set `skip_db_overwrite: True` in `config.yaml`.
 
 #### Carbon intensity (CI)
 The dashboard uses carbon intensity (CI) data to estimate the carbon footprint of your HPC usage. There are three ways to configure this:
@@ -144,10 +144,7 @@ For each partition (a set of computing nodes with a dedicated queue) you will ne
 
 You will also need values for `institution`, `cluster_name`,`granularity_memory_request`, `PUE`, and other fields listed in the template.
 
-### 3. Fixed parameters file (`fixed_parameters.yaml`) 
-Use the provided file at `ga_dashboard/data/fixed_parameters.yaml` without modification for now.
-
-### 4. Dashboard users file (`user_list.csv`)
+### 3. Dashboard users file (`user_list.csv`)
 This file lists the users who will have access to the dashboard. Copy the template provided in `configuration/templates/user_list.csv` and populate with your users' details.
 
 The users file should be a comma-separated file combining these columns:
@@ -177,11 +174,11 @@ Displayed as a table:
 | uid_2 | 22222 | Sarah Jones | user2@example.com   | group 1 | Dept 3     | yGg=kA-6v**7BS) |
 | ...   | ...   | ...           | ...     | ...  | ...      | ... |
 
+> [!IMPORTANT]
+> Jobs are mapped to the users using the `User` field from the dashboard users file, which must exactly match the `User` in SLURM logs. Ensure there are no discrepancies in casing or formatting between the two.
 
 > [!IMPORTANT]
 > Passwords must not contain a comma character (`','`), as this will break CSV parsing.
-
-##
 
 ---
 ## Install the Green Algorithms dashboard
@@ -220,7 +217,7 @@ For a scheduled run (e.g. a `cron` job) for data collection and processing, run:
 ```
 $ python scripts/run_green_algorithms_on_logs.py --config <your_config_file.yaml>
 ```
-By default, it will collect the logs from previous day. The date range can be controlled using `startDay` and `endDay` in `config.yaml`.
+By default, it will collect the logs from the previous day. The date range can also be controlled using `startDay` and `endDay` in `config.yaml`.
 
 The 2 scripts proceed to:
 * Collect the Slurm logs
