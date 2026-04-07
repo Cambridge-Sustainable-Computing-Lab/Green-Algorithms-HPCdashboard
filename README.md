@@ -101,7 +101,7 @@ Choose a username and password for the PostgreSQL admin user (conventionally `po
 > Do not store the admin password in a file. If you forget it, follow [these steps](https://stackoverflow.com/questions/14588212/postgresql-resetting-password-of-postgresql-on-ubuntu) to reset it.
 
 > [!NOTE]
-> Grafana users should be granted only SELECT permission on the database.
+> Dashboard users should be granted only SELECT permission on the database.
 
 Check that your `$PATH` allows you to access the `psql` utility.
 
