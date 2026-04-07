@@ -7,6 +7,7 @@ The Green Algorithms HPC Dashboard helps users of Research Computing Infrastruct
 > Have a quick look at the [Green Algorithms Dashboard demo](https://dashboard.green-algorithms.org/)!
 > 
 > Log in using Username: uid_1 | Password: user1
+>
 > This is set up with mock data for visualising a running dashboard.
 > Set the date range between May - June 2023 to see the data
 
