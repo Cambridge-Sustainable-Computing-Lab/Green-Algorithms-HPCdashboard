@@ -268,7 +268,7 @@ class SlurmManager(SlurmBase):
                 if not foundIt:
                     try:
                         with open(os.path.join(sacctFileLocation, self.config_data['useCustomLogs']), 'rb') as f:
-                            self.logs_raw = f.read()
+                            self.logs_raw = SacctService.imitate_sacct_pull_by_time(f.read(), self.config_data['startDay'], self.config_data['endDay'])
                         message += f"{sacctFileLocation}/{self.config_data['useCustomLogs']}"
                         foundIt = True
                     except Exception:

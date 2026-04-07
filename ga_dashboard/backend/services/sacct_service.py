@@ -4,6 +4,7 @@
 
 import subprocess
 import pandas as pd
+import io
 
 class SacctService:
     """
@@ -24,8 +25,8 @@ class SacctService:
     @classmethod
     def pull_logs_by_time(cls, startDay, endDay):
         """
-        Run the command line to pull usage from the workload manager by time.
-        All Jobs started between the given start date and end date are pulled.
+        Sacct command to pull logs for jobs that were active during the specified time range, meaning
+        job.Start <= end_dt  AND  job.End >= start_dt (or job.End is empty)
         More: https://slurm.schedmd.com/sacct.html
         """
         try:
@@ -59,4 +60,37 @@ class SacctService:
         except Exception as e:
             print(f"Error occurred while pulling logs by JobID using sacct: {e}")
         finally:
+            return None
+
+    ## DEBUGGING/TESTING METHOD
+    @classmethod
+    def imitate_sacct_pull_by_time(cls, csv_bytes: bytes, startDay, endDay, delimiter: str = ',') -> bytes:
+        """
+        Imitate the sacct pull by time using a provided CSV file in bytes format. This is used for testing and development when real sacct data is not available.
+        The CSV file should have the same format as the output of the sacct command.
+        """
+        try:
+            df = pd.read_csv(io.StringIO(csv_bytes.decode('utf-8')), sep=delimiter)  
+
+            df['Start_copy'] = pd.to_datetime(df['Start'], errors='coerce')
+            df['End_copy'] = pd.to_datetime(df['End'], errors='coerce')
+
+            start_dt = pd.to_datetime(startDay)
+            end_dt = pd.to_datetime(endDay)
+
+            filtered_df = (df[
+                    (df['Start_copy'] <= end_dt) &
+                    ((df['End_copy'] >= start_dt) | (df['End_copy'].isna()))
+                    ]
+                .copy()
+                .drop(columns=['Start_copy', 'End_copy'])
+                )
+
+            if filtered_df.empty:
+                return b''  # Return empty bytes if no data matches the filter criteria
+            
+            return filtered_df.to_csv(index=False).encode('utf-8')
+        
+        except Exception as e:
+            print(f"Error occurred while imitating sacct pull by time: {e}")
             return None

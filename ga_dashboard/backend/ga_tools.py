@@ -177,6 +177,8 @@ class LogsDataProcessor:
         ### Pull usage statistics from the workload manager
         WM = SlurmManager(self.config_data, self.cluster_info)
         WM.pull_logs()
+        if not WM.logs_raw:
+            return 
 
         ### Log the output for debugging
         utils.save_slurm_logs(self.config_data, WM)
@@ -337,6 +339,10 @@ class LogsDataProcessor:
         :return: pandas Dataframe containing processed data
         """
         df = self.extract_data()
+
+        if df is None:
+            return {}
+        
         df2 = self.enrich_data(df)
 
         del df # df is potentially large and no longer needed 
@@ -357,8 +363,8 @@ class LogsDataProcessor:
         :param batch_size: size of batch in number of days
         :return: dict containing summary stats for all batches
         """
-        if self.config_data.get('useCustomLogs', '') != '' or self.config_data.get('use_mock_agg_data', '') != '':
-                return self.run()
+        if self.config_data.get('use_mock_agg_data', '') != '':
+            return self.run()
         
         batches = utils.generate_batches_by_dates(
             start=self.config_data["startDay"],
