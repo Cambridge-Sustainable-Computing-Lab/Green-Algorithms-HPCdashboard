@@ -44,7 +44,6 @@ Files required to deploy the dashboard (you will need your own versions of these
 * [Scripts configuration file](#configuration-files): template `config.yaml` (in `configuration/templates/`) to copy and edit.
 * [Cluster config file](#configuration-files): `cluster_info.yaml` (in `configuration/templates/`)
 * [Dashboard users file](#list-of-users) `user_list.csv` (in `configuration/templates/`)
-* [Fixed parameters file](#configuration-files). Example: `ga_dashboard/data/fixed_parameters.yaml`
 
 
 ---
