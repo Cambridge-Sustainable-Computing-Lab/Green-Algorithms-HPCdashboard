@@ -2,7 +2,8 @@
 
 ![Version: Gamma (pre-release)](https://img.shields.io/badge/version-Gamma_(pre--release)-orange)
 
-The Green Algorithms HPC Dashboard helps HPC sysadmins and researchers track the energy use and carbon footprint of their cluster over time, using [Green Algorithms](https://www.green-algorithms.org). It combines a data collection backend, a PostgreSQL database, and a Grafana server that queries the database and visualises the results.
+The Green Algorithms HPC Dashboard helps users of Research Computing Infrastructure track the energy use and carbon footprint of their computing jobs over time, using the [Green Algorithms](https://www.green-algorithms.org) methodology. The only data used are the SLURM logs of individual jobs. It combines a data collection backend, a PostgreSQL database, and a Grafana server that queries the database and visualises the results.
+
 
 By the end of this guide, you will have:
 
@@ -12,7 +13,7 @@ By the end of this guide, you will have:
 
 The system has three components:
 
-1. Backend - queries the HPC scheduler (via sacct), aggregates usage per user per day, and calculates estimated energy use and carbon footprint
+1. Backend - queries the HPC scheduler (here `SLURM` via `sacct`), aggregates usage per user per day, and calculates estimated energy use and carbon footprint.
 2. Database - a PostgreSQL database storing the processed usage data
 3. Frontend - a Grafana server that queries the database and displays the data as interactive graphs and charts
 
@@ -127,8 +128,8 @@ The dashboard uses carbon intensity (CI) data to estimate the carbon footprint o
 
 1. **Carbon Intensity API (UK only)**
 If your cluster is based in the UK, the dashboard can pull dynamic carbon intensity data from the [Carbon Intensity API](https://carbonintensity.org.uk). To enable this, add the first three characters of your **postcode** to `config.yaml`. The dashboard uses a daily average of the carbon intensity values returned by the API.
-2. **Static carbon intensity value**
-For clusters outside the UK, you can provide a fixed carbon intensity value directly in `config.yaml`. This will be used for all calculations.
+2. **Fixed carbon intensity value**
+For clusters outside the UK, you can provide a fixed carbon intensity value directly in `config.yaml`, e.g. the average carbon intensity in the data centre's location (you can find it [here](https://app.electricitymaps.com)). This will be used for all calculations.
 3. **Custom API integration**
 If you would like to use a different carbon intensity API for your region, you can implement your own integration using the `APIService` class in `ga_dashboard/backend/services/api_service.py`. Get in touch if you need guidance on this.
 
@@ -183,7 +184,7 @@ Displayed as a table:
 ##
 
 ---
-## Install Green Algorithms dashboard
+## Install the Green Algorithms dashboard
 
 After the creation of your configuration files (cf. [Configuration files](#configuration-files)), you can run the script below to:
 * Create an empty PostgreSQL database.
@@ -306,6 +307,11 @@ If you log in as an administrator, there are many other functions (e.g. delete u
 ---
 ## Getting help
 If you have questions, run into issues, or want to share feedback, please open a thread in [GitHub Discussions](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-HPCdashboard/discussions). This is the best place to get support from the development team and the wider community.
+
+---
+## About us
+
+This tool is built and maintained by the [Cambridge Sustainable Computing Lab](https://cam-sustainablecomputing.org) at the University of Cambridge, UK. 
 
 ---
 ## Licence
