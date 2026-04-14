@@ -29,6 +29,8 @@ An intuitive, interactive Grafana interface combines high-level summaries—incl
 ### Who is it for?
 The dashboard is intended for users of research computing infrastructure, including researchers running computational workloads. System administrators and research software engineers play a key role in installing, configuring, and maintaining the dashboard on HPC systems.
 
+> Visit the [Green Algorithms](https://www.green-algorithms.org/dashboard/) website for a quick walkthrough of the tool.
+
 ---
 
 # Deployment notes
