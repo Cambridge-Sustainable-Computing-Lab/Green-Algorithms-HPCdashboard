@@ -1,15 +1,39 @@
-# Green Algorithms HPC Dashboard: Deployment notes
-
+# Green Algorithms Dashboard 
 ![Version: Gamma (pre-release)](https://img.shields.io/badge/version-Gamma_(pre--release)-orange)
+[![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/purple?icon=github)](https://github.com/Naereen/badges/)
 
-The Green Algorithms HPC Dashboard helps users of Research Computing Infrastructure track the energy use and carbon footprint of their computing jobs over time, using the [Green Algorithms](https://www.green-algorithms.org) methodology. The only data used are the SLURM logs of individual jobs. It combines a data collection backend, a PostgreSQL database, and a Grafana server that queries the database and visualises the results. The backend should be configured as a daily cron job to pull and process the previous day's logs, keeping the dashboard up to date.
+The Green Algorithms Dashboard helps to make visible the environmental impacts of high performance computing (HPC) workloads. By connecting to workload managers such as SLURM, the dashboard automatically captures job-level information and translates it into meaningful insights into energy use, carbon emissions, and more. Users can see how their work contributes to overall resource consumption and emissions, whether at the level of individual users or across teams and institutions.
 
-> Have a quick look at the [Green Algorithms Dashboard demo](https://dashboard.green-algorithms.org/)!
+An intuitive, interactive Grafana interface combines high-level summaries—including easy-to-digest, relatable equivalences of carbon emissions expressed in terms of flights, car travel, or tree sequestration—with detailed breakdowns of resource usage at individual, team and organisation level
+
+![GA dashboard screenshot](./docs/images/user.png "GA dashboard")
+
+> #### Try it out yourself!
+> Check out our [demo website](https://dashboard.green-algorithms.org/) set up with mock data for visualising a running dashboard.
 > 
-> Log in using Username: uid_1 | Password: user1
+> Make sure to set the date range between May 2023 - June 2023 to see the data.
 >
-> This is set up with mock data for visualising a running dashboard.
-> Set the date range between May - June 2023 to see the data
+> Log in details:
+> - Username: uid_1 
+> - Password: user1
+
+### Key Features
+- Open-source 
+- Multi-level data aggregation across users, groups, departments, and institutions
+- Cluster-informed emissions estimation built into the system
+- Real-time carbon intensity via the Carbon Intensity API (for UK-based clusters only)
+- Grafana-based dashboard with interactive visualisations and plots
+- Visibility into carbon emissions from failed jobs
+- Data processed and stored locally on the HPC system for privacy and control
+
+### Who is it for?
+The dashboard is intended for users of research computing infrastructure, including researchers running computational workloads. System administrators and research software engineers play a key role in installing, configuring, and maintaining the dashboard on HPC systems.
+
+---
+
+# Deployment notes
+
+The Green Algorithms HPC Dashboard is built using the [Green Algorithms](https://doi.org/10.1002/advs.202100707) methodology. The only data used are the SLURM logs of individual jobs. It combines a data collection backend, a PostgreSQL database, and a Grafana server that queries the database and visualises the results. The backend should be configured as a daily cron job to pull and process the previous day's logs, keeping the dashboard up to date.
 
 By the end of this guide, you will have:
 
@@ -22,6 +46,9 @@ The system has three components:
 1. Backend - queries the HPC scheduler (here `SLURM` via `sacct`), aggregates usage per user per day, and calculates estimated energy use and carbon footprint.
 2. Database - a PostgreSQL database storing the processed usage data
 3. Frontend - a Grafana server that queries the database and displays the data as interactive graphs and charts
+
+
+![GA Dashboard flowchart](./docs/images/backend_flow_horizontal.png "GA Dashboard flowchart")
 
 ### Contents
 * [Prerequisites](#prerequisites)
