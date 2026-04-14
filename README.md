@@ -6,7 +6,7 @@ The Green Algorithms Dashboard helps to make visible the environmental impacts o
 
 An intuitive, interactive Grafana interface combines high-level summaries—including easy-to-digest, relatable equivalences of carbon emissions expressed in terms of flights, car travel, or tree sequestration—with detailed breakdowns of resource usage at individual, team and organisation level
 
-![GA dashboard screenshot](./docs/images/user.png "GA dashboard")
+![GA dashboard screenshot](./docs/images/user_light.png "GA dashboard")
 
 > #### Try it out yourself!
 > Check out our [demo website](https://dashboard.green-algorithms.org/) set up with mock data for visualising a running dashboard.
