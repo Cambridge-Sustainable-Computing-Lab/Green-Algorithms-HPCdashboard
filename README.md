@@ -98,12 +98,8 @@ This environment is where you will install the `ga_dashboard` package and its de
 For more information about `conda` and its [list of commands](https://docs.conda.io/projects/conda/en/latest/user-guide/cheatsheet.html), please go to the [conda documentation website](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html).
 
 
-### 2. Clone the repository and install python packages and dependencies
-Clone the repository:
-```bash
-git clone https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-HPCdashboard.git
-cd Green-Algorithms-HPCdashboard
-```
+### 2. Download the latest release and install python packages and dependencies
+Download the source code from the [latest release](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-HPCdashboard/releases) and extract it.
 Install the `ga_dashboard` python package and dependencies from `requirements.txt` in your conda environment.
 
 1. Run the following command in the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory):
