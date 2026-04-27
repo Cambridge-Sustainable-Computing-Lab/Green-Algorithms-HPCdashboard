@@ -98,7 +98,12 @@ This environment is where you will install the `ga_dashboard` package and its de
 For more information about `conda` and its [list of commands](https://docs.conda.io/projects/conda/en/latest/user-guide/cheatsheet.html), please go to the [conda documentation website](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html).
 
 
-### 2. Install python packages and dependencies
+### 2. Clone the repository and install python packages and dependencies
+Clone the repository:
+```bash
+git clone https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-HPCdashboard.git
+cd Green-Algorithms-HPCdashboard
+```
 Install the `ga_dashboard` python package and dependencies from `requirements.txt` in your conda environment.
 
 1. Run the following command in the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory):
@@ -157,16 +162,6 @@ Copy the template provided in `configuration/templates/config.yaml` to a locatio
 > [!NOTE]
 > If you choose to run the dashboard inside a Docker container, note that restarting the container can cause the database to be deleted and re-created. To prevent this, set `skip_db_overwrite: True` in `config.yaml`.
 
-#### Carbon intensity (CI)
-The dashboard uses carbon intensity (CI) data to estimate the carbon footprint of your HPC usage. There are three ways to configure this:
-
-1. **Carbon Intensity API (UK only)**
-If your cluster is based in the UK, the dashboard can pull dynamic carbon intensity data from the [Carbon Intensity API](https://carbonintensity.org.uk). To enable this, add the first three characters of your **postcode** to `config.yaml`. The dashboard uses a daily average of the carbon intensity values returned by the API.
-2. **Fixed carbon intensity value**
-For clusters outside the UK, you can provide a fixed carbon intensity value directly in `config.yaml`, e.g. the average carbon intensity in the data centre's location (you can find it [here](https://app.electricitymaps.com)). This will be used for all calculations.
-3. **Custom API integration**
-If you would like to use a different carbon intensity API for your region, you can implement your own integration using the `APIService` class in `ga_dashboard/backend/services/api_service.py`. Get in touch if you need guidance on this.
-
 ### 2. Cluster information file (`cluster_info.yaml`)
 Copy the template provided in `configuration/templates/cluster_info.yaml` and edit it with information about your HPC cluster. See `configuration/examples/cluster_info__demo.yaml` for a worked example.
 
@@ -177,6 +172,16 @@ For each partition (a set of computing nodes with a dedicated queue) you will ne
 - For GPU partitions only: `model_CPU` and `TDP_CPU`
 
 You will also need values for `institution`, `cluster_name`,`granularity_memory_request`, `PUE`, and other fields listed in the template.
+
+#### Carbon intensity (CI)
+The dashboard uses carbon intensity (CI) data to estimate the carbon footprint of your HPC usage. There are three ways to configure this:
+
+1. **Carbon Intensity API (UK only)**
+If your cluster is based in the UK, the dashboard can pull dynamic carbon intensity data from the [Carbon Intensity API](https://carbonintensity.org.uk). To enable this, add the first three characters of your **postcode** to `cluster_info.yaml`. The dashboard uses a daily average of the carbon intensity values returned by the API.
+2. **Fixed carbon intensity value**
+For clusters outside the UK, you can provide a fixed carbon intensity value directly in `cluster_info.yaml`, e.g. the average carbon intensity in the data centre's location (you can find it [here](https://app.electricitymaps.com)). This will be used for all calculations.
+3. **Custom API integration**
+If you would like to use a different carbon intensity API for your region, you can implement your own integration using the `APIService` class in `ga_dashboard/backend/services/api_service.py`. Get in touch if you need guidance on this.
 
 ### 3. Dashboard users file (`user_list.csv`)
 This file lists the users who will have access to the dashboard. Copy the template provided in `configuration/templates/user_list.csv` and populate with your users' details.
