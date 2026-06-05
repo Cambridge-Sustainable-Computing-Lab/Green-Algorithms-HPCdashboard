@@ -37,7 +37,7 @@ partitions:
     type: GPU
     model: "NVIDIA A100-SXM-80GB GPUs"
     TDP: 300 # from https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/PB-10577-001_v02.pdf
-    CPU_model: "AMD EPYC 7763"
+    model_CPU: "AMD EPYC 7763"
     TDP_CPU: 4.4 # from https://www.amd.com/fr/products/cpu/amd-epyc-7763
   birch:
     type: CPU
