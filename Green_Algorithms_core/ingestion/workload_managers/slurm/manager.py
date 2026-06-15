@@ -5,7 +5,7 @@ import numpy as np
 
 from Green_Algorithms_core.ingestion.workload_managers.base import BaseWorkloadManager
 from Green_Algorithms_core.utils import utils
-from Green_Algorithms_core.ingestion.workload_managers.slurm.sacct_client import SacctService
+from Green_Algorithms_core.ingestion.workload_managers.slurm.sacct_client import SacctClient
 
 class SlurmBase:
     """
@@ -283,7 +283,7 @@ class SlurmManager(SlurmBase, BaseWorkloadManager):
 
         # What we expect to be the usual case, where we run the sacct command.
         else:
-            self.logs_raw = SacctService.pull_logs_by_time(self.config_data['startDay'], self.config_data['endDay'], self.config_data['has_slurmAdmin'])                
+            self.logs_raw = SacctClient.pull_logs_by_time(self.config_data['startDay'], self.config_data['endDay'], self.config_data['has_slurmAdmin'])                
     
     def clean_logs(self):
         """
@@ -291,7 +291,7 @@ class SlurmManager(SlurmBase, BaseWorkloadManager):
         NB: the name of the columns ending with X need to be conserved, as they are used by the main script.
         """
         # self.logs_df_raw = self.logs_df.copy() # DEBUGONLY Save a copy of uncleaned raw for debugging mainly
-
+        self.raw_logs = self.raw_logs_to_df()
         self.logs_df = self.filter_finished_jobs() # Keep only those jobs that have finished - i.e. contains a valid End date/ finished state
 
         ### Calculate real memory usage
@@ -453,6 +453,7 @@ class SlurmManager(SlurmBase, BaseWorkloadManager):
                 self.df_agg = self.df_agg.loc[self.df_agg.Account_ == self.config_data['filterAccount']]
 
         self.df_agg_X = self.df_agg[[x for x in self.df_agg.columns if x[-1] == 'X']]
+        return self.df_agg_X
 
 
     ### Other utility methods

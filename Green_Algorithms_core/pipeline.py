@@ -11,7 +11,7 @@ from Green_Algorithms_core.processing.carbon import CarbonCalculator
 from Green_Algorithms_core.processing.carbon_intensity.ci_store import CIStore
 from Green_Algorithms_core.processing.context_metrics import ContextMetricsCalculator
 from Green_Algorithms_core.processing.energy import EnergyCalculator
-from Green_Algorithms_core.models.cluster_info_model import ClusterInfo
+from Green_Algorithms_core.data_models.cluster_info_model import ClusterInfo
 from Green_Algorithms_core.ingestion.workload_managers.slurm.manager import SlurmManager
 from Green_Algorithms_core.processing.carbon_intensity.carbon_intensity import CarbonIntensityService
 from Green_Algorithms_core.utils import utils
@@ -38,33 +38,23 @@ class HPCDataProcessor:
         self.config_data = config_data
 
     # Ingestion
-    def extract_data(self):
+    def extract_data(self) -> pd.DataFrame:
         if 'use_mock_agg_data' in self.config_data.keys(): # DEBUGONLY Create/use some mock jobs with different users
             return utils.get_mock_agg_data()
         
         ### Pull usage statistics from the workload manager
         WM = SlurmManager(self.config_data, self.cluster_info)
-        WM.pull_logs()
+        df_agg = WM.extract_logs()  # Pull and clean logs
 
-        ## Log the output for debugging
-        utils.save_slurm_logs(self.config_data, WM)
-
-        ### Turn usage logs into DataFrame
-        WM.raw_logs_to_df()
-
-        # And clean
-        WM.clean_logs()
         # Check if there are any jobs during the period from this directory and with these jobIDs
-        utils.check_empty_results(WM.df_agg, self.config_data)
+        utils.check_empty_results(df_agg, self.config_data)
 
         # Check that there is only one user's data if no admin right
         if not self.has_slurmAdmin:
-            if len(set(WM.df_agg_X.UserX)) > 1:
-                raise ValueError(f"More than one user's logs was included, despite --slurmAdmin not used: {set(WM.df_agg_X.UserX)}")
+            if len(set(df_agg.UserX)) > 1:
+                raise ValueError(f"More than one user's logs was included, despite --slurmAdmin not used: {set(df_agg.UserX)}")
 
-        # WM.df_agg_X.to_pickle("testdata/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
-
-        return WM.df_agg_X
+        return df_agg
     
     def enrich_data(self, df: pd.DataFrame, ci_store: CIStore = None) -> pd.DataFrame:
         """

@@ -1,9 +1,8 @@
 ## Client for interacting with SLURM using 'sacct' command.
 
 import subprocess
-import pandas as pd
 
-class SacctService:
+class SacctClient:
     """
     Client to interact with the SLURM workload manager using the 'sacct' command.
     Contains separate methods to pull logs in different contexts (by time, by JobID, etc.) and can be extended with more methods as needed.
@@ -11,7 +10,6 @@ class SacctService:
 
     bash_com = [
                 "sacct",
-                #"--allusers", # Diverges from GA4HPC; In GA4HPC '--allusers' is added only if user is an admin
                 "--format",
                 "UID,User,JobID,JobName,Submit,Start,End,Elapsed,Partition,NNodes,NCPUS,TotalCPU,CPUTime,"
                 "ReqMem,MaxRSS,WorkDir,State,Account,AllocTres",

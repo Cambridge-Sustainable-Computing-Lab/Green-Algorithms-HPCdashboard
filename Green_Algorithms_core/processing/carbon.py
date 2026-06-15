@@ -5,8 +5,8 @@
 
 import pandas as pd
 from datetime import datetime, time, timedelta
-from Green_Algorithms_core.models.cluster_info_model import ClusterInfo
-from Green_Algorithms_core.models.job_emissions_model import JobEmissionRecord
+from Green_Algorithms_core.data_models.cluster_info_model import ClusterInfo
+from Green_Algorithms_core.data_models.job_emissions_record import JobEmissionRecord
 
 class CarbonCalculator:
     def __init__(self, cluster_info: ClusterInfo, daily_avg_CI: dict = None):

@@ -3,7 +3,7 @@
 # e.g. number of trees needed to offset the carbon footprint, cost of electricity, equivalent distance driven.
 # ------------------------------------------------------------------
 import pandas as pd
-from Green_Algorithms_core.models.cluster_info_model import ClusterInfo
+from Green_Algorithms_core.data_models.cluster_info_model import ClusterInfo
 
 class ContextMetricsCalculator:
     def __init__(self, cluster_info: ClusterInfo, fixed_params: dict):

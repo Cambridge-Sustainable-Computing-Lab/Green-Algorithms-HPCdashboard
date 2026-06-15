@@ -162,9 +162,9 @@ class LogsDataProcessor:
 
         :return: pandas Dataframe containing processed data
         """
+        db_ci_store = DatabaseCIStore(self.db_params)
         dataprocessor = Green_Algorithms_core.HPCDataProcessor(self.config_data, self.cluster_info, self.fixed_params, self.has_slurmAdmin)
         df = dataprocessor.extract_data()
-        db_ci_store = DatabaseCIStore(self.db_params)
         df = dataprocessor.enrich_data(df, db_ci_store)
 
         ### Add user details to jobs
