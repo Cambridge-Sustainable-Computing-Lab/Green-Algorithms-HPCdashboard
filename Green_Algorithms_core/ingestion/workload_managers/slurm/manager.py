@@ -3,8 +3,9 @@ import os
 import pandas as pd
 import numpy as np
 
-from ga_core.utils import utils
-from ga_core.ingestion.workload_managers.slurm.sacct_client import SacctService
+from Green_Algorithms_core.ingestion.workload_managers.base import BaseWorkloadManager
+from Green_Algorithms_core.utils import utils
+from Green_Algorithms_core.ingestion.workload_managers.slurm.sacct_client import SacctService
 
 class SlurmBase:
     """
@@ -233,7 +234,7 @@ class SlurmBase:
         assert len(job_id_parts) <= 2, f"Can't parse the job ID: {x}"
         return job_id_parts[0]
 
-class SlurmManager(SlurmBase):
+class SlurmManager(SlurmBase, BaseWorkloadManager):
 
     def __init__(self, config_data:dict, cluster_info):
         """
@@ -255,6 +256,8 @@ class SlurmManager(SlurmBase):
         self.df_agg = None
         self.df_agg_X = None
 
+    
+    ### Implements abstract methods from BaseWorkloadManager
     def pull_logs(self):
         """
         Run the command line to pull usage from the workload manager.
@@ -282,15 +285,7 @@ class SlurmManager(SlurmBase):
         else:
             self.logs_raw = SacctService.pull_logs_by_time(self.config_data['startDay'], self.config_data['endDay'], self.config_data['has_slurmAdmin'])                
     
-    def raw_logs_to_df(self):
-        """
-        Convert raw logs output into a pandas dataframe - calling the static method convert2dataframe
-        """
-        delimiter = "," if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '' else "|"
-        self.logs_df = utils.convert2dataframe(self.logs_raw, types = {'NNodes': 'int64', 'NCPUS': 'int64'}, delimiter=delimiter)
-
-
-    def clean_logs_df(self):
+    def clean_logs(self):
         """
         Clean the different fields of the usage logs.
         NB: the name of the columns ending with X need to be conserved, as they are used by the main script.
@@ -458,6 +453,16 @@ class SlurmManager(SlurmBase):
                 self.df_agg = self.df_agg.loc[self.df_agg.Account_ == self.config_data['filterAccount']]
 
         self.df_agg_X = self.df_agg[[x for x in self.df_agg.columns if x[-1] == 'X']]
+
+
+    ### Other utility methods
+    def raw_logs_to_df(self):
+        """
+        Convert raw logs output into a pandas dataframe - calling the static method convert2dataframe
+        """
+        delimiter = "," if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '' else "|"
+        self.logs_df = utils.convert2dataframe(self.logs_raw, types = {'NNodes': 'int64', 'NCPUS': 'int64'}, delimiter=delimiter)
+
 
     def concat_logs_df(self, new_logs_df: pd.DataFrame):
         """

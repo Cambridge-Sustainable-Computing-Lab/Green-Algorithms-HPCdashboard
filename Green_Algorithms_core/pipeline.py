@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------
-# Main entry point for the ga_core package.
+# Main entry point for the Green_Algorithms_core package.
 # This module defines the HPCDataProcessor class, which orchestrates the data processing pipeline:
 # 1. Extracts raw logs from the workload manager (e.g. SLURM)
 # 2. Enriches the data by calculating energy usage, carbon footprint, and contextual metrics.
@@ -7,14 +7,14 @@
 # ------------------------------------------------------------------
 
 import pandas as pd
-from ga_core.processing.carbon import CarbonCalculator
-from ga_core.processing.carbon_intensity.ci_store import CIStore
-from ga_core.processing.context_metrics import ContextMetricsCalculator
-from ga_core.processing.energy import EnergyCalculator
-from ga_core.models.cluster_info_model import ClusterInfo
-from ga_core.ingestion.workload_managers.slurm.manager import SlurmManager
-from ga_core.processing.carbon_intensity.carbon_intensity import CarbonIntensityService
-from ga_core.utils import utils
+from Green_Algorithms_core.processing.carbon import CarbonCalculator
+from Green_Algorithms_core.processing.carbon_intensity.ci_store import CIStore
+from Green_Algorithms_core.processing.context_metrics import ContextMetricsCalculator
+from Green_Algorithms_core.processing.energy import EnergyCalculator
+from Green_Algorithms_core.models.cluster_info_model import ClusterInfo
+from Green_Algorithms_core.ingestion.workload_managers.slurm.manager import SlurmManager
+from Green_Algorithms_core.processing.carbon_intensity.carbon_intensity import CarbonIntensityService
+from Green_Algorithms_core.utils import utils
 
 class HPCDataProcessor:
     """
@@ -53,7 +53,7 @@ class HPCDataProcessor:
         WM.raw_logs_to_df()
 
         # And clean
-        WM.clean_logs_df()
+        WM.clean_logs()
         # Check if there are any jobs during the period from this directory and with these jobIDs
         utils.check_empty_results(WM.df_agg, self.config_data)
 

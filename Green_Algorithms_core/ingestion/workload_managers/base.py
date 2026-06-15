@@ -17,7 +17,7 @@ class BaseWorkloadManager(ABC):
         pass
 
     @abstractmethod
-    def clean_logs(self, logs: pd.DataFrame) -> pd.DataFrame:
+    def clean_logs(self) -> pd.DataFrame:
         """
         Clean the logs and return the cleaned DataFrame.
         """

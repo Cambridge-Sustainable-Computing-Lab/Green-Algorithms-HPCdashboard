@@ -4,9 +4,9 @@
 
 import pandas as pd
 from datetime import datetime, timedelta
-from ga_core.processing.carbon_intensity.ci_store import CIStore
-from ga_core.utils.api_service import APIService
-from ga_core.utils import utils
+from Green_Algorithms_core.processing.carbon_intensity.ci_store import CIStore
+from Green_Algorithms_core.utils.api_service import APIService
+from Green_Algorithms_core.utils import utils
 
 class CarbonIntensityService:
     """

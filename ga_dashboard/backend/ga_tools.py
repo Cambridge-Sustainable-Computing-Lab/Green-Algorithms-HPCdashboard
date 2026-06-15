@@ -7,7 +7,7 @@ import yaml
 import time as time_module
 import gc
 from tqdm import tqdm
-import ga_core
+import Green_Algorithms_core
 
 from ga_dashboard.backend.services.database_ci_store import DatabaseCIStore
 import ga_dashboard.backend.helpers.utils as utils
@@ -162,7 +162,7 @@ class LogsDataProcessor:
 
         :return: pandas Dataframe containing processed data
         """
-        dataprocessor = ga_core.HPCDataProcessor(self.config_data, self.cluster_info, self.fixed_params, self.has_slurmAdmin)
+        dataprocessor = Green_Algorithms_core.HPCDataProcessor(self.config_data, self.cluster_info, self.fixed_params, self.has_slurmAdmin)
         df = dataprocessor.extract_data()
         db_ci_store = DatabaseCIStore(self.db_params)
         df = dataprocessor.enrich_data(df, db_ci_store)
