@@ -1,5 +1,9 @@
+# ------------------------------------------------------------------
+# Service that implements CIStore interface from GA Core for storing and fetching CI data from database
+# ------------------------------------------------------------------
+
 from datetime import datetime
-from Green_Algorithms_core import CIStore
+from Green_Algorithms_core.src.ga_core import CIStore
 import pandas as pd
 
 from ga_dashboard.backend.services.database_service import DatabaseService

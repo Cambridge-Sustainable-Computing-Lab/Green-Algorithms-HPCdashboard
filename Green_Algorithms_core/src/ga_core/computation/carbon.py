@@ -5,8 +5,8 @@
 
 import pandas as pd
 from datetime import datetime, time, timedelta
-from Green_Algorithms_core.data_models.cluster_info_model import ClusterInfo
-from Green_Algorithms_core.data_models.job_emissions_record import JobEmissionRecord
+from Green_Algorithms_core.src.ga_core.data_models.cluster_info_model import ClusterInfo
+from Green_Algorithms_core.src.ga_core.data_models.job_emissions_record import JobEmissionRecord
 
 class CarbonCalculator:
     def __init__(self, cluster_info: ClusterInfo, daily_avg_CI: dict = None):
@@ -15,7 +15,7 @@ class CarbonCalculator:
 
     @staticmethod
     def calc_carbon_emission(records: list['JobEmissionRecord'], energy_per_hr: float) -> float:
-        """
+        '''
         Calculate the total carbon emission for a job spanning multiple time periods.
 
         A job is split into periods (e.g. daily, hourly).
@@ -30,7 +30,7 @@ class CarbonCalculator:
         :param records: time period slices of the job, each with duration and CI
         :param energy_per_hr: energy consumed per hour (total_energy / total_duration)
         :return: total carbon emission in gCO2
-        """
+        '''
         if not records:
             print("calc_carbon_emission(): No records provided.")
             return 0.0
@@ -39,17 +39,21 @@ class CarbonCalculator:
 
         return energy_per_hr * weighted_CI
 
-    def calculate_carbonFootprint_default(self, df, col_energy):
-        return df[col_energy] * self.cluster_info.CI
+    @staticmethod
+    def calculate_carbonFootprint_default(energy: float, CI: float):
+        '''
+        Calculate the carbon footprint, given a static carbon intensity
+        '''
+        return energy * CI
     
     def _calculate_carbonFootprint_by_row(self, row: pd.Series, suffix: str, daily_avg_CI: dict) -> pd.DataFrame:
-        """
+        '''
         Expand a job record (1 row) into per day records with energy usage on that day, hours of work on that day, and daily avg CI.
         Calculate the total carbon emissions for the job.
         :param row: a row from the job dataframe
         :param suffix: suffix for energy column (e.g. '', '_memoryNeededOnly', '_failedJobs')
         :param daily_avg_CI: dictionary mapping dates to their average carbon intensity values
-        """
+        '''
 
         start = row['StartDatetimeX']
         end = row['EndDatetimeX']
@@ -76,12 +80,16 @@ class CarbonCalculator:
         return CarbonCalculator.calc_carbon_emission(day_job_emissions, energy_per_hr)
     
     def run(self, df: pd.DataFrame) -> pd.DataFrame:
-
+        '''
+        Entry point for the carbon emissions calculation process for HPC jobs.
+        :param df: [pd.DataFrame] the dataframe containing the cleaned job details
+        :return: [pd.DataFrame] the same dataframe with carbon emissions added
+        '''
         for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
             if self.daily_avg_CI:
                 df[f'carbonFootprint{suffix}'] = df.apply(
                     lambda row: self._calculate_carbonFootprint_by_row(row, suffix, self.daily_avg_CI), axis=1
                 )
             else: #use default CI value from cluster yaml
-                df[f'carbonFootprint{suffix}'] = self.calculate_carbonFootprint_default(df, f'energy{suffix}')
+                df[f'carbonFootprint{suffix}'] = self.calculate_carbonFootprint_default(df[f'energy{suffix}'], self.cluster_info.CI)
         return df

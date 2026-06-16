@@ -6,10 +6,22 @@
 import numpy as np
 import pandas as pd
 
+from Green_Algorithms_core.src.ga_core.data_models.cluster_info_model import ClusterInfo
+
 class EnergyCalculator:
-    def __init__(self, cluster_info, fixed_params):
+    def __init__(self, cluster_info: ClusterInfo, fixed_params):
         self.cluster_info = cluster_info
         self.fixed_params = fixed_params
+    
+    @staticmethod
+    def calc_component_energy(time_hours: float, power_draw: float) -> float:
+        '''
+        Energy for one component (CPU, GPU, or memory) in kWh.
+        :param time_hours: [float] time in hours
+        :param power_draw: [float] power draw in Watts
+        :return: [float] energy in kWh
+        '''
+        return time_hours * power_draw / 1000
 
     def _calculate_energies_by_row(self, row):
         '''
@@ -26,11 +38,7 @@ class EnergyCalculator:
             # Raise error if key not found.
             # TODO Make checking of all keys more robust, and explain what to do when a key is missing.
             print(f"calculate_energies(): KeyError: {ke}. Exiting...")
-            exit
-
-        if not partition_info:  #is None:
-            print("calculate_energies(): partition_info is None. Exiting...")
-            exit
+            exit(1)
 
         if row.PartitionTypeX == 'CPU':
             TDP2use4CPU = partition_info.TDP
@@ -39,18 +47,26 @@ class EnergyCalculator:
             TDP2use4CPU = partition_info.TDP_CPU
             TDP2use4GPU = partition_info.TDP
 
-        row['energy_CPUs'] = row.TotalCPUtime2useX.total_seconds() / 3600 * TDP2use4CPU / 1000  # in kWh
+        row['energy_CPUs'] = self.calc_component_energy(row.TotalCPUtime2useX.total_seconds() / 3600, 
+                                                        TDP2use4CPU)
 
-        row['energy_GPUs'] = row.TotalGPUtime2useX.total_seconds() / 3600 * TDP2use4GPU / 1000  # in kWh
+        row['energy_GPUs'] = self.calc_component_energy(row.TotalGPUtime2useX.total_seconds() / 3600, 
+                                                        TDP2use4GPU)
 
         ### memory
         for suffix, memory2use in zip(['','_memoryNeededOnly'], [row.ReqMemX,row.NeededMemX]):
-            row[f'energy_memory{suffix}'] = row.WallclockTimeX.total_seconds()/3600 * memory2use * self.fixed_params['power_memory_perGB'] /1000 # in kWh
+            row[f'energy_memory{suffix}'] = self.calc_component_energy(row.WallclockTimeX.total_seconds() / 3600, 
+                                                                       memory2use * self.fixed_params['power_memory_perGB'])
             row[f'energy{suffix}'] = (row.energy_CPUs +  row.energy_GPUs + row[f'energy_memory{suffix}']) * self.cluster_info.PUE # in kWh
 
         return row
     
     def run(self, df: pd.DataFrame) -> pd.DataFrame:
+        '''
+        Entry point for the energy estimation process for HPC jobs.
+        :param df: [pd.DataFrame] the dataframe containing the cleaned job details
+        :return: [pd.DataFrame] the same dataframe with the energy estimations added
+        '''
         df = df.apply(self._calculate_energies_by_row, axis=1)
         try:
             df['energy_failedJobs'] = np.where(df.StateX == 0, df.energy, 0)

@@ -4,7 +4,7 @@
 from abc import ABC, abstractmethod
 import pandas as pd
 
-from Green_Algorithms_core.data_models.normalised_job_record import NORMALISED_SCHEMA
+from Green_Algorithms_core.src.ga_core.data_models.normalised_job_record import NORMALISED_SCHEMA
 
 class BaseWorkloadManager(ABC):
     """
