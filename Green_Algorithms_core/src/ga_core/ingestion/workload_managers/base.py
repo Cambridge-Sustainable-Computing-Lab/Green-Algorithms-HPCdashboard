@@ -9,7 +9,42 @@ from Green_Algorithms_core.src.ga_core.data_models.normalised_job_record import 
 class BaseWorkloadManager(ABC):
     """
     Abstract base class for workload managers. All workload managers must inherit from this class and implement the abstract methods.
+    This class implements a registration based factory that returns an instance of a subclass depending on the given workload manager (e.g. SLURM, PBS etc.)
+
+    It works by registering subclasses automatically at class definition via __init__subclass__. 
+    To register a subclass, pass 'manager_type' as an argument in the class signature, e.g.:
+
+        class SlurmManager(BaseWorkloadManager, manager_type="slurm"):
+            ...
+        
+    Registered subclasses can then be instantiated by using 'manager_type' as an identifier of the subclass like:
+
+        manager = BaseWorkloadManager.create("slurm")
     """
+    _registry: dict[str, type] = {}
+
+    def __init_subclass__(cls, manager_type: str = None, **kwargs):
+        """
+        Gets called automatically by Python whenever a class inherits from BaseWorkloadManager.
+
+        :param manager_type: string used to identify the subclass
+        :param **kwargs: any additional class-level keyword arguments, forwarded to the parent via super()
+        """
+        if manager_type:
+            BaseWorkloadManager._registry[manager_type] = cls
+
+    @classmethod
+    def create(cls, manager_type: str, **kwargs) -> "BaseWorkloadManager":
+        """
+        Returns the instance of the subclass indentified using 'manager_type'
+
+        :param manager_type: string used to identify the subclass
+        :param **kwargs: keyword arguments forwarded to the subclass __init__
+        :return: instance of the subclass corresponding to 'manager_type'
+        """
+        if manager_type not in cls._registry:
+            raise ValueError(f"Unknown workload manager: {manager_type!r}. Please check 'workload_manager' in your cluster configuration.")
+        return cls._registry[manager_type](**kwargs)
 
     def extract_logs(self) -> pd.DataFrame:
         """

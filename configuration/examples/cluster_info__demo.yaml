@@ -7,6 +7,7 @@
 ---
 institution: "University of ..."
 cluster_name: "OurCluster"
+workload_manager: "SLURM"
 granularity_memory_request: 6 # in GB
 partitions:
   yew:

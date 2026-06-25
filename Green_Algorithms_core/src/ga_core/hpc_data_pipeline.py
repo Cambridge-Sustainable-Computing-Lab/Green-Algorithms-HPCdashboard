@@ -12,6 +12,7 @@ from Green_Algorithms_core.src.ga_core.computation.carbon_intensity.ci_store imp
 from Green_Algorithms_core.src.ga_core.computation.context_metrics import ContextMetricsCalculator
 from Green_Algorithms_core.src.ga_core.computation.energy import EnergyCalculator
 from Green_Algorithms_core.src.ga_core.data_models.cluster_info_model import ClusterInfo
+from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.base import BaseWorkloadManager
 from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.slurm.manager import SlurmManager
 from Green_Algorithms_core.src.ga_core.computation.carbon_intensity.carbon_intensity import CarbonIntensityService
 from Green_Algorithms_core.src.ga_core.utils import utils
@@ -44,7 +45,7 @@ class HPCDataProcessor:
                 return utils.get_mock_agg_data()
             
             ### Pull usage statistics from the workload manager
-            WM = SlurmManager(self.config_data, self.cluster_info)
+            WM = BaseWorkloadManager.create(manager_type=self.cluster_info.workload_manager, config_data=self.config_data, cluster_info=self.cluster_info)
             df_agg = WM.extract_logs()  # Pull and clean logs
 
             # Check if there are any jobs during the period from this directory and with these jobIDs

@@ -1,7 +1,28 @@
+# ------------------------------------------------------------------
 # Data models to represent cluster information, corresponding validations, and helper methods for instantiation.
+# ------------------------------------------------------------------
 
 from dataclasses import dataclass, field
 from typing import Optional, Dict
+
+"""
+Useful definitions:
+
+TDP (Thermal Design Power) [watts]
+    (Manufacturer-specified) Maximum thermal power dissipation of a processor (CPU or GPU) under normal operating workloads
+
+PUE (Power Usage Effectiveness)
+    A measure of data center energy efficiency defined as PUE = Total facility energy / IT equipment energy
+
+CI (Carbon Intensity) [gCO₂e/kWh]
+    The amount of CO₂ equivalent emissions associated with electricity generation
+
+Energy Cost [per kWh]
+    Cost of electricity per unit of energy
+
+Memory Request Granularity [GigaBytes]
+    It represents the smallest memory unit users can reserve
+"""
 
 @dataclass
 class PartitionInfo:
@@ -58,6 +79,7 @@ class ClusterInfo:
     CI: float
     energy_cost: EnergyCost
     postcode: Optional[str] = None
+    workload_manager: str = "slurm" # Defaulting to SLURM
 
     # Optional parameters if the html output is used.
     texts_intro: Dict[str, str] = field(default_factory=dict)
@@ -91,6 +113,7 @@ class ClusterInfo:
         return cls(
             institution=data["institution"],
             cluster_name=data["cluster_name"],
+            workload_manager=data["workload_manager"].lower(),
             granularity_memory_request=data["granularity_memory_request"],
             partitions=partitions,
             PUE=data["PUE"],
@@ -102,6 +125,5 @@ class ClusterInfo:
             texts_intro=data.get("texts_intro", {}),
             default_unit_RSS=data.get("default_unit_RSS", "K")
         )
-        
 
     

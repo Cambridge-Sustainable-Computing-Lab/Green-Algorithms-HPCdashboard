@@ -234,7 +234,7 @@ class SlurmBase:
         assert len(job_id_parts) <= 2, f"Can't parse the job ID: {x}"
         return job_id_parts[0]
 
-class SlurmManager(SlurmBase, BaseWorkloadManager):
+class SlurmManager(SlurmBase, BaseWorkloadManager, manager_type="slurm"):
 
     def __init__(self, config_data:dict, cluster_info):
         """
