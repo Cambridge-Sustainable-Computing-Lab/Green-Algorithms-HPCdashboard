@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------
 # Implements Green Algorithms carbon calculation methodology
-# This module contains the CarbonCalculator class, which calculates the carbon footprint of HPC jobs.
+# This module contains the CarbonCalculator class, which calculates the carbon footprint of jobs based on energy usage. Energy is estimated in a different class.
 # ------------------------------------------------------------------
 
 import pandas as pd

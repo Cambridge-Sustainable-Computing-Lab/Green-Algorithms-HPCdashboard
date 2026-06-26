@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------
-# Calculates contextually equivalent carbon metrics 
+# Calculates some equivalences of carbon footprint to put impacts into context 
 # e.g. number of trees needed to offset the carbon footprint, cost of electricity, equivalent distance driven.
 # ------------------------------------------------------------------
 import pandas as pd
