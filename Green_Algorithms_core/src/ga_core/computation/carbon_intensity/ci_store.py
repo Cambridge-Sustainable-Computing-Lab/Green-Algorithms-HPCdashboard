@@ -1,18 +1,19 @@
 # ------------------------------------------------------------------
 # Abstract base class for CI data storage backends.
 # Implement this interface to add a new storage backend (e.g. database, file).
+# NOTE: This class acts as an interface between the ga_core package and GA Dashboard for storing CI data in PostgreSQL DB.
 # ------------------------------------------------------------------
  
 from abc import ABC, abstractmethod
 import pandas as pd
  
-class CIStore(ABC):
+class CIStorageBackend(ABC):
     """
-    Contract for CI data storage backends.
+    This is an abstract base class (ABC) that defines a common interface for saving and fetching CI data from backend storage.
+    CI data can be stored to avoid repeated API calls and processing of CI data for dates that are already processed.
  
-    ga_hpc_core depends only on this interface — it has no knowledge
-    of how or where data is stored. Storage implementations live in
-    the tools that need them.
+    ga_core depends only on this interface — it has no knowledge of how or where data is stored. 
+    Storage implementations live in the tools that need them (e.g. GA Dashboard).
     """
  
     @abstractmethod
@@ -34,4 +35,4 @@ class CIStore(ABC):
         :param ci_data: DataFrame with columns ['ci_date', 'ci_day_avg']
         :param source: origin of the data (e.g. API base URL domain)
         """
-        ...
+        ... 

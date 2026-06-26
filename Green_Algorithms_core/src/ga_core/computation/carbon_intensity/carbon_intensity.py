@@ -4,7 +4,7 @@
 
 import pandas as pd
 from datetime import datetime, timedelta
-from Green_Algorithms_core.src.ga_core.computation.carbon_intensity.ci_store import CIStore
+from Green_Algorithms_core.src.ga_core.computation.carbon_intensity.ci_store import CIStorageBackend
 from Green_Algorithms_core.src.ga_core.utils.api_service import APIService
 from Green_Algorithms_core.src.ga_core.utils import utils
 
@@ -14,7 +14,7 @@ class CarbonIntensityService:
 
     NOTE: fetch_CI_data() is designed for the UK Carbon Intensity API. To support a different API, subclass this and override fetch_CI_data().
     """
-    def __init__(self, postcode: str, ci_store: CIStore = None, base_url: str ="https://api.carbonintensity.org.uk/regional/intensity/", api_key: str = None):
+    def __init__(self, postcode: str, ci_store: CIStorageBackend = None, base_url: str ="https://api.carbonintensity.org.uk/regional/intensity/", api_key: str = None):
         """
         :param postcode: UK postcode 
         :param ci_store: CI data storage backend

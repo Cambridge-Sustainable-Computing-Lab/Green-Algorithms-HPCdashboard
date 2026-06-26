@@ -3,13 +3,13 @@
 # ------------------------------------------------------------------
 
 from datetime import datetime
-from Green_Algorithms_core.src.ga_core import CIStore
+from Green_Algorithms_core.src.ga_core import CIStorageBackend
 import pandas as pd
 
 from ga_dashboard.backend.services.database_service import DatabaseService
 from ga_dashboard.database.table_col_definitions import CARBON_INTENSITY_DATA_COLUMNS
 
-class DatabaseCIStore(CIStore):
+class DatabaseCIStore(CIStorageBackend):
     """
     Implements CIStore interface (from Green_Algorithms_core package) for storing and fetching carbon intensity data from the database.
     """

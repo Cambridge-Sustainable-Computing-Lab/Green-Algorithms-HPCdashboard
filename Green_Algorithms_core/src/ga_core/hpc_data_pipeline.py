@@ -8,12 +8,11 @@
 
 import pandas as pd
 from Green_Algorithms_core.src.ga_core.computation.carbon import CarbonCalculator
-from Green_Algorithms_core.src.ga_core.computation.carbon_intensity.ci_store import CIStore
+from Green_Algorithms_core.src.ga_core.computation.carbon_intensity.ci_store import CIStorageBackend
 from Green_Algorithms_core.src.ga_core.computation.context_metrics import ContextMetricsCalculator
 from Green_Algorithms_core.src.ga_core.computation.energy import EnergyCalculator
 from Green_Algorithms_core.src.ga_core.data_models.cluster_info_model import ClusterInfo
 from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.base import BaseWorkloadManager
-from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.slurm.manager import SlurmManager
 from Green_Algorithms_core.src.ga_core.computation.carbon_intensity.carbon_intensity import CarbonIntensityService
 from Green_Algorithms_core.src.ga_core.utils import utils
 
@@ -61,7 +60,7 @@ class HPCDataProcessor:
         except Exception as e: # TODO: More robust exception handling
             raise RuntimeError(f"extract_data(): failed to extract data from workload manager: {e}") from e
     
-    def enrich_data(self, df: pd.DataFrame, ci_store: CIStore = None) -> pd.DataFrame:
+    def enrich_data(self, df: pd.DataFrame, ci_store: CIStorageBackend = None) -> pd.DataFrame:
         """
         Adds data about the carbon footprint, etc.
         :param df: [pd.DataFrame] The existing data we've extracted.

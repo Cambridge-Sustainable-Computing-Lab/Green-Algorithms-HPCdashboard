@@ -23,7 +23,7 @@ class EnergyCalculator:
         '''
         return time_hours * power_draw / 1000
 
-    def _calculate_energies_by_row(self, row):
+    def _calc_energies_by_row(self, row):
         '''
         Calculate the energy usage based on the job's parameters
         :param row: [pd.Series] one row of usage statistics, corresponding to one job
@@ -37,7 +37,7 @@ class EnergyCalculator:
         except KeyError as ke:
             # Raise error if key not found.
             # TODO Make checking of all keys more robust, and explain what to do when a key is missing.
-            print(f"calculate_energies(): KeyError: {ke}. Exiting...")
+            print(f"_calc_energies_by_row(): KeyError: {ke}. Exiting...")
             exit(1)
 
         if row.PartitionTypeX == 'CPU':
@@ -67,7 +67,7 @@ class EnergyCalculator:
         :param df: [pd.DataFrame] the dataframe containing the cleaned job details
         :return: [pd.DataFrame] the same dataframe with the energy estimations added
         '''
-        df = df.apply(self._calculate_energies_by_row, axis=1)
+        df = df.apply(self._calc_energies_by_row, axis=1)
         try:
             df['energy_failedJobs'] = np.where(df.StateX == 0, df.energy, 0)
         except AttributeError as err:

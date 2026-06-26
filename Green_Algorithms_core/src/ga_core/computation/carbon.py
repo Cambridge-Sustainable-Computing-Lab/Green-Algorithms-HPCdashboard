@@ -40,13 +40,13 @@ class CarbonCalculator:
         return energy_per_hr * weighted_CI
 
     @staticmethod
-    def calculate_carbonFootprint_default(energy: float, CI: float):
+    def calc_carbonFootprint_default(energy: float, CI: float):
         '''
         Calculate the carbon footprint, given a static carbon intensity
         '''
         return energy * CI
     
-    def _calculate_carbonFootprint_by_row(self, row: pd.Series, suffix: str, daily_avg_CI: dict) -> pd.DataFrame:
+    def _calc_carbonFootprint_by_row(self, row: pd.Series, suffix: str, daily_avg_CI: dict) -> pd.DataFrame:
         '''
         Expand a job record (1 row) into per day records with energy usage on that day, hours of work on that day, and daily avg CI.
         Calculate the total carbon emissions for the job.
@@ -88,8 +88,8 @@ class CarbonCalculator:
         for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
             if self.daily_avg_CI:
                 df[f'carbonFootprint{suffix}'] = df.apply(
-                    lambda row: self._calculate_carbonFootprint_by_row(row, suffix, self.daily_avg_CI), axis=1
+                    lambda row: self._calc_carbonFootprint_by_row(row, suffix, self.daily_avg_CI), axis=1
                 )
             else: #use default CI value from cluster yaml
-                df[f'carbonFootprint{suffix}'] = self.calculate_carbonFootprint_default(df[f'energy{suffix}'], self.cluster_info.CI)
+                df[f'carbonFootprint{suffix}'] = self.calc_carbonFootprint_default(df[f'energy{suffix}'], self.cluster_info.CI)
         return df
