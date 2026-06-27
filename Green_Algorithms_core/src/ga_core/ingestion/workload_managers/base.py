@@ -1,5 +1,12 @@
-## This file must contain the Abstract base class that all workload managers must inherit from.
-## The intention is to have an abstract class that defines the functions each workload manager must implement, e.g. pull_logs(), clean_logs(), etc.
+# ------------------------------------------------------------------
+# This file defines the Abstract Base Class (ABC) that all workload manager implementations must inherit from. 
+# By inheriting from ABC and decorating methods with @abstractmethod, Python enforces that every concrete subclass
+# implements the required interface methods (e.g. pull_logs(), clean_logs()).
+#
+# This pattern decouples the rest of the codebase from any specific workload manager implementation 
+#
+# ABC docs: https://docs.python.org/3/library/abc.html
+# ------------------------------------------------------------------
 
 from abc import ABC, abstractmethod
 import pandas as pd

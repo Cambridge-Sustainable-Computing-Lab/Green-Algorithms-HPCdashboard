@@ -1,3 +1,8 @@
+# ------------------------------------------------------------------
+# This file implements the BaseWorkloadManager abstract class for SLURM.
+# It contains SLURM specifc utility functions to perform some pre-processing steps to SLURM logs.
+# ------------------------------------------------------------------
+
 import datetime
 import os
 import pandas as pd
@@ -7,7 +12,7 @@ from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.base import B
 from Green_Algorithms_core.src.ga_core.utils import utils
 from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.slurm.sacct_client import SacctClient
 
-class SlurmBase:
+class SlurmUtils:
     """
     A utility class for processing and analyzing SLURM data from HPC cluster job schedulers. 
     Handles data transformation, parsing, cleaning, and metric calculations to support 
@@ -233,8 +238,43 @@ class SlurmBase:
         job_id_parts = x.split('_')
         assert len(job_id_parts) <= 2, f"Can't parse the job ID: {x}"
         return job_id_parts[0]
+    
+        ### Other utility methods
+    def raw_logs_to_df(self):
+        """
+        Convert raw logs output into a pandas dataframe - calling the static method convert2dataframe
+        """
+        delimiter = "," if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '' else "|"
+        self.logs_df = utils.convert2dataframe(self.logs_raw, types = {'NNodes': 'int64', 'NCPUS': 'int64'}, delimiter=delimiter)
 
-class SlurmManager(SlurmBase, BaseWorkloadManager, manager_type="slurm"):
+
+    def concat_logs_df(self, new_logs_df: pd.DataFrame):
+        """
+        Concatenate the existing logs dataframe with a new one, for example when we want to add finished jobs to previously-fetched logs.
+        :param new_logs_df: [pd.DataFrame] new logs dataframe to concatenate with the existing one.
+        """
+        if self.logs_df is None:
+            raise ValueError("logs_df is not initialised. Run pull_logs() and raw_logs_to_df() first.")
+        
+        self.logs_df = pd.concat([self.logs_df, new_logs_df], ignore_index=True)
+
+    def filter_finished_jobs(self) -> pd.DataFrame:
+        '''
+        Filter finished jobs from the logs dataframe using the 'End' column if available, else the 'State' column.
+        '''
+        if 'End' in self.logs_df:
+            mask = self.logs_df['End'].notna() & (self.logs_df['End'] != "Unknown")
+        else: 
+            ## NOTE: This is a temporary workaround for retrocompatibility since in earlier versions 'End' field was not fetched. Must be removed eventually.
+            mask = ~self.logs_df['State'].isin(self.unfinished_states) 
+        
+        return self.logs_df[mask].copy()
+
+class SlurmManager(SlurmUtils, BaseWorkloadManager, manager_type="slurm"):
+    """
+    This class implements the BaseWorkloadManager abstract class and inherits from SlurmUtils. 
+    'manager_type="slurm"' is used to register this class with the register based factory defined in BaseWorkloadManager.
+    """
 
     def __init__(self, config_data:dict, cluster_info):
         """
@@ -455,35 +495,4 @@ class SlurmManager(SlurmBase, BaseWorkloadManager, manager_type="slurm"):
         self.df_agg_X = self.df_agg[[x for x in self.df_agg.columns if x[-1] == 'X']]
         return self.df_agg_X
 
-
-    ### Other utility methods
-    def raw_logs_to_df(self):
-        """
-        Convert raw logs output into a pandas dataframe - calling the static method convert2dataframe
-        """
-        delimiter = "," if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '' else "|"
-        self.logs_df = utils.convert2dataframe(self.logs_raw, types = {'NNodes': 'int64', 'NCPUS': 'int64'}, delimiter=delimiter)
-
-
-    def concat_logs_df(self, new_logs_df: pd.DataFrame):
-        """
-        Concatenate the existing logs dataframe with a new one, for example when we want to add finished jobs to previously-fetched logs.
-        :param new_logs_df: [pd.DataFrame] new logs dataframe to concatenate with the existing one.
-        """
-        if self.logs_df is None:
-            raise ValueError("logs_df is not initialised. Run pull_logs() and raw_logs_to_df() first.")
-        
-        self.logs_df = pd.concat([self.logs_df, new_logs_df], ignore_index=True)
-
-    def filter_finished_jobs(self) -> pd.DataFrame:
-        '''
-        Filter finished jobs from the logs dataframe using the 'End' column if available, else the 'State' column.
-        '''
-        if 'End' in self.logs_df:
-            mask = self.logs_df['End'].notna() & (self.logs_df['End'] != "Unknown")
-        else: 
-            ## NOTE: This is a temporary workaround for retrocompatibility since in earlier versions 'End' field was not fetched. Must be removed eventually.
-            mask = ~self.logs_df['State'].isin(self.unfinished_states) 
-        
-        return self.logs_df[mask].copy()
         

@@ -1,6 +1,7 @@
 # ------------------------------------------------------------------
 # Implements Green Algorithms energy calculation methodology
-# Estimates energy consumption of HPC jobs based on their resource usage and the cluster information.
+# Contains the EnergyCalculator class that estimates energy consumption of HPC jobs 
+# based on their resource usage and the cluster information.
 # ------------------------------------------------------------------
 
 import numpy as np

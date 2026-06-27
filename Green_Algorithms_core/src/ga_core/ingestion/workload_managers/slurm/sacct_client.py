@@ -1,4 +1,6 @@
-## Client for interacting with SLURM using 'sacct' command.
+# ------------------------------------------------------------------
+# Contains the client for interacting with SLURM using 'sacct' command.
+# ------------------------------------------------------------------
 
 import subprocess
 

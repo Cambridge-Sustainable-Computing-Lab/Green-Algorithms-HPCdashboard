@@ -1,3 +1,9 @@
+# ------------------------------------------------------------------
+# Contains the data model for a single (cleaned) job record. 
+# Used as a contract between the data pipeline and workload manager adapter (BaseWorkloadManager)
+# It helps make sure that the data is prepared correctly before enriching.
+# ------------------------------------------------------------------
+
 from dataclasses import dataclass
 from datetime import timedelta
 import pandas as pd

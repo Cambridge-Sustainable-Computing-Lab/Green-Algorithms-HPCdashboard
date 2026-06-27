@@ -1,5 +1,6 @@
 # ------------------------------------------------------------------
-# Carbon Intensity Service (add carbon intensity related code here)
+# This service class defines methods to fetch carbon intensity using an API and 
+# perform required processing steps to prepare CI data to be used for further calculations.
 # ------------------------------------------------------------------
 
 import pandas as pd

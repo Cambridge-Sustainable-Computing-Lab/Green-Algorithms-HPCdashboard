@@ -1,7 +1,11 @@
 # ------------------------------------------------------------------
-# Abstract base class for CI data storage backends.
+# This file defines an abstract base class (ABC) for CI data storage backends.
 # Implement this interface to add a new storage backend (e.g. database, file).
-# NOTE: This class acts as an interface between the ga_core package and GA Dashboard for storing CI data in PostgreSQL DB.
+# 
+# ABC docs: https://docs.python.org/3/library/abc.html
+# 
+# NOTE: This abstract class is defined here since it acts as an interface between the ga_core package and GA Dashboard,
+# to allow for storage and retrieval of CI data to and from dashboard's database.
 # ------------------------------------------------------------------
  
 from abc import ABC, abstractmethod

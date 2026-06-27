@@ -3,7 +3,7 @@
 # This module defines the HPCDataProcessor class, which orchestrates the data processing pipeline:
 # 1. Extracts raw logs from the workload manager (e.g. SLURM)
 # 2. Enriches the data by calculating energy usage, carbon footprint, and contextual metrics.
-# 3. Stores the enriched data using a CIStore implementation (Optional)
+# 3. Stores the enriched data using a CIStorageBackend implementation (Optional)
 # ------------------------------------------------------------------
 
 import pandas as pd

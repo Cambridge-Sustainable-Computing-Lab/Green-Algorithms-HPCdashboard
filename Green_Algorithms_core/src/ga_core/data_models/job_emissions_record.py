@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------
-# Data model for representing emissions for a job on a specific date. 
+# Contains the data model for representing emissions for a job on a specific date. 
 # Used for calculating carbon emissions based on energy usage and day-to-day carbon intensity.
 # ------------------------------------------------------------------
 
