@@ -6,6 +6,9 @@
 # This pattern decouples the rest of the codebase from any specific workload manager implementation 
 #
 # ABC docs: https://docs.python.org/3/library/abc.html
+#
+# NOTE: Make sure to import any subclasses of BaseWorkloadManager in workload_managers/__init__.py 
+# to trigger the factory-based registrations
 # ------------------------------------------------------------------
 
 from abc import ABC, abstractmethod
@@ -37,6 +40,7 @@ class BaseWorkloadManager(ABC):
         :param manager_type: string used to identify the subclass
         :param **kwargs: any additional class-level keyword arguments, forwarded to the parent via super()
         """
+        super().__init_subclass__(**kwargs) 
         if manager_type:
             BaseWorkloadManager._registry[manager_type] = cls
 

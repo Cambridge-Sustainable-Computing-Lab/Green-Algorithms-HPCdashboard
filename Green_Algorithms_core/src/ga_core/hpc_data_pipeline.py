@@ -12,7 +12,7 @@ from Green_Algorithms_core.src.ga_core.computation.carbon_intensity.ci_store imp
 from Green_Algorithms_core.src.ga_core.computation.context_metrics import ContextMetricsCalculator
 from Green_Algorithms_core.src.ga_core.computation.energy import EnergyCalculator
 from Green_Algorithms_core.src.ga_core.data_models.cluster_info_model import ClusterInfo
-from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.base import BaseWorkloadManager
+from Green_Algorithms_core.src.ga_core.ingestion.workload_managers import BaseWorkloadManager
 from Green_Algorithms_core.src.ga_core.computation.carbon_intensity.carbon_intensity import CarbonIntensityService
 from Green_Algorithms_core.src.ga_core.utils import utils
 

@@ -1,0 +1,2 @@
+from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.base import BaseWorkloadManager
+from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.slurm.manager import SlurmManager
