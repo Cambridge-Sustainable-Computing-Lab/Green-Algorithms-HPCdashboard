@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------
-# Contains data models to represent cluster information, corresponding validations, and helper methods for instantiation.
+# Contains data models to represent cluster information. Also includes data validation methods and helper methods for instantiation.
 # Using this data model ensures that the cluster config ga_core receives is correct.
 # 
 # It must always be in sync with the cluster config. 
@@ -19,10 +19,10 @@ PUE (Power Usage Effectiveness)
     A measure of data center energy efficiency defined as PUE = Total facility energy / IT equipment energy
 
 CI (Carbon Intensity) [gCO₂e/kWh]
-    The amount of CO₂ equivalent emissions associated with electricity generation
+The amount of greenhouse gas emissions associated with electricity consumption (i.e. from generation and distribution).
 
-Energy Cost [per kWh]
-    Cost of electricity per unit of energy
+Energy Cost [<currency> per kWh]
+    Financial cost of electricity per unit of energy
 
 Memory Request Granularity [GigaBytes]
     It represents the smallest memory unit users can reserve

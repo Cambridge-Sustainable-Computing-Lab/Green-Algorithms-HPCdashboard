@@ -17,7 +17,7 @@ class CIStorageBackend(ABC):
     CI data can be stored to avoid repeated API calls and processing of CI data for dates that are already processed.
  
     ga_core depends only on this interface — it has no knowledge of how or where data is stored. 
-    Storage implementations live in the tools that need them (e.g. GA Dashboard).
+Implementations of this class (for different CI sources) are directly included in the tools that call them (e.g. in the Green Algorithms Dashboard repository), inheriting from `CIStorageBackend`.
     """
  
     @abstractmethod
