@@ -1,9 +1,9 @@
 # ------------------------------------------------------------------
-# Contains data models to represent cluster information. Also includes data validation methods and helper methods for instantiation.
-# Using this data model ensures that the cluster config ga_core receives is correct.
+# Contains the data models used to represent cluster configurations passed to ga_core. 
+# It also includes data validation methods and helper methods for instantiation.
 # 
-# It must always be in sync with the cluster config. 
-# Update the ClusterInfo.from_dict() function to include new cluster configs.
+# Any cluster info config must be structured around these models. 
+# NOTE: If the structure of the cluster info config file changes, this file must be updated.
 # ------------------------------------------------------------------
 
 from dataclasses import dataclass, field

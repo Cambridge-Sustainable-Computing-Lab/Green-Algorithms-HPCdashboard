@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------
 # Contains the data model for a single (cleaned) job record. 
 # Used as a contract between the data pipeline and workload manager adapter (BaseWorkloadManager)
-# It helps make sure that the data is prepared correctly before enriching.
+# It helps make sure that the data is prepared correctly before enriching with energy consumption, GHG emissions etc.
 # ------------------------------------------------------------------
 
 from dataclasses import dataclass
