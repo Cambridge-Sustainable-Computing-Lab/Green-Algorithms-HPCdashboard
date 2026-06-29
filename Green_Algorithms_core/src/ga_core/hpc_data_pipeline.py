@@ -20,7 +20,7 @@ class HPCDataProcessor:
     """
     Data processor class to load settings, extract, process, and store logs.
     """
-    def __init__(self, config_data: dict, cluster_info: dict, fixed_params: dict, has_slurmAdmin: bool = True):
+    def __init__(self, config_data: dict, cluster_info: dict, fixed_params: dict, all_users_access: bool = True):
         """
         Loads cluster information, fixed parameters file, database settings, and users information using config data.
         Initialses Green Algorithms Tools (GA_tools) object - used for processing logs.
@@ -29,13 +29,13 @@ class HPCDataProcessor:
         :param cluster_info: dict containing cluster information
         :param fixed_params: dict containing fixed parameters
         :param users_df: pd.DataFrame containing user information
-        :param has_slurmAdmin: bool indicating if slurm admin rights are available
+        :param all_users_access: bool indicating if slurm admin rights are available
         """
 
         self.cluster_info = ClusterInfo.from_dict(cluster_info)
         self.fixed_params = fixed_params
-        self.has_slurmAdmin = has_slurmAdmin
         self.config_data = config_data
+        self.config_data['all_users_access'] = all_users_access
 
     # Ingestion
     def extract_data(self) -> pd.DataFrame:
@@ -51,7 +51,7 @@ class HPCDataProcessor:
             utils.check_empty_results(df_agg, self.config_data)
 
             # Check that there is only one user's data if no admin right
-            if not self.has_slurmAdmin:
+            if not self.config_data['all_users_access']:
                 if len(set(df_agg.UserX)) > 1:
                     raise ValueError(f"More than one user's logs was included, despite --slurmAdmin not used: {set(df_agg.UserX)}")
 

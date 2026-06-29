@@ -323,7 +323,7 @@ class SlurmManager(SlurmUtils, BaseWorkloadManager, manager_type="slurm"):
 
         # What we expect to be the usual case, where we run the sacct command.
         else:
-            self.logs_raw = SacctClient.pull_logs_by_time(self.config_data['startDay'], self.config_data['endDay'], self.config_data['has_slurmAdmin'])                
+            self.logs_raw = SacctClient.pull_logs_by_time(self.config_data['startDay'], self.config_data['endDay'], self.config_data['all_users_access'])                
     
     def clean_logs(self):
         """
