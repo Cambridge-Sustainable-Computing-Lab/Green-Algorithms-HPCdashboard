@@ -180,7 +180,7 @@ class SlurmUtils:
             return 1.0
         elif x.NeededMemX == 0: # Edge Case - needs revisiting
             return 10.0  # Arbitrary high value to reflect the fact that there was a lot of overallocation.
-        return min(1.0, x.ReqMemX / x.NeededMemX)
+        return max(1.0, x.ReqMemX / x.NeededMemX)
 
     def calc_CPUusage2use(self, x):
         if x.TotalCPUtime_.total_seconds() == 0:

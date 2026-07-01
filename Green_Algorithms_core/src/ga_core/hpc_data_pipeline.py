@@ -89,4 +89,4 @@ class HPCDataProcessor:
             return df
         
         except Exception as e: # TODO: More robust exception handling
-            raise RuntimeError(f"extract_data(): failed to extract data from workload manager: {e}") from e
+            raise RuntimeError(f"enrich_data(): failed to extract data from workload manager: {e}") from e
