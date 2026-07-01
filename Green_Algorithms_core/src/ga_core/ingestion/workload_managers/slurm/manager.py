@@ -1,14 +1,20 @@
+# ------------------------------------------------------------------
+# This file implements the BaseWorkloadManager abstract class for SLURM.
+# It contains SLURM specifc utility functions to perform some pre-processing steps to SLURM logs.
+# ------------------------------------------------------------------
+
 import datetime
 import os
 import pandas as pd
 import numpy as np
 
-from ga_dashboard.backend.helpers import utils
-from ga_dashboard.backend.services.sacct_service import SacctService
+from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.base import BaseWorkloadManager
+from Green_Algorithms_core.src.ga_core.utils import utils
+from Green_Algorithms_core.src.ga_core.ingestion.workload_managers.slurm.sacct_client import SacctClient
 
-class SlurmBase:
+class SlurmUtils:
     """
-    A utility class for processing and analyzing workload data from HPC cluster job schedulers. 
+    A utility class for processing and analyzing SLURM data from HPC cluster job schedulers. 
     Handles data transformation, parsing, cleaning, and metric calculations to support 
     cluster resource management and performance analysis.
     """
@@ -76,7 +82,7 @@ class SlurmBase:
                 memory = self.convert_to_GB(float(x.MaxRSS[:-1]), x.MaxRSS[-1])
             else:
                 assert 'default_unit_RSS' in self.cluster_info, "Some values of MaxRSS don't have a unit. Please specify a default_unit_RSS in cluster_info.yaml"
-                memory = self.convert_to_GB(float(x.MaxRSS), self.cluster_info['default_unit_RSS'])
+                memory = self.convert_to_GB(float(x.MaxRSS), self.cluster_info.default_unit_RSS)
 
         return memory
 
@@ -108,8 +114,8 @@ class SlurmBase:
         return L_partitions[0]
 
     def set_partitionType(self, x):
-        assert x in self.cluster_info['partitions'], f"\n-!- Unknown partition: {x} -!-\n"
-        return self.cluster_info['partitions'][x]['type']
+        assert x in self.cluster_info.partitions, f"\n-!- Unknown partition: {x} -!-\n"
+        return self.cluster_info.partitions[x].type
 
     def parse_timedelta(self, x):
         """
@@ -174,7 +180,7 @@ class SlurmBase:
             return 1.0
         elif x.NeededMemX == 0: # Edge Case - needs revisiting
             return 10.0  # Arbitrary high value to reflect the fact that there was a lot of overallocation.
-        return min(1.0, x.ReqMemX / x.NeededMemX)
+        return max(1.0, x.ReqMemX / x.NeededMemX)
 
     def calc_CPUusage2use(self, x):
         if x.TotalCPUtime_.total_seconds() == 0:
@@ -232,8 +238,43 @@ class SlurmBase:
         job_id_parts = x.split('_')
         assert len(job_id_parts) <= 2, f"Can't parse the job ID: {x}"
         return job_id_parts[0]
+    
+        ### Other utility methods
+    def raw_logs_to_df(self):
+        """
+        Convert raw logs output into a pandas dataframe - calling the static method convert2dataframe
+        """
+        delimiter = "," if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '' else "|"
+        self.logs_df = utils.convert2dataframe(self.logs_raw, types = {'NNodes': 'int64', 'NCPUS': 'int64'}, delimiter=delimiter)
 
-class SlurmManager(SlurmBase):
+
+    def concat_logs_df(self, new_logs_df: pd.DataFrame):
+        """
+        Concatenate the existing logs dataframe with a new one, for example when we want to add finished jobs to previously-fetched logs.
+        :param new_logs_df: [pd.DataFrame] new logs dataframe to concatenate with the existing one.
+        """
+        if self.logs_df is None:
+            raise ValueError("logs_df is not initialised. Run pull_logs() and raw_logs_to_df() first.")
+        
+        self.logs_df = pd.concat([self.logs_df, new_logs_df], ignore_index=True)
+
+    def filter_finished_jobs(self) -> pd.DataFrame:
+        '''
+        Filter finished jobs from the logs dataframe using the 'End' column if available, else the 'State' column.
+        '''
+        if 'End' in self.logs_df:
+            mask = self.logs_df['End'].notna() & (self.logs_df['End'] != "Unknown")
+        else: 
+            ## NOTE: This is a temporary workaround for retrocompatibility since in earlier versions 'End' field was not fetched. Must be removed eventually.
+            mask = ~self.logs_df['State'].isin(self.unfinished_states) 
+        
+        return self.logs_df[mask].copy()
+
+class SlurmManager(SlurmUtils, BaseWorkloadManager, manager_type="slurm"):
+    """
+    This class implements the BaseWorkloadManager abstract class and inherits from SlurmUtils. 
+    'manager_type="slurm"' is used to register this class with the register based factory defined in BaseWorkloadManager.
+    """
 
     def __init__(self, config_data:dict, cluster_info):
         """
@@ -255,6 +296,8 @@ class SlurmManager(SlurmBase):
         self.df_agg = None
         self.df_agg_X = None
 
+    
+    ### Implements abstract methods from BaseWorkloadManager
     def pull_logs(self):
         """
         Run the command line to pull usage from the workload manager.
@@ -276,27 +319,19 @@ class SlurmManager(SlurmBase):
             if not foundIt:
                 raise FileNotFoundError(f"Couldn't find {self.config_data['useCustomLogs']} \n "
                                         f"It should be either be in the testData/ or error_logs/ subdirectories, or the full path should be provided by --useCustomLogs.")
-            #print(message)
+            print(message)
 
         # What we expect to be the usual case, where we run the sacct command.
         else:
-            self.logs_raw = SacctService.pull_logs_by_time(self.config_data['startDay'], self.config_data['endDay'])                
+            self.logs_raw = SacctClient.pull_logs_by_time(self.config_data['startDay'], self.config_data['endDay'], self.config_data['all_users_access'])                
     
-    def raw_logs_to_df(self):
-        """
-        Convert raw logs output into a pandas dataframe - calling the static method convert2dataframe
-        """
-        delimiter = "," if 'useCustomLogs' in self.config_data.keys() and self.config_data['useCustomLogs'] != '' else "|"
-        self.logs_df = utils.convert2dataframe(self.logs_raw, types = {'NNodes': 'int64', 'NCPUS': 'int64'}, delimiter=delimiter)
-
-
-    def clean_logs_df(self):
+    def clean_logs(self):
         """
         Clean the different fields of the usage logs.
         NB: the name of the columns ending with X need to be conserved, as they are used by the main script.
         """
         # self.logs_df_raw = self.logs_df.copy() # DEBUGONLY Save a copy of uncleaned raw for debugging mainly
-
+        self.raw_logs = self.raw_logs_to_df()
         self.logs_df = self.filter_finished_jobs() # Keep only those jobs that have finished - i.e. contains a valid End date/ finished state
 
         ### Calculate real memory usage
@@ -427,7 +462,7 @@ class SlurmManager(SlurmBase):
         ### Calculate real memory need
         self.df_agg['NeededMemX'] = self.df_agg.apply(
             self.calc_realMemNeeded,
-            granularity_memory_request=self.cluster_info['granularity_memory_request'],
+            granularity_memory_request=self.cluster_info.granularity_memory_request,
             axis=1)
 
         ### Add memory waste information
@@ -458,26 +493,6 @@ class SlurmManager(SlurmBase):
                 self.df_agg = self.df_agg.loc[self.df_agg.Account_ == self.config_data['filterAccount']]
 
         self.df_agg_X = self.df_agg[[x for x in self.df_agg.columns if x[-1] == 'X']]
+        return self.df_agg_X
 
-    def concat_logs_df(self, new_logs_df: pd.DataFrame):
-        """
-        Concatenate the existing logs dataframe with a new one, for example when we want to add finished jobs to previously-fetched logs.
-        :param new_logs_df: [pd.DataFrame] new logs dataframe to concatenate with the existing one.
-        """
-        if self.logs_df is None:
-            raise ValueError("logs_df is not initialised. Run pull_logs() and raw_logs_to_df() first.")
-        
-        self.logs_df = pd.concat([self.logs_df, new_logs_df], ignore_index=True)
-
-    def filter_finished_jobs(self) -> pd.DataFrame:
-        '''
-        Filter finished jobs from the logs dataframe using the 'End' column if available, else the 'State' column.
-        '''
-        if 'End' in self.logs_df:
-            mask = self.logs_df['End'].notna() & (self.logs_df['End'] != "Unknown")
-        else: 
-            ## NOTE: This is a temporary workaround for retrocompatibility since in earlier versions 'End' field was not fetched. Must be removed eventually.
-            mask = ~self.logs_df['State'].isin(self.unfinished_states) 
-        
-        return self.logs_df[mask].copy()
         
