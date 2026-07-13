@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 from datetime import datetime
-from Green_Algorithms_core.src.ga_core import CIStorageBackend
+from ga_core import CIStorageBackend
 import pandas as pd
 
 from ga_dashboard.backend.services.database_service import DatabaseService

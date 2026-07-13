@@ -8,7 +8,7 @@ import yaml
 import time as time_module
 import gc
 from tqdm import tqdm
-import Green_Algorithms_core.src.ga_core as ga_core
+import ga_core 
 
 from ga_dashboard.backend.services.database_ci_store import DatabaseCIStore
 import ga_dashboard.backend.helpers.utils as utils

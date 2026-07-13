@@ -19,7 +19,8 @@ dependencies = [
     "poetry-core (==2.1.3)",
     "psycopg-binary (==3.2.10)",
     "pytest (==8.4.1)",
-    "tqdm (>=4.67.3,<5.0.0)"
+    "tqdm (>=4.67.3,<5.0.0)",
+    "green-algorithms-core @ git+https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-core.git@main"
 ]
 
 
