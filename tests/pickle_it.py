@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------
-# Mock Data Generator for GA4HPC Dashboard Tests
+# Mock Data Generator for Green Algorithms Dashboard Tests
 # This script generates a synthetic enriched logs dataset. i.e. with energy consumption and carbon footprint data,
 # simulating job records for multiple mock users. 
 # The generated data is saved as a pickle file to serve as static test data for backend dashboard unit tests.
