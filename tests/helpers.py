@@ -4,7 +4,7 @@ import pandas as pd
 
 def align_expected_dtypes(expected: pd.DataFrame, result: pd.DataFrame) -> pd.DataFrame:
     """
-    Loading CSV filesloses dtype info - every column comes back as a string. 
+    Loading CSV files loses dtype info - every column comes back as a string. 
     For any column that `result` actually holds as a date/datetime,
     convert the matching `expected` column (read from CSV) to line up.
 
