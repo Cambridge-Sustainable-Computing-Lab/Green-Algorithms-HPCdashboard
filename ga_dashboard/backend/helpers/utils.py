@@ -50,32 +50,36 @@ def generate_batches_by_dates(start: str | datetime.date, end: str | datetime.da
     return batches
 
 ##DEBUGONLY 
-def simulate_mock_jobs():
+def simulate_mock_enriched_jobs():
     df_list = []
     for user in ['uid_1', 'uid_2', 'uid_3', 'uid_4', 'uid_5']:
-        n_jobs = random.randint(500,800)
+        n_jobs = random.randint(500, 800)
         data_dict = {
-            'WallclockTimeX':[datetime.timedelta(minutes=random.randint(50,700)) for _ in range(n_jobs)],
-            'ReqMemX':np.random.randint(4,130, size=n_jobs)*1.,
-            'PartitionX':['yew']*n_jobs,
-            'SubmitDatetimeX':[datetime.datetime(day=1,month=5,year=2023) + datetime.timedelta(days=random.randint(1,60)) for _ in range(n_jobs)],
-            'StateX':np.random.choice([1,0], p=[.8,.2], size=n_jobs),
-            'UIDX':['11111']*n_jobs,
-            'UserX':[user]*n_jobs,
-            'PartitionTypeX':['CPU']*n_jobs,
-            'TotalCPUtime2useX':[datetime.timedelta(minutes=random.randint(50,5000)) for _ in range(n_jobs)],
-            'TotalGPUtime2useX':[datetime.timedelta(seconds=0)]*n_jobs,
+            'WallclockTimeX': [datetime.timedelta(minutes=random.randint(50, 700)) for _ in range(n_jobs)],
+            'ReqMemX': np.random.randint(4, 130, size=n_jobs) * 1.0,
+            'PartitionX': ['yew'] * n_jobs,
+            'SubmitDatetimeX': [datetime.datetime(day=1, month=5, year=2023) + datetime.timedelta(days=random.randint(1, 60)) for _ in range(n_jobs)],
+            'StateX': np.random.choice([1, 0], p=[.8, .2], size=n_jobs),
+            'UIDX': ['11111'] * n_jobs,
+            'UserX': [user] * n_jobs,
+            'PartitionTypeX': ['CPU'] * n_jobs,
+            'TotalCPUtime2useX': [datetime.timedelta(minutes=random.randint(50, 5000)) for _ in range(n_jobs)],
+            'TotalGPUtime2useX': [datetime.timedelta(seconds=0)] * n_jobs,
         }
 
         data_frame = pd.DataFrame(data_dict)
-        data_frame['CPUhoursChargedX'] = data_frame.TotalCPUtime2useX / np.timedelta64(1, 'h')
+
+        data_frame['CPUhoursChargedX'] = data_frame['TotalCPUtime2useX'].dt.total_seconds() / 3600.0
         data_frame['GPUhoursChargedX'] = 0.
-        data_frame['NeededMemX'] = data_frame.ReqMemX * np.random.random(n_jobs)
-        data_frame['memOverallocationFactorX'] = data_frame.ReqMemX / data_frame.NeededMemX
+        data_frame['NeededMemX'] = data_frame['ReqMemX'] * np.random.random(n_jobs)
+        data_frame['memOverallocationFactorX'] = data_frame['ReqMemX'] / data_frame['NeededMemX']
+
+        data_frame['StartDatetimeX'] = data_frame["SubmitDatetimeX"]
+        data_frame['EndDatetimeX'] = pd.to_datetime(data_frame['StartDatetimeX']) + data_frame['TotalCPUtime2useX']
 
         df_list.append(data_frame)
 
-    return pd.concat(df_list)
+    return pd.concat(df_list, ignore_index=True)
 
 ##DEBUGONLY 
 def save_slurm_logs(config_data, WM) -> None:
