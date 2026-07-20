@@ -1,0 +1,56 @@
+
+institution: "University Name"
+cluster_name: "OurCluster"
+workload_manager: "SLURM"
+granularity_memory_request: 6 
+partitions:
+  yew:
+    type: CPU
+    model: "Xeon Gold 6142"
+    TDP: 9.4 
+  yew-himem:
+    type: CPU
+    model: "Xeon Gold 6142"
+    TDP: 9.4
+  beech:
+    type: CPU
+    model: "Xeon Platinum 8276"
+    TDP: 5.9 
+  beech-himem:
+    type: CPU
+    model: "Xeon Platinum 8276"
+    TDP: 5.9
+  ash:
+    type: CPU
+    model: "Xeon Platinum 8368Q"
+    TDP: 7.1 
+  ash-himem:
+    type: CPU
+    model: "Xeon Platinum 8368Q"
+    TDP: 7.1
+  oak:
+    type: GPU
+    model: "NVIDIA A100-SXM-80GB GPUs"
+    TDP: 300
+    model_CPU: "AMD EPYC 7763"
+    TDP_CPU: 4.4 
+  birch:
+    type: CPU
+    model: "Xeon E5-2660 v3"
+    TDP: 10.5 
+  pine:
+    type: GPU
+    model: Tesla P100 PCIe
+    TDP: 250 
+    model_CPU: "Xeon E5-2650 v4"
+    TDP_CPU: 8.8
+PUE: 1.15 
+CI: 231.12
+energy_cost:
+  cost: 0.34 
+  currency: "£"
+postcode: "CB1"
+texts_intro:
+  CPU: "5.9 - 9.4 W/core (see <a>here</a> for models)"
+  GPU: "NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)"
+default_unit_RSS: 'K'

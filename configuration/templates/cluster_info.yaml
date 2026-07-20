@@ -5,6 +5,7 @@
 ---
 institution: "<My institution>" # [str]
 cluster_name: "<My cluster name>" # [str]
+workload_manager: "<Workload manager used by my cluster>" # [str]
 granularity_memory_request: <6> # [number] in GB representing the smallest memory unit users can reserve
 partitions: # a list of the different partitions on the cluster
   <partition name_1>: # name of the partition
