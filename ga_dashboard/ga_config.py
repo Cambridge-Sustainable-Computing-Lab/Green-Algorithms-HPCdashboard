@@ -208,9 +208,15 @@ class GAConfig:
             conn.close()
             print("  >> Database connection parameters look OK")
         except psycopg.OperationalError as err:
-            print(f"\n  WARNING: Problem connecting to the database {self.config_values['db_name']}: either the database doesn't exist yet or the script can't access the database")
-            if 'debug' in self.config_values.keys():
-                if self.config_values['debug']:
+            sqlstate = getattr(getattr(err, "diag", None), "sqlstate", None)
+            db_missing = (sqlstate == "3D000") or ("does not exist" in str(err))
+            if db_missing:
+                print(f"  >> Database '{self.config_values['db_name']}' does not exist yet - "
+                    f"this is expected on first install and will be created during setup.")
+            else:
+                print(f"\n  WARNING: Problem connecting to the database {self.config_values['db_name']}: "
+                    f"the server could not be reached, or the credentials/host/port may be incorrect.")
+                if self.config_values.get('debug'):
                     print(f"\n  ERROR message: {err}")
 
 
