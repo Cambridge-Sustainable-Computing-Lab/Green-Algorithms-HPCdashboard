@@ -163,9 +163,16 @@ class LogsDataProcessor:
 
         :return: pandas Dataframe containing processed data
         """
+        logs_raw = None
         db_ci_store = DatabaseCIStore(self.db_params)
+
+        if self.config_data.get('useCustomLogs', '') != '':
+            # Pick raw logs from file
+            logs_raw = utils.read_file_bytes(self.config_data["useCustomLogs"])
+            print(f'Overriding logs_raw with: {self.config_data["useCustomLogs"]}\n')
+
         dataprocessor = ga_core.HPCDataProcessor(self.config_data, self.cluster_info, self.fixed_params, self.has_slurmAdmin)
-        df = dataprocessor.extract_data()
+        df = dataprocessor.extract_data(logs_raw)
         df = dataprocessor.enrich_data(df, db_ci_store)
 
         ### Add user details to jobs
