@@ -20,7 +20,7 @@ dependencies = [
     "psycopg-binary (==3.2.10)",
     "pytest (==8.4.1)",
     "tqdm (>=4.67.3,<5.0.0)",
-    "ga-core @ git+https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-core.git@main"
+    "ga-core @ git+https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-core.git@v0.1.1"
 ]
 
 
