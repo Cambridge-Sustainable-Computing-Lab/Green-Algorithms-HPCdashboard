@@ -1,34 +1,25 @@
 # Config file example
 #
 # Uncomment, and replace, the item(s) with the value you wish to use.
+# Configurations are alphabetically ordered within each section.
 #
 # DO NOT STORE PASSWORDS IN THIS FILE!
 
-## ----- GRAFANA CONFIG -----
+## ----- CONFIG FILE PATHS -----
 
-# Grafana admin user name (e.g. admin).
-admin_login: "admin"
+# YAML file of your cluster's information
+# (e.g. configuration/examples/cluster_info__demo.yaml).
+cluster_info_file: "configuration/examples/cluster_info__demo.yaml"
 
-# Name of the dashboard folder (on Grafana).
-dashboard_folder_name: "Green Algorithms Demo"
+# Dashboard users file (e.g., configuration/examples/user_list__demo.csv)
+dashboard_users_file: "configuration/examples/user_list__demo.csv"
 
-# Uncomment if you want the Grafana passwords output to a file
-# create_password_file: true
-
-# Name of data source (on Grafana).
-name: "grafana-postgresql-ga_db"
-
-# Dashboard JSON files directory, on disk.
-input_dir: "ga_dashboard/dashboards"
-
-# Grafana URL, including port (e.g. localhost:3000).
-url: "localhost:3000"
+# The fixed parameters YAML file to use
+# (e.g. ga_dashboard/data/fixed_parameters.yaml).
+fixed_params_file: "ga_dashboard/data/fixed_parameters.yaml"
 
 
 ## ----- DATABASE CONFIG -----
-
-# PostgreSQL version, e.g. 15
-pg_version: 15
 
 # Machine (e.g. IP address) hosting your database (e.g. localhost).
 db_host: "localhost"
@@ -39,39 +30,45 @@ db_name: "ga_dev_demo"
 # PostgreSQL host's port
 db_port: 5432
 
-# The default database user (e.g. postgres).
-db_user: "postgres"
-
 # Script to create empty PostgreSQL database (database schema).
 db_script: "ga_dashboard/database/ga_db.sql"
 
+# The default database user (e.g. postgres).
+db_user: "postgres"
 
-## ----- CONFIG FILE PATHS -----
+# PostgreSQL version, e.g. 15
+pg_version: 15
 
-# The fixed parameters YAML file to use
-# (e.g. ga_dashboard/data/fixed_parameters.yaml).
-fixed_params_file: "ga_dashboard/data/fixed_parameters.yaml"
 
-# YAML file of your cluster's information
-# (e.g. configuration/examples/cluster_info__demo.yaml).
-cluster_info_file: "configuration/examples/cluster_info__demo.yaml"
+## ----- GRAFANA CONFIG -----
 
-# Dashboard users file (e.g., configuration/examples/user_list__demo.csv)
-dashboard_users_file: "configuration/examples/user_list__demo.csv"
+# Grafana admin user name (e.g. admin).
+admin_login: "admin"
+
+# Uncomment if you want the Grafana passwords output to a file
+# create_password_file: true
+
+# Name of the dashboard folder (on Grafana).
+dashboard_folder_name: "Green Algorithms Demo"
+
+# Dashboard JSON files directory, on disk.
+input_dir: "ga_dashboard/dashboards"
+
+# Name of data source (on Grafana).
+name: "grafana-postgresql-ga_db"
+
+# Grafana URL, including port (e.g. localhost:3000).
+url: "localhost:3000"
 
 
 ## ----- RUN CONFIG -----
 
-# Bypass workload manager and input a custom log file of your jobs
-# (e.g. ga_dashboard/backend/example_files/example_sacctOutput_raw.txt).
-# useCustomLogs: "<useCustomLogs_path>"
-
-# The start date passed to the `sacct` command (e.g. 2025-02-01).
-startDay: "2023-05-01"
-
 # The last day to take into account by the sacct command on HPC
 # (e.g. 2025-07-03).
 endDay: "2023-06-30"
+
+# Uncomment if you want to see debug output
+# debug: true
 
 # Slurm sacct logs data
 # (e.g. tests/testdata/extracted_multi_users.csv).
@@ -86,7 +83,11 @@ endDay: "2023-06-30"
 # If using a Docker container, this must be set to True to avoid deletion/recreation of the database every time the Container starts.
 skip_db_overwrite: False 
 
-# Uncomment if you want to see debug output
-# debug: true
+# The start date passed to the `sacct` command (e.g. 2025-02-01).
+startDay: "2023-05-01"
 
-use_mock_agg_data: True
+# Bypass workload manager and input a custom log file of your jobs
+# (e.g. ga_dashboard/backend/example_files/example_sacctOutput_raw.txt).
+# useCustomLogs: "<useCustomLogs_path>"
+
+# use_mock_agg_data: True # For debugging

@@ -1,50 +1,9 @@
 # Config file template
 #
 # Uncomment, and replace, the item(s) with the value you wish to use.
+# Configurations are alphabetically ordered within each section.
 #
 # DO NOT STORE PASSWORDS IN THIS FILE!
-
-## ----- GRAFANA CONFIG -----
-
-# Grafana admin user name (e.g. admin).
-admin_login: "<admin_login>"
-
-# Name of the dashboard folder (on Grafana).
-dashboard_folder_name: "Green Algorithms"
-
-# Uncomment if you want the Grafana passwords output to a file
-# create_password_file: true
-
-# Name of data source (on Grafana).
-name: "grafana-postgresql-ga_db"
-
-# Dashboard JSON files directory, on disk.
-input_dir: "ga_dashboard/dashboards"
-
-# Grafana URL, including port (e.g. localhost:3000).
-url: "<url:port>"
-
-
-## ----- DATABASE CONFIG -----
-
-# PostgreSQL version, e.g. 15
-pg_version: "<pg_version>"
-
-# Machine (e.g. IP address) hosting your database (e.g. localhost).
-db_host: "<db_host>"
-
-# The name of the database to store your raw and enriched `sacct` data.
-db_name: "ga_db"
-
-# PostgreSQL host's port
-db_port: 5432
-
-# The default database user (e.g. postgres).
-db_user: "<db_user>"
-
-# Script to create empty PostgreSQL database (database schema).
-db_script: "ga_dashboard/database/ga_db.sql"
-
 
 ## ----- CONFIG FILE PATHS -----
 
@@ -60,18 +19,56 @@ dashboard_users_file: "<dashboard_users_file_path>"
 fixed_params_file: "<fixed_params_file_path>"
 
 
+## ----- DATABASE CONFIG -----
+
+# Machine (e.g. IP address) hosting your database (e.g. localhost).
+db_host: "<db_host>"
+
+# The name of the database to store your raw and enriched `sacct` data.
+db_name: "ga_db"
+
+# PostgreSQL host's port
+db_port: 5432
+
+# Script to create empty PostgreSQL database (database schema).
+db_script: "ga_dashboard/database/ga_db.sql"
+
+# The default database user (e.g. postgres).
+db_user: "<db_user>"
+
+# PostgreSQL version, e.g. 15
+pg_version: "<pg_version>"
+
+
+## ----- GRAFANA CONFIG -----
+
+# Grafana admin user name (e.g. admin).
+admin_login: "<admin_login>"
+
+# Uncomment if you want the Grafana passwords output to a file
+# create_password_file: true
+
+# Name of the dashboard folder (on Grafana).
+dashboard_folder_name: "Green Algorithms"
+
+# Dashboard JSON files directory, on disk.
+input_dir: "ga_dashboard/dashboards"
+
+# Name of data source (on Grafana).
+name: "grafana-postgresql-ga_db"
+
+# Grafana URL, including port (e.g. localhost:3000).
+url: "<url:port>"
+
+
 ## ----- RUN CONFIG -----
-
-# Bypass workload manager and input a custom log file of your jobs
-# (e.g. ga_dashboard/backend/example_files/example_sacctOutput_raw.txt).
-# useCustomLogs: "<useCustomLogs_path>"
-
-# The start date passed to the `sacct` command (e.g. 2025-02-01).
-startDay: "<YYYY-MM-DD>"
 
 # The last day to take into account by the sacct command on HPC
 # (e.g. 2025-07-03).
 endDay: "<YYYY-MM-DD>"
+
+# Uncomment if you want to see debug output
+# debug: true
 
 # Slurm sacct logs data
 # (e.g. tests/testdata/extracted_multi_users.csv).
@@ -86,7 +83,13 @@ outFile: "<outFile_path>"
 # If using a Docker container, this must be set to True to avoid deletion/recreation of the database every time the Container starts.
 skip_db_overwrite: False 
 
-# Uncomment if you want to see debug output
-# debug: true
+# The start date passed to the `sacct` command (e.g. 2025-02-01).
+startDay: "<YYYY-MM-DD>"
+
+# Bypass workload manager and input a custom log file of your jobs
+# (e.g. ga_dashboard/backend/example_files/example_sacctOutput_raw.txt).
+# useCustomLogs: "<useCustomLogs_path>"
+
+
 
 
