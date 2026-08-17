@@ -1,6 +1,6 @@
 # Guide to using configuration templates
 
-The two main configurations that must be set up before running the Green Algorithms dashboard are:
+The two main configurations that must be set up before running the Green Algorithms Dashboard are:
 1. [cluster_info.yaml](#cluster-information-cluster_infoyaml)
 2. [config.yaml](#runtime-configurations-configyaml)
 
@@ -11,7 +11,7 @@ This file contains key information about the cluster including it's workload man
 
 It is important that the cluster configurations represent the clusters accurately to allow for correct energy and GHG emissions estimations. 
 
-> !NOTE
+> [!NOTE]
 > `configuration/examples/cluster_info__demo.yaml` is a useful worked example to see what kind of cluster configuration values the GA Dashboard expects.
 
 ### FAQs
@@ -21,7 +21,7 @@ The HPC team in your institution are the best people to ask for this information
 #### - What's TDP and where can I find it?
 Thermal design power or TDP refers to the maximum thermal power dissipation of a processor (CPU or GPU) under normal operating workloads. This value is generally specified by the manufacturer of the processor.
 
-Once you're aware of the hardware in use, TDP values for each hardware profile can be fetched directly from the manufacturer's website. You may also check if the value you are looking for is present [here](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-data/blob/main/v3.1/hardware-impacts.csv).
+Once you're aware of the hardware in use, TDP values for each hardware profile can be fetched directly from the manufacturer's website/datasheets. You may also check if the value you are looking for is present [here](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-data/blob/main/v3.1/hardware-impacts.csv).
 
 #### - Homogenous vs heterogenous partitions?
 Partitions where all nodes have the same hardware profile are considered homogenous, where as those that have varying hardware profiles across it's nodes are heterogenous. Since the energy consumption of a job depends on the hardware it uses, it is important to know which partition/node it ran on. For homogenous paritions this is straightforward, but in case of heterogenous partitions a node list must be configured to represent the different node ranges within each heterogenous partition that have the same hardware profile.
