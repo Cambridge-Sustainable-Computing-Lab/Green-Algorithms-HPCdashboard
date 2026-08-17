@@ -6,26 +6,50 @@
 institution: "<My institution>" # [str]
 cluster_name: "<My cluster name>" # [str]
 workload_manager: "<Workload manager used by my cluster>" # [str]
-granularity_memory_request: <6> # [number] in GB representing the smallest memory unit users can reserve
-partitions: # a list of the different partitions on the cluster
-  <partition name_1>: # name of the partition
+
+## ----- HARDWARE PROFILES -----
+# a list of different hardware profiles available on the cluster
+
+hardware_profiles:
+  <hardware profile name_1>: # unique and identifiable name for the hardware profile
     type: <CPU> # [CPU or GPU]
-    model: "<Intel XXX>" # [str] the model of the processing core on this partition. Not actually used by the code but useful for reference for others.
+    model: "<Intel XXX>" # [str] the model of the processing core on this hardware profile. Not actually used by the code but useful for reference for others.
     TDP: <10> # [number] TDP of the processor, in W, per core
-  <partition name_2>: # name of the partition
+  <hardware profile name_2>: # name of the hardware profile
     type: <GPU> # [CPU or GPU]
-    model: "<NVIDIA XXX>" # [str] the model of the processing core on this partition. Not actually used by the code but useful for reference for others.
+    model: "<NVIDIA XXX>" # [str] the model of the processing core on this hardware profile. Not actually used by the code but useful for reference for others.
     TDP: <250> # [number] For GPUs, the TDP is for the entire GPU
-    # For GPU partitions, we also need info about the CPUs available for support.
+    # For GPU hardware profiles, we also need info about the CPUs available for support.
     model_CPU: "<Intel XXX>" # [str] Not actually used by the code but useful for reference for others.
     TDP_CPU: <10> # [number] TDP of the processor, in W, per core
+  # You can keep adding hardware profiles to this
+
+## ----- PARTITIONS -----
+# a list of the different partitions on the cluster
+
+partitions: 
+  <partition name_1>: # name of the partition
+    homogenous: <True> # [bool] True if all nodes in the partition are homogenous, False if not
+    hardware_profile: "<hardware profile name_1>" # [str] ONLY IF HOMOGENOUS - the name of the hardware profile used by this partition
+
+  <partition name_2>: # name of the partition
+    homogenous: <False> # [bool] True if all nodes in the partition are homogenous, False if not
+    node_list:
+      - range: "<gpu-[10, 20]>" # [str] range of nodes with shared hardware profiles
+        hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this partition
+      - range: "<gpu-[100, 120]>" # [str] range of nodes with shared hardware profiles
+        hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this partition
   # You can keep adding partitions to this
+
+## ----- CLUSTER SETTINGS -----
+
+granularity_memory_request: <6> # [number] in GB representing the smallest memory unit users can reserve
 PUE: <1.67> # [number > 1] Power Usage Effectiveness of the facility
-CI: <467> # [number] average carbon intensity of the geographic location, in gCO2e/kWh
 energy_cost:
   cost: <0.34> # [number] in currency/kWh
   currency: "<£>" # [str]
 
+CI: <467> # [number] average carbon intensity of the geographic location, in gCO2e/kWh
 # postcode below has to be compatible with the Carbon Intensity API used. 
 # For now, only compatible with UK postcodes (first 3 letters). 
 # If data centre is based outside of UK, leave postcode empty (CI key above will be used instead).

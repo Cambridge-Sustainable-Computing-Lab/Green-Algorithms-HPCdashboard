@@ -145,7 +145,7 @@ By default, the superuser credential is id: `admin`, password: `admin`. You shou
 ---
 ## Configuration files
 
-Before running the dashboard, you will need to prepare three configuration files. Templates and examples for all of them are provided in the `configuration/templates/` and `configuration/examples/` directories respectively.
+Before running the dashboard, you will need to prepare three configuration files. Templates and examples for all of them are provided in the `configuration/templates/` and `configuration/examples/` directories respectively. (find out more [here](configuration/templates/templates_readme.md))
 
 ### 1. Scripts configuration file (`config.yaml`)
 Copy the template provided in `configuration/templates/config.yaml` to a location of your choice and edit it, replacing all values surrounded by `< >` characters. This file contains the core parameters needed to run the dashboard, including database connection details and paths to the other configuration files. You can uncomment the optional parameters you want to use.
@@ -156,11 +156,13 @@ Copy the template provided in `configuration/templates/config.yaml` to a locatio
 ### 2. Cluster information file (`cluster_info.yaml`)
 Copy the template provided in `configuration/templates/cluster_info.yaml` and edit it with information about your HPC cluster. See `configuration/examples/cluster_info__demo.yaml` for a worked example.
 
-For each partition (a set of computing nodes with a dedicated queue) you will need:
+You need to map each partition (a set of computing nodes with a dedicated queue) to a hardware profile, and each hardware profile must describe it's: 
 - `type`: CPU or GPU
 - `model`: processor model
 - `TDP`: thermal design power (check the manufacturer's datasheet if needed)
 - For GPU partitions only: `model_CPU` and `TDP_CPU`
+
+For heterogenous partitions, i.e. partitions with more than one hardware profiles, you must describe hardware profiles for each node range that lie within the partition.
 
 You will also need values for `institution`, `cluster_name`,`granularity_memory_request`, `PUE`, and other fields listed in the template.
 
