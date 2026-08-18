@@ -2,8 +2,6 @@
 #
 # Uncomment, and replace, the item(s) with the value you wish to use.
 # Configurations are alphabetically ordered within each section.
-#
-# DO NOT STORE PASSWORDS IN THIS FILE!
 
 ## ----- CONFIG FILE PATHS -----
 
@@ -45,9 +43,6 @@ pg_version: 15
 # Grafana admin user name (e.g. admin).
 admin_login: "admin"
 
-# Uncomment if you want the Grafana passwords output to a file
-# create_password_file: true
-
 # Name of the dashboard folder (on Grafana).
 dashboard_folder_name: "Green Algorithms Demo"
 
@@ -63,31 +58,25 @@ url: "localhost:3000"
 
 ## ----- RUN CONFIG -----
 
-# The last day to take into account by the sacct command on HPC
-# (e.g. 2025-07-03).
-endDay: "2023-06-30"
-
-# Uncomment if you want to see debug output
-# debug: true
-
-# Slurm sacct logs data
-# (e.g. tests/testdata/extracted_multi_users.csv).
-#input_log_file: "<input_log_file_path>"
-
-# File to be written for storing the output of sacct
-# (e.g. my_sacct_output.txt).
-#outFile: "<outFile_path>"
+# Bypass workload manager and input a custom log file of your jobs
+# (e.g. ga_dashboard/backend/example_files/example_sacctOutput_raw.txt).
+# useCustomLogs: "<useCustomLogs_path>"
 
 # Set 'skip_db_overwrite: True' to stop overwriting the Database (if found) during Dashboard installation.
 # This is for cases when the database exists and is already configured (i.e. contains the appropriate tables and user information), but the installation script needs to be run again for some reason.
 # If using a Docker container, this must be set to True to avoid deletion/recreation of the database every time the Container starts.
 skip_db_overwrite: False 
 
+
+## ----- DEBUG CONFIG -----
+
+# Uncomment if you want to see debug output
+# debug: true
+
+# The last day to take into account by the sacct command on HPC (e.g. 2025-07-03).
+endDay: "2023-06-30"
+
 # The start date passed to the `sacct` command (e.g. 2025-02-01).
 startDay: "2023-05-01"
-
-# Bypass workload manager and input a custom log file of your jobs
-# (e.g. ga_dashboard/backend/example_files/example_sacctOutput_raw.txt).
-# useCustomLogs: "<useCustomLogs_path>"
 
 # use_mock_agg_data: True # For debugging

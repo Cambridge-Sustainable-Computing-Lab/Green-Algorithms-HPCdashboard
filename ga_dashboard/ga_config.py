@@ -28,17 +28,15 @@ class GAConfig:
 
     # Optional parameters
     extra_attr = {
-        'startDay': { 'expected_type': 'date (YYYY-MM-DD)' },
-        'endDay': { 'expected_type': 'date (YYYY-MM-DD)' },
-        'outFile': { 'expected_type': 'string' },
         'useCustomLogs': { 'expected_type': 'path' },
-        'skip_db_overwrite': { 'expected_type': 'boolean'}
+        'skip_db_overwrite': { 'expected_type': 'boolean'},
+        
+        # Debug only
+        'startDay': { 'expected_type': 'date (YYYY-MM-DD)' }, 
+        'endDay': { 'expected_type': 'date (YYYY-MM-DD)' }, 
     }
 
-    # List of parameters that can't be used together
-    exclusion_attr = [
-        ['outFile', 'useCustomLogs']
-    ]
+    exclusion_attr = [[]] # Add here the list of parameters that cannot be used together
 
 
     def __init__(self, config_file:str, db_pass:str=None, grafana_pass:str=None):
