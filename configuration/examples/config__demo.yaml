@@ -59,6 +59,8 @@ url: "localhost:3000"
 ## ----- RUN CONFIG -----
 
 # File path to input logs - used to bypass pulling logs from workload manaer and ingest logs from a file instead
+# For SLURM clusters, use scripts/slurm/run_sacct.py to generate and save raw log file.
+# Comment this configuration if not in use
 # input_log_file_path: ""
 
 # Set 'skip_db_overwrite: True' to stop overwriting the Database (if found) during Dashboard installation.
