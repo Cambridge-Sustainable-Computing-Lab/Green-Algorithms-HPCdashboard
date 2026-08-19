@@ -5,7 +5,7 @@
 # This script is intended to be used when the backend of the dashboard cannot be run on the same system
 # that allows SLURM logs to be pulled from.
 # In such a case, this script must be used to store the logs in a shared location (somewhere the backend can access it)
-# using 'useCustomLogs=<path_to_binary_data_file>' in config.yaml, these can be processed by the backend.
+# using 'input_log_file_path=<path_to_binary_data_file>' in config.yaml, these can be processed by the backend.
 # ------------------------------------------------------------------
 
 import argparse

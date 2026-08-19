@@ -58,9 +58,8 @@ url: "<url:port>"
 
 ## ----- RUN CONFIG -----
 
-# Bypass workload manager and input a custom log file of your jobs
-# (e.g. ga_dashboard/backend/example_files/example_sacctOutput_raw.txt).
-# useCustomLogs: "<useCustomLogs_path>"
+# File path to input logs - used to bypass pulling logs from workload manaer and ingest logs from a file instead
+input_log_file_path: "<input_logs_path>"
 
 # Set 'skip_db_overwrite: True' to stop overwriting the Database (if found) during Dashboard installation.
 # This is for cases when the database exists and is already configured (i.e. contains the appropriate tables and user information), but the installation script needs to be run again for some reason.

@@ -28,7 +28,7 @@ class GAConfig:
 
     # Optional parameters
     extra_attr = {
-        'useCustomLogs': { 'expected_type': 'path' },
+        'input_log_file_path': { 'expected_type': 'path' },
         'skip_db_overwrite': { 'expected_type': 'boolean'},
         
         # Debug only
@@ -36,7 +36,9 @@ class GAConfig:
         'endDay': { 'expected_type': 'date (YYYY-MM-DD)' }, 
     }
 
-    exclusion_attr = [[]] # Add here the list of parameters that cannot be used together
+    # Add here the list of parameters that cannot be used together
+    # e.g. exclusion_attr = [['attr_A','attr_B']]
+    exclusion_attr = [] 
 
 
     def __init__(self, config_file:str, db_pass:str=None, grafana_pass:str=None):
@@ -128,6 +130,13 @@ class GAConfig:
         # Check extra parameters
         for extra_conf_param in self.extra_attr.keys():
             if extra_conf_param in self.config_values.keys():
+
+                # Special case: input_log_file_path is optional - if it's present but empty, treat it as "not set" and skip validation
+                if extra_conf_param == 'input_log_file_path':
+                    value = self.config_values[extra_conf_param]
+                    if value is None or (isinstance(value, str) and value.strip() == ''):
+                        continue
+
                 expected_type = self.extra_attr[extra_conf_param]['expected_type']
                 value = self.config_values[extra_conf_param]
 

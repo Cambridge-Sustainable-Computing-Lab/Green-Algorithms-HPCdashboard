@@ -16,7 +16,7 @@ class validate_args:
             raise Exception("null args!")
         
         # If we are using an existing file of sacct data, we don't need to specify dates.
-        if args.useCustomLogs:
+        if args.input_log_file_path:
             return
 
         index = 0

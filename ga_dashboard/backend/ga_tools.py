@@ -166,10 +166,10 @@ class LogsDataProcessor:
         logs_raw = None
         db_ci_store = DatabaseCIStore(self.db_params)
 
-        if self.config_data.get('useCustomLogs', '') != '':
+        if self.config_data.get('input_log_file_path', '') != '':
             # Pick raw logs from file
-            logs_raw = utils.read_file_bytes(self.config_data["useCustomLogs"])
-            print(f'Overriding logs_raw with: {self.config_data["useCustomLogs"]}\n')
+            logs_raw = utils.read_file_bytes(self.config_data["input_log_file_path"])
+            print(f'\nOverriding logs_raw with: {self.config_data["input_log_file_path"]}\n')
 
         dataprocessor = ga_core.HPCDataProcessor(self.config_data, self.cluster_info, self.fixed_params, self.has_slurmAdmin)
         df = dataprocessor.extract_data(logs_raw)
@@ -204,7 +204,7 @@ class LogsDataProcessor:
         :param batch_size: size of batch in number of days
         :return: dict containing summary stats for all batches
         """
-        if self.config_data.get('useCustomLogs', '') != '' or self.config_data.get('use_mock_agg_data', '') != '':
+        if self.config_data.get('input_log_file_path', '') != '' or self.config_data.get('use_mock_agg_data', '') != '':
                 return self.run()
         
         batches = utils.generate_batches_by_dates(
