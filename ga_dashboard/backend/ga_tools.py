@@ -166,10 +166,10 @@ class LogsDataProcessor:
         logs_raw = None
         db_ci_store = DatabaseCIStore(self.db_params)
 
-        if self.config_data.get('input_log_file_path', '') != '':
+        if self.config_data.get('input_mode') == 'file' and self.config_data.get('input_log_file_path', '') != '':
+            print(f"\n  Input mode is 'file' => Pulling raw logs from '{self.config_data["input_log_file_path"]}'\n")
             # Pick raw logs from file
             logs_raw = utils.read_file_bytes(self.config_data["input_log_file_path"])
-            print(f'\nOverriding logs_raw with: {self.config_data["input_log_file_path"]}\n')
 
         dataprocessor = ga_core.HPCDataProcessor(self.config_data, self.cluster_info, self.fixed_params, self.has_slurmAdmin)
         df = dataprocessor.extract_data(logs_raw)
