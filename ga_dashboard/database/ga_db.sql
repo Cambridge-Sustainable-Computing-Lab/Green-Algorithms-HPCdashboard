@@ -90,7 +90,7 @@ DROP TABLE IF EXISTS public.ga_user;
 
 CREATE TABLE public.ga_user (
     user_name character varying(255),
-    uid integer,
+    uid character varying(255),
     name character varying(255),
     group_name character varying(255),
     department character varying(255),
