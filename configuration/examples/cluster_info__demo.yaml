@@ -77,7 +77,7 @@ partitions:
     hardware_profile: "TeslaP100PCIe_XeonE5-2650v4"
   het:
     homogenous: False
-    nodes_list:
+    node_list:
       - range: "cpu-p-[90, 100]"
         hardware_profile: "XeonPlatinum8368Q"
       - range: "cpu-p-[120, 130]"

@@ -1,9 +1,11 @@
 import argparse
 import maskpass  # to hide the passwords
+import logging
 from datetime import date
 from datetime import timedelta
 from ga_dashboard.backend.ga_tools import LogsDataProcessor
 from ga_dashboard.ga_config import GAConfig
+from ga_dashboard.backend.helpers import utils
 
 import datetime
 
@@ -38,6 +40,15 @@ if __name__ == "__main__":
     # Parse config file
     ga_config = GAConfig(config_file,db_pass)
     ga_config.ingest_config_file()
+
+    # set up logging
+    log_file_path = ga_config.config_values.get("log_file", "run_green_algorithms_on_historical_logs.log")
+    debug_mode = ga_config.config_values.get("debug", False)
+
+    # Initialize logging
+    utils.setup_logging(log_file=log_file_path, debug=debug_mode)
+
+    logging.info("run_green_algorithms_on_historical_logs: Logging configured successfully.")
 
     # Ask for the database password
     if "db_password" not in ga_config.config_values.keys():

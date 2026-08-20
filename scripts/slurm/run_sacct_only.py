@@ -61,10 +61,14 @@ def capture_sacct_output(args):
 
     try:
         data = SacctClient.pull_logs_by_time(startDay=args.startDay, endDay=args.endDay, all_users=all_users)
+        data, malformed_data = SacctClient.screen_sacct_rows(data)
     except Exception as e:
         logger.error(f"Failed to pull sacct logs: {e}")
         sys.exit(1)
 
+    if malformed_data:
+        logger.debug(f"{len(malformed_data)} Malformed lines found: {malformed_data}")
+        
     logger.debug(f"Output captured ({len(data)} bytes):")
     logger.debug(data)
 
