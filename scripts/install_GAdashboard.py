@@ -106,8 +106,6 @@ class GADashboardInstall:
                 sys.exit("Exiting...")
 
             # Optional parameters
-            if item == "useCustomLogs" and not value:
-                continue
             if item == "debug":
                 if value == "True":
                     components.append("--debug")
