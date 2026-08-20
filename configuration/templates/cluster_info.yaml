@@ -1,13 +1,16 @@
-##
-## ~~~ TO BE EDITED TO BE TAILORED TO THE CLUSTER ~~~
-## Fill in the values for your cluster: all the variables in <> need to be changed
-##
----
+# Cluster info file template
+#
+# ~~~ TO BE EDITED TO BE TAILORED TO THE CLUSTER ~~~
+# Fill in the values for your cluster: all the variables in <> need to be changed
+
+## ----- ABOUT THE CLUSTER -----
+
 institution: "<My institution>" # [str]
 cluster_name: "<My cluster name>" # [str]
 workload_manager: "<Workload manager used by my cluster>" # [str]
 
-## ----- HARDWARE PROFILES -----
+
+## ----- HARDWARE INFO. -----
 # a list of different hardware profiles available on the cluster
 
 hardware_profiles:
@@ -24,16 +27,17 @@ hardware_profiles:
     TDP_CPU: <10> # [number] TDP of the processor, in W, per core
   # You can keep adding hardware profiles to this
 
+
 ## ----- PARTITIONS -----
 # a list of the different partitions on the cluster
 
 partitions: 
   <partition name_1>: # name of the partition
-    homogenous: <True> # [bool] True if all nodes in the partition are homogenous, False if not
+    homogenous: <True> # [bool] True if all nodes in the partition have the same hardware profile, False if not
     hardware_profile: "<hardware profile name_1>" # [str] ONLY IF HOMOGENOUS - the name of the hardware profile used by this partition
 
   <partition name_2>: # name of the partition
-    homogenous: <False> # [bool] True if all nodes in the partition are homogenous, False if not
+    homogenous: <False> # [bool] True if all nodes in the partition have the same hardware profile, False if not
     node_list:
       - range: "<gpu-[10, 20]>" # [str] range of nodes with shared hardware profiles
         hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this partition
@@ -41,26 +45,22 @@ partitions:
         hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this partition
   # You can keep adding partitions to this
 
-## ----- CLUSTER SETTINGS -----
 
-granularity_memory_request: <6> # [number] in GB representing the smallest memory unit users can reserve
+## ----- FACILITY AND SITE PARAMETERS -----
+
 PUE: <1.67> # [number > 1] Power Usage Effectiveness of the facility
+CI: <467> # [number] average carbon intensity of the geographic location, in gCO2e/kWh
+
+# postcode below has to be compatible with the Carbon Intensity API used. 
+# If data centre is based outside of UK, leave postcode empty (CI key above will be used instead).
+postcode: <Postcode> # [str] First 3 letters of the postcode of the data centre
+
 energy_cost:
   cost: <0.34> # [number] in currency/kWh
   currency: "<£>" # [str]
 
-CI: <467> # [number] average carbon intensity of the geographic location, in gCO2e/kWh
-# postcode below has to be compatible with the Carbon Intensity API used. 
-# For now, only compatible with UK postcodes (first 3 letters). 
-# If data centre is based outside of UK, leave postcode empty (CI key above will be used instead).
-postcode: <Postcode> # [str] Postcode of the data centre
-#
-# Below are optional parameters if the html output is used.
-# HTML tags can be used
-#
-texts_intro:
-  CPU: "XX - XX W/core (see <a>here</a> for models)" # For example
-  GPU: "NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)" # For example
+granularity_memory_request: <6> # [number] in GB representing the smallest memory unit users can reserve
+
 #
 # Below are optional parameters to accommodate some clusters. Do not remove but can be ignored.
 #
