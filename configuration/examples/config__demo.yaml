@@ -73,6 +73,7 @@ skip_db_overwrite: False
 
 
 ## ----- DEBUG CONFIG -----
+# These configurations are used for code debugging or test runs
 
 # Uncomment if you want to see debug output
 # debug: true
