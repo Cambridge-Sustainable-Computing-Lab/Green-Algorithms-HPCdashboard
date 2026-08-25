@@ -12,7 +12,8 @@ def config_data():
     return {
         "startDay": "2026-01-01",
         "endDay": "2026-04-01",
-        "useCustomLogs": "tests/testdata/slurm_logs_many_cases.txt",
+        "input_mode": "file",
+        "input_log_file_path": "tests/testdata/slurm_logs_many_cases.txt",
         "skip_db_overwrite": False,
         "db_name": "ga_dev",
         "db_host": "localhost",

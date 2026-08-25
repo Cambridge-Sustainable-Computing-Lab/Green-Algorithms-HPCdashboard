@@ -57,7 +57,7 @@ The system has three components:
   * [1. Python environment (Miniforge)](#1-python-environment-miniforge)
   * [2. Install python packages and dependencies](#2-install-python-packages-and-dependencies)
   * [3. PostgreSQL Database server](#3-postgresql-database-server)
-  * [4. Grafana Dashboard Server](#4-grafana-dashboard-server)
+  * [4. Grafana Dashboard Server](#4-grafana)
 * [Configuration files](#configuration-files)
   * [1. Scripts configuration file](#1-scripts-configuration-file-configyaml)
   * [2. Cluster information file](#2-cluster-information-file-cluster_infoyaml)
@@ -100,17 +100,12 @@ For more information about `conda` and its [list of commands](https://docs.conda
 
 ### 2. Download the latest release and install python packages and dependencies
 Download the source code from the [latest release](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-HPCdashboard/releases) and extract it.
-Install the `ga_dashboard` python package and dependencies from `requirements.txt` in your conda environment.
+Install the `ga_dashboard` python package and dependencies using poetry in your conda environment.
 
 1. Run the following command in the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory):
     ```
-    $ pip install -r requirements.txt
-    ```
-    or
-    ```
     $ poetry install
     ```
-    based on which tool (`pip` or `poetry`) you prefer to use.
 
 2. Run either of the following commands to install the `ga_dashboard` software package:
     ```

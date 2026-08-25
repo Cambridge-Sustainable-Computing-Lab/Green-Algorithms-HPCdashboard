@@ -145,4 +145,4 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-tests/.DS_Store
+*.DS_Store

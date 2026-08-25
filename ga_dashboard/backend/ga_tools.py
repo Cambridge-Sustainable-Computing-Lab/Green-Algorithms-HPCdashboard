@@ -163,9 +163,16 @@ class LogsDataProcessor:
 
         :return: pandas Dataframe containing processed data
         """
+        logs_raw = None
         db_ci_store = DatabaseCIStore(self.db_params)
+
+        if self.config_data.get('input_mode') == 'file' and self.config_data.get('input_log_file_path', '') != '':
+            print(f"\n  Input mode is 'file' => Pulling raw logs from '{self.config_data["input_log_file_path"]}'\n")
+            # Pick raw logs from file
+            logs_raw = utils.read_file_bytes(self.config_data["input_log_file_path"])
+
         dataprocessor = ga_core.HPCDataProcessor(self.config_data, self.cluster_info, self.fixed_params, self.has_slurmAdmin)
-        df = dataprocessor.extract_data()
+        df = dataprocessor.extract_data(logs_raw)
         df = dataprocessor.enrich_data(df, db_ci_store)
 
         ### Add user details to jobs
@@ -197,7 +204,7 @@ class LogsDataProcessor:
         :param batch_size: size of batch in number of days
         :return: dict containing summary stats for all batches
         """
-        if self.config_data.get('useCustomLogs', '') != '' or self.config_data.get('use_mock_agg_data', '') != '':
+        if self.config_data.get('input_log_file_path', '') != '' or self.config_data.get('use_mock_agg_data', '') != '':
                 return self.run()
         
         batches = utils.generate_batches_by_dates(
