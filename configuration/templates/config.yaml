@@ -63,7 +63,6 @@ url: "<url:port>"
 input_mode: "<sacct or file>"
 
 # If input_mode = 'file', specify the file path to the input logs
-# For SLURM clusters, use scripts/slurm/run_sacct.py to generate and save raw log file.
 input_log_file_path: "<input_logs_path>"
 
 # Set 'skip_db_overwrite: True' to stop overwriting the Database (if found) during Dashboard installation.

@@ -270,23 +270,24 @@ resolved_reference = "bf61a9c775debfefedbca4d1a379df76c74ce7c1"
 
 [[package]]
 name = "grafana-client"
-version = "5.0.1"
+version = "5.1.1"
 description = "A client library for accessing the Grafana HTTP API, written in Python"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "grafana_client-5.0.1-py3-none-any.whl", hash = "sha256:9d216b37fceebe6827ed8ae87b11fb5679e38fb009d200ce21c4f1935f32e675"},
-    {file = "grafana_client-5.0.1.tar.gz", hash = "sha256:b5ad0b9213fcb4d889e966916686468d364c06789942f2de7840c731ea6feb20"},
+    {file = "grafana_client-5.1.1-py3-none-any.whl", hash = "sha256:6fb42b9dd24c781eae6ea830dd7af50e334fceb9dea15efae567d6c69a546e43"},
+    {file = "grafana_client-5.1.1.tar.gz", hash = "sha256:9469afddcf89ed43da9298104595b8a9ef39fa43556058171346746fc730efef"},
 ]
 
 [package.dependencies]
 niquests = ">=3.4.0,<4"
-verlib2 = "<0.4"
+verlib2 = "<26.3"
 
 [package.extras]
-develop = ["build (<2)", "pip-review (<2)", "poethepoet (<1)", "ruff (<0.13) ; python_version >= \"3.7\"", "twine (<7)"]
-test = ["codecov (<3)", "coverage[toml] (<8)", "parameterized (>=0.8,<1)", "requests-mock (<2)", "unittest-xml-reporting (<4)"]
+develop = ["pip-review (<2)", "poethepoet (<1)", "ruff (<0.16) ; python_version >= \"3.7\""]
+release = ["build (<2)", "twine (<8)"]
+test = ["coverage[toml] (<8)", "lovely-pytest-docker (>=1,<2)", "parameterized (>=0.8,<1)", "pytest (<10)", "pytest-asyncio (<2)", "requests-mock (<2)", "unittest-xml-reporting (<5)"]
 
 [[package]]
 name = "h11"
@@ -1362,4 +1363,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<4.0"
-content-hash = "a1bbcfddec6634dfa1a06a3ef81e8afca3614773c6e18ca008dd730503306945"
+content-hash = "5009652703c2049ac8ddedc84230288dcc349be3037887cb5cda2a30b7f2f8e7"

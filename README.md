@@ -57,7 +57,7 @@ The system has three components:
   * [1. Python environment (Miniforge)](#1-python-environment-miniforge)
   * [2. Install python packages and dependencies](#2-install-python-packages-and-dependencies)
   * [3. PostgreSQL Database server](#3-postgresql-database-server)
-  * [4. Grafana Dashboard Server](#4-grafana-dashboard-server)
+  * [4. Grafana Dashboard Server](#4-grafana)
 * [Configuration files](#configuration-files)
   * [1. Scripts configuration file](#1-scripts-configuration-file-configyaml)
   * [2. Cluster information file](#2-cluster-information-file-cluster_infoyaml)
