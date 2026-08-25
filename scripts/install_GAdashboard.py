@@ -91,7 +91,7 @@ class GADashboardInstall:
         '''
         commander = "python"
         script_client_vars = self.scripts[client]
-        path = "scripts" + "/" + script_client_vars['dir'] + "/" + client
+        path = "scripts" + "/" + "internal" + "/" + script_client_vars['dir'] + "/" + client
         components = [commander, path]
 
         for item in script_client_vars['arg_list']:
