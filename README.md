@@ -145,7 +145,7 @@ By default, the superuser credential is id: `admin`, password: `admin`. You shou
 ---
 ## Configuration files
 
-Before running the dashboard, you will need to prepare three configuration files. Templates and examples for all of them are provided in the `configuration/templates/` and `configuration/examples/` directories respectively. (find out more [here](configuration/templates/templates_readme.md))
+Before running the dashboard, you will need to prepare three configuration files. Templates and examples for all of them are provided in the `configuration/templates/` and `configuration/examples/` directories respectively.
 
 ### 1. Scripts configuration file (`config.yaml`)
 Copy the template provided in `configuration/templates/config.yaml` to a location of your choice and edit it, replacing all values surrounded by `< >` characters. This file contains the core parameters needed to run the dashboard, including database connection details and paths to the other configuration files. You can uncomment the optional parameters you want to use.
@@ -165,6 +165,8 @@ You need to map each partition (a set of computing nodes with a dedicated queue)
 For heterogenous partitions, i.e. partitions with more than one hardware profiles, you must describe hardware profiles for each node range that lie within the partition.
 
 You will also need values for `institution`, `cluster_name`,`granularity_memory_request`, `PUE`, and other fields listed in the template.
+
+> For more details and FAQs about configuration files, check out [configurations.md](configuration/configurations.md).
 
 #### Carbon intensity (CI)
 The dashboard uses carbon intensity (CI) data to estimate the carbon footprint of your HPC usage. There are three ways to configure this:

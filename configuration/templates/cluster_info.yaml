@@ -40,9 +40,9 @@ partitions:
     homogenous: <False> # [bool] True if all nodes in the partition have the same hardware profile, False if not
     node_list:
       - range: "<gpu-[10, 20]>" # [str] range of nodes with shared hardware profiles
-        hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this partition
+        hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this node range
       - range: "<gpu-[100, 120]>" # [str] range of nodes with shared hardware profiles
-        hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this partition
+        hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this node range
   # You can keep adding partitions to this
 
 
