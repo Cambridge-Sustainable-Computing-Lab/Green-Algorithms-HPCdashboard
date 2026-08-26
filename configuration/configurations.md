@@ -6,13 +6,13 @@ The two main configurations that must be set up before running the Green Algorit
 
 It is important to edit these and configure them to make the GA Dashboard work for your HPC cluster.
 
-## Cluster information (cluster_info.yaml)
+## Cluster information ([cluster_info.yaml](templates/cluster_info.yaml))
 This file contains key information about the cluster including it's workload manager, PUE (power usage effectiveness), postcode, and hardware details.
 
 It is important that the cluster configurations represent the clusters accurately to allow for correct energy and GHG emissions estimations. 
 
 > [!NOTE]
-> `configuration/examples/cluster_info__demo.yaml` is a useful worked example to see what kind of cluster configuration values the GA Dashboard expects.
+> The [`cluster_info.yaml` example](`configuration/examples/cluster_info__demo.yaml`) is a useful resource to see what kind of cluster configuration values the GA Dashboard expects.
 
 ### FAQs
 #### - Where to find hardware profiles, partitions, and node lists?
@@ -54,7 +54,36 @@ For most locations carbon intensity varies over time depending on the 'cleanline
 
 A static `CI` value must be provided in the cluster config for non-UK based clusters. The average carbon intensity in the data centre's location can be found [here](https://app.electricitymaps.com)
 
-## Runtime Configurations (config.yaml)
+## Runtime Configurations ([config.yaml](templates/config.yaml))
 
-This is your master configuration that contains paths to other configurations (like `cluster_info.yaml`), Grafana and PostgreSQL database configurations, and runtime instructions.
+This is your master configuration file. It tells the Dashboard where to find your other config files, how to connect to Grafana and PostgreSQL, and how to run. It is split into five sections:
 
+- **Config file paths**: locations of the other files the Dashboard depends on (`cluster_info.yaml`, the user list, and the fixed parameters file).
+- **Database config**: connection details for the PostgreSQL database that stores user details, processed logs data, and avg. carbon intensity values (UK only).
+- **Grafana config**: connection and folder details for the Grafana instance the Dashboard will use.
+- **Run config**: key runtime configs to specify how job logs are to be ingested and whether the database should be rebuilt on install.
+- Debug config: optional overrides used for testing and debugging only, not required for normal operation.
+
+> [!NOTE]
+> The [`config.yaml` example](configuration/examples/config.yaml) is a useful resource to see what kind of runtime configuration values the GA Dashboard expects.
+
+> [!NOTE]
+> Its best to keep `fixed_params_file` and `db_script` set to their default values from the [`config.yaml` example](configuration/examples/config.yaml) — don't change them.
+
+### FAQs
+#### - **How to determine which `input_mode` to use?**
+`input_mode` currently takes two values - `sacct` or `file`. If you want the Dashboard to pull values directly from SLURM, use `sacct`. To bypass the workload manager altogether, you can provide a logs file to the Dashboard - use `file` in this case.
+
+If your cluster uses SLURM and you want to ingest logs via a logs file, the [`run_sacct_only.py`](../scripts/slurm/run_sacct_only.py) script should be used separately on the HPC cluster to generate the required file.
+
+#### - **What is `skip_db_overwrite` for?**
+By default (`False`), the installation script drops and recreates the database each time it runs. Set this to `True` if the database already exists and is correctly configured, and you just need to re-run the install script without losing existing data. **If you're running the Dashboard in a Docker container, this must be set to `True`**, otherwise the database will be deleted and recreated every time the container restarts.
+
+#### - **Where do I find my `pg_version`?**
+This is the version of PostgreSQL installed on the machine hosting your database. Run `psql --version` or `postgres --version` on the database host to check. This should be filled in *after* PostgreSQL is installed, not before.
+
+#### - **What is `dashboard_folder_name` and `name` under Grafana config?**
+`dashboard_folder_name` is the folder the Dashboard's panels will be organised under in the Grafana UI. `name` is the identifier Grafana uses internally for the PostgreSQL data source it creates — you generally don't need to change this unless it conflicts with an existing data source name.
+
+#### - **Can I leave `db_name` and `dashboard_folder_name` as their defaults?**
+Yes, `db_name: "ga_db"` and `dashboard_folder_name: "Green Algorithms"` are sensible defaults and only need changing if they clash with existing resources on your system.
