@@ -166,8 +166,6 @@ For heterogenous partitions, i.e. partitions with more than one hardware profile
 
 You will also need values for `institution`, `cluster_name`,`granularity_memory_request`, `PUE`, and other fields listed in the template.
 
-> For more details and FAQs about configuration files, check out [configurations.md](configuration/configurations.md).
-
 #### Carbon intensity (CI)
 The dashboard uses carbon intensity (CI) data to estimate the carbon footprint of your HPC usage. There are three ways to configure this:
 
@@ -176,43 +174,16 @@ If your cluster is based in the UK, the dashboard can pull dynamic carbon intens
 2. **Fixed carbon intensity value**
 For clusters outside the UK, you can provide a fixed carbon intensity value directly in `cluster_info.yaml`, e.g. the average carbon intensity in the data centre's location (you can find it [here](https://app.electricitymaps.com)). This will be used for all calculations.
 3. **Custom API integration**
-If you would like to use a different carbon intensity API for your region, you can implement your own integration using the `APIService` class in `ga_dashboard/backend/services/api_service.py`. Get in touch if you need guidance on this.
+If you would like to use a different carbon intensity API for your region, you can implement your own. Get in touch if you need guidance on this.
 
 ### 3. Dashboard users file (`user_list.csv`)
 This file lists the users who will have access to the dashboard. Copy the template provided in `configuration/templates/user_list.csv` and populate with your users' details.
 
-The users file should be a comma-separated file combining these columns:
-* **User name**: Company/Institute user name (e.g. tg1)
-* **User unique identifier (UID)**: Numeric user unique identifier (e.g. 11111)
-* **Name**: Full user name (e.g. Thomas Greene)
-* **Email**: email address of user
-* **Group name**: Name of the user group/team (e.g. group 1)
-* **Department name**: Name of the user department/unit (e.g. Dept 3)
-* **GrafanaPassword**: Password required by this user for Grafana. By default, users only have view access.
-
-For example in `configuration/examples/user_list__demo.csv`:
-```
-User,UID,Name,Email,Group,Department,GrafanaPassword
-uid_1,11111,John Smith,user1@example.com,group_1,Dept_3,*0IK^I^&UpO$2aX
-uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3,yGg=kA-6v**7BS)
-uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3,ibVvlpo$r7b0u
-uid_4,44444,Lisa Bookbinder,user4@example.com,group_3,Dept_2,!3Q4o&%Fs5SE2
-uid_5,55555,Ali Hassan,user5@example.com,group_4,Dept_1,qiY_pI%7BFz<JT
-```
-
-Displayed as a table:
-
-| User | UID   | Name          | Email | Group   | Department | GrafanaPassword |
-| -----|------ | ------------- | ------- | ---------- | ----| ------------ |
-| uid_1 | 11111 | John Smith | user1@example.com | group 1 | Dept 3     | *0IK^I^&UpO$2aX |
-| uid_2 | 22222 | Sarah Jones | user2@example.com   | group 1 | Dept 3     | yGg=kA-6v**7BS) |
-| ...   | ...   | ...           | ...     | ...  | ...      | ... |
-
 > [!IMPORTANT]
 > Jobs are mapped to the users using the `User` field from the dashboard users file, which must exactly match the `User` in SLURM logs. Ensure there are no discrepancies in casing or formatting between the two.
 
-> [!IMPORTANT]
-> Passwords must not contain a comma character (`','`), as this will break CSV parsing.
+> [!NOTE]
+> For more details and FAQs about configuration files, check out [configurations.md](configuration/configurations.md).
 
 ---
 ## Install the Green Algorithms dashboard

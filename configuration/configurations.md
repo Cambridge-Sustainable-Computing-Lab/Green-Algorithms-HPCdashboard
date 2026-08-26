@@ -3,6 +3,7 @@
 The two main configurations that must be set up before running the Green Algorithms Dashboard are:
 1. [cluster_info.yaml](#cluster-information-cluster_infoyaml)
 2. [config.yaml](#runtime-configurations-configyaml)
+3. [user_list.csv](#dashboard-users-user_listcsv)
 
 It is important to edit these and configure them to make the GA Dashboard work for your HPC cluster.
 
@@ -54,7 +55,7 @@ For most locations carbon intensity varies over time depending on the 'cleanline
 
 A static `CI` value must be provided in the cluster config for non-UK based clusters. The average carbon intensity in the data centre's location can be found [here](https://app.electricitymaps.com)
 
-## Runtime Configurations ([config.yaml](templates/config.yaml))
+## Scripts Configuration ([config.yaml](templates/config.yaml))
 
 This is your master configuration file. It tells the Dashboard where to find your other config files, how to connect to Grafana and PostgreSQL, and how to run. It is split into five sections:
 
@@ -87,3 +88,35 @@ This is the version of PostgreSQL installed on the machine hosting your database
 
 #### - **Can I leave `db_name` and `dashboard_folder_name` as their defaults?**
 Yes, `db_name: "ga_db"` and `dashboard_folder_name: "Green Algorithms"` are sensible defaults and only need changing if they clash with existing resources on your system.
+
+## Dashboard Users ([user_list.csv](configuration/templates/user_list.csv))
+
+The users file should be a comma-separated file combining these columns:
+* **User name**: Company/Institute user name (e.g. tg1)
+* **User unique identifier (UID)**: Numeric user unique identifier (e.g. 11111)
+* **Name**: Full user name (e.g. Thomas Greene)
+* **Email**: email address of user
+* **Group name**: Name of the user group/team (e.g. group 1)
+* **Department name**: Name of the user department/unit (e.g. Dept 3)
+* **GrafanaPassword**: Password required by this user for Grafana. By default, users only have view access.
+
+For example in `configuration/examples/user_list__demo.csv`:
+```
+User,UID,Name,Email,Group,Department,GrafanaPassword
+uid_1,11111,John Smith,user1@example.com,group_1,Dept_3,*0IK^I^&UpO$2aX
+uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3,yGg=kA-6v**7BS)
+uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3,ibVvlpo$r7b0u
+uid_4,44444,Lisa Bookbinder,user4@example.com,group_3,Dept_2,!3Q4o&%Fs5SE2
+uid_5,55555,Ali Hassan,user5@example.com,group_4,Dept_1,qiY_pI%7BFz<JT
+```
+
+Displayed as a table:
+
+| User | UID   | Name          | Email | Group   | Department | GrafanaPassword |
+| -----|------ | ------------- | ------- | ---------- | ----| ------------ |
+| uid_1 | 11111 | John Smith | user1@example.com | group 1 | Dept 3     | *0IK^I^&UpO$2aX |
+| uid_2 | 22222 | Sarah Jones | user2@example.com   | group 1 | Dept 3     | yGg=kA-6v**7BS) |
+| ...   | ...   | ...           | ...     | ...  | ...      | ... |
+
+> [!IMPORTANT]
+> Passwords must not contain a comma character (`','`), as this will break CSV parsing.
