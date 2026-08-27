@@ -5,8 +5,8 @@
 
 ## ----- ABOUT THE CLUSTER -----
 
-institution: "<My institution>" # [str]
 cluster_name: "<My cluster name>" # [str]
+institution: "<My institution>" # [str]
 workload_manager: "<Workload manager used by my cluster>" # [str]
 
 
@@ -15,16 +15,18 @@ workload_manager: "<Workload manager used by my cluster>" # [str]
 
 hardware_profiles:
   <hardware profile name_1>: # unique and identifiable name for the hardware profile
-    type: <CPU> # [CPU or GPU]
+    type: "<CPU>" # [CPU or GPU]
     model: "<Intel XXX>" # [str] the model of the processing core on this hardware profile. Not actually used by the code but useful for reference for others.
     TDP: <10> # [number] TDP of the processor, in W, per core
+    
   <hardware profile name_2>: # name of the hardware profile
-    type: <GPU> # [CPU or GPU]
+    type: "<GPU>" # [CPU or GPU]
     model: "<NVIDIA XXX>" # [str] the model of the processing core on this hardware profile. Not actually used by the code but useful for reference for others.
-TDP: <250> # [number] For GPUs, the TDP is for the entire GPU, in W
+    TDP: <250> # [number] For GPUs, the TDP is for the entire GPU, in W
     # For GPU hardware profiles, we also need info about the CPUs available for support.
     model_CPU: "<Intel XXX>" # [str] Not actually used by the code but useful for reference for others.
     TDP_CPU: <10> # [number] TDP of the processor, in W, per core
+
   # You can keep adding hardware profiles to this
 
 
@@ -39,29 +41,35 @@ partitions:
   <partition name_2>: # name of the partition
     homogenous: <False> # [bool] True if all nodes in the partition have the same hardware profile, False if not
     node_list:
-      - range: "<gpu-[10, 20]>" # [str] range of nodes with shared hardware profiles
-        hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this node range
-      - range: "<gpu-[100, 120]>" # [str] range of nodes with shared hardware profiles
-        hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this node range
+      - hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this node range
+        range: "<gpu-[10, 20]>" # [str] range of nodes with shared hardware profiles
+        
+      - hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this node range
+        range: "<gpu-[100, 120]>" # [str] range of nodes with shared hardware profiles
+        
   # You can keep adding partitions to this
+
+
+## ----- MEMORY -----
+
+granularity_memory_request: <6> # [number] in GB representing the smallest memory unit users can reserve
+default_unit_RSS: 'K' # [char] unit in which memory usage (RSS) is reported in by your workload manager
 
 
 ## ----- FACILITY AND SITE PARAMETERS -----
 
-PUE: <1.67> # [number > 1] Power Usage Effectiveness of the facility
-CI: <467> # [number] average carbon intensity of the geographic location, in gCO2e/kWh
-
-# postcode below has to be compatible with the Carbon Intensity API used. 
-# If data centre is based outside of UK, leave postcode empty (CI key above will be used instead).
-postcode: <Postcode> # [str] First 3 letters of the postcode of the data centre
-
 energy_cost:
   cost: <0.34> # [number] in currency/kWh
   currency: "<£>" # [str]
+PUE: <1.67> # [number > 1] Power Usage Effectiveness of the facility
 
-granularity_memory_request: <6> # [number] in GB representing the smallest memory unit users can reserve
+### Carbon Intensity
+# postcode below has to be compatible with the Carbon Intensity API used. 
+# If data centre is based outside of UK, leave postcode empty (CI key will be used instead).
 
-#
-# Below are optional parameters to accommodate some clusters. Do not remove but can be ignored.
-#
-default_unit_RSS: 'K'
+CI: <467> # [number] average carbon intensity of the geographic location, in gCO2e/kWh
+postcode: <Postcode> # [str] First 3 letters of the postcode of the data centre
+
+
+
+

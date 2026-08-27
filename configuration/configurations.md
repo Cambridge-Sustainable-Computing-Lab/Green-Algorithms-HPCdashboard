@@ -42,10 +42,10 @@ Configuring a heterogenous partition `yew` in `cluster_info.yaml` (assuming hard
 yew:
     homogenous: False
     node_list:
-        - range: range1-[100-200]
-          hardware_profile: HP1
-        - range: range2-[450-500]
-          hardware_profile: HP2
+        - hardware_profile: HP1
+          range: range1-[100-200]
+        - hardware_profile: HP2
+          range: range2-[450-500]
 ```       
 
 #### - How to find my data centre's carbon intensity?

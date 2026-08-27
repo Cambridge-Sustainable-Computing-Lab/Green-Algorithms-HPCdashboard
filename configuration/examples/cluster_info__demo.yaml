@@ -6,11 +6,10 @@
 
 ## ----- ABOUT THE CLUSTER -----
 
-institution: "University of ..."
 cluster_name: "OurCluster"
+institution: "University of ..."
 workload_manager: "SLURM"
 
-granularity_memory_request: 6 # in GB
 
 ## ----- HARDWARE INFO. -----
 
@@ -78,28 +77,32 @@ partitions:
   het:
     homogenous: False
     node_list:
-      - range: "cpu-p-[90, 100]"
-        hardware_profile: "XeonPlatinum8368Q"
-      - range: "cpu-p-[120, 130]"
-        hardware_profile: "XeonGold6142"
+      - hardware_profile: "XeonPlatinum8368Q"
+        range: "cpu-p-[90, 100]"
+        
+      - hardware_profile: "XeonGold6142"
+        range: "cpu-p-[120, 130]"
+
+
+## ----- MEMORY -----
+
+granularity_memory_request: 6 # in GB
+default_unit_RSS: 'K'
 
 
 ## ----- FACILITY AND SITE PARAMETERS -----
 
-PUE: 1.15 # > 1
-CI: 231.12 # carbon intensity, in gCO2e/kWh
-
-# postcode below has to be compatible with the Carbon Intensity API used. 
-# If data centre is based outside of UK, leave postcode empty (CI key above will be used instead).
-postcode: "CB1" 
-
 energy_cost:
   cost: 0.34 # in currency/kWh
   currency: "£"
+PUE: 1.15 # > 1
 
-granularity_memory_request: 6 # in GB
+### Carbon Intensity
+# postcode below has to be compatible with the Carbon Intensity API used. 
+# If data centre is based outside of UK, leave postcode empty (CI key will be used instead).
 
-#
-# Below are optional parameters to accommodate some clusters. Do not remove but can be ignored.
-#
-default_unit_RSS: 'K'
+CI: 231.12 # carbon intensity, in gCO2e/kWh
+postcode: "CB1" 
+
+
+
