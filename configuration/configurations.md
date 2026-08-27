@@ -1,15 +1,17 @@
 # Guide to using configuration templates
 
 The different configurations that must be set up before running the Green Algorithms Dashboard are:
-1. [config.yaml](#scripts-configuration-configyaml)
-2. [cluster_info.yaml](#cluster-information-cluster_infoyaml)
-3. [user_list.csv](#dashboard-users-user_listcsv)
+1. [config.yaml](#scripts-configuration-configyaml): Master configuration supporting GA Dashboard installation and daily run scripts
+2. [cluster_info.yaml](#cluster-information-cluster_infoyaml): HPC cluster information specifying its hardware profile, PUE, postcode, and other cluster settings
+3. [user_list.csv](#dashboard-users-user_listcsv): List of users who will have the access to the GA Dashboard
 
 It is important to edit these and configure them to make the GA Dashboard work for your system.
 
 ## Scripts Configuration ([config.yaml](templates/config.yaml))
 
-This is your master configuration file. It tells the Dashboard where to find your other config files, how to connect to Grafana and PostgreSQL, and how to run. It is split into five sections:
+This is your master configuration file. It tells the Dashboard where to find your other config files, how to connect to Grafana and PostgreSQL, and how to run. Copy the [`config.yaml` template](templates/config.yaml) to a location of your choice and edit it, replacing all values surrounded by `< >` characters. 
+
+It is split into five sections:
 
 - **Config file paths**: locations of the other files the Dashboard depends on (`cluster_info.yaml`, the user list, and the fixed parameters file).
 - **Database config**: connection details for the PostgreSQL database that stores user details, processed logs data, and average carbon intensity values (UK only).
@@ -18,10 +20,10 @@ This is your master configuration file. It tells the Dashboard where to find you
 - Debug config: optional overrides used for testing and debugging only, not required for normal operation.
 
 > [!NOTE]
-> The [`config.yaml` example](configuration/examples/config.yaml) is a useful resource to see what kind of scripts configuration values the GA Dashboard expects.
+> The [`config.yaml` example](examples/config.yaml) is a useful resource to see what kind of scripts configuration values the GA Dashboard expects.
 
 > [!NOTE]
-> Its best to keep `fixed_params_file` and `db_script` set to their default values from the [`config.yaml` example](configuration/examples/config.yaml) — don't change them unless you know what you're doing.
+> Its best to keep `fixed_params_file` and `db_script` set to their default values from the [`config.yaml` example](examples/config.yaml) — don't change them unless you know what you're doing.
 
 ### FAQs
 #### - **How to determine which `input_mode` to use?**
@@ -45,12 +47,32 @@ This is the version of PostgreSQL installed on the machine hosting your database
 Yes, `db_name: "ga_db"` and `dashboard_folder_name: "Green Algorithms"` are sensible defaults and only need changing if they clash with existing resources on your system.
 
 ## Cluster information ([cluster_info.yaml](templates/cluster_info.yaml))
-This file contains key information about the cluster including it's workload manager, PUE (power usage effectiveness), postcode, and hardware details.
+This file contains key information about the cluster including it's workload manager, PUE (power usage effectiveness), postcode, and hardware details. Copy the [`cluster_info.yaml` template](templates/cluster_info.yaml) and edit it with information about your HPC cluster
+
+> [!NOTE]
+> The [`cluster_info.yaml` example](`examples/cluster_info__demo.yaml`) is a useful resource to see what kind of cluster configuration values the GA Dashboard expects.
 
 It is important that the cluster configurations represent the clusters accurately to allow for correct energy and GHG emissions estimations. 
 
-> [!NOTE]
-> The [`cluster_info.yaml` example](`configuration/examples/cluster_info__demo.yaml`) is a useful resource to see what kind of cluster configuration values the GA Dashboard expects.
+You need to map each partition to a hardware profile, and each hardware profile must describe its: 
+- `type`: CPU or GPU
+- `model`: processor model
+- `TDP`: thermal design power (check the manufacturer's datasheet if needed)
+- For GPU partitions only: `model_CPU` and `TDP_CPU`
+
+For heterogenous partitions, i.e. partitions with more than one hardware profiles, you must describe hardware profiles for each node range that lie within the partition.
+
+You will also need values for `institution`, `cluster_name`,`granularity_memory_request`, `PUE`, and other fields listed in the template.
+
+#### Carbon intensity (CI)
+The dashboard uses carbon intensity (CI) data to estimate the carbon footprint of your HPC usage. There are three ways to configure this:
+
+1. **Carbon Intensity API (UK only)**
+If your cluster is based in the UK, the dashboard can pull dynamic carbon intensity data from the [Carbon Intensity API](https://carbonintensity.org.uk). To enable this, add the first three characters of your **postcode** to `cluster_info.yaml`. The dashboard uses a daily average of the carbon intensity values returned by the API.
+2. **Fixed carbon intensity value**
+For clusters outside the UK, you can provide a fixed carbon intensity value directly in `cluster_info.yaml`, e.g. the average carbon intensity in the data centre's location (you can find it [here](https://app.electricitymaps.com)). This will be used for all calculations.
+3. **Custom API integration**
+If you would like to use a different carbon intensity API for your region, you can implement your own. Get in touch if you need guidance on this.
 
 ### FAQs
 
@@ -92,6 +114,10 @@ A static `CI` value must be provided in `cluster_info.yaml` for non-UK based clu
 
 
 ## Dashboard Users ([user_list.csv](configuration/templates/user_list.csv))
+This file lists the users who will have access to the dashboard. Copy the [`user_list.csv` template](`templates/user_list.csv`) and populate with your users' details.
+
+> [!IMPORTANT]
+> Jobs are mapped to the users using the `User` field from the dashboard users file, which must exactly match the `User` in SLURM logs. Ensure there are no discrepancies in casing or formatting between the two.
 
 The users file should be a comma-separated file combining these columns:
 * **User name**: Company/Institute user name (e.g. tg1)
