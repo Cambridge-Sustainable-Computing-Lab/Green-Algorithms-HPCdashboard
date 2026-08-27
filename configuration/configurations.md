@@ -20,10 +20,10 @@ It is split into five sections:
 - Debug config: optional overrides used for testing and debugging only, not required for normal operation.
 
 > [!NOTE]
-> The [`config.yaml` example](examples/config.yaml) is a useful resource to see what kind of scripts configuration values the GA Dashboard expects.
+> The [`config.yaml` example](examples/config__demo.yaml) is a useful resource to see what kind of scripts configuration values the GA Dashboard expects.
 
 > [!NOTE]
-> Its best to keep `fixed_params_file` and `db_script` set to their default values from the [`config.yaml` example](examples/config.yaml) — don't change them unless you know what you're doing.
+> Its best to keep `fixed_params_file` and `db_script` set to their default values from the [`config.yaml` example](examples/config__demo.yaml) — don't change them unless you know what you're doing.
 
 ### FAQs
 #### - **How to determine which `input_mode` to use?**
@@ -50,7 +50,7 @@ Yes, `db_name: "ga_db"` and `dashboard_folder_name: "Green Algorithms"` are sens
 This file contains key information about the cluster including it's workload manager, PUE (power usage effectiveness), postcode, and hardware details. Copy the [`cluster_info.yaml` template](templates/cluster_info.yaml) and edit it with information about your HPC cluster
 
 > [!NOTE]
-> The [`cluster_info.yaml` example](`examples/cluster_info__demo.yaml`) is a useful resource to see what kind of cluster configuration values the GA Dashboard expects.
+> The [`cluster_info.yaml` example](examples/cluster_info__demo.yaml) is a useful resource to see what kind of cluster configuration values the GA Dashboard expects.
 
 It is important that the cluster configurations represent the clusters accurately to allow for correct energy and GHG emissions estimations. 
 
@@ -114,7 +114,7 @@ A static `CI` value must be provided in `cluster_info.yaml` for non-UK based clu
 
 
 ## Dashboard Users ([user_list.csv](configuration/templates/user_list.csv))
-This file lists the users who will have access to the dashboard. Copy the [`user_list.csv` template](`templates/user_list.csv`) and populate with your users' details.
+This file lists the users who will have access to the dashboard. Copy the [`user_list.csv` template](templates/user_list.csv) and populate with your users' details.
 
 > [!IMPORTANT]
 > Jobs are mapped to the users using the `User` field from the dashboard users file, which must exactly match the `User` in SLURM logs. Ensure there are no discrepancies in casing or formatting between the two.
