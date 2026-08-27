@@ -1,57 +1,11 @@
 # Guide to using configuration templates
 
-The two main configurations that must be set up before running the Green Algorithms Dashboard are:
-1. [cluster_info.yaml](#cluster-information-cluster_infoyaml)
-2. [config.yaml](#runtime-configurations-configyaml)
+The different configurations that must be set up before running the Green Algorithms Dashboard are:
+1. [config.yaml](#scripts-configuration-configyaml)
+2. [cluster_info.yaml](#cluster-information-cluster_infoyaml)
 3. [user_list.csv](#dashboard-users-user_listcsv)
 
 It is important to edit these and configure them to make the GA Dashboard work for your system.
-
-## Cluster information ([cluster_info.yaml](templates/cluster_info.yaml))
-This file contains key information about the cluster including it's workload manager, PUE (power usage effectiveness), postcode, and hardware details.
-
-It is important that the cluster configurations represent the clusters accurately to allow for correct energy and GHG emissions estimations. 
-
-> [!NOTE]
-> The [`cluster_info.yaml` example](`configuration/examples/cluster_info__demo.yaml`) is a useful resource to see what kind of cluster configuration values the GA Dashboard expects.
-
-### FAQs
-#### - Where to find hardware profiles, partitions, and node lists?
-The HPC team in your institution are the best people to ask for this information.
-
-#### - What's TDP and where can I find it?
-Thermal design power or TDP refers to the maximum thermal power dissipation of a processor (CPU or GPU) under normal operating workloads. This value is generally specified by the manufacturer of the processor.
-
-Once you're aware of the hardware in use, TDP values for each hardware profile can be fetched directly from the manufacturer's website/datasheets. You may also check if the value you are looking for is present [here](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-data/blob/main/v3.1/hardware-impacts.csv).
-
-#### - Homogenous vs heterogenous partitions?
-The code needs to know what hardware is being used to estimate energy usage. Partitions where all nodes have the same hardware (and hardware profile) are considered homogenous, in this case partitions are used to map jobs to hardware. Partitions that have different hardware for different nodes (what we call here "heterogenous partitions) require node-level mapping and for these, a node list must be configured to identify what hardware profile is used by each node.
-
-Configuring a homogenous partition `yew` in `cluster_info.yaml` (assuming a hardware profile called 'HP1'):
-
-```
-yew:
-    homogenous: True
-    hardware_profile: HP1
-
-```
-
-Configuring a heterogenous partition `yew` in `cluster_info.yaml` (assuming hardware profiles 'HP1' and 'HP2'):
-
-```
-yew:
-    homogenous: False
-    node_list:
-        - hardware_profile: HP1
-          range: range1-[100-200]
-        - hardware_profile: HP2
-          range: range2-[450-500]
-```       
-
-#### - How to find my data centre's carbon intensity?
-For most locations carbon intensity varies over time depending on the 'cleanliness' of the power grid. If the data centre is UK based, Green Algorithms Dashboard can use the [Carbon Intensity API](https://carbonintensity.org.uk) to dynamically fetch carbon intensity based on the `postcode` provided in cluster config.
-
-A static `CI` value must be provided in the cluster config for non-UK based clusters. The average carbon intensity in the data centre's location can be found [here](https://app.electricitymaps.com)
 
 ## Scripts Configuration ([config.yaml](templates/config.yaml))
 
@@ -64,16 +18,19 @@ This is your master configuration file. It tells the Dashboard where to find you
 - Debug config: optional overrides used for testing and debugging only, not required for normal operation.
 
 > [!NOTE]
-> The [`config.yaml` example](configuration/examples/config.yaml) is a useful resource to see what kind of runtime configuration values the GA Dashboard expects.
+> The [`config.yaml` example](configuration/examples/config.yaml) is a useful resource to see what kind of scripts configuration values the GA Dashboard expects.
 
 > [!NOTE]
 > Its best to keep `fixed_params_file` and `db_script` set to their default values from the [`config.yaml` example](configuration/examples/config.yaml) — don't change them unless you know what you're doing.
 
 ### FAQs
 #### - **How to determine which `input_mode` to use?**
-`input_mode` currently takes two values - `sacct` or `file`. If you want the Dashboard to pull values directly from SLURM, use `sacct`. To bypass the workload manager altogether, you can provide a logs file to the Dashboard - use `file` in this case.
+There are two ways to provide data to the GA Dashboard - either directly via the workload manager or through a pre-extracted file with job logs. Use `input_mode` to tell the dashboard where to pick the logs from. It currently takes two values - `file` or `sacct` (for SLURM clusters). If you want the Dashboard to pull values directly from SLURM, use `sacct`. To bypass the workload manager, you can provide a file with job logs - use `file` in this case.
 
-If your cluster uses SLURM and you want to ingest logs via a logs file, the [`run_sacct_only.py`](../scripts/slurm/run_sacct_only.py) script should be used separately on the HPC cluster to generate the required file.
+> [!NOTE]
+> A valid path to a job logs file must be provided through `input_log_file_path` when using `input_mode: "file"` in `config.yaml`
+
+If you want to use a pre-extracted job logs file, use the [`run_sacct_only.py`](../scripts/slurm/run_sacct_only.py) script for SLURM clusters to generate and save one. You can run this script separately on the HPC cluster to generate the required file.
 
 #### - **What is `skip_db_overwrite` for?**
 By default (`False`), the installation script drops and recreates the database each time it runs. Set this to `True` if the database already exists and is correctly configured, and you just need to re-run the install script without losing existing data. **If you're running the Dashboard in a Docker container, this must be set to `True`**, otherwise the database will be deleted and recreated every time the container restarts.
@@ -86,6 +43,53 @@ This is the version of PostgreSQL installed on the machine hosting your database
 
 #### - **Can I leave `db_name` and `dashboard_folder_name` as their defaults?**
 Yes, `db_name: "ga_db"` and `dashboard_folder_name: "Green Algorithms"` are sensible defaults and only need changing if they clash with existing resources on your system.
+
+## Cluster information ([cluster_info.yaml](templates/cluster_info.yaml))
+This file contains key information about the cluster including it's workload manager, PUE (power usage effectiveness), postcode, and hardware details.
+
+It is important that the cluster configurations represent the clusters accurately to allow for correct energy and GHG emissions estimations. 
+
+> [!NOTE]
+> The [`cluster_info.yaml` example](`configuration/examples/cluster_info__demo.yaml`) is a useful resource to see what kind of cluster configuration values the GA Dashboard expects.
+
+### FAQs
+
+#### - What's TDP and where can I find it?
+Thermal design power or TDP refers to the maximum thermal power dissipation of a processor (CPU or GPU) under normal operating workloads. This value is generally specified by the manufacturer of the processor. The GA dashboard expects you to provide the TDP for each professor in the following manner:
+- TDP per core for CPUs
+- TDP for entire processor for GPUs
+
+Once you're aware of the hardware in use, TDP values for each hardware profile can be fetched directly from the manufacturer's website/datasheets. You may also check if the value you are looking for is present [here](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-data/blob/main/v3.1/hardware-impacts.csv).
+
+#### - Homogenous vs heterogenous partitions?
+The code needs to know what hardware is being used to estimate energy usage. Partitions where all nodes have the same hardware (and hardware profile) are considered homogenous, in this case partitions are used to map jobs to hardware. Partitions that have different hardware for different nodes (what we call here "heterogenous partitions) require node-level mapping and for these, a node list must be configured to identify what hardware profile is used by each node.
+
+Configuring a homogenous partition `yew` in `cluster_info.yaml` (assuming a hardware profile called 'HP1'):
+
+```yaml
+yew:
+    homogenous: True
+    hardware_profile: HP1
+
+```
+
+Configuring a heterogenous partition `yew` in `cluster_info.yaml` (assuming hardware profiles 'HP1' and 'HP2'):
+
+```yaml
+yew:
+    homogenous: False
+    node_list:
+        - hardware_profile: HP1
+          range: range1-[100-200]
+        - hardware_profile: HP2
+          range: range2-[450-500]
+```       
+
+#### - How to find my data centre's carbon intensity?
+Carbon intensity varies over time depending on the share of low-carbon energy source in the power grid. If the data centre is UK based, Green Algorithms Dashboard can use the [Carbon Intensity API](https://carbonintensity.org.uk) to dynamically fetch carbon intensity based on the `postcode` provided in `cluster_info.yaml`.
+
+A static `CI` value must be provided in `cluster_info.yaml` for non-UK based clusters. The average carbon intensity in the data centre's location can be found [here](https://app.electricitymaps.com)
+
 
 ## Dashboard Users ([user_list.csv](configuration/templates/user_list.csv))
 
