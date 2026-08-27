@@ -5,7 +5,7 @@ The two main configurations that must be set up before running the Green Algorit
 2. [config.yaml](#runtime-configurations-configyaml)
 3. [user_list.csv](#dashboard-users-user_listcsv)
 
-It is important to edit these and configure them to make the GA Dashboard work for your HPC cluster.
+It is important to edit these and configure them to make the GA Dashboard work for your system.
 
 ## Cluster information ([cluster_info.yaml](templates/cluster_info.yaml))
 This file contains key information about the cluster including it's workload manager, PUE (power usage effectiveness), postcode, and hardware details.
@@ -25,10 +25,9 @@ Thermal design power or TDP refers to the maximum thermal power dissipation of a
 Once you're aware of the hardware in use, TDP values for each hardware profile can be fetched directly from the manufacturer's website/datasheets. You may also check if the value you are looking for is present [here](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-data/blob/main/v3.1/hardware-impacts.csv).
 
 #### - Homogenous vs heterogenous partitions?
-Partitions where all nodes have the same hardware profile are considered homogenous, where as those that have varying hardware profiles across it's nodes are heterogenous. Since the energy consumption of a job depends on the hardware it uses, it is important to know which partition/node it ran on. For homogenous paritions this is straightforward, but in case of heterogenous partitions a node list must be configured to represent the different node ranges within each heterogenous partition that have the same hardware profile.
+The code needs to know what hardware is being used to estimate energy usage. Partitions where all nodes have the same hardware (and hardware profile) are considered homogenous, in this case partitions are used to map jobs to hardware. Partitions that have different hardware for different nodes (what we call here "heterogenous partitions) require node-level mapping and for these, a node list must be configured to identify what hardware profile is used by each node.
 
-Configuring a homogenous parition in the cluster config. :
-(assuming a hardware profile called 'HP1')
+Configuring a homogenous partition `yew` in `cluster_info.yaml` (assuming a hardware profile called 'HP1'):
 
 ```
 yew:
@@ -37,8 +36,7 @@ yew:
 
 ```
 
-Configuring a heterogenous partition in the cluster config. :
-(assuming hardware profiles 'HP1' and 'HP2')
+Configuring a heterogenous partition `yew` in `cluster_info.yaml` (assuming hardware profiles 'HP1' and 'HP2'):
 
 ```
 yew:
@@ -60,7 +58,7 @@ A static `CI` value must be provided in the cluster config for non-UK based clus
 This is your master configuration file. It tells the Dashboard where to find your other config files, how to connect to Grafana and PostgreSQL, and how to run. It is split into five sections:
 
 - **Config file paths**: locations of the other files the Dashboard depends on (`cluster_info.yaml`, the user list, and the fixed parameters file).
-- **Database config**: connection details for the PostgreSQL database that stores user details, processed logs data, and avg. carbon intensity values (UK only).
+- **Database config**: connection details for the PostgreSQL database that stores user details, processed logs data, and average carbon intensity values (UK only).
 - **Grafana config**: connection and folder details for the Grafana instance the Dashboard will use.
 - **Run config**: key runtime configs to specify how job logs are to be ingested and whether the database should be rebuilt on install.
 - Debug config: optional overrides used for testing and debugging only, not required for normal operation.
@@ -69,7 +67,7 @@ This is your master configuration file. It tells the Dashboard where to find you
 > The [`config.yaml` example](configuration/examples/config.yaml) is a useful resource to see what kind of runtime configuration values the GA Dashboard expects.
 
 > [!NOTE]
-> Its best to keep `fixed_params_file` and `db_script` set to their default values from the [`config.yaml` example](configuration/examples/config.yaml) — don't change them.
+> Its best to keep `fixed_params_file` and `db_script` set to their default values from the [`config.yaml` example](configuration/examples/config.yaml) — don't change them unless you know what you're doing.
 
 ### FAQs
 #### - **How to determine which `input_mode` to use?**

@@ -156,7 +156,7 @@ Copy the template provided in `configuration/templates/config.yaml` to a locatio
 ### 2. Cluster information file (`cluster_info.yaml`)
 Copy the template provided in `configuration/templates/cluster_info.yaml` and edit it with information about your HPC cluster. See `configuration/examples/cluster_info__demo.yaml` for a worked example.
 
-You need to map each partition (a set of computing nodes with a dedicated queue) to a hardware profile, and each hardware profile must describe it's: 
+You need to map each partition to a hardware profile, and each hardware profile must describe its: 
 - `type`: CPU or GPU
 - `model`: processor model
 - `TDP`: thermal design power (check the manufacturer's datasheet if needed)

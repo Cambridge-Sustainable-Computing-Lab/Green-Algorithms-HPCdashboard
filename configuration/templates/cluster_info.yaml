@@ -21,7 +21,7 @@ hardware_profiles:
   <hardware profile name_2>: # name of the hardware profile
     type: <GPU> # [CPU or GPU]
     model: "<NVIDIA XXX>" # [str] the model of the processing core on this hardware profile. Not actually used by the code but useful for reference for others.
-    TDP: <250> # [number] For GPUs, the TDP is for the entire GPU
+TDP: <250> # [number] For GPUs, the TDP is for the entire GPU, in W
     # For GPU hardware profiles, we also need info about the CPUs available for support.
     model_CPU: "<Intel XXX>" # [str] Not actually used by the code but useful for reference for others.
     TDP_CPU: <10> # [number] TDP of the processor, in W, per core
