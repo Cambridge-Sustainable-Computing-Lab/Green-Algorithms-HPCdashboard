@@ -146,7 +146,7 @@ By default, the superuser credential is id: `admin`, password: `admin`. You shou
 ## Configuration files
 
 > [!NOTE]
-> For more details and FAQs about configuration files, check out [configurations.md](configuration/configurations.md).
+> For more details and FAQs about configuration files, check out [configurations.md](configuration/README-CONFIG.md).
 
 Before running the dashboard, you will need to prepare three configuration files:
 
@@ -155,9 +155,6 @@ Before running the dashboard, you will need to prepare three configuration files
 3. Dashboard users file (`user_list.csv`): List of users who will have the access to the GA Dashboard
 
 Templates and examples for all of them are provided in the `configuration/templates/` and `configuration/examples/` directories respectively.
-
-> [!NOTE]
-> For more details and FAQs about configuration files, check out [configurations.md](configuration/configurations.md).
 
 ---
 ## Install the Green Algorithms dashboard
