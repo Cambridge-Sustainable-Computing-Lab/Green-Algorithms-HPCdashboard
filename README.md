@@ -146,7 +146,7 @@ By default, the superuser credential is id: `admin`, password: `admin`. You shou
 ## Configuration files
 
 > [!NOTE]
-> For more details and FAQs about configuration files, check out [configurations.md](configuration/README-CONFIG.md).
+> For more details and FAQs about configuration files, check out [README-CONFIG.md](configuration/README-CONFIG.md).
 
 Before running the dashboard, you will need to prepare three configuration files:
 
