@@ -145,6 +145,9 @@ By default, the superuser credential is id: `admin`, password: `admin`. You shou
 ---
 ## Configuration files
 
+> [!NOTE]
+> For more details and FAQs about configuration files, check out [configurations.md](configuration/configurations.md).
+
 Before running the dashboard, you will need to prepare three configuration files:
 
 1. Scripts configuration file (`config.yaml`): Master configuration supporting GA Dashboard installation and daily run scripts

@@ -3,7 +3,7 @@
 The different configurations that must be set up before running the Green Algorithms Dashboard are:
 1. [config.yaml](#scripts-configuration-configyaml): Master configuration supporting GA Dashboard installation and daily run scripts
 2. [cluster_info.yaml](#cluster-information-cluster_infoyaml): HPC cluster information specifying its hardware profile, PUE, postcode, and other cluster settings
-3. [user_list.csv](#dashboard-users-user_listcsv): List of users who will have the access to the GA Dashboard
+3. [user_list.csv](#dashboard-users-user_listcsv): List of users who will have access to the GA Dashboard
 
 It is important to edit these and configure them to make the GA Dashboard work for your system.
 
@@ -77,14 +77,14 @@ If you would like to use a different carbon intensity API for your region, you c
 ### FAQs
 
 #### - What's TDP and where can I find it?
-Thermal design power or TDP refers to the maximum thermal power dissipation of a processor (CPU or GPU) under normal operating workloads. This value is generally specified by the manufacturer of the processor. The GA dashboard expects you to provide the TDP for each professor in the following manner:
+Thermal design power (TDP) is used to approximate the power consumption of a processor. It refers to the maximum thermal dissipation of a processor (CPU or GPU) under normal operating workloads. This value is generally specified by the manufacturer. The GA dashboard expects you to provide the TDP for each professor in the following manner:
 - TDP per core for CPUs
 - TDP for entire processor for GPUs
 
 Once you're aware of the hardware in use, TDP values for each hardware profile can be fetched directly from the manufacturer's website/datasheets. You may also check if the value you are looking for is present [here](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-data/blob/main/v3.1/hardware-impacts.csv).
 
 #### - Homogenous vs heterogenous partitions?
-The code needs to know what hardware is being used to estimate energy usage. Partitions where all nodes have the same hardware (and hardware profile) are considered homogenous, in this case partitions are used to map jobs to hardware. Partitions that have different hardware for different nodes (what we call here "heterogenous partitions) require node-level mapping and for these, a node list must be configured to identify what hardware profile is used by each node.
+The code needs to know what hardware is being used to estimate energy usage. Partitions where all nodes have the same hardware (and hardware profile) are considered homogenous, in this case partitions are used to map jobs to hardware. Partitions that have different hardware for different nodes (what we call here heterogenous partitions) require node-level mapping and for these, a node list must be configured to identify what hardware profile is used by each node.
 
 Configuring a homogenous partition `yew` in `cluster_info.yaml` (assuming a hardware profile called 'HP1'):
 

@@ -99,6 +99,8 @@ energy_cost:
 PUE: 1.15 # > 1
 
 ### Carbon Intensity
+# Use either the `postcode` or the `CI` key. 
+# `postcode` has to be compatible with the carbon intensity API used (only UK for now). Otherwise, enter a fixed carbon intensity value to be used.
 # postcode below has to be compatible with the Carbon Intensity API used. 
 # If data centre is based outside of UK, leave postcode empty (CI key will be used instead).
 
