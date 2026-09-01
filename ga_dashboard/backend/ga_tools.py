@@ -8,6 +8,7 @@ import yaml
 import time as time_module
 import gc
 from tqdm import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 import ga_core 
 
 from ga_dashboard.backend.services.database_ci_store import DatabaseCIStore
@@ -205,7 +206,7 @@ class LogsDataProcessor:
         :return: dict containing summary stats for all batches
         """
         if self.config_data.get('input_log_file_path', '') != '' or self.config_data.get('use_mock_agg_data', '') != '':
-                return self.run()
+            return self.run()
         
         batches = utils.generate_batches_by_dates(
             start=self.config_data["startDay"],
@@ -222,27 +223,28 @@ class LogsDataProcessor:
         batch_iter = tqdm(batches, desc="Processing batches", unit="batch")
         summary_stats_all = {}
 
-        for i, dates_pair in enumerate(batch_iter, 1):
-            start_date, end_date = dates_pair[0], dates_pair[1]
-            t_batch = time_module.perf_counter()
+        with logging_redirect_tqdm():
+            for i, dates_pair in enumerate(batch_iter, 1):
+                start_date, end_date = dates_pair[0], dates_pair[1]
+                t_batch = time_module.perf_counter()
 
-            batch_iter.set_postfix(current=f"{start_date} to {end_date}")
+                batch_iter.set_postfix(current=f"{start_date} to {end_date}")
 
-            try:
-                self.config_data['startDay'] = start_date
-                self.config_data['endDay']   = end_date
-                summary_stats = self.run() # Run data processing pipeline
-                summary_stats_all |= summary_stats
+                try:
+                    self.config_data['startDay'] = start_date
+                    self.config_data['endDay']   = end_date
+                    summary_stats = self.run() # Run data processing pipeline
+                    summary_stats_all |= summary_stats
 
-                del summary_stats # summary_stats contains multiple dfs, potentially large and no longer needed
-                gc.collect()
+                    del summary_stats # summary_stats contains multiple dfs, potentially large and no longer needed
+                    gc.collect()
 
-                elapsed = time_module.perf_counter() - t_batch
-                tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  {elapsed:.1f}s")
+                    elapsed = time_module.perf_counter() - t_batch
+                    tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  {elapsed:.1f}s")
 
-            except Exception as e:
-                tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  failed: {e}")
-                failed.append((start_date, end_date))
+                except Exception as e:
+                    tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  failed: {e}")
+                    failed.append((start_date, end_date))
 
         elapsed_total = time_module.perf_counter() - t_run
         status = f"({len(failed)} failed)" if failed else "(0 failed)"

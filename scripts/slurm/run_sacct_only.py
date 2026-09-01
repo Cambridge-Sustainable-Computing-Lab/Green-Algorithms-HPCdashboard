@@ -64,7 +64,7 @@ def capture_sacct_output(args):
     except Exception as e:
         logger.error(f"Failed to pull sacct logs: {e}")
         sys.exit(1)
-
+        
     logger.debug(f"Output captured ({len(data)} bytes):")
     logger.debug(data)
 

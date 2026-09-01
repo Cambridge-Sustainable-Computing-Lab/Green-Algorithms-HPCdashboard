@@ -5,10 +5,12 @@
 import datetime
 import os
 import random
+import logging
 import pandas as pd
 import numpy as np
 from datetime import timedelta
 from pathlib import Path
+from logging.handlers import RotatingFileHandler
 
 def parse_string_to_number(s:str) -> int | float | str:
     try:
@@ -133,6 +135,19 @@ def save_slurm_logs(config_data, WM) -> None:
 
         print(f"\nSLURM statistics saved for inspection: {log_path}\n")
 
+def setup_logging(log_file: str = "GADashboard_Logs.log", debug: bool = False):
+    # Ensure handlers aren't duplicated if re-configuring
+    logging.getLogger().handlers.clear()
+    
+    logging.basicConfig(
+        level=logging.DEBUG if debug else logging.INFO,
+        format='%(asctime)s %(levelname)s [%(name)s] %(message)s',
+        handlers=[
+            logging.StreamHandler(),
+            RotatingFileHandler(log_file, maxBytes=10_000_000, backupCount=5),
+        ],
+    )
+
 ##DEBUGONLY 
 def quick_inspect(df: pd.DataFrame, name: str = "DataFrame") -> None:
     """
@@ -144,6 +159,5 @@ def quick_inspect(df: pd.DataFrame, name: str = "DataFrame") -> None:
     print("Dtypes:\n", df.dtypes)
     print("Head:\n", df.head())
     print(f"--- End of {name} Inspection ---\n")
-
 
 
