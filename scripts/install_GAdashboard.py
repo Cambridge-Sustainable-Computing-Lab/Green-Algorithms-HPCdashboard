@@ -17,6 +17,7 @@ import argparse
 import maskpass  # to hide the passwords
 import subprocess
 import sys
+import os
 from collections import OrderedDict
 from ga_dashboard.ga_config import GAConfig
 
@@ -91,7 +92,7 @@ class GADashboardInstall:
         '''
         commander = "python"
         script_client_vars = self.scripts[client]
-        path = "scripts" + "/" + script_client_vars['dir'] + "/" + client
+        path = os.path.join("scripts", "internal", script_client_vars['dir'], client)
         components = [commander, path]
 
         for item in script_client_vars['arg_list']:
@@ -106,8 +107,6 @@ class GADashboardInstall:
                 sys.exit("Exiting...")
 
             # Optional parameters
-            if item == "useCustomLogs" and not value:
-                continue
             if item == "debug":
                 if value == "True":
                     components.append("--debug")

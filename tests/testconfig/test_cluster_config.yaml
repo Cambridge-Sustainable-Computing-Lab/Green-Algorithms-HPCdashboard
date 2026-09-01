@@ -1,0 +1,75 @@
+
+institution: "University Name"
+cluster_name: "OurCluster"
+workload_manager: "SLURM"
+granularity_memory_request: 6 
+
+hardware_profiles:
+  XeonGold6124:
+    type: CPU # CPU or GPU
+    model: "Xeon Gold 6142"
+    TDP: 9.4 # in W, per core
+  XeonPlatinum8276:
+    type: CPU
+    model: "Xeon Platinum 8276"
+    TDP: 5.9 # from https://ark.intel.com/content/www/us/en/ark/products/192470/intel-xeon-platinum-8276-processor-38-5m-cache-2-20-ghz.html
+  XeonPlatinum8368Q:
+    type: CPU
+    model: "Xeon Platinum 8368Q"
+    TDP: 7.1 # from https://www.intel.com/content/www/us/en/products/sku/212289/intel-xeon-platinum-8368q-processor-57m-cache-2-60-ghz/specifications.html
+  NVIDIAA100-SXM-80GB_AMDEPYC7763:
+    type: GPU
+    model: "NVIDIA A100-SXM-80GB GPUs"
+    TDP: 300 # from https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/PB-10577-001_v02.pdf
+    model_CPU: "AMD EPYC 7763"
+    TDP_CPU: 4.4 # from https://www.amd.com/fr/products/cpu/amd-epyc-7763
+  XeonE5-2660v3:
+    type: CPU
+    model: "Xeon E5-2660 v3"
+    TDP: 10.5 # from https://ark.intel.com/content/www/us/en/ark/products/81706/intel-xeon-processor-e52660-v3-25m-cache-2-60-ghz.html
+  TeslaP100PCIe_XeonE5-2650v4:
+    type: GPU
+    model: Tesla P100 PCIe
+    TDP: 250 # from https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/tesla-p100/pdf/nvidia-tesla-p100-PCIe-datasheet.pdf
+    model_CPU: "Xeon E5-2650 v4"
+    TDP_CPU: 8.8 # from https://ark.intel.com/content/www/us/en/ark/products/91767/intel-xeon-processor-e52650-v4-30m-cache-2-20-ghz.html
+    
+partitions:
+  yew:
+    homogenous: True
+    hardware_profile: XeonGold6124
+  yew-himem:
+    homogenous: True
+    hardware_profile: XeonGold6124
+  beech:
+    homogenous: True
+    hardware_profile: XeonPlatinum8276
+  beech-himem:
+    homogenous: True
+    hardware_profile: XeonPlatinum8276
+  ash:
+    homogenous: True
+    hardware_profile: XeonPlatinum8368Q
+  ash-himem:
+    homogenous: True
+    hardware_profile: XeonPlatinum8368Q
+  oak:
+    homogenous: True
+    hardware_profile: NVIDIAA100-SXM-80GB_AMDEPYC7763
+  birch:
+    homogenous: True
+    hardware_profile: XeonE5-2660v3
+  pine:
+    homogenous: True
+    hardware_profile: TeslaP100PCIe_XeonE5-2650v4
+    
+PUE: 1.15 
+CI: 231.12
+energy_cost:
+  cost: 0.34 
+  currency: "£"
+postcode: "CB1"
+texts_intro:
+  CPU: "5.9 - 9.4 W/core (see <a>here</a> for models)"
+  GPU: "NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)"
+default_unit_RSS: 'K'

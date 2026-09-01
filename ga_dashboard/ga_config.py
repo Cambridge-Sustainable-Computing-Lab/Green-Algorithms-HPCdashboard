@@ -23,22 +23,27 @@ class GAConfig:
         'input_dir': { 'expected_type': 'path' },
         'name': { 'expected_type': 'string' },
         'pg_version': { 'expected_type': 'numeric' },
-        'url': { 'expected_type': 'string' }
+        'url': { 'expected_type': 'string' },
+        'input_mode': { 'expected_type': 'string', 'permitted_values': ['sacct', 'file'] },
     }
 
     # Optional parameters
     extra_attr = {
-        'startDay': { 'expected_type': 'date (YYYY-MM-DD)' },
-        'endDay': { 'expected_type': 'date (YYYY-MM-DD)' },
-        'outFile': { 'expected_type': 'string' },
-        'useCustomLogs': { 'expected_type': 'path' },
-        'skip_db_overwrite': { 'expected_type': 'boolean'}
+        'input_log_file_path': { 'expected_type': 'path' },
+        'skip_db_overwrite': { 'expected_type': 'boolean'},
+        
+        # Debug only
+        'startDay': { 'expected_type': 'date (YYYY-MM-DD)' }, 
+        'endDay': { 'expected_type': 'date (YYYY-MM-DD)' }, 
     }
 
-    # List of parameters that can't be used together
-    exclusion_attr = [
-        ['outFile', 'useCustomLogs']
+    dependent_attr = [
+        {'attr': 'input_mode', 'value': 'file', 'requires': 'input_log_file_path'},
     ]
+
+    # Add here the list of parameters that cannot be used together
+    # e.g. exclusion_attr = [['attr_A','attr_B']]
+    exclusion_attr = [] 
 
 
     def __init__(self, config_file:str, db_pass:str=None, grafana_pass:str=None):
@@ -127,9 +132,26 @@ class GAConfig:
                         'expected_type': expected_type,
                         'value': value
                     }
+                    continue
+                if 'permitted_values' in self.config_attr[conf_param].keys():
+                    permitted_vals = self.config_attr[conf_param]['permitted_values']
+                    is_valid = value in permitted_vals
+                    if not is_valid:
+                        invalid_items[conf_param] = {
+                            'permitted_values': permitted_vals,
+                            'value': value
+                        }
+
         # Check extra parameters
         for extra_conf_param in self.extra_attr.keys():
             if extra_conf_param in self.config_values.keys():
+
+                # Special case: input_log_file_path is optional - if it's present but empty, treat it as "not set" and skip validation
+                if extra_conf_param == 'input_log_file_path':
+                    value = self.config_values[extra_conf_param]
+                    if value is None or (isinstance(value, str) and value.strip() == ''):
+                        continue
+
                 expected_type = self.extra_attr[extra_conf_param]['expected_type']
                 value = self.config_values[extra_conf_param]
 
@@ -142,18 +164,62 @@ class GAConfig:
                         'value': value
                     }
 
+        # Check conditional/dependent parameters
+        dependent_errors = self._check_dependent_attr()
+
         # Invalid items
-        if invalid_items or missing_items:
+        if invalid_items or missing_items or dependent_errors:
             if missing_items:
                 for conf_param in missing_items:
                     print(f"  ERROR: Configuration missing for '{conf_param}' in the config file")
             if invalid_items:
                 for conf_param in invalid_items.keys():
-                    print(f"  ERROR: Configuration for '{conf_param}': format unexpected ({invalid_items[conf_param]['type']} instead of {invalid_items[conf_param]['expected_type']}) => '{invalid_items[conf_param]['value']}'")
+                    if 'permitted_values' in invalid_items[conf_param].keys():
+                        print(f"  ERROR: Configuration for '{conf_param}':  '{invalid_items[conf_param]['value']}' is not one of the permissible values. The permitted values are {invalid_items[conf_param]['permitted_values']}) ")
+                    else:
+                        print(f"  ERROR: Configuration for '{conf_param}': format unexpected ({invalid_items[conf_param]['type']} instead of {invalid_items[conf_param]['expected_type']}) => '{invalid_items[conf_param]['value']}'")
+            if dependent_errors:
+                for msg in dependent_errors:
+                    print(f"  ERROR: {msg}")
             exit(1)
         else:
             print("  >> Configuration parameters look OK")
 
+    def _check_dependent_attr(self) -> list:
+        '''
+        Check conditional requirements: if `attr` == `value`, then `requires` must be
+        present in config_values and non-empty.
+
+        Returns
+        -------
+        list of error message strings (empty if all checks pass)
+        '''
+        errors = []
+        user_config_items = self.config_values.keys()
+
+        for rule in self.dependent_attr:
+            trigger_attr = rule['attr']
+            trigger_value = rule['value']
+            required_attr = rule['requires']
+
+            if trigger_attr not in user_config_items:
+                continue  # trigger attr itself missing
+
+            if self.config_values[trigger_attr] != trigger_value:
+                continue  # rule not triggered
+
+            if required_attr not in user_config_items:
+                errors.append(
+                    f"Configuration for '{required_attr}' is required when '{trigger_attr}' is set to '{trigger_value}'"
+                )
+            else:
+                value = self.config_values[required_attr]
+                if value is None or (isinstance(value, str) and value.strip() == ''):
+                    errors.append(
+                        f"Configuration for '{required_attr}' is required when '{trigger_attr}' is set to '{trigger_value}', but it is empty"
+                    )
+
+        return errors
 
     def _is_valid_type(self, conf_param:str, expected_type:str, value) -> bool:
         '''
@@ -208,11 +274,16 @@ class GAConfig:
             conn.close()
             print("  >> Database connection parameters look OK")
         except psycopg.OperationalError as err:
-            print(f"\n  WARNING: Problem connecting to the database {self.config_values['db_name']}: either the database doesn't exist yet or the script can't access the database")
-            if 'debug' in self.config_values.keys():
-                if self.config_values['debug']:
+            sqlstate = getattr(getattr(err, "diag", None), "sqlstate", None)
+            db_missing = (sqlstate == "3D000") or ("does not exist" in str(err))
+            if db_missing:
+                print(f"  >> Database '{self.config_values['db_name']}' does not exist yet - "
+                    f"this is expected on first install and will be created during setup.")
+            else:
+                print(f"\n  WARNING: Problem connecting to the database {self.config_values['db_name']}: "
+                    f"the server could not be reached, or the credentials/host/port may be incorrect.")
+                if self.config_values.get('debug'):
                     print(f"\n  ERROR message: {err}")
-
 
     def _get_db_password(self) -> None:
         '''

@@ -1,18 +1,18 @@
 # ------------------------------------------------------------------
 # Main tools to extract, enrich and summarise data for the GA4HPC dashboard.
+# Uses GA Core for data extraction and processing
 # ------------------------------------------------------------------
 
-import numpy as np
 import pandas as pd
 import yaml
 import time as time_module
 import gc
 from tqdm import tqdm
-from datetime import datetime, time, timedelta
+from tqdm.contrib.logging import logging_redirect_tqdm
+import ga_core 
 
-from ga_dashboard.backend.services.carbon_intensity_service import CarbonIntensityService, JobEmissionRecord
+from ga_dashboard.backend.services.database_ci_store import DatabaseCIStore
 import ga_dashboard.backend.helpers.utils as utils
-from ga_dashboard.backend.workload_manager.slurm import SlurmManager
 from ga_dashboard.backend.data_sql_import import DataSQLImport
 from ga_dashboard.backend.services.database_service import DBSettings
 
@@ -48,88 +48,6 @@ agg_functions_from_raw = {
         'cost_memoryNeededOnly': ('cost_memoryNeededOnly', 'sum'),
     }
 
-
-class GA_tools:
-
-    def __init__(self, cluster_info, fixed_params):
-        self.cluster_info = cluster_info
-        self.fixed_params = fixed_params
-
-    def calculate_energies(self, row):
-        '''
-        Calculate the energy usage based on the job's parameters
-        :param row: [pd.Series] one row of usage statistics, corresponding to one job
-        :return: [pd.Series] the same statistics with the energies added
-        '''
-        ### CPU and GPU
-        partition_info = None
-
-        try:
-            partition_info = self.cluster_info['partitions'][row.PartitionX]
-        except KeyError as ke:
-            # Raise error if key not found.
-            # TODO Make checking of all keys more robust, and explain what to do when a key is missing.
-            print(f"calculate_energies(): KeyError: {ke}. Exiting...")
-            exit
-
-        if not partition_info:  #is None:
-            print("calculate_energies(): partition_info is None. Exiting...")
-            exit
-
-        if row.PartitionTypeX == 'CPU':
-            TDP2use4CPU = partition_info['TDP']
-            TDP2use4GPU = 0
-        else:
-            TDP2use4CPU = partition_info['TDP_CPU']
-            TDP2use4GPU = partition_info['TDP']
-
-        row['energy_CPUs'] = row.TotalCPUtime2useX.total_seconds() / 3600 * TDP2use4CPU / 1000  # in kWh
-
-        row['energy_GPUs'] = row.TotalGPUtime2useX.total_seconds() / 3600 * TDP2use4GPU / 1000  # in kWh
-
-        ### memory
-        for suffix, memory2use in zip(['','_memoryNeededOnly'], [row.ReqMemX,row.NeededMemX]):
-            row[f'energy_memory{suffix}'] = row.WallclockTimeX.total_seconds()/3600 * memory2use * self.fixed_params['power_memory_perGB'] /1000 # in kWh
-            row[f'energy{suffix}'] = (row.energy_CPUs +  row.energy_GPUs + row[f'energy_memory{suffix}']) * self.cluster_info['PUE'] # in kWh
-
-        return row
-
-    def calculate_carbonFootprint_default(self, df, col_energy):
-        return df[col_energy] * self.cluster_info['CI']
-    
-    def calculate_carbonFootprint(self, row: pd.Series, suffix: str, daily_avg_CI: dict) -> pd.DataFrame:
-        """
-        Expand a job record (1 row) into per day records with energy usage on that day, hours of work on that day, and daily avg CI.
-        Calculate the total carbon emissions for the job.
-        :param row: a row from the job dataframe
-        :param suffix: suffix for energy column (e.g. '', '_memoryNeededOnly', '_failedJobs')
-        :param daily_avg_CI: dictionary mapping dates to their average carbon intensity values
-        """
-
-        start = row['StartDatetimeX']
-        end = row['EndDatetimeX']
-        energy = row[f'energy{suffix}']
-        tot_duration_hours = row['WallclockTimeX'].total_seconds() / 3600
-        # Assuming energy is consumed uniformly across the job duration
-        energy_per_hr = energy / tot_duration_hours if tot_duration_hours > 0 else 0 # Avoid division by zero
-
-        day_job_emissions = []
-        current_day = start
-
-        # Per day energy use, hours of work, and CI
-        while current_day.date() <= end.date():
-            day_start = max(current_day, datetime.combine(current_day.date(), time.min))
-            day_end = min(end, datetime.combine(current_day.date(), time.max))
-            hours = (day_end - day_start).total_seconds() / 3600
-            day_avg_CI = daily_avg_CI.get(current_day.strftime('%d-%m-%Y'), None)
-
-            day_job_emissions.append(JobEmissionRecord(current_day, energy_per_hr, hours, day_avg_CI))
-            
-            # Advance to midnight of next day
-            current_day = datetime.combine(current_day.date() + timedelta(days=1), time.min)
-
-        return JobEmissionRecord.calc_carbon_emission(day_job_emissions, energy_per_hr)
-
 class LogsDataProcessor:
     """
     Data processor class to load settings, extract, process, and store logs.
@@ -164,99 +82,9 @@ class LogsDataProcessor:
         except FileNotFoundError:
             self.users_df = None
 
-        # GA_tools object
-        self.GA = GA_tools(self.cluster_info, self.fixed_params)
 
         self.has_slurmAdmin = True
         self.config_data = config_data
-
-    def extract_data(self):
-        if 'use_mock_agg_data' in self.config_data.keys(): # DEBUGONLY Create/use some mock jobs with different users
-            return utils.get_mock_agg_data()
-        
-        ### Pull usage statistics from the workload manager
-        WM = SlurmManager(self.config_data, self.cluster_info)
-        WM.pull_logs()
-
-        ### Log the output for debugging
-        utils.save_slurm_logs(self.config_data, WM)
-
-        ### Turn usage logs into DataFrame
-        WM.raw_logs_to_df()
-
-        # And clean
-        WM.clean_logs_df()
-        # Check if there are any jobs during the period from this directory and with these jobIDs
-        utils.check_empty_results(WM.df_agg, self.config_data)
-
-        # Check that there is only one user's data if no admin right
-        if not self.has_slurmAdmin:
-            if len(set(WM.df_agg_X.UserX)) > 1:
-                raise ValueError(f"More than one user's logs was included, despite --slurmAdmin not used: {set(WM.df_agg_X.UserX)}")
-
-        # WM.df_agg_X.to_pickle("testdata/df_agg_X_1.pkl") # DEBUGONLY used to test different steps offline
-
-        return WM.df_agg_X
-    
-    def enrich_data(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Adds data about the carbon footprint, etc.
-        :param df: [pd.DataFrame] The existing data we've extracted.
-        :param fixed_params: [dict] The fixed parameters used.
-        :param GA [GA_tools] A GA_tools object. 
-        :return: [pd.DataFrame] The enriched data.
-        """
-        
-        ### energy
-        df = df.apply(self.GA.calculate_energies, axis=1)
-
-        try:
-            df['energy_failedJobs'] = np.where(df.StateX == 0, df.energy, 0)
-        except AttributeError as err:
-            print(f"enrich_data(): AttributeError: {err}")
-            # TODO Explain this error, and what to do about it.
-            return None  # or should we exit?
-        
-        ### Fetching Carbon Intensity
-        postcode = self.cluster_info.get('postcode', None)
-        ci_avg_data = {}
-        if postcode:
-            postcode = postcode[:3] # Taking only the first three letters from the postcode
-            ci_service = CarbonIntensityService(postcode, self.db_params)
-            ci_avg_data = ci_service.calc_day_average_CI(df.StartDatetimeX.min(), df.EndDatetimeX.max())
-
-        ### carbon footprint
-        for suffix in ['', '_memoryNeededOnly', '_failedJobs']:
-            if ci_avg_data:
-                df[f'carbonFootprint{suffix}'] = df.apply(
-                    lambda row: self.GA.calculate_carbonFootprint(row, suffix, ci_avg_data),
-                    axis=1
-                )
-            else: #use default CI value from cluster yaml
-                df[f'carbonFootprint{suffix}'] = self.GA.calculate_carbonFootprint_default(df, f'energy{suffix}')
-
-            # Context metrics (part 1)
-            df[f'treeMonths{suffix}'] = df[f'carbonFootprint{suffix}'] / self.fixed_params['tree_month']
-            df[f'cost{suffix}'] = df[f'energy{suffix}'] * self.fixed_params['electricity_cost']
-
-        ### Context metrics (part 2)
-        df['driving'] = df.carbonFootprint / self.fixed_params['passengerCar_EU_perkm']
-        df['flying_NY_SF'] = df.carbonFootprint / self.fixed_params['flight_NY_SF']
-        df['flying_PAR_LON'] = df.carbonFootprint / self.fixed_params['flight_PAR_LON']
-        df['flying_NYC_MEL'] = df.carbonFootprint / self.fixed_params['flight_NYC_MEL']
-
-        ### Add user details to jobs
-        if self.users_df is None:
-            print("No user info to add.")
-            df2 = df
-        else:
-            df2 = pd.merge(df, self.users_df, left_on='UserX', right_on='User', how='inner')
-            if len(df2) != len(df):
-                # This basically raises an error if a user in the df isn't in the users_df,
-                # which is obtained from the file listing the HPC users.
-                raise ValueError("Not all users could be matched!")
-
-        return df2
     
     def summarise_data(self, df: pd.DataFrame) -> dict:
 
@@ -336,8 +164,28 @@ class LogsDataProcessor:
 
         :return: pandas Dataframe containing processed data
         """
-        df = self.extract_data()
-        df2 = self.enrich_data(df)
+        logs_raw = None
+        db_ci_store = DatabaseCIStore(self.db_params)
+
+        if self.config_data.get('input_mode') == 'file' and self.config_data.get('input_log_file_path', '') != '':
+            print(f"\n  Input mode is 'file' => Pulling raw logs from '{self.config_data["input_log_file_path"]}'\n")
+            # Pick raw logs from file
+            logs_raw = utils.read_file_bytes(self.config_data["input_log_file_path"])
+
+        dataprocessor = ga_core.HPCDataProcessor(self.config_data, self.cluster_info, self.fixed_params, self.has_slurmAdmin)
+        df = dataprocessor.extract_data(logs_raw)
+        df = dataprocessor.enrich_data(df, db_ci_store)
+
+        ### Add user details to jobs
+        if self.users_df is None:
+            print("No user info to add.")
+            df2 = df
+        else:
+            df2 = pd.merge(df, self.users_df, left_on='UserX', right_on='User', how='inner')
+            if len(df2) != len(df):
+                # This basically raises an error if a user in the df isn't in the users_df,
+                # which is obtained from the file listing the HPC users.
+                raise ValueError("Not all users could be matched!")
 
         del df # df is potentially large and no longer needed 
 
@@ -357,8 +205,8 @@ class LogsDataProcessor:
         :param batch_size: size of batch in number of days
         :return: dict containing summary stats for all batches
         """
-        if self.config_data.get('useCustomLogs', '') != '' or self.config_data.get('use_mock_agg_data', '') != '':
-                return self.run()
+        if self.config_data.get('input_log_file_path', '') != '' or self.config_data.get('use_mock_agg_data', '') != '':
+            return self.run()
         
         batches = utils.generate_batches_by_dates(
             start=self.config_data["startDay"],
@@ -375,27 +223,28 @@ class LogsDataProcessor:
         batch_iter = tqdm(batches, desc="Processing batches", unit="batch")
         summary_stats_all = {}
 
-        for i, dates_pair in enumerate(batch_iter, 1):
-            start_date, end_date = dates_pair[0], dates_pair[1]
-            t_batch = time_module.perf_counter()
+        with logging_redirect_tqdm():
+            for i, dates_pair in enumerate(batch_iter, 1):
+                start_date, end_date = dates_pair[0], dates_pair[1]
+                t_batch = time_module.perf_counter()
 
-            batch_iter.set_postfix(current=f"{start_date} to {end_date}")
+                batch_iter.set_postfix(current=f"{start_date} to {end_date}")
 
-            try:
-                self.config_data['startDay'] = start_date
-                self.config_data['endDay']   = end_date
-                summary_stats = self.run() # Run data processing pipeline
-                summary_stats_all |= summary_stats
+                try:
+                    self.config_data['startDay'] = start_date
+                    self.config_data['endDay']   = end_date
+                    summary_stats = self.run() # Run data processing pipeline
+                    summary_stats_all |= summary_stats
 
-                del summary_stats # summary_stats contains multiple dfs, potentially large and no longer needed
-                gc.collect()
+                    del summary_stats # summary_stats contains multiple dfs, potentially large and no longer needed
+                    gc.collect()
 
-                elapsed = time_module.perf_counter() - t_batch
-                tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  {elapsed:.1f}s")
+                    elapsed = time_module.perf_counter() - t_batch
+                    tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  {elapsed:.1f}s")
 
-            except Exception as e:
-                tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  failed: {e}")
-                failed.append((start_date, end_date))
+                except Exception as e:
+                    tqdm.write(f"  [{i}/{n}] {start_date} to {end_date}  failed: {e}")
+                    failed.append((start_date, end_date))
 
         elapsed_total = time_module.perf_counter() - t_run
         status = f"({len(failed)} failed)" if failed else "(0 failed)"

@@ -1,42 +1,76 @@
-##
-## ~~~ TO BE EDITED TO BE TAILORED TO THE CLUSTER ~~~
-## Fill in the values for your cluster: all the variables in <> need to be changed
-##
----
-institution: "<My institution>" # [str]
+# Cluster info file template
+#
+# ~~~ TO BE EDITED AND TAILORED TO THE CLUSTER ~~~
+# Fill in the values for your cluster: all the variables in <> need to be changed
+# For more information check out configuration/README-CONFIG.md
+
+## ----- ABOUT THE CLUSTER -----
+
 cluster_name: "<My cluster name>" # [str]
-granularity_memory_request: <6> # [number] in GB representing the smallest memory unit users can reserve
-partitions: # a list of the different partitions on the cluster
-  <partition name_1>: # name of the partition
-    type: <CPU> # [CPU or GPU]
-    model: "<Intel XXX>" # [str] the model of the processing core on this partition. Not actually used by the code but useful for reference for others.
+institution: "<My institution>" # [str]
+workload_manager: "<Workload manager used by my cluster>" # [str]
+
+
+## ----- HARDWARE INFO. -----
+# a list of different hardware profiles available on the cluster
+
+hardware_profiles:
+  <hardware profile name_1>: # unique and identifiable name for the hardware profile
+    type: "<CPU>" # [CPU or GPU]
+    model: "<Intel XXX>" # [str] the model of the processing core on this hardware profile. Not actually used by the code but useful for reference for others.
     TDP: <10> # [number] TDP of the processor, in W, per core
-  <partition name_2>: # name of the partition
-    type: <GPU> # [CPU or GPU]
-    model: "<NVIDIA XXX>" # [str] the model of the processing core on this partition. Not actually used by the code but useful for reference for others.
-    TDP: <250> # [number] For GPUs, the TDP is for the entire GPU
-    # For GPU partitions, we also need info about the CPUs available for support.
+    
+  <hardware profile name_2>: # name of the hardware profile
+    type: "<GPU>" # [CPU or GPU]
+    model: "<NVIDIA XXX>" # [str] the model of the processing core on this hardware profile. Not actually used by the code but useful for reference for others.
+    TDP: <250> # [number] For GPUs, the TDP is for the entire GPU, in W
+    # For GPU hardware profiles, we also need info about the CPUs available for support.
     model_CPU: "<Intel XXX>" # [str] Not actually used by the code but useful for reference for others.
     TDP_CPU: <10> # [number] TDP of the processor, in W, per core
+
+  # You can keep adding hardware profiles to this
+
+
+## ----- PARTITIONS -----
+# a list of the different partitions on the cluster
+
+partitions: 
+  <partition name_1>: # name of the partition
+    homogenous: <True> # [bool] True if all nodes in the partition have the same hardware profile, False if not
+    hardware_profile: "<hardware profile name_1>" # [str] ONLY IF HOMOGENOUS - the name of the hardware profile used by this partition
+
+  <partition name_2>: # name of the partition
+    homogenous: <False> # [bool] True if all nodes in the partition have the same hardware profile, False if not
+    node_list:
+      - hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this node range
+        range: "<gpu-[10, 20]>" # [str] range of nodes with shared hardware profiles
+        
+      - hardware_profile: "<hardware profile name_2>" # [str] the name of the hardware profile used by this node range
+        range: "<gpu-[100, 120]>" # [str] range of nodes with shared hardware profiles
+        
   # You can keep adding partitions to this
-PUE: <1.67> # [number > 1] Power Usage Effectiveness of the facility
-CI: <467> # [number] average carbon intensity of the geographic location, in gCO2e/kWh
+
+
+## ----- MEMORY -----
+
+granularity_memory_request: <6> # [number] in GB representing the smallest memory unit users can reserve
+default_unit_RSS: 'K' # [char] unit in which memory usage (RSS) is reported in by your workload manager
+
+
+## ----- FACILITY AND SITE PARAMETERS -----
+
 energy_cost:
   cost: <0.34> # [number] in currency/kWh
   currency: "<£>" # [str]
+PUE: <1.67> # [number > 1] Power Usage Effectiveness of the facility
 
+### Carbon Intensity
 # postcode below has to be compatible with the Carbon Intensity API used. 
-# For now, only compatible with UK postcodes (first 3 letters). 
-# If data centre is based outside of UK, leave postcode empty (CI key above will be used instead).
-postcode: <Postcode> # [str] Postcode of the data centre
-#
-# Below are optional parameters if the html output is used.
-# HTML tags can be used
-#
-texts_intro:
-  CPU: "XX - XX W/core (see <a>here</a> for models)" # For example
-  GPU: "NVIDIA A100 (300 W) and NVIDIA Tesla P100 (250 W)" # For example
-#
-# Below are optional parameters to accommodate some clusters. Do not remove but can be ignored.
-#
-default_unit_RSS: 'K'
+# If data centre is based outside of UK, leave postcode empty (CI key will be used instead).
+
+CI: <467> # [number] average carbon intensity of the geographic location, in gCO2e/kWh
+postcode: <Postcode> # [str] First 3 letters of the postcode of the data centre
+
+
+
+

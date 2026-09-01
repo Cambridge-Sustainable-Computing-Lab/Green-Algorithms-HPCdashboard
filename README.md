@@ -57,7 +57,7 @@ The system has three components:
   * [1. Python environment (Miniforge)](#1-python-environment-miniforge)
   * [2. Install python packages and dependencies](#2-install-python-packages-and-dependencies)
   * [3. PostgreSQL Database server](#3-postgresql-database-server)
-  * [4. Grafana Dashboard Server](#4-grafana-dashboard-server)
+  * [4. Grafana Dashboard Server](#4-grafana)
 * [Configuration files](#configuration-files)
   * [1. Scripts configuration file](#1-scripts-configuration-file-configyaml)
   * [2. Cluster information file](#2-cluster-information-file-cluster_infoyaml)
@@ -100,17 +100,12 @@ For more information about `conda` and its [list of commands](https://docs.conda
 
 ### 2. Download the latest release and install python packages and dependencies
 Download the source code from the [latest release](https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-HPCdashboard/releases) and extract it.
-Install the `ga_dashboard` python package and dependencies from `requirements.txt` in your conda environment.
+Install the `ga_dashboard` python package and dependencies using poetry in your conda environment.
 
 1. Run the following command in the top-level directory of the `GA4HPCdashboard` directory (i.e. one level above the `ga_dashboard` directory):
     ```
-    $ pip install -r requirements.txt
-    ```
-    or
-    ```
     $ poetry install
     ```
-    based on which tool (`pip` or `poetry`) you prefer to use.
 
 2. Run either of the following commands to install the `ga_dashboard` software package:
     ```
@@ -150,70 +145,16 @@ By default, the superuser credential is id: `admin`, password: `admin`. You shou
 ---
 ## Configuration files
 
-Before running the dashboard, you will need to prepare three configuration files. Templates and examples for all of them are provided in the `configuration/templates/` and `configuration/examples/` directories respectively.
-
-### 1. Scripts configuration file (`config.yaml`)
-Copy the template provided in `configuration/templates/config.yaml` to a location of your choice and edit it, replacing all values surrounded by `< >` characters. This file contains the core parameters needed to run the dashboard, including database connection details and paths to the other configuration files. You can uncomment the optional parameters you want to use.
-
 > [!NOTE]
-> If you choose to run the dashboard inside a Docker container, note that restarting the container can cause the database to be deleted and re-created. To prevent this, set `skip_db_overwrite: True` in `config.yaml`.
+> For more details and FAQs about configuration files, check out [README-CONFIG.md](configuration/README-CONFIG.md).
 
-### 2. Cluster information file (`cluster_info.yaml`)
-Copy the template provided in `configuration/templates/cluster_info.yaml` and edit it with information about your HPC cluster. See `configuration/examples/cluster_info__demo.yaml` for a worked example.
+Before running the dashboard, you will need to prepare three configuration files:
 
-For each partition (a set of computing nodes with a dedicated queue) you will need:
-- `type`: CPU or GPU
-- `model`: processor model
-- `TDP`: thermal design power (check the manufacturer's datasheet if needed)
-- For GPU partitions only: `model_CPU` and `TDP_CPU`
+1. Scripts configuration file (`config.yaml`): Master configuration supporting GA Dashboard installation and daily run scripts
+2. Cluster information file (`cluster_info.yaml`): HPC cluster information specifying its hardware profile, PUE, postcode, and other cluster settings
+3. Dashboard users file (`user_list.csv`): List of users who will have the access to the GA Dashboard
 
-You will also need values for `institution`, `cluster_name`,`granularity_memory_request`, `PUE`, and other fields listed in the template.
-
-#### Carbon intensity (CI)
-The dashboard uses carbon intensity (CI) data to estimate the carbon footprint of your HPC usage. There are three ways to configure this:
-
-1. **Carbon Intensity API (UK only)**
-If your cluster is based in the UK, the dashboard can pull dynamic carbon intensity data from the [Carbon Intensity API](https://carbonintensity.org.uk). To enable this, add the first three characters of your **postcode** to `cluster_info.yaml`. The dashboard uses a daily average of the carbon intensity values returned by the API.
-2. **Fixed carbon intensity value**
-For clusters outside the UK, you can provide a fixed carbon intensity value directly in `cluster_info.yaml`, e.g. the average carbon intensity in the data centre's location (you can find it [here](https://app.electricitymaps.com)). This will be used for all calculations.
-3. **Custom API integration**
-If you would like to use a different carbon intensity API for your region, you can implement your own integration using the `APIService` class in `ga_dashboard/backend/services/api_service.py`. Get in touch if you need guidance on this.
-
-### 3. Dashboard users file (`user_list.csv`)
-This file lists the users who will have access to the dashboard. Copy the template provided in `configuration/templates/user_list.csv` and populate with your users' details.
-
-The users file should be a comma-separated file combining these columns:
-* **User name**: Company/Institute user name (e.g. tg1)
-* **User unique identifier (UID)**: Numeric user unique identifier (e.g. 11111)
-* **Name**: Full user name (e.g. Thomas Greene)
-* **Email**: email address of user
-* **Group name**: Name of the user group/team (e.g. group 1)
-* **Department name**: Name of the user department/unit (e.g. Dept 3)
-* **GrafanaPassword**: Password required by this user for Grafana. By default, users only have view access.
-
-For example in `configuration/examples/user_list__demo.csv`:
-```
-User,UID,Name,Email,Group,Department,GrafanaPassword
-uid_1,11111,John Smith,user1@example.com,group_1,Dept_3,*0IK^I^&UpO$2aX
-uid_2,22222,Sarah Jones,user2@example.com,group_1,Dept_3,yGg=kA-6v**7BS)
-uid_3,33333,Tom Evans,user3@example.com,group_2,Dept_3,ibVvlpo$r7b0u
-uid_4,44444,Lisa Bookbinder,user4@example.com,group_3,Dept_2,!3Q4o&%Fs5SE2
-uid_5,55555,Ali Hassan,user5@example.com,group_4,Dept_1,qiY_pI%7BFz<JT
-```
-
-Displayed as a table:
-
-| User | UID   | Name          | Email | Group   | Department | GrafanaPassword |
-| -----|------ | ------------- | ------- | ---------- | ----| ------------ |
-| uid_1 | 11111 | John Smith | user1@example.com | group 1 | Dept 3     | *0IK^I^&UpO$2aX |
-| uid_2 | 22222 | Sarah Jones | user2@example.com   | group 1 | Dept 3     | yGg=kA-6v**7BS) |
-| ...   | ...   | ...           | ...     | ...  | ...      | ... |
-
-> [!IMPORTANT]
-> Jobs are mapped to the users using the `User` field from the dashboard users file, which must exactly match the `User` in SLURM logs. Ensure there are no discrepancies in casing or formatting between the two.
-
-> [!IMPORTANT]
-> Passwords must not contain a comma character (`','`), as this will break CSV parsing.
+Templates and examples for all of them are provided in the `configuration/templates/` and `configuration/examples/` directories respectively.
 
 ---
 ## Install the Green Algorithms dashboard

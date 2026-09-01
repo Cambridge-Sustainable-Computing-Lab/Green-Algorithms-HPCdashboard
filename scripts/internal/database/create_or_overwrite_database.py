@@ -96,21 +96,21 @@ def main():
             answer = input("Type YES to continue, else script will abort. > ")
             print()
             if answer not in ["YES","yes"]:
-                sys.exit(2) 
+                sys.exit(2)
 
             print("\n*** Setting up empty Postgres database: ***\n")
             # delete existing db, create new, and set it up
             # psql -c 'drop database if exists ga_db; ' -U postgres -h $db_host -p $db_port
             # psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
             # psql -U $db_user -h $db_host -p $db_port -d ga_db < $repo_root_dir/ga_dashboard/database/ga_db.sql
-            subprocess.run(["psql", "-c", f"drop database if exists {db_name}; ", "-U", f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}"])
-            subprocess.run(["psql", "-c", f"create database {db_name}; ", "-U", f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}"])
+            subprocess.run(["psql", "-c", f"drop database if exists {db_name}; ", "-U", f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}", "-d", "postgres"])
+            subprocess.run(["psql", "-c", f"create database {db_name}; ", "-U", f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}", "-d", "postgres"])
             subprocess.run(["psql", "-U",  f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}", "-d", f"{db_name}", "-f", f"{db_script}"])
     else:
         # only create and setup db
         # psql -c 'create database ga_db; ' -U postgres -h $db_host -p $db_port
         # psql -U $db_user -h $db_host -p $db_port -d ga_db < $repo_root_dir/ga_dashboard/database/ga_db.sql
-        subprocess.run(["psql", "-c", f"create database {db_name}; ", "-U", f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}"])
+        subprocess.run(["psql", "-c", f"create database {db_name}; ", "-U", f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}", "-d", "postgres"])
         subprocess.run(["psql", "-U",  f"{db_user}", "-h", f"{db_host}", "-p", f"{db_port}", "-d", f"{db_name}", "-f", f"{db_script}"])
     
     # Resets back to nothing
