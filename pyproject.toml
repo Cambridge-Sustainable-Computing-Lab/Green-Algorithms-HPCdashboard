@@ -20,7 +20,7 @@ dependencies = [
     "maskpass==0.3.7",
     "psycopg-binary==3.2.10",
     "tqdm>=4.67.3,<5.0.0",
-    "ga-core @ git+https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-core.git@v0.1.1"
+    "ga-core @ git+https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-core.git@v0.2.0"
 ]
 
 [tool.poetry.group.dev.dependencies]
