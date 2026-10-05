@@ -8,6 +8,8 @@ from ga_dashboard.backend.ga_tools import LogsDataProcessor
 from ga_dashboard.backend.helpers import utils
 from ga_dashboard.ga_config import GAConfig
 
+logger = logging.getLogger(__name__)
+
 if __name__ == "__main__":
 
     argparser = argparse.ArgumentParser(description="Script used to calculate Green Algorithms from HPC logs.",
@@ -33,8 +35,7 @@ if __name__ == "__main__":
 
     # Initialize logging
     utils.setup_logging(log_file=log_file_path, debug=debug_mode)
-
-    logging.info("run_green_algorithms_on_logs: Logging configured successfully.")
+    logger.info("run_green_algorithms_on_logs: Logging configured successfully.")
 
     # Ask for the database password
     if "db_password" not in ga_config.config_values:

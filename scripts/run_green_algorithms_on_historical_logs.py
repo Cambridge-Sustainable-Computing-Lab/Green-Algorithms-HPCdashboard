@@ -1,21 +1,23 @@
 import argparse
-import maskpass  # to hide the passwords
-import logging
-from datetime import date
-from datetime import timedelta
-from ga_dashboard.backend.ga_tools import LogsDataProcessor
-from ga_dashboard.ga_config import GAConfig
-from ga_dashboard.backend.helpers import utils
-
 import datetime
+import logging
+from datetime import date, timedelta
+
+import maskpass  # to hide the passwords
+
+from ga_dashboard.backend.ga_tools import LogsDataProcessor
+from ga_dashboard.backend.helpers import utils
+from ga_dashboard.ga_config import GAConfig
+
+logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     
     t_start = datetime.datetime.now()
     default_batch_size = 30
     
-    print(f"Running Green Algorithms on historical Logs")
-    print(f"Started on {t_start.strftime('%Y-%m-%d %H:%M:%S')}\n")
+    logger.info("Running Green Algorithms on historical Logs")
+    logger.info(f"Started on {t_start.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
     argparser = argparse.ArgumentParser(description="Script used to calculate Green Algorithms from historical HPC logs.",
                                         epilog="Requires a config file.")
@@ -32,7 +34,7 @@ if __name__ == "__main__":
     db_pass = args.db_pass
     
     if args.batch_size is None:
-        print(f"WARNING: No batch size provided. Defaulting to {default_batch_size} days.")
+        logger.warning(f"WARNING: No batch size provided. Defaulting to {default_batch_size} days.")
         batch_size = default_batch_size 
     else:
         batch_size = int(args.batch_size)
@@ -47,18 +49,17 @@ if __name__ == "__main__":
 
     # Initialize logging
     utils.setup_logging(log_file=log_file_path, debug=debug_mode)
-
-    logging.info("run_green_algorithms_on_historical_logs: Logging configured successfully.")
+    logger.info("run_green_algorithms_on_historical_logs: Logging configured successfully.")
 
     # Ask for the database password
-    if "db_password" not in ga_config.config_values.keys():
+    if "db_password" not in ga_config.config_values:
         ga_config.config_values["db_password"] = maskpass.askpass("Enter database admin user password: > ", mask="")
 
     # Overwrite start and end dates
-    if 'startDay' not in  ga_config.config_values.keys():
+    if 'startDay' not in  ga_config.config_values:
         ga_config.config_values["startDay"] = "2000-01-01"
     # End date (Yesterday)
-    if 'endDay' not in  ga_config.config_values.keys():
+    if 'endDay' not in  ga_config.config_values:
         ga_config.config_values["endDay"] = date.today() - timedelta(days = 1)                                          
 
     ### Run backend to get data
@@ -66,4 +67,4 @@ if __name__ == "__main__":
     extracted_data = data_processor.batch_run(batch_size = batch_size)
 
     t_end = datetime.datetime.now()
-    print(f"\nCompleted on {t_end.strftime('%Y-%m-%d %H:%M:%S')}")
+    logger.info(f"\nCompleted on {t_end.strftime('%Y-%m-%d %H:%M:%S')}")
