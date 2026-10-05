@@ -51,10 +51,13 @@ partitions:
   # You can keep adding partitions to this
 
 
-## ----- MEMORY -----
+## ----- WORKLOAD MANAGER PARAMETERS -----
 
 granularity_memory_request: <6> # [number] in GB representing the smallest memory unit users can reserve
 default_unit_RSS: 'K' # [char] unit in which memory usage (RSS) is reported in by your workload manager
+
+# Optional
+time_format: "%Y-%m-%dT%H:%M:%S" # [str] the format in which your workload manager reports job start and end times. Defaults to %Y-%m-%dT%H:%M:%S.
 
 
 ## ----- FACILITY AND SITE PARAMETERS -----

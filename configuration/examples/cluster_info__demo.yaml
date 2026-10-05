@@ -85,10 +85,13 @@ partitions:
         range: "cpu-p-[120, 130]"
 
 
-## ----- MEMORY -----
+## ----- WORKLOAD MANAGER PARAMETERS -----
 
 granularity_memory_request: 6 # in GB
 default_unit_RSS: 'K'
+
+# Optional
+time_format: "%Y-%m-%dT%H:%M:%S" # [str] the format in which your workload manager reports job start and end times. Defaults to %Y-%m-%dT%H:%M:%S.
 
 
 ## ----- FACILITY AND SITE PARAMETERS -----
