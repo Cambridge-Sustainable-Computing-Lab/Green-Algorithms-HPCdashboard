@@ -2,6 +2,8 @@
 # utility and DEBUGONLY functions (add new generic utlity functions here)
 # ------------------------------------------------------------------
 
+from __future__ import annotations
+
 import datetime
 import logging
 import os
@@ -161,5 +163,4 @@ def quick_inspect(df: pd.DataFrame, name: str = "DataFrame") -> None:
     print("Dtypes:\n", df.dtypes)
     print("Head:\n", df.head())
     print(f"--- End of {name} Inspection ---\n")
-
 

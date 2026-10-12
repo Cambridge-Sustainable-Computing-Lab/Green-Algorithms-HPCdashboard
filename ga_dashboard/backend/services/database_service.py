@@ -2,10 +2,13 @@
 # Database reader/writer service (add database interaction code here)
 # ------------------------------------------------------------------
 
+from __future__ import annotations
+
 import logging
-import psycopg
-import pandas as pd
 from dataclasses import dataclass
+
+import pandas as pd
+import psycopg
 from psycopg import sql
 
 logger = logging.getLogger(__name__)
