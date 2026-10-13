@@ -92,6 +92,7 @@ default_unit_RSS: 'K'
 
 # Optional
 time_format: "%Y-%m-%dT%H:%M:%S" # [str] the format in which your workload manager reports job start and end times. Defaults to %Y-%m-%dT%H:%M:%S.
+partitions_to_ignore: [] # [list] partitions to ignore when parsing job data. Defaults to empty list.
 
 
 ## ----- FACILITY AND SITE PARAMETERS -----
