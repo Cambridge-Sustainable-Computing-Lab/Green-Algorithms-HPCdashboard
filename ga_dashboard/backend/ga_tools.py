@@ -3,19 +3,22 @@
 # Uses GA Core for data extraction and processing
 # ------------------------------------------------------------------
 
+import gc
+import logging
+import time as time_module
+
+import ga_core
 import pandas as pd
 import yaml
-import time as time_module
-import gc
 from tqdm import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
-import ga_core 
 
-from ga_dashboard.backend.services.database_ci_store import DatabaseCIStore
-import ga_dashboard.backend.helpers.utils as utils
 from ga_dashboard.backend.data_sql_import import DataSQLImport
+from ga_dashboard.backend.helpers import utils
+from ga_dashboard.backend.services.database_ci_store import DatabaseCIStore
 from ga_dashboard.backend.services.database_service import DBSettings
 
+logger = logging.getLogger(__name__)
 
 agg_functions_from_raw = {
         'n_jobs': ('UserX', 'count'),
@@ -89,7 +92,7 @@ class LogsDataProcessor:
     def summarise_data(self, df: pd.DataFrame) -> dict:
 
         if df is None:
-            print("summarise_data(): df is None")
+            logger.info("summarise_data(): df is None")
             return None
 
         # This is to aggregate already aggregated dataset (so names are a bit different)
@@ -135,7 +138,7 @@ class LogsDataProcessor:
 
         if has_slurmAdmin:
             # With daily figures
-            df_userdaily = agg_jobs(df, ['User', 'UID', 'Name', 'Group', 'Department', 'SubmitDate'])
+            df_userdaily = agg_jobs(df, ['UserX', 'SubmitDate'])
             output = {'userDaily': df_userdaily}
 
         # Some job-level statistics to plot distributions
@@ -154,7 +157,7 @@ class LogsDataProcessor:
         try: 
             data2db.insert_data_into_db()
         except Exception as e:
-            print(f"Error occurred while inserting data into database: {e}")
+            logger.error(f"Error occurred while inserting data into database: {e}")
             return
         
 
@@ -168,7 +171,7 @@ class LogsDataProcessor:
         db_ci_store = DatabaseCIStore(self.db_params)
 
         if self.config_data.get('input_mode') == 'file' and self.config_data.get('input_log_file_path', '') != '':
-            print(f"\n  Input mode is 'file' => Pulling raw logs from '{self.config_data["input_log_file_path"]}'\n")
+            print(f'\n  Input mode is \'file\' => Pulling raw logs from \'{self.config_data["input_log_file_path"]}\'\n')
             # Pick raw logs from file
             logs_raw = utils.read_file_bytes(self.config_data["input_log_file_path"])
 
@@ -176,24 +179,22 @@ class LogsDataProcessor:
         df = dataprocessor.extract_data(logs_raw)
         df = dataprocessor.enrich_data(df, db_ci_store)
 
-        ### Add user details to jobs
-        if self.users_df is None:
-            print("No user info to add.")
-            df2 = df
-        else:
-            df2 = pd.merge(df, self.users_df, left_on='UserX', right_on='User', how='inner')
-            if len(df2) != len(df):
-                # This basically raises an error if a user in the df isn't in the users_df,
-                # which is obtained from the file listing the HPC users.
-                raise ValueError("Not all users could be matched!")
-
+        summary_stats = self.summarise_data(df)
         del df # df is potentially large and no longer needed 
 
-        summary_stats = self.summarise_data(df2)
+        summary_stats['userDaily'] = summary_stats['userDaily'].rename(columns={'UserX': 'User'})
 
-        del df2 # df2 is potentially large and no longer needed 
-        gc.collect()
-
+        ### Add user details to jobs
+        if self.users_df is None: 
+            logger.debug("No user info available.")
+        else:
+            users_in_stats = summary_stats['userDaily']['User'].unique()
+            users_in_config = self.users_df['User'].unique()
+            missing_users = set(users_in_stats) - set(users_in_config)
+            if missing_users:
+                logger.warning(f"WARNING! {len(missing_users)} user(s) found in the logs that are not present in the user configuration file.")
+                logger.debug(f"List of missing users: {missing_users}")
+            
         self.process_and_store(summary_stats)
 
         return summary_stats
@@ -217,8 +218,8 @@ class LogsDataProcessor:
         failed = []
         t_run = time_module.perf_counter()
 
-        print(f"\nBatch size: {batch_size} days")
-        print(f"Number of batches: {n} \n")
+        logger.info(f"\nBatch size: {batch_size} days")
+        logger.info(f"Number of batches: {n} \n")
 
         batch_iter = tqdm(batches, desc="Processing batches", unit="batch")
         summary_stats_all = {}
@@ -248,9 +249,9 @@ class LogsDataProcessor:
 
         elapsed_total = time_module.perf_counter() - t_run
         status = f"({len(failed)} failed)" if failed else "(0 failed)"
-        print(f"\n{n - len(failed)} of {n} batches completed in {elapsed_total:.1f}s  {status}")
+        logger.info(f"\n{n - len(failed)} of {n} batches completed in {elapsed_total:.1f}s  {status}")
         if failed:
             for f in failed:
-                print(f"  {f[0]} to {f[1]}")
+                logger.info(f"  {f[0]} to {f[1]}")
 
         return summary_stats_all

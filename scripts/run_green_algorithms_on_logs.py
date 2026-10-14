@@ -1,11 +1,14 @@
 import argparse
-import maskpass  # to hide the passwords
 import logging
-from datetime import date
-from datetime import timedelta
+from datetime import date, timedelta
+
+import maskpass  # to hide the passwords
+
 from ga_dashboard.backend.ga_tools import LogsDataProcessor
-from ga_dashboard.ga_config import GAConfig
 from ga_dashboard.backend.helpers import utils
+from ga_dashboard.ga_config import GAConfig
+
+logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
 
@@ -32,19 +35,18 @@ if __name__ == "__main__":
 
     # Initialize logging
     utils.setup_logging(log_file=log_file_path, debug=debug_mode)
-
-    logging.info("run_green_algorithms_on_logs: Logging configured successfully.")
+    logger.info("run_green_algorithms_on_logs: Logging configured successfully.")
 
     # Ask for the database password
-    if "db_password" not in ga_config.config_values.keys():
+    if "db_password" not in ga_config.config_values:
         ga_config.config_values["db_password"] = maskpass.askpass("Enter database admin user password: > ", mask="")
 
     # Overwrite start and end dates (with yesterday)
     yesterday = date.today() - timedelta(days = 1)
-    if 'startDay' not in  ga_config.config_values.keys():
+    if 'startDay' not in  ga_config.config_values:
         ga_config.config_values["startDay"] = yesterday
     # End date (Yesterday)
-    if 'endDay' not in  ga_config.config_values.keys():
+    if 'endDay' not in  ga_config.config_values:
         ga_config.config_values["endDay"] = yesterday
 
     ### Run backend to get data

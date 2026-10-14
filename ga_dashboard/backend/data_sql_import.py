@@ -2,12 +2,16 @@
 # Bridge betweem main_backend in ga_tools.py and DatabaseService
 # ------------------------------------------------------------------
 
+from __future__ import annotations
+
 import datetime
 import logging
+
 import pandas
-from ga_dashboard.backend.services.database_service import DBSettings, DatabaseService
+
+from ga_dashboard.backend.helpers import utils
+from ga_dashboard.backend.services.database_service import DatabaseService, DBSettings
 from ga_dashboard.database.table_col_definitions import GA_DATA_AGGREGATE_COLUMNS
-import ga_dashboard.backend.helpers.utils as utils
 
 logger = logging.getLogger(__name__)
 
@@ -82,4 +86,3 @@ class DataSQLImport:
                 on_conflict='DO NOTHING'
             )
         logger.info('DB insertion into ga_data_aggregate - end')
-
