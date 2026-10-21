@@ -7,20 +7,20 @@ authors = [
 ]
 license = "GPL-3.0-or-later"
 readme = "README.md"
-requires-python = ">=3.11,<4.0"
+requires-python = ">=3.9,<4.0"
 classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 ]
 dependencies = [
     "grafana-client (==5.1.1)",
-    "pandas==2.3.2",
+    "pandas (==2.3.3)",
     "psycopg==3.2.10",
     "pyyaml==6.0.2",
     "random-password-generator==2.2.0",
     "maskpass==0.3.7",
     "psycopg-binary==3.2.10",
     "tqdm>=4.67.3,<5.0.0",
-    "ga-core @ git+https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-core.git@v0.2.0"
+    "ga-core @ git+https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-core.git@v0.2.1"
 ]
 
 [tool.poetry.group.dev.dependencies]

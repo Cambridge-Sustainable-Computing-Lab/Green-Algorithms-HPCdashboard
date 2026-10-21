@@ -232,29 +232,21 @@ class GAConfig:
         value: Value of the configuration parameter
         '''
         is_valid = True
-        match expected_type:
-            case 'string':
-                is_valid = isinstance(value, str)
-            case 'numeric':
-                is_valid = isinstance(value, int)
-            case 'path':
-                if not isinstance(value, str):
-                    is_valid = False
-                else:
-                    if not os.path.exists(value):
-                        if not os.path.exists(os.path.join(os.getcwd(), value)):
-                            is_valid = False
-            case 'date (YYYY-MM-DD)':
-                if not isinstance(value, str):
-                    is_valid = False
-                else:
-                    if not re.match(r'^\d{4}-\d{2}-\d{2}$', value):
-                        is_valid = False
-            case 'boolean':
-                is_valid = isinstance(value, bool)
-            case _:
-                print(f"  The attribute {conf_param} expected type ({expected_type}) is not a recognised type in the config module")
+        if expected_type == 'string':
+            is_valid = isinstance(value, str)
+        elif expected_type == 'numeric':
+            is_valid = isinstance(value, int)
+        elif expected_type == 'path':
+            if not isinstance(value, str) or not os.path.exists(value) and not os.path.exists(os.path.join(os.getcwd(), value)):
                 is_valid = False
+        elif expected_type == 'date (YYYY-MM-DD)':
+            if not isinstance(value, str) or not re.match(r'^\d{4}-\d{2}-\d{2}$', value):
+                is_valid = False
+        elif expected_type == 'boolean':
+            is_valid = isinstance(value, bool)
+        else:
+            print(f"  The attribute {conf_param} expected type ({expected_type}) is not a recognised type in the config module")
+            is_valid = False
         return is_valid
 
 
