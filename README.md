@@ -86,12 +86,15 @@ Files required to deploy the dashboard (you will need your own versions of these
 
 ### 1. Python environment (Miniforge)
 
- First, set up a Python environment (Python 3.13+ recommended) using [Miniforge](https://conda-forge.org/download/) (recommended). Follow the instructions for your platform (see also the [Miniforge GitHub repository](https://github.com/conda-forge/miniforge) if needed).
+ First, set up a Python environment (Python 3.14 recommended) using [Miniforge](https://conda-forge.org/download/) (recommended). Follow the instructions for your platform (see also the [Miniforge GitHub repository](https://github.com/conda-forge/miniforge) if needed).
+
+> [!NOTE]
+> We recommend using the Python version (3.14) but the dashboard is compatible from Python 3.9 onwards depending on what version is available in your environment. Please note that  Python 3.9 and 3.10 are now deprecated, more info on Python versions [here](https://devguide.python.org/versions/).
 
 Once installed, you can create an environment. For example:
 ```
-$ conda create -n py313 python=3.13 -c conda-forge
-$ conda activate py313
+$ conda create -n py314 python=3.14 -c conda-forge
+$ conda activate py314
 ```
 This environment is where you will install the `ga_dashboard` package and its dependencies in the next step.
 
