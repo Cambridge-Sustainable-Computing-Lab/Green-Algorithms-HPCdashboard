@@ -544,8 +544,8 @@ requests = "2.32.3"
 [package.source]
 type = "git"
 url = "https://github.com/Cambridge-Sustainable-Computing-Lab/Green-Algorithms-core.git"
-reference = "v0.2.1"
-resolved_reference = "82b59ddc39c35902e94c03244980670c08cc90dd"
+reference = "v0.2.2"
+resolved_reference = "7cc87222bfd7d025c023135c84f9448a3b645da5"
 
 [[package]]
 name = "grafana-client"
@@ -1999,4 +1999,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<4.0"
-content-hash = "e61dab30fb94bc442d2045a9fb51e32fb00abe9063c9f4f6904fb84319f526c3"
+content-hash = "313193da968fee6cc0e8b356272c2f960de21ed240709ebd180d5cb6aee2ae35"

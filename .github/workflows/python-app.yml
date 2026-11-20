@@ -16,8 +16,12 @@ jobs:
   build:
     strategy:
       matrix:
-        python-version: ["3.9", "3.14"]
-    runs-on: ubuntu-latest
+        include:
+          - python-version: "3.9"
+            os: ubuntu-24.04
+          - python-version: "3.14"
+            os: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
 
